@@ -109,19 +109,21 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
             for var i = 0; i < buttonsCount * 2; i++
             {
                 var frame = CGRectMake(offsetX, offsetY , actionButtonSideDimension , actionButtonSideDimension)
-                offsetX += actionButtonSideDimension //+ self.minimumInteritemSpacing
+                offsetX += actionButtonSideDimension  //+ self.minimumInteritemSpacing
                 
-                if screenWidth - self.minimumInteritemSpacing * 2 < CGRectGetMaxX(frame)
+                if screenWidth < CGRectGetMaxX(frame)
                 {
                     println(" Counting second row for action buttons cell")
-                    offsetX = self.minimumInteritemSpacing
+                    offsetX =  actionButtonSideDimension
                     offsetY += self.minimumLineSpacing + actionButtonSideDimension
                     frame.origin.x = offsetX
                     frame.origin.y = offsetY
                 }
                 
+                
                 if i & 1 == 0 //i % 2 == 0
                 {
+                    println("  button frame: \(frame)")
                     let indexPath = NSIndexPath(forItem: indexPathItem, inSection: 0)
                     var attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
                     

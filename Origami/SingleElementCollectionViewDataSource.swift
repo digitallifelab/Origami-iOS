@@ -221,11 +221,55 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return attachesHolderCell
         case .Buttons:
             var buttonsHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementButtonsHolderCell", forIndexPath: indexPath) as! SingleElementButtonsCell
+            if let actionButtonsDataSource = ElementActionButtonsDataSource(buttonModels: createActionButtonModels())
+            {
+                var buttonTypes = [ActionButtonCellType]()
+
+                for model in actionButtonsDataSource.buttons!
+                {
+                    buttonTypes.append(model.type)
+                }
+                
+                buttonsHolderCell.dataSource = actionButtonsDataSource
+                
+                buttonsHolderCell.buttonsLayout = ElementActionButtonsLayout(buttonTypes: buttonTypes)
+            }
             return buttonsHolderCell
         case .Subordinates:
             var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
             return subordinateCell
         }
+    }
+    
+    func createActionButtonModels() -> [ActionButtonModel]?
+    {
+        //check
+        var elementIsOwned = false
+        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId!.integerValue
+        {
+            elementIsOwned = true
+        }
+        
+        //try to add models
+        var toReturn = [ActionButtonModel]()
+        for var i = 1; i < 9; i++
+        {
+            var model = ActionButtonModel()
+            if let buttonType = ActionButtonCellType(rawValue: i)
+            {
+                model.type = buttonType
+            }
+            model.enabled = elementIsOwned
+            toReturn.append(model)
+        }
+        
+        //return properly
+        if !toReturn.isEmpty
+        {
+            return toReturn
+        }
+        return nil
+        
     }
     
     

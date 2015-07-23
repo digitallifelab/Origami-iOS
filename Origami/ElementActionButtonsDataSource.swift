@@ -104,7 +104,15 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
         }
         else
         {
-            return UIColor.lightGrayColor()
+            switch model.type
+            {
+            
+            case .Add:
+                return UIColor.yellowColor()
+            default:
+                return UIColor.lightGrayColor()
+            }
+            
         }
         
     }
