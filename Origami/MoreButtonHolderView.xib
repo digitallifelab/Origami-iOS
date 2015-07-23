@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="MoreButtonHolderView" customModule="Origami" customModuleProvider="target">
+            <connections>
+                <outlet property="button" destination="f5S-Fv-pA9" id="XDp-SS-skC"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="501" height="45"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f5S-Fv-pA9">
+                    <rect key="frame" x="8" y="6" width="34" height="34"/>
+                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="34" id="6uZ-is-YgJ"/>
+                        <constraint firstAttribute="width" constant="34" id="Jwo-Br-lDs"/>
+                    </constraints>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <inset key="contentEdgeInsets" minX="2" minY="1" maxX="2" maxY="1"/>
+                    <state key="normal" image="icon-more">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="extendButtonTapped:" destination="-1" eventType="touchUpInside" id="1bX-Tr-7Sf"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Details" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wPv-Z3-NEo">
+                    <rect key="frame" x="50" y="13" width="53" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.0" green="0.6588235294117647" blue="0.77647058823529413" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstAttribute="centerY" secondItem="f5S-Fv-pA9" secondAttribute="centerY" id="GVc-PV-Ord"/>
+                <constraint firstItem="wPv-Z3-NEo" firstAttribute="leading" secondItem="f5S-Fv-pA9" secondAttribute="trailing" constant="8" id="U1K-cG-VM1"/>
+                <constraint firstItem="f5S-Fv-pA9" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="8" id="yp0-Cf-Nfo"/>
+                <constraint firstItem="wPv-Z3-NEo" firstAttribute="centerY" secondItem="f5S-Fv-pA9" secondAttribute="centerY" constant="0.5" id="zeB-rF-WP4"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="324.5" y="330.5"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="icon-more" width="50" height="50"/>
+    </resources>
+</document>
