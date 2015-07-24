@@ -20,19 +20,26 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         super.init()
     }
     
-    convenience init?(messages:[Message]) // failable initializer - we don`t need to show messages table in messages cell if there are no messages in element chat
+    convenience init?(messages:[Message]?) // failable initializer - we don`t need to show messages table in messages cell if there are no messages in element chat
     {
         self.init()
-        if messages.isEmpty
+        if messages == nil
         {
             return nil
         }
-        self.messageObjects = messages
+        if messages!.isEmpty
+        {
+            return nil
+        }
+        self.messageObjects = messages!
     }
     
     func reloadLastMessagesForElementId(elementId:NSNumber)
     {
-        self.messageObjects = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: elementId, lastMessageId: nil)
+        if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: elementId, lastMessageId: nil)
+        {
+            self.messageObjects = messages
+        }
     }
 
     //DataSource

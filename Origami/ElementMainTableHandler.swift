@@ -150,15 +150,15 @@ class ElementMainTableHandler: NSObject, UITableViewDelegate, UITableViewDataSou
 //        return [String]()
 //    }
     
-    func getLastChatMessages() ->[Message]
+    func getLastChatMessages() ->[Message]?
     {
         if self.handledElement != nil
         {
             let lvMessages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: handledElement!.elementId!, lastMessageId: nil)
-            println("Last chat messages count: \(lvMessages.count)")
+            println("Last chat messages count: \(lvMessages!.count)")
             return lvMessages
         }
-        return [Message]()
+        return nil
     }
     
     

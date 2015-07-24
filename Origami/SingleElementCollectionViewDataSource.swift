@@ -142,14 +142,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementLastMessages() -> [Message]?
     {
-        let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: handledElement?.elementId, lastMessageId: nil)
-        
-        if messages.isEmpty
+        if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: handledElement?.elementId, lastMessageId: nil)
         {
-            return nil
+            return messages
         }
-        
-        return messages
+        return nil
     }
     
     func getElementAttachesHandler() -> ElementAttachedFilesCollectionHandler?
@@ -349,11 +346,18 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
         case .Chat:
             var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell", forIndexPath: indexPath) as! SingleElementLastMessagesCell
+            chatCell.displayMode = self.displayMode
+            if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: self.handledElement?.elementId, lastMessageId: 0)
+            {
+                chatCell.messages = messages
+            }
+            
             return chatCell
             
         case .Details:
             var detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell", forIndexPath: indexPath) as! SingleElementDetailsCell
             detailsCell.textLabel.text = getElementDetails()
+            detailsCell.displayMode = self.displayMode
             return detailsCell
             
         case .Attaches:
@@ -372,14 +376,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
                 
                 buttonsHolderCell.dataSource = actionButtonsDataSource
-                
                 buttonsHolderCell.buttonsLayout = ElementActionButtonsLayout(buttonTypes: buttonTypes)
             }
             return buttonsHolderCell
         case .Subordinates:
             var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
+           
             subordinateCell.displayMode = self.displayMode
             subordinateCell.cellType = .Other
+            
             if let
                 subordinatesStore = self.subordinatesByIndexPath,
                 lvElement = subordinatesStore[indexPath]

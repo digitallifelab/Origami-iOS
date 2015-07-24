@@ -47,7 +47,7 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
         if let button = buttons?[indexPath.item]
         {
             buttonCell.imageView.image = imageForButton(button)
-            buttonCell.backgroundColor = backgroundColorForButton(button)
+            buttonCell.imageView.backgroundColor = backgroundColorForButton(button)
         }
         return buttonCell
     }

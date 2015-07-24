@@ -354,7 +354,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         let lastAttribute = cellLayoutAttributes[lastIndexPath]
         
-        self.sizeOfContent = CGSizeMake(CGRectGetMaxX(lastAttribute!.frame), CGRectGetMaxY(lastAttribute!.frame) + self.minimumLineSpacing)
+        self.sizeOfContent = CGSizeMake(CGRectGetMaxX(lastAttribute!.frame), CGRectGetMaxY(lastAttribute!.frame) + self.minimumLineSpacing * 2)
         println("self.collectionViewContentSize()  should return \(sizeOfContent)")
     }
     

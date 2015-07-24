@@ -8,9 +8,10 @@
 
 import UIKit
 
-class SingleElementLastMessagesCell: UICollectionViewCell {
-    
-    var displayMode:DisplayMode = .Day{
+class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
+{
+    var messages:[Message]?
+    var displayMode:DisplayMode = .Day {
         didSet{
             switch displayMode{
             case .Day:
@@ -26,7 +27,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell {
     @IBOutlet var messagesTable:UITableView!
     
     override func prepareForReuse() {
-        
+        messages = nil
     }
     
     override func layoutSubviews() {
@@ -45,6 +46,34 @@ class SingleElementLastMessagesCell: UICollectionViewCell {
         let angle = CGFloat(-90.0 * CGFloat(M_PI) / 180.0)
         chatIcon.transform = CGAffineTransformMakeRotation(angle)
         
+        self.messagesTable.dataSource = self
+        
     }
     
+    //MARK: UITableViewDataSource
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.messages != nil
+        {
+            return self.messages!.count
+        }
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var messageCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
+        messageCell.displayMode = self.displayMode
+        
+        if let lvMessages = self.messages
+        {
+            let  message = lvMessages[indexPath.row]
+            messageCell.messageLabel.text = message.textBody
+            messageCell.avatarView.image = UIImage(named: "icon-No-Avatar")
+        }
+        else
+        {
+            messageCell.messageLabel.text = "Type a message."
+        }
+        
+        return messageCell
+    }
 }

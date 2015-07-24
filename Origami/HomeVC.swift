@@ -259,10 +259,61 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         if let rootId = element.rootElementId // we have to show breadcrumbs instead of back button in navigationItem
         {
+            testPresentNewSingleElementVC(element)
+//            if rootId.integerValue == 0
+//            {
+//                performSegueWithIdentifier("PresentChildElement", sender: element)
+//            }
+//            else
+//            {
+//                //calculate all the subordinates tree
+//                if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
+//                {
+//                    var viewControllers = [UIViewController]()
+//
+//                    //create viewControllers for all elements
+//                    
+//                    for lvElement in elementsTree.reverse()
+//                    {
+//                        if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementDashboard") as? ElementDashboardVC
+//                        {
+//                            dashboardVC.element = lvElement
+//                            viewControllers.append(dashboardVC)
+//                        }
+//                    }
+//                    //append last view controller on top of the navigation controller`s stack
+//                    if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementDashboard") as? ElementDashboardVC
+//                    {
+//                        targetVC.element = element
+//                        viewControllers.append(targetVC)
+//                    }
+//                    //show last
+//                    if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
+//                    {
+//                        var vcS = currentVCs
+//                        vcS += viewControllers
+//                        self.navigationController?.setViewControllers(vcS, animated: true)
+//                    }
+//                }
+//            }
+        }
+        else
+        {
+           performSegueWithIdentifier("PresentChildElement", sender: element)
+        }
+    }
+    
+    func testPresentNewSingleElementVC(element:Element)
+    {
+        if let rootId = element.elementId
+        {
             if rootId.integerValue == 0
             {
-                //performSegueWithIdentifier("PresentChildElement", sender: element)
-                testPresentNewSingleElementVC(element)
+                if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+                {
+                    newVC.currentElement = element
+                    self.navigationController?.pushViewController(newVC, animated: true)
+                }
             }
             else
             {
@@ -270,21 +321,21 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
                 {
                     var viewControllers = [UIViewController]()
-
+                    
                     //create viewControllers for all elements
                     
                     for lvElement in elementsTree.reverse()
                     {
-                        if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementDashboard") as? ElementDashboardVC
+                        if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
                         {
-                            dashboardVC.element = lvElement
+                            dashboardVC.currentElement = lvElement
                             viewControllers.append(dashboardVC)
                         }
                     }
                     //append last view controller on top of the navigation controller`s stack
-                    if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementDashboard") as? ElementDashboardVC
+                    if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
                     {
-                        targetVC.element = element
+                        targetVC.currentElement = element
                         viewControllers.append(targetVC)
                     }
                     //show last
@@ -297,19 +348,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 }
             }
         }
-        else
-        {
-           performSegueWithIdentifier("PresentChildElement", sender: element)
-        }
-    }
-    
-    func testPresentNewSingleElementVC(element:Element)
-    {
-        if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-        {
-            newVC.currentElement = element
-            self.navigationController?.pushViewController(newVC, animated: true)
-        }
+        
     }
     
     //MARK: ElementComposingDelegate

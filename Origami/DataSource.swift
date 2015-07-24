@@ -256,11 +256,11 @@ import ImageIO
         return nil
     }
     
-    func getMessagesQuantyty(quantity:Int, forElementId elementId:NSNumber?, lastMessageId messageId:NSNumber?) -> [Message]
+    func getMessagesQuantyty(quantity:Int, forElementId elementId:NSNumber?, lastMessageId messageId:NSNumber?) -> [Message]?
     {
         if elementId == nil
         {
-            return [Message]()
+            return nil//[Message]()
         }
         
         let validQuantity = max(0, min(quantity, Int.max))
@@ -313,7 +313,7 @@ import ImageIO
         }
         else
         {
-            return [Message]()//empty array
+            return nil //[Message]()//empty array
         }
     }
     

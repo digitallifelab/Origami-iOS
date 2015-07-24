@@ -27,8 +27,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         bottomControlsContainerView.delegate = self
         // Do any additional setup after loading the view.
-        
-        currentChatMessages = DataSource.sharedInstance.getMessagesQuantyty(20, forElementId: currentElement!.elementId!, lastMessageId: nil)
+        if let messages = DataSource.sharedInstance.getMessagesQuantyty(20, forElementId: currentElement!.elementId!, lastMessageId: nil)
+        {
+            currentChatMessages = messages
+        }
         
         setupNavigationBar()
     }

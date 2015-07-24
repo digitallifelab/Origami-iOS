@@ -11,14 +11,35 @@ import UIKit
 class SingleElementDashboardVC: UIViewController {
 
     var currentElement:Element?
-    @IBOutlet var collectionView:UICollectionView!
     var collectionDataSource:SingleElementCollectionViewDataSource?
-    override func viewDidLoad() {
+    var displayMode:DisplayMode = .Day {
+        didSet{
+            let old = oldValue
+            if self.displayMode == old
+            {
+                return
+            }
+            
+            if collectionDataSource != nil
+            {
+                collectionDataSource?.displayMode = self.displayMode
+                collectionView.reloadData()
+            }
+        }
+    }
+    
+    @IBOutlet var collectionView:UICollectionView!
+    @IBOutlet var navigationBackgroundView:UIView!
+    
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-
+        
+        setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         
         collectionDataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
         collectionDataSource!.handledElement = currentElement
+        collectionDataSource!.displayMode = self.displayMode
         if collectionDataSource != nil
         {
             collectionView.dataSource = collectionDataSource!
@@ -28,7 +49,6 @@ class SingleElementDashboardVC: UIViewController {
         {
             collectionView.setCollectionViewLayout(layout, animated: false)
         }
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -46,6 +66,42 @@ class SingleElementDashboardVC: UIViewController {
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
+    //MARK: Day/Night Mode
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        if nightModeOn
+        {
+            self.displayMode = .Night
+            self.view.backgroundColor = UIColor.blackColor()
+            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+           // UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+            
+            //self.tabBarController?.tabBar.tintColor = kWhiteColor
+            //self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            self.displayMode = .Day
+            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            //UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+            
+            //self.tabBarController?.tabBar.tintColor = kWhiteColor
+            //self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            
+        }
+        
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        
+        self.collectionView.reloadData()
+        
+    }
+
     
     
     //MARK: Handling buttons and other elements tap in collection view

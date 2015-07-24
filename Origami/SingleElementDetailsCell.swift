@@ -9,9 +9,30 @@
 import UIKit
 
 class SingleElementDetailsCell: UICollectionViewCell {
+    
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            let old = oldValue
+            if displayMode == old
+            {
+                return
+            }
+            switch self.displayMode
+            {
+            case .Day:
+                self.textLabel.textColor = UIColor.blackColor()
+                self.moreLessButton.tintColor = kDaySignalColor
+            case .Night:
+                self.textLabel.textColor = UIColor.grayColor()
+                self.moreLessButton.tintColor = kNightSignalColor
+            }
+        }
+    }
+    
     @IBOutlet var textLabel:UILabel!
     @IBOutlet var moreLessButton:UIButton!
     var labelTapRecognizer:UITapGestureRecognizer?
+    
     
     @IBAction func moreLeccButtonTap(sender:UIButton)
     {

@@ -55,8 +55,8 @@ class SideMenuCell: UITableViewCell
                 if let aSwitch = aControl as? UISwitch
                 {
                     self.switcher = aSwitch
-                    switcher!.hidden = false
-                    assignActionsToSwitch()
+                    self.switcher!.hidden = false
+                    setupSwitch()
                     break
                 }
             }
@@ -72,8 +72,9 @@ class SideMenuCell: UITableViewCell
         }
     }
     
-    func assignActionsToSwitch()
+    func setupSwitch()
     {
+        self.switcher!.setOn(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey), animated: false) 
         self.switcher!.addTarget(self, action: "switchDidChangeValue:", forControlEvents: .ValueChanged)
     }
     

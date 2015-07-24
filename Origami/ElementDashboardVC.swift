@@ -76,8 +76,7 @@ import UIKit
             }
             else
             {
-                let lvMessages = tableHandler!.getLastChatMessages()
-                if !lvMessages.isEmpty
+                if let lvMessages = tableHandler!.getLastChatMessages()
                 {
                     tableHandler!.lastMessagesTableHandler = ElementChatPreviewTableHandler(messages: lvMessages)
                     tableHandler!.reloadChatMessagesSection()
@@ -184,8 +183,7 @@ import UIKit
             table.estimatedRowHeight = 100.0
             table.rowHeight = UITableViewAutomaticDimension
             
-            let lastChatMessages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: element.elementId!, lastMessageId: nil)
-            if !lastChatMessages.isEmpty
+            if let lastChatMessages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: element.elementId!, lastMessageId: nil)
             {
                 tableHandler!.lastMessagesTableHandler = ElementChatPreviewTableHandler(messages: lastChatMessages)
             }
