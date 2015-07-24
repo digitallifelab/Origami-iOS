@@ -123,7 +123,7 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
                 
                 if i & 1 == 0 //i % 2 == 0
                 {
-                    println(" -> i = \(i). Button frame: \(frame)")
+                    //println(" -> i = \(i). Button frame: \(frame)")
                     let indexPath = NSIndexPath(forItem: indexPathItem, inSection: 0)
                     var attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
                     attributes.frame = frame
@@ -133,7 +133,7 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
                     if indexPathItem == 7 //last frame, last layout attribute
                     {
                         self.sizeOfContent = CGSizeMake(screenWidth, CGRectGetMaxY(frame) + self.minimumLineSpacing)
-                        println("-> buttonc cell collectionViewContentSize: \(self.sizeOfContent)")
+                        //println("-> buttons cell collectionViewContentSize: \(self.sizeOfContent)")
                         break
                     }
                     //else we proceed to iterate
@@ -141,7 +141,7 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
                 }
                 else
                 {
-                    println(" dummy frame: \(frame)")
+                    //println(" dummy frame: \(frame)")
                     if i != 7
                     {
                         offsetX -= actionButtonSideDimension * 0.3

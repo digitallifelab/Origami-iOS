@@ -1441,7 +1441,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <rect key="frame" x="0.0" y="-44" width="414" height="829"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ta0-yn-MRa">
                                     <size key="itemSize" width="400" height="100"/>
@@ -1537,6 +1537,7 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <color key="backgroundColor" red="0.0" green="0.6588235294" blue="0.77647058820000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstItem="agd-AV-aTn" firstAttribute="bottom" secondItem="Dye-67-SwN" secondAttribute="bottom" id="34c-j4-qcl"/>
                                             <constraint firstItem="agd-AV-aTn" firstAttribute="trailing" secondItem="Dye-67-SwN" secondAttribute="trailing" constant="10" id="DYF-gV-3h7"/>
@@ -1917,10 +1918,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="lwg-b4-rtA" secondAttribute="trailing" constant="-16" id="D3d-Fj-ToD"/>
-                            <constraint firstItem="lwg-b4-rtA" firstAttribute="top" secondItem="xqc-k9-7Qs" secondAttribute="bottom" constant="-20" id="EaH-lu-516"/>
-                            <constraint firstItem="yD8-pd-zzj" firstAttribute="top" secondItem="lwg-b4-rtA" secondAttribute="bottom" id="IX8-nL-R3s"/>
-                            <constraint firstItem="lwg-b4-rtA" firstAttribute="leading" secondItem="XgA-qY-sW5" secondAttribute="leadingMargin" constant="-16" id="qOq-1Z-zLx"/>
+                            <constraint firstAttribute="trailing" secondItem="lwg-b4-rtA" secondAttribute="trailing" id="D3d-Fj-ToD"/>
+                            <constraint firstItem="lwg-b4-rtA" firstAttribute="top" secondItem="xqc-k9-7Qs" secondAttribute="bottom" constant="-64" id="EaH-lu-516"/>
+                            <constraint firstItem="yD8-pd-zzj" firstAttribute="top" secondItem="lwg-b4-rtA" secondAttribute="bottom" constant="-49" id="IX8-nL-R3s"/>
+                            <constraint firstItem="lwg-b4-rtA" firstAttribute="leading" secondItem="XgA-qY-sW5" secondAttribute="leading" id="qOq-1Z-zLx"/>
                         </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>

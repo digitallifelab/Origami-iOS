@@ -170,8 +170,8 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         var twoColumnDisplay = false
         let currentScreenWidth = UIScreen.mainScreen().bounds.size.width
-        var itemMargin = self.minimumInteritemSpacing * 2
-        var itemWidth = currentScreenWidth - itemMargin
+        var itemMargin = self.minimumInteritemSpacing
+        var itemWidth = currentScreenWidth //- itemMargin
         
         if currentScreenInfo.horizontalSizeClass == .Regular // ipads ans iphone6+ in landscape mode
         {
@@ -179,12 +179,12 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 twoColumnDisplay = true
                 itemMargin = self.minimumInteritemSpacing * 3
-                itemWidth = currentScreenWidth - itemMargin
+                itemWidth = currentScreenWidth / 2 - itemMargin
             }
         }
         
-        let mainFrameWidth = currentScreenWidth - self.minimumInteritemSpacing * 2
-        let mainFrame = CGRectMake(self.minimumInteritemSpacing, self.minimumLineSpacing, mainFrameWidth, 100)// the height is not important
+        let mainFrameWidth = currentScreenWidth// - self.minimumInteritemSpacing * 2
+        let mainFrame = CGRectMake(0.0, 0, mainFrameWidth, 100)// the height is not important
         
         var offsetX = mainFrame.origin.x
         var offsetY = mainFrame.origin.y
@@ -231,8 +231,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             
             if let detailsString = privateStruct.details
             {
+                offsetX = mainFrame.origin.x
                 let detailsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                let detailsFrame = CGRectMake(offsetX, offsetY, itemWidth, 150.0) //TODO: calculate details height
+                var detailsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 120.0) //TODO: calculate details height
+                if CGRectGetMaxX(detailsFrame) > mainFrameWidth
+                {
+                    offsetY += detailsFrame.size.height
+                    detailsFrame.origin = CGPointMake(offsetX, offsetY)
+                }
                 var detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
                 detailsAttribute.frame = detailsFrame
                 cellLayoutAttributes[detailsIndexPath] = detailsAttribute
@@ -265,7 +271,12 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             if privateStruct.buttonsCell
             {
                 let buttonsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                let buttonsFrame = CGRectMake(offsetX, offsetY, itemWidth, 110.0) //TODO: calculate or hardcode proper buttons cell width
+                var buttonsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 110.0) //TODO: calculate or hardcode proper buttons cell width
+                if CGRectGetMaxX(buttonsFrame) > mainFrameWidth
+                {
+                    offsetX = mainFrame.origin.x
+                    buttonsFrame.origin.x = offsetX
+                }
                 var buttonsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: buttonsIndexPath)
                 buttonsAttribute.frame = buttonsFrame
                 cellLayoutAttributes[buttonsIndexPath] = buttonsAttribute
@@ -286,8 +297,8 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             
             if let subordinateData = privateStruct.subordinates
             {
-                offsetX = mainFrame.origin.x
-                offsetY += self.minimumLineSpacing
+                offsetX = self.minimumInteritemSpacing
+                offsetY += self.minimumLineSpacing + HomeCellNormalDimension
                 println("moved to left, and down for 10 points. ...  Starting to calculate subordinates..")
                 
                 let subordinatesCount = subordinateData.count
@@ -318,7 +329,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     let checkOffset = checkCurrentCellOffset(offsetX, frame: mainFrame)
                     if checkOffset < offsetX
                     {
-                        offsetX = checkOffset
+                        offsetX = self.minimumInteritemSpacing
                         offsetY += (CGRectGetHeight(cellFrame) + self.minimumLineSpacing)
                         println("Movet to left ant down after SUBORDINATE  cell")
                     }
@@ -343,7 +354,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         let lastAttribute = cellLayoutAttributes[lastIndexPath]
         
-        self.sizeOfContent = CGSizeMake(CGRectGetMaxX(lastAttribute!.frame) + self.minimumInteritemSpacing, CGRectGetMaxY(lastAttribute!.frame) + self.minimumLineSpacing)
+        self.sizeOfContent = CGSizeMake(CGRectGetMaxX(lastAttribute!.frame), CGRectGetMaxY(lastAttribute!.frame) + self.minimumLineSpacing)
         println("self.collectionViewContentSize()  should return \(sizeOfContent)")
     }
     
