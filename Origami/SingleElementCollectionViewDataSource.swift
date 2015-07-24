@@ -44,7 +44,6 @@ struct ElementCellsOptions
         }
         return options
     }
-    
 }
 
 class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource
@@ -88,11 +87,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
             self.currentCellsOptions = ElementCellsOptions(types: Set(options))
             
+            calculateAllCellTypes()
         }
     }
+    
     var currentCellsOptions:ElementCellsOptions?
     var attachesHandler:ElementAttachedFilesCollectionHandler?
-    
+    //var cellTypesHolder:[ElementCellType]?
+    var subordinatesByIndexPath:[NSIndexPath : Element]?
+
     override init() {
         //self.handledElement = Element()
         super.init()
@@ -169,8 +172,119 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return nil
         }
-        
         return subordinates
+    }
+    
+    func getLayoutInfo() -> ElementDetailsStruct?
+    {
+        if let options = self.currentCellsOptions
+        {
+            //prepare easy values
+            var elementTitle:String?
+            if let title = self.handledElement?.title as? String
+            {
+                elementTitle = title
+            }
+            if elementTitle == nil
+            {
+                return nil
+            }
+            
+            var elementDetails:String? = self.handledElement?.details as? String
+            var messages:Bool = options.cellTypes.contains(.Chat)
+            var attaches:Bool = options.cellTypes.contains(.Attaches)
+            var buttons = options.cellTypes.contains(.Buttons)
+            
+            
+            var subordinatesInfo:[SubordinateItemLayoutWidth]?
+            //prepare subordinate cells values
+            if let subordinateStore = self.subordinatesByIndexPath
+            {
+                //get ordered array of indexPaths for subordinates
+                var allValues = Array(subordinateStore)
+                allValues.sort({ (item1, item2) -> Bool in
+                    
+                     return item1.0.item < item2.0.item  //item1 - (NSIndexPath, Element), we are interested in sorting by indexPath
+                })
+                
+                //create array with subordinate layout characteristics
+                var lvSubordinatesInfo = [SubordinateItemLayoutWidth]()
+                for var i = 0; i < allValues.count; i++
+                {
+                    let value = allValues[i] //again tuple
+                    let lvElement = value.1
+                    if DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId).count > 0
+                    {
+                        lvSubordinatesInfo.append(.Wide)
+                    }
+                    else
+                    {
+                        lvSubordinatesInfo.append(.Normal)
+                    }
+                }
+                if !lvSubordinatesInfo.isEmpty
+                {
+                    subordinatesInfo = lvSubordinatesInfo
+                }
+            }
+            
+            //finally
+            let targetStruct = ElementDetailsStruct(title: elementTitle!, details: elementDetails, messagesCell: messages, buttonsCell: buttons, attachesCell: attaches, subordinateItems: subordinatesInfo)
+            return targetStruct
+        }
+        else
+        {
+            return nil
+        }
+    }
+    
+    private func calculateAllCellTypes()
+    {
+        if let options = self.currentCellsOptions
+        {
+            var indexCount = 0
+            var cellTypes = [ElementCellType]()
+            if options.cellTypes.contains(.Title)
+            {
+                cellTypes.append(.Title)
+                indexCount += 1
+            }
+            if options.cellTypes.contains(.Chat)
+            {
+                cellTypes.append(.Chat)
+                indexCount += 1
+            }
+            if options.cellTypes.contains(.Details)
+            {
+                cellTypes.append(.Details)
+                indexCount += 1
+            }
+            if options.cellTypes.contains(.Attaches)
+            {
+                cellTypes.append(.Attaches)
+                indexCount += 1
+            }
+            if options.cellTypes.contains(.Buttons)
+            {
+                cellTypes.append(.Buttons)
+                indexCount += 1
+            }
+            if options.cellTypes.contains(.Subordinates)
+            {
+                if let subordinates = getElementSubordinates()
+                {
+                    var lvSubordinateIndexPaths = [NSIndexPath : Element]()
+                    for var i = 0; i < subordinates.count; i++
+                    {
+                        cellTypes.append(.Subordinates)
+                        let subordinateIndexPath = NSIndexPath(forItem: indexCount, inSection: 0)
+                        lvSubordinateIndexPaths[subordinateIndexPath] = subordinates[i]
+                        indexCount += 1
+                    }
+                    self.subordinatesByIndexPath = lvSubordinateIndexPaths
+                }
+            }
+        }
     }
     
     //MARK: UICollectionViewDataSource
@@ -181,10 +295,18 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     }
 
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let options = currentCellsOptions
+        if let cellOptions = self.currentCellsOptions
         {
-            let counter =  options.countOptions
-            return counter
+            var count = cellOptions.countOptions
+            if cellOptions.cellTypes.contains(.Subordinates)
+            {
+                count -= 1
+            }
+            if let subordinates = self.subordinatesByIndexPath
+            {
+                count += subordinates.count
+            }
+            return count
         }
         return 0
     }
@@ -192,6 +314,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         if let orderedOptions = currentCellsOptions?.orderedOptions
         {
+            if indexPath.item >= orderedOptions.count
+            {
+                return returnCellByType(ElementCellType.Subordinates, forIndexPath: indexPath, collection: collectionView)
+            }
+            
             let currentCellType = orderedOptions[indexPath.item]
             return returnCellByType(currentCellType, forIndexPath: indexPath, collection: collectionView)
         }
@@ -209,16 +336,30 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
         case .Title:
             var titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell", forIndexPath: indexPath) as! SingleElementTitleCell
+            
+            titleCell.displayMode = self.displayMode
+            
+            titleCell.labelTitle.text = getElementTitle()
+            
+            if let isFavourite = self.handledElement?.isFavourite?.boolValue
+            {
+                titleCell.favourite = isFavourite
+            }
             return titleCell
+            
         case .Chat:
             var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell", forIndexPath: indexPath) as! SingleElementLastMessagesCell
             return chatCell
+            
         case .Details:
             var detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell", forIndexPath: indexPath) as! SingleElementDetailsCell
+            detailsCell.textLabel.text = getElementDetails()
             return detailsCell
+            
         case .Attaches:
             var attachesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementAttachesHolderCell", forIndexPath: indexPath) as! SingleElementAttachesCollectionHolderCell
             return attachesHolderCell
+            
         case .Buttons:
             var buttonsHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementButtonsHolderCell", forIndexPath: indexPath) as! SingleElementButtonsCell
             if let actionButtonsDataSource = ElementActionButtonsDataSource(buttonModels: createActionButtonModels())
@@ -237,6 +378,20 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return buttonsHolderCell
         case .Subordinates:
             var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
+            subordinateCell.displayMode = self.displayMode
+            subordinateCell.cellType = .Other
+            if let
+                subordinatesStore = self.subordinatesByIndexPath,
+                lvElement = subordinatesStore[indexPath]
+            {
+                subordinateCell.titleLabel.text = lvElement.title as? String
+                subordinateCell.descriptionLabel.text = lvElement.details as? String
+                subordinateCell.signalDetectorView?.hidden = true
+                if let signalFlag = lvElement.isSignal
+                {
+                    subordinateCell.signalDetectorView?.hidden = !signalFlag.boolValue
+                }
+            }
             return subordinateCell
         }
     }

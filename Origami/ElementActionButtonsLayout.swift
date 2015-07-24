@@ -10,7 +10,7 @@ import UIKit
 
 class ElementActionButtonsLayout: UICollectionViewFlowLayout {
    
-    private let actionButtonSideDimension = CGFloat(50.0) //change this to change buttons size
+    private let actionButtonSideDimension = CGFloat(40.0) //change this to change buttons size
     private let interButtonSpace = CGFloat(10.0)
 
     convenience init?(buttonTypes:[ActionButtonCellType]?)
@@ -33,7 +33,7 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
     
     private var buttonTypes:[ActionButtonCellType]?
     private var layoutAttributes:[NSIndexPath:UICollectionViewLayoutAttributes]?
-    private var sizeOfContent:CGSize = CGSizeMake(280, 120) //this will change of course :-)
+    private var sizeOfContent:CGSize = CGSizeZero //this will change of course :-)
     override func collectionViewContentSize() -> CGSize {
         return sizeOfContent
     }
@@ -109,9 +109,9 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
             for var i = 0; i < buttonsCount * 2; i++
             {
                 var frame = CGRectMake(offsetX, offsetY , actionButtonSideDimension , actionButtonSideDimension)
-                offsetX += actionButtonSideDimension  //+ self.minimumInteritemSpacing
+                offsetX += actionButtonSideDimension
                 
-                if screenWidth < CGRectGetMaxX(frame)
+                if screenWidth < CGRectGetMaxX(frame) || i == 7
                 {
                     println(" Counting second row for action buttons cell")
                     offsetX =  actionButtonSideDimension
@@ -123,22 +123,30 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
                 
                 if i & 1 == 0 //i % 2 == 0
                 {
-                    println("  button frame: \(frame)")
+                    println(" -> i = \(i). Button frame: \(frame)")
                     let indexPath = NSIndexPath(forItem: indexPathItem, inSection: 0)
                     var attributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
-                    
+                    attributes.frame = frame
                     layoutAttributes![indexPath] = attributes
                     
-                    attributes.frame = frame
+                    
                     if indexPathItem == 7 //last frame, last layout attribute
                     {
-                        self.sizeOfContent = CGSizeMake(CGRectGetMaxX(frame) + self.minimumInteritemSpacing, CGRectGetMaxY(frame) + self.minimumLineSpacing)
+                        self.sizeOfContent = CGSizeMake(screenWidth, CGRectGetMaxY(frame) + self.minimumLineSpacing)
+                        println("-> buttonc cell collectionViewContentSize: \(self.sizeOfContent)")
                         break
                     }
                     //else we proceed to iterate
                     indexPathItem++
                 }
-                
+                else
+                {
+                    println(" dummy frame: \(frame)")
+                    if i != 7
+                    {
+                        offsetX -= actionButtonSideDimension * 0.3
+                    }
+                }
             }
         }
     }

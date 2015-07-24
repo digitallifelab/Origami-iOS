@@ -1479,10 +1479,10 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Element title label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.60000000000000009" translatesAutoresizingMaskIntoConstraints="NO" id="PBu-aF-Ydb">
-                                                    <rect key="frame" x="60" y="18" width="332" height="54"/>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Element title label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.60000000000000009" translatesAutoresizingMaskIntoConstraints="NO" id="PBu-aF-Ydb">
+                                                    <rect key="frame" x="60" y="18" width="332" height="40"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="40"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="30"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -1496,9 +1496,15 @@
                                             <constraint firstItem="PBu-aF-Ydb" firstAttribute="trailing" secondItem="gaw-RK-O0B" secondAttribute="trailingMargin" id="cnA-dA-0Wx"/>
                                             <constraint firstItem="2nx-F5-2Rs" firstAttribute="leading" secondItem="gaw-RK-O0B" secondAttribute="leadingMargin" constant="-8" id="cx3-Wa-R7B"/>
                                             <constraint firstItem="PBu-aF-Ydb" firstAttribute="top" secondItem="2nx-F5-2Rs" secondAttribute="top" constant="-10" id="get-cb-WgU"/>
+                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="top" secondItem="gaw-RK-O0B" secondAttribute="topMargin" constant="10" id="m5R-cj-ksY"/>
                                             <constraint firstItem="nsE-RP-MTO" firstAttribute="trailing" secondItem="gaw-RK-O0B" secondAttribute="trailingMargin" id="vS3-1d-q9F"/>
                                             <constraint firstItem="2nx-F5-2Rs" firstAttribute="top" secondItem="gaw-RK-O0B" secondAttribute="topMargin" constant="20" id="x3G-Nj-YRy"/>
                                         </constraints>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="get-cb-WgU"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
                                             <outlet property="favouriteButton" destination="2nx-F5-2Rs" id="de3-uL-6R5"/>
                                             <outlet property="labelDate" destination="nsE-RP-MTO" id="3bB-qq-Gjp"/>
@@ -1521,11 +1527,11 @@
                                                         <action selector="moreLeccButtonTap:" destination="Dye-67-SwN" eventType="touchUpInside" id="Oa8-a9-6nb"/>
                                                     </connections>
                                                 </button>
-                                                <label userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="details label text goes here      hello  blah blah blah" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ebd-9s-qKP">
+                                                <label userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="details label text goes here      hello  blah blah blah" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ebd-9s-qKP">
                                                     <rect key="frame" x="8" y="8" width="384" height="19"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -1557,15 +1563,9 @@
                                             <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Chat" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wmB-xd-qK0">
-                                                    <rect key="frame" x="0.0" y="0.0" width="37" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="GAU-tE-rwI">
-                                                    <rect key="frame" x="66" y="0.0" width="309" height="100"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <rect key="frame" x="55" y="1" width="329" height="98"/>
+                                                    <color key="backgroundColor" red="0.84313725490000002" green="0.3921568627" blue="0.3803921569" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <prototypes>
                                                         <tableViewCell contentMode="scaleToFill" selectionStyle="gray" indentationWidth="10" reuseIdentifier="PreviewCell" id="yzZ-LR-R81" customClass="ChatPreviewCell" customModule="Origami" customModuleProvider="target">
                                                             <rect key="frame" x="76" y="10" width="200" height="44"/>
@@ -1586,14 +1586,14 @@
                                                                         </variation>
                                                                     </label>
                                                                     <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message text from user in chat for this element. Single line and truncate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M6g-49-OvE" userLabel="messageLabel">
-                                                                        <rect key="frame" x="43" y="22" width="258" height="13"/>
+                                                                        <rect key="frame" x="43" y="22" width="278" height="13"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                         <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
                                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="13:30, 2 Aug" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dad-7V-46K" userLabel="datelabel">
-                                                                        <rect key="frame" x="235" y="2" width="66" height="16"/>
+                                                                        <rect key="frame" x="255" y="2" width="66" height="16"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                         <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="12"/>
                                                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -1639,15 +1639,22 @@
                                                         </tableViewCell>
                                                     </prototypes>
                                                 </tableView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Chat" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wmB-xd-qK0">
+                                                    <rect key="frame" x="0.0" y="13" width="37" height="21"/>
+                                                    <color key="backgroundColor" red="1" green="0.25098039220000001" blue="0.50588235290000005" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="0.5" colorSpace="calibratedWhite"/>
                                         <constraints>
-                                            <constraint firstAttribute="bottomMargin" secondItem="GAU-tE-rwI" secondAttribute="bottom" constant="-8" id="8YH-tX-Z30"/>
-                                            <constraint firstItem="GAU-tE-rwI" firstAttribute="top" secondItem="z1h-R0-QMK" secondAttribute="topMargin" constant="-8" id="FsJ-wv-ftt"/>
-                                            <constraint firstAttribute="trailingMargin" secondItem="GAU-tE-rwI" secondAttribute="trailing" constant="17" id="Fuw-5g-zoC"/>
-                                            <constraint firstItem="GAU-tE-rwI" firstAttribute="leading" secondItem="z1h-R0-QMK" secondAttribute="leadingMargin" constant="58" id="wy0-uS-2bt"/>
+                                            <constraint firstAttribute="bottom" secondItem="GAU-tE-rwI" secondAttribute="bottom" constant="1" id="8YH-tX-Z30"/>
+                                            <constraint firstItem="GAU-tE-rwI" firstAttribute="top" secondItem="z1h-R0-QMK" secondAttribute="top" constant="1" id="FsJ-wv-ftt"/>
+                                            <constraint firstAttribute="trailing" secondItem="GAU-tE-rwI" secondAttribute="trailing" constant="16" id="Fuw-5g-zoC"/>
+                                            <constraint firstItem="GAU-tE-rwI" firstAttribute="leading" secondItem="z1h-R0-QMK" secondAttribute="leading" constant="55" id="wy0-uS-2bt"/>
                                         </constraints>
                                         <connections>
                                             <outlet property="chatIcon" destination="wmB-xd-qK0" id="S7W-zG-8tv"/>
@@ -1750,9 +1757,9 @@
                                             <subviews>
                                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="3iG-Im-hFR">
                                                     <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
-                                                    <color key="backgroundColor" red="0.60000002379999995" green="0.40000000600000002" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="0.60000002379999995" green="0.58421053231578945" blue="0.20000000300000001" alpha="1" colorSpace="calibratedRGB"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="XLC-yY-rvd">
-                                                        <size key="itemSize" width="50" height="50"/>
+                                                        <size key="itemSize" width="40" height="40"/>
                                                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
@@ -1762,11 +1769,11 @@
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wnx-YL-CpA" userLabel="iconImageView">
-                                                                        <rect key="frame" x="3" y="3" width="44" height="44"/>
+                                                                        <rect key="frame" x="3" y="3" width="34" height="34"/>
                                                                         <color key="backgroundColor" red="0.13645310960000001" green="0.59057903410000001" blue="0.071161886209999997" alpha="1" colorSpace="calibratedRGB"/>
                                                                     </imageView>
                                                                 </subviews>
@@ -1800,7 +1807,7 @@
                                             <outlet property="buttonsCollection" destination="3iG-Im-hFR" id="tUe-OS-KTX"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DashCell" id="ilv-Dv-lyg" customClass="DashCell" customModule="Origami" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ElementSubordinateCell" id="ilv-Dv-lyg" customClass="DashCell" customModule="Origami" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">

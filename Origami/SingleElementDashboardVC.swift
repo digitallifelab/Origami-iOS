@@ -24,6 +24,11 @@ class SingleElementDashboardVC: UIViewController {
             collectionView.dataSource = collectionDataSource!
         }
         
+        if let layout = prepareCollectionLayoutForElement(currentElement)
+        {
+            collectionView.setCollectionViewLayout(layout, animated: false)
+        }
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -67,6 +72,23 @@ class SingleElementDashboardVC: UIViewController {
                 }
             }
             
+        }
+    }
+    
+    func prepareCollectionLayoutForElement(element:Element?) -> UICollectionViewFlowLayout?
+    {
+        if element == nil
+        {
+            return nil
+        }
+        
+        if let readyDataSource = self.collectionDataSource, layout = SimpleElementDashboardLayout(infoStruct: readyDataSource.getLayoutInfo())
+        {
+            return layout
+        }
+        else
+        {
+            return nil
         }
     }
 
