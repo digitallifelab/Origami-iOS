@@ -144,7 +144,15 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
     
     func performLayoutCalculating()
     {
-        
+        let currentScreenInfo = FrameCounter.getCurrentTraitCollection()
+        if currentScreenInfo.horizontalSizeClass == .Regular
+        {
+            
+        }
+        else
+        {
+            
+        }
     }
     
 }
