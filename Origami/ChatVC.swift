@@ -105,19 +105,18 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     bgQueue.addOperationWithBlock({ () -> Void in
                         DataSource.sharedInstance.sendNewMessage(newMessage, completion: { [weak self](error) -> () in
                             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                                if self != nil
+                                if let aSelf = self
                                 {
-                                    self!.bottomControlsContainerView.endTyping(clearText:true)
-                                    self!.textHolderHeightConstraint.constant = self!.defaultTextInputViewHeight!
+                                    aSelf.bottomControlsContainerView.endTyping(clearText:true)
+                                    aSelf.textHolderHeightConstraint.constant = aSelf.defaultTextInputViewHeight!
                                     if error != nil
                                     {
-                                        self!.showAlertWithTitle("Message Send Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
+                                        aSelf.showAlertWithTitle("Message Send Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
                                     }
                                 }
                             })
                         })
                     })
-                    
                 }
             }
         }

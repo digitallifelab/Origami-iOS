@@ -42,6 +42,10 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
+            <string>SegoeUI</string>
+            <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -486,7 +490,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n4E-qc-dJS" userLabel="textView">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n4E-qc-dJS" userLabel="textView">
                                                     <rect key="frame" x="42" y="2" width="367" height="96"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <attributedString key="attributedText">
@@ -1215,16 +1219,10 @@
                             <constraint firstItem="iAp-Is-h1C" firstAttribute="top" secondItem="bzl-7h-aFO" secondAttribute="bottom" id="77h-tP-R2t"/>
                             <constraint firstItem="bzl-7h-aFO" firstAttribute="top" secondItem="fcP-MM-R8H" secondAttribute="bottom" priority="700" constant="-64" id="U4K-yf-PCG"/>
                             <constraint firstItem="bzl-7h-aFO" firstAttribute="leading" secondItem="3kB-YC-gm0" secondAttribute="leading" id="dp3-K0-nlP"/>
-                            <constraint firstItem="fcP-MM-R8H" firstAttribute="top" secondItem="ARJ-q0-HnH" secondAttribute="bottom" id="iq2-Aa-L8f"/>
                             <constraint firstItem="bzl-7h-aFO" firstAttribute="top" secondItem="ARJ-q0-HnH" secondAttribute="top" id="k7f-0q-gKZ"/>
                             <constraint firstItem="ARJ-q0-HnH" firstAttribute="leading" secondItem="3kB-YC-gm0" secondAttribute="leading" id="nvx-R5-czX"/>
                             <constraint firstAttribute="trailing" secondItem="ARJ-q0-HnH" secondAttribute="trailing" id="vre-Ax-JIY"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="constraints">
-                                <exclude reference="iq2-Aa-L8f"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
                         <outlet property="navigationBackgroundView" destination="ARJ-q0-HnH" id="j3q-Gn-5yb"/>
@@ -1792,7 +1790,7 @@
                                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wnx-YL-CpA" userLabel="iconImageView">
                                                                         <rect key="frame" x="3" y="3" width="34" height="34"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                        <color key="tintColor" red="0.12941176469999999" green="0.60784313729999995" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                     </imageView>
                                                                 </subviews>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1930,10 +1928,82 @@
                                             <outlet property="titleLabel" destination="5Fq-wn-KwM" id="0Xw-Ot-A2T"/>
                                         </connections>
                                     </collectionViewCell>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DateDetailsCell" id="Yws-fq-HpK" customClass="SingleElementDateDetailsCell" customModule="Origami" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <tableView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="dmD-L1-cRi">
+                                                    <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <prototypes>
+                                                        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DatesTableHolderCell" id="kuD-nz-lzl" userLabel="datesCell" customClass="ElementDashboardDatesCell" customModule="Origami" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                                            <autoresizingMask key="autoresizingMask"/>
+                                                            <tableViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kuD-nz-lzl" id="GyP-vA-6cY">
+                                                                <autoresizingMask key="autoresizingMask"/>
+                                                                <subviews>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Archived" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HKN-Ge-hVy">
+                                                                        <rect key="frame" x="13" y="5" width="50" height="18"/>
+                                                                        <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="13"/>
+                                                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <variation key="widthClass=regular" misplaced="YES">
+                                                                            <rect key="frame" x="13" y="5" width="51" height="16"/>
+                                                                        </variation>
+                                                                    </label>
+                                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:30, 2 Aug 2015" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sgw-dA-FiL">
+                                                                        <rect key="frame" x="13" y="25" width="119" height="20"/>
+                                                                        <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="15"/>
+                                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                                        <nil key="highlightedColor"/>
+                                                                        <variation key="widthClass=regular" misplaced="YES">
+                                                                            <rect key="frame" x="13" y="27" width="123" height="18"/>
+                                                                        </variation>
+                                                                    </label>
+                                                                </subviews>
+                                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                                <constraints>
+                                                                    <constraint firstItem="HKN-Ge-hVy" firstAttribute="leading" secondItem="GyP-vA-6cY" secondAttribute="leadingMargin" constant="5" id="0n1-tM-spI"/>
+                                                                    <constraint firstItem="sgw-dA-FiL" firstAttribute="top" secondItem="HKN-Ge-hVy" secondAttribute="bottom" constant="8" id="1Xk-7M-MSk"/>
+                                                                    <constraint firstItem="sgw-dA-FiL" firstAttribute="leading" secondItem="GyP-vA-6cY" secondAttribute="leadingMargin" constant="5" id="2GY-Lq-7HL"/>
+                                                                    <constraint firstItem="HKN-Ge-hVy" firstAttribute="top" secondItem="GyP-vA-6cY" secondAttribute="top" constant="5" id="JQJ-cR-xi5">
+                                                                        <variation key="widthClass=regular" constant="5"/>
+                                                                    </constraint>
+                                                                    <constraint firstItem="sgw-dA-FiL" firstAttribute="bottom" secondItem="GyP-vA-6cY" secondAttribute="bottom" constant="1" id="qVk-o6-nk6"/>
+                                                                    <constraint firstAttribute="trailingMargin" secondItem="HKN-Ge-hVy" secondAttribute="trailing" constant="519" id="tx7-Fj-J7F"/>
+                                                                </constraints>
+                                                                <variation key="default">
+                                                                    <mask key="constraints">
+                                                                        <exclude reference="tx7-Fj-J7F"/>
+                                                                        <exclude reference="1Xk-7M-MSk"/>
+                                                                    </mask>
+                                                                </variation>
+                                                            </tableViewCellContentView>
+                                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                            <connections>
+                                                                <outlet property="dateLael" destination="sgw-dA-FiL" id="t3l-Bc-Ae6"/>
+                                                                <outlet property="titleLabel" destination="HKN-Ge-hVy" id="ovC-DM-rR0"/>
+                                                            </connections>
+                                                        </tableViewCell>
+                                                    </prototypes>
+                                                    <connections>
+                                                        <outlet property="dataSource" destination="Yws-fq-HpK" id="t3z-SS-J6e"/>
+                                                    </connections>
+                                                </tableView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                        <connections>
+                                            <outlet property="datesTable" destination="dmD-L1-cRi" id="XEQ-74-ED2"/>
+                                        </connections>
+                                    </collectionViewCell>
                                 </cells>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.13645310960000001" green="0.59057903410000001" blue="0.071161886209999997" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="lwg-b4-rtA" secondAttribute="trailing" id="D3d-Fj-ToD"/>
                             <constraint firstItem="yD8-pd-zzj" firstAttribute="top" secondItem="lwg-b4-rtA" secondAttribute="bottom" id="IX8-nL-R3s"/>
@@ -2820,6 +2890,91 @@
             </objects>
             <point key="canvasLocation" x="1556" y="91"/>
         </scene>
+        <!--Element Title And Details EditingVC-->
+        <scene sceneID="rO8-3D-JgO">
+            <objects>
+                <viewController storyboardIdentifier="ElementEditingVC" id="cne-AP-MHr" customClass="ElementTitleAndDetailsEditingVC" customModule="Origami" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9cg-xw-sZh"/>
+                        <viewControllerLayoutGuide type="bottom" id="caG-BP-jBe"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="75I-FQ-U1W">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="536"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h6w-Qz-VcW">
+                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem title="Cancel" id="Z7Z-n2-El1">
+                                        <connections>
+                                            <action selector="cancelPressed:" destination="cne-AP-MHr" id="Y3d-ge-yUN"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="BSt-yg-4Mc"/>
+                                    <barButtonItem title="Ready" id="3fc-sJ-TY0"/>
+                                </items>
+                            </toolbar>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x9R-Kc-rgJ" userLabel="titleHolderView">
+                                <rect key="frame" x="0.0" y="64" width="320" height="224"/>
+                                <subviews>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="752" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolor" translatesAutoresizingMaskIntoConstraints="NO" id="ij7-W7-9zD" userLabel="titleTextView">
+                                        <rect key="frame" x="5" y="4" width="310" height="216"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="25"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
+                                        <dataDetectorType key="dataDetectorTypes" phoneNumber="YES"/>
+                                    </textView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.12941176469999999" green="0.60784313729999995" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="ij7-W7-9zD" secondAttribute="bottom" constant="4" id="DEL-lc-fBa"/>
+                                    <constraint firstItem="ij7-W7-9zD" firstAttribute="leading" secondItem="x9R-Kc-rgJ" secondAttribute="leading" constant="5" id="QeL-sW-jB6"/>
+                                    <constraint firstItem="ij7-W7-9zD" firstAttribute="top" secondItem="x9R-Kc-rgJ" secondAttribute="top" constant="4" id="k4x-ua-lxy"/>
+                                    <constraint firstAttribute="trailing" secondItem="ij7-W7-9zD" secondAttribute="trailing" constant="5" id="ygr-RY-0v8"/>
+                                </constraints>
+                            </view>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalCompressionResistancePriority="500" text="Element details text view" translatesAutoresizingMaskIntoConstraints="NO" id="HAk-Uk-GMY" userLabel="detailsTextView">
+                                <rect key="frame" x="0.0" y="320" width="320" height="216"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
+                                <dataDetectorType key="dataDetectorTypes" link="YES" address="YES"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="x9R-Kc-rgJ" firstAttribute="leading" secondItem="75I-FQ-U1W" secondAttribute="leadingMargin" constant="-16" id="8Am-gT-sTR"/>
+                            <constraint firstItem="HAk-Uk-GMY" firstAttribute="top" secondItem="x9R-Kc-rgJ" secondAttribute="bottom" constant="32" id="Ad6-6J-ARS"/>
+                            <constraint firstItem="caG-BP-jBe" firstAttribute="top" secondItem="HAk-Uk-GMY" secondAttribute="bottom" id="Avq-0H-4TI"/>
+                            <constraint firstItem="x9R-Kc-rgJ" firstAttribute="top" secondItem="h6w-Qz-VcW" secondAttribute="bottom" id="FrV-DK-Kzi"/>
+                            <constraint firstItem="h6w-Qz-VcW" firstAttribute="leading" secondItem="75I-FQ-U1W" secondAttribute="leadingMargin" constant="-16" id="UsA-UG-Rup"/>
+                            <constraint firstItem="HAk-Uk-GMY" firstAttribute="leading" secondItem="75I-FQ-U1W" secondAttribute="leading" id="g91-gh-6g6"/>
+                            <constraint firstItem="h6w-Qz-VcW" firstAttribute="top" secondItem="9cg-xw-sZh" secondAttribute="bottom" id="hqU-NQ-mfQ"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="h6w-Qz-VcW" secondAttribute="trailing" constant="-16" id="l46-9M-xqR"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="x9R-Kc-rgJ" secondAttribute="trailing" constant="-16" id="n2c-yW-zZj"/>
+                            <constraint firstAttribute="trailing" secondItem="HAk-Uk-GMY" secondAttribute="trailing" id="p2d-4L-ugr"/>
+                        </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="yhK-X2-gQl" appends="YES" id="Pd4-vV-WpD"/>
+                        </connections>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="536"/>
+                    <connections>
+                        <outlet property="detailsTextView" destination="HAk-Uk-GMY" id="zgD-Fw-viK"/>
+                        <outlet property="tapRecognizer" destination="yhK-X2-gQl" id="KOy-mX-m8V"/>
+                        <outlet property="textViewBototmConstraint" destination="Avq-0H-4TI" id="6DN-2g-fyj"/>
+                        <outlet property="textViewTopConstraint" destination="Ad6-6J-ARS" id="msK-bd-b6f"/>
+                        <outlet property="titleTextView" destination="ij7-W7-9zD" id="vs3-SK-OJT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CdG-Ob-jkd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="yhK-X2-gQl"/>
+            </objects>
+            <point key="canvasLocation" x="1180" y="916"/>
+        </scene>
         <!--Simple Text EditorVC-->
         <scene sceneID="CFM-e8-ykU">
             <objects>
@@ -2890,7 +3045,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="saO-tl-Rrm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1627" y="1016"/>
+            <point key="canvasLocation" x="1615" y="1016"/>
         </scene>
     </scenes>
     <resources>

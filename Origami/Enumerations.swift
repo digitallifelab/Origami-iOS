@@ -30,6 +30,12 @@ enum ElementCellType:Int
     case Subordinates
 }
 
+enum ElementDashboardTitleCellMode : Int
+{
+    case Title = 0
+    case Dates = 1
+}
+
 enum DashCellType:Int
 {
     case Signal = 1

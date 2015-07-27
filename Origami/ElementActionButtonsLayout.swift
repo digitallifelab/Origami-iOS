@@ -120,7 +120,6 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
                     frame.origin.y = offsetY
                 }
                 
-                
                 if i & 1 == 0 //i % 2 == 0
                 {
                     //println(" -> i = \(i). Button frame: \(frame)")

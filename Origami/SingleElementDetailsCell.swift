@@ -31,7 +31,7 @@ class SingleElementDetailsCell: UICollectionViewCell {
     
     @IBOutlet var textLabel:UILabel!
     @IBOutlet var moreLessButton:UIButton!
-    var labelTapRecognizer:UITapGestureRecognizer?
+    //var labelTapRecognizer:UITapGestureRecognizer?
     
     
     @IBAction func moreLeccButtonTap(sender:UIButton)
@@ -41,23 +41,23 @@ class SingleElementDetailsCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        if let labelTapper = labelTapRecognizer
-        {
-            
-        }
-        else
-        {
-            labelTapRecognizer = UITapGestureRecognizer(target: self, action: "labelTapped:")
-            labelTapRecognizer!.numberOfTapsRequired = 1
-            labelTapRecognizer!.numberOfTouchesRequired = 1
-            textLabel.userInteractionEnabled = true
-            textLabel.addGestureRecognizer(labelTapRecognizer!)
-        }
+//        if let labelTapper = labelTapRecognizer
+//        {
+//            
+//        }
+//        else
+//        {
+//            labelTapRecognizer = UITapGestureRecognizer(target: self, action: "labelTapped:")
+//            labelTapRecognizer!.numberOfTapsRequired = 1
+//            labelTapRecognizer!.numberOfTouchesRequired = 1
+//            textLabel.userInteractionEnabled = true
+//            textLabel.addGestureRecognizer(labelTapRecognizer!)
+//        }
     }
     
-    private func labelTapped(sender:UITapGestureRecognizer)
-    {
-        //
-    }
-    
+//    private func labelTapped(sender:UITapGestureRecognizer)
+//    {
+//        //
+//    }
+//    
 }

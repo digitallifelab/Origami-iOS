@@ -9,9 +9,7 @@
 import UIKit
 
 class ElementActionButtonCell: UICollectionViewCell {
-    
-    var buttonType:ActionButtonType = .Add
-    
+        
     @IBOutlet var imageView:UIImageView!
     
     override func layoutSubviews() {

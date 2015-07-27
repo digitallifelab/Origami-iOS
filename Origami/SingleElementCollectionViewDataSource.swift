@@ -46,9 +46,12 @@ struct ElementCellsOptions
     }
 }
 
-class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource
+class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate
 {
     var displayMode:DisplayMode = .Day
+    var titleCellMode:ElementDashboardTitleCellMode = .Title
+    var editingEnabled = false
+    var subordinateTapDelegate:ElementSelectionDelegate?
     
     var handledElement:Element? {
         didSet {
@@ -332,17 +335,30 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         switch type
         {
         case .Title:
-            var titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell", forIndexPath: indexPath) as! SingleElementTitleCell
             
-            titleCell.displayMode = self.displayMode
-            
-            titleCell.labelTitle.text = getElementTitle()
-            
-            if let isFavourite = self.handledElement?.isFavourite?.boolValue
+            switch titleCellMode
             {
-                titleCell.favourite = isFavourite
+            case .Title:
+                var titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell", forIndexPath: indexPath) as! SingleElementTitleCell
+                
+                titleCell.displayMode = self.displayMode
+                
+                titleCell.labelTitle.text = getElementTitle()
+                
+                if let isFavourite = self.handledElement?.isFavourite?.boolValue
+                {
+                    titleCell.favourite = isFavourite
+                }
+                return titleCell
+            case .Dates:
+                var datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell", forIndexPath: indexPath) as! SingleElementDateDetailsCell
+                datesCell.displayMode = self.displayMode
+                datesCell.handledElement = self.handledElement
+                
+                return datesCell
             }
-            return titleCell
+            
+            
             
         case .Chat:
             var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell", forIndexPath: indexPath) as! SingleElementLastMessagesCell
@@ -415,11 +431,59 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         for var i = 0; i < 8; i++
         {
             var model = ActionButtonModel()
+            model.enabled = (i == 1) ? true : elementIsOwned //we allow user to add new subordinate element
+            
             if let buttonType = ActionButtonCellType(rawValue: i)
             {
                 model.type = buttonType
+                
+            if model.enabled
+            {
+                switch model.type
+                {
+                case .Edit:
+                    model.backgroundColor = UIColor(red: 19.0/255.0, green: 195.0/255.0, blue: 28.0/255.0, alpha: 1.0)
+                case .Add:
+                    model.backgroundColor = UIColor(red: 204.0/255.0, green: 201.0/255.0, blue: 20.0/255.0, alpha: 1.0)
+                case .Delete:
+                    model.backgroundColor = UIColor.magentaColor()
+                case .Archive:
+                    model.backgroundColor = UIColor.blueColor()
+                case .Signal:
+                    model.backgroundColor = kDaySignalColor
+                    if let signalFlag = handledElement?.isSignal
+                    {
+                        if signalFlag.boolValue
+                        {
+                            model.tintColor = UIColor.redColor()
+                        }
+                        
+                    }
+                case .CheckMark:
+                    fallthrough
+                case .Idea:
+                     fallthrough
+                case .Solution:
+                    fallthrough
+                default :
+                    break  // by default model.backgroundColor is lighGrayColor
+                }
             }
-            model.enabled = (i == 1) ? true : elementIsOwned //we allow user to add new subordinate element
+            else
+            {
+                switch model.type
+                {
+                
+                case .Add:
+                    model.backgroundColor = UIColor.yellowColor()
+                default:
+                    break // by default model.backgroundColor is lighGrayColor
+                }
+            }
+                
+                
+            }
+            
             toReturn.append(model)
         }
         
@@ -434,7 +498,60 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     
     
+    //MARK: UICollectionViewDelegate
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
+    {
+        if indexPath.item < 3
+        {
+            if let currentCettOptionsArray = currentCellsOptions?.orderedOptions
+            {
+                let cellType = currentCettOptionsArray[indexPath.item]
+                
+                switch cellType
+                {
+                    case .Title:
+                        if editingEnabled
+                        {
+                            sendStartEditingForTitle(true) //edit element title
+                        }
+                        else
+                        {
+                            switch titleCellMode
+                            {
+                            case .Title:
+                                titleCellMode = .Dates
+                            case .Dates:
+                                titleCellMode = .Title
+                            }
+                            
+                            collectionView.reloadItemsAtIndexPaths([indexPath])
+                        }
+                    
+                    case .Details:
+                        if editingEnabled
+                        {
+                            sendStartEditingForTitle(false) //edit element description
+                        }
+                    default: break
+                }
+                
+            }
+        }
+        
+        else if let
+            subordinatesStore = self.subordinatesByIndexPath,
+            lvElement = subordinatesStore[indexPath]
+        {
+            subordinateTapDelegate?.didTapOnElement(lvElement)
+        }
+    }
     
+    func sendStartEditingForTitle(titleEdit:Bool)
+    {
+        kElementEditTextNotification
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(kElementEditTextNotification, object: nil, userInfo: ["title" : titleEdit])
+    }
     
     
     

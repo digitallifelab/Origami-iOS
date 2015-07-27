@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate {
 
     var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
@@ -66,6 +66,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingForTitle:", name: kElementEditTextNotification, object: nil)
     }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -113,9 +114,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         collectionDataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
         collectionDataSource!.handledElement = currentElement
         collectionDataSource!.displayMode = self.displayMode
+        collectionDataSource!.subordinateTapDelegate = self
+        
         if collectionDataSource != nil
         {
             collectionView.dataSource = collectionDataSource!
+            collectionView.delegate = collectionDataSource!
         }
         
         if let layout = prepareCollectionLayoutForElement(currentElement)
@@ -153,6 +157,30 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     
     //MARK: Handling buttons and other elements tap in collection view
+    func startEditingForTitle(notification:NSNotification?)
+    {
+        if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementEditingVC") as? ElementTitleAndDetailsEditingVC
+        {
+            editingVC.editingElement = self.currentElement
+            
+            editingVC.modalPresentationStyle = .Custom
+            editingVC.transitioningDelegate = self
+            
+            var editTitleBool:Bool?
+            
+            if let userInfo = notification?.userInfo as? [String:Bool], isEditTitle = userInfo["title"]
+            {
+                editTitleBool = isEditTitle
+            }
+            
+            editingVC.shouldEditTitle = editTitleBool
+            
+            self.presentViewController(editingVC, animated: true, completion: { () -> Void in
+                
+            })
+        }
+    }
+    
     func elementFavouriteToggled(notification:NSNotification)
     {
         if let element = currentElement,  favourite = element.isFavourite
@@ -213,12 +241,40 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementSignalToggled()
     {
+        println("Signal element toggled.")
         
+        if let theElement = currentElement , isSignal = theElement.isSignal
+        {
+            var elementCopy = Element(info: theElement.toDictionary())
+            let isCurrentlySignal = !isSignal.boolValue
+            elementCopy.isSignal = NSNumber(bool: isCurrentlySignal)
+            
+            DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
+                if let aSelf = self
+                {
+                    if edited
+                    {
+                        aSelf.currentElement?.isSignal = isCurrentlySignal
+                        aSelf.prepareCollectionViewDataAndLayout()
+                    }
+                    else
+                    {
+                        aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+                    }
+                }
+            })
+        }
     }
     
     func elementEditingToggled()
     {
-        
+        println("Edit element toggled.")
+        if let source = collectionDataSource
+        {
+            collectionDataSource!.editingEnabled = !source.editingEnabled
+            
+            self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+        }
     }
     
     func elementAddNewSubordinatePressed()
@@ -239,27 +295,28 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementArchivePressed()
     {
-        
+        println("Archive element tapped.")
     }
     
     func elementDeletePressed()
     {
-        
+        println("Delete element tapped.")
+        handleDeletingCurrentElement()
     }
     
     func elementCheckMarkPressed()
     {
-        
+        println("CheckMark tapped.")
     }
     
     func elementIdeaPressed()
     {
-        
+        println("Idea tapped.")
     }
     
     func elementSolutionPressed()
     {
-        
+        println("Solution tapped.")
     }
     
     //MARK: ElementComposingDelegate
@@ -331,6 +388,42 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
             }
         })
+    }
+    
+    
+    func handleDeletingCurrentElement()
+    {
+        if let elementId = self.currentElement?.elementId
+        {
+            DataSource.sharedInstance.deleteElementFromServer(elementId.integerValue, completion: { [weak self] (deleted, error) -> () in
+                if let weakSelf = self
+                {
+                    if deleted
+                    {
+                        if let elementId = weakSelf.currentElement?.elementId
+                        {
+                            weakSelf.currentElement = Element() //breaking our link to element in datasource
+                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementId.integerValue)
+                            
+                            weakSelf.navigationController?.popViewControllerAnimated(true)
+                        }
+                    }
+                    else
+                    {
+                        //show error alert
+                        weakSelf.showAlertWithTitle("Error".localizedWithComment(""), message: "Colud not delete current element".localizedWithComment(""), cancelButtonTitle: "Ok")
+                    }
+                }
+            })
+        }
+    }
+    
+    //MARK: ElementSelectionDelegate
+    func didTapOnElement(element: Element) {
+        
+        let nextViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as! SingleElementDashboardVC
+        nextViewController.currentElement = element
+        self.navigationController?.pushViewController(nextViewController, animated: true)
     }
     
     //MARK: Alert

@@ -420,7 +420,7 @@ class ElementMainTableHandler: NSObject, UITableViewDelegate, UITableViewDataSou
                     else
                     {
                         let lvCell = returnElementDatesCellForIndexPath(indexPath, tableView: tableView) as ElementDashboardDatesCell
-                        //configureDateCellForRow(indexPath.row, cell: &lvCell)
+                        
                         toReturnCell = lvCell
                     }
                 }
@@ -462,7 +462,7 @@ class ElementMainTableHandler: NSObject, UITableViewDelegate, UITableViewDataSou
                 else if self.lastMessagesTableHandler != nil
                 {
                     let lvCell = returnElementDatesCellForIndexPath(indexPath, tableView: tableView) as ElementDashboardDatesCell
-                    //configureDateCellForRow(indexPath.row, cell: &lvCell)
+                    
                     toReturnCell = lvCell
                 }
                 else
@@ -494,7 +494,7 @@ class ElementMainTableHandler: NSObject, UITableViewDelegate, UITableViewDataSou
                 else
                 {
                     let lvCell = returnElementDatesCellForIndexPath(indexPath, tableView: tableView) as ElementDashboardDatesCell
-                    //configureDateCellForRow(indexPath.row, cell: &lvCell)
+                    
                     toReturnCell = lvCell
                 }
             case 5:
@@ -597,6 +597,7 @@ class ElementMainTableHandler: NSObject, UITableViewDelegate, UITableViewDataSou
     {
         var datesCell = tableView.dequeueReusableCellWithIdentifier("DatesTableHolderCell", forIndexPath: indexPath) as! ElementDashboardDatesCell
         datesCell.displayMode = self.displayMode
+        
         configureDateCellForRow(indexPath.row, cell: &datesCell)
         
         return datesCell

@@ -11,6 +11,8 @@ import UIKit
 struct ActionButtonModel {
     var type:ActionButtonCellType = .Edit
     var enabled:Bool = true
+    var backgroundColor:UIColor = UIColor.lightGrayColor()
+    var tintColor:UIColor = UIColor.whiteColor()
 }
 
 
@@ -43,15 +45,15 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         var buttonCell = collectionView.dequeueReusableCellWithReuseIdentifier("ActionButtonCell", forIndexPath: indexPath) as! ElementActionButtonCell
-        if let button = buttons?[indexPath.item]
+        if let buttonModel = buttons?[indexPath.item]
         {
-            buttonCell.imageView.image = imageForButton(button)
-            buttonCell.imageView.backgroundColor = backgroundColorForButton(button)
+            buttonCell.imageView.image = imageForButton(buttonModel)
+            buttonCell.imageView.backgroundColor = buttonModel.backgroundColor //backgroundColorForButton(button)
+            buttonCell.imageView.tintColor = buttonModel.tintColor
         }
+        println("tint color: \(buttonCell.imageView.tintColor)")
         return buttonCell
     }
-    
-
     
     func imageForButton(model:ActionButtonModel) -> UIImage?
     {
@@ -75,44 +77,5 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
             return UIImage(named: "icon-solution")
         }
     }
-    
-    func backgroundColorForButton(model:ActionButtonModel) -> UIColor?
-    {
-        if model.enabled
-        {
-            switch model.type
-            {
-            case .Edit:
-                return UIColor.greenColor()
-            case .Add:
-                return UIColor.yellowColor()
-            case .Delete:
-                return UIColor.magentaColor()
-            case .Archive:
-                return UIColor.blueColor()
-            case .Signal:
-                return kDaySignalColor
-            case .CheckMark:
-                return UIColor.brownColor()
-            case .Idea:
-                return UIColor.brownColor()
-            case .Solution:
-                return UIColor.brownColor()
-            }
-        }
-        else
-        {
-            switch model.type
-            {
-            
-            case .Add:
-                return UIColor.yellowColor()
-            default:
-                return UIColor.lightGrayColor()
-            }
-        }
-    }
-    
-    
    
 }
