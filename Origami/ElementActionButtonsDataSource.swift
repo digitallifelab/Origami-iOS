@@ -30,7 +30,6 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
         }
         
         self.buttons = buttonModels
-        
     }
     
     
@@ -75,8 +74,6 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
         case .Solution:
             return UIImage(named: "icon-solution")
         }
-        
-        //return nil
     }
     
     func backgroundColorForButton(model:ActionButtonModel) -> UIColor?
@@ -113,9 +110,7 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
             default:
                 return UIColor.lightGrayColor()
             }
-            
         }
-        
     }
     
     

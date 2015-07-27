@@ -8,7 +8,8 @@
 
 import UIKit
 
-class SingleElementButtonsCell: UICollectionViewCell {
+class SingleElementButtonsCell: UICollectionViewCell, UICollectionViewDelegate {
+    
     @IBOutlet var buttonsCollection:UICollectionView!
     
     var buttonsLayout:ElementActionButtonsLayout?
@@ -25,5 +26,22 @@ class SingleElementButtonsCell: UICollectionViewCell {
                 buttonsCollection.setCollectionViewLayout(layout, animated: false)
             }
         }
+        
+        buttonsCollection.delegate = self
+    }
+    
+    //MARK: UICollectionViewDelegate
+    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if let datasource = dataSource as? ElementActionButtonsDataSource, buttons = datasource.buttons
+        {
+            let buttonStruct = buttons[indexPath.item]
+            if buttonStruct.enabled
+            {
+                NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: self, userInfo: ["actionButtonIndex" : buttonStruct.type.rawValue])
+            }
+        }
+        collectionView.deselectItemAtIndexPath(indexPath, animated: false)
+        
     }
 }

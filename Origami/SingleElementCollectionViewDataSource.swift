@@ -412,14 +412,14 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         //try to add models
         var toReturn = [ActionButtonModel]()
-        for var i = 1; i < 9; i++
+        for var i = 0; i < 8; i++
         {
             var model = ActionButtonModel()
             if let buttonType = ActionButtonCellType(rawValue: i)
             {
                 model.type = buttonType
             }
-            model.enabled = elementIsOwned
+            model.enabled = (i == 1) ? true : elementIsOwned //we allow user to add new subordinate element
             toReturn.append(model)
         }
         

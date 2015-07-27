@@ -83,3 +83,4 @@ let kMenu_Switch_Night_Mode_Changed = "NightModeChanged"
 //MARK: -- NotificationNames --
 
 let kElementFavouriteButtonTapped = "ElementFavouriteButtonTapped"
+let kElementActionButtonPressedNotification = "ElementActionButtonTapped"

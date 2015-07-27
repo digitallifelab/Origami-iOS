@@ -74,7 +74,7 @@ enum ActionButtonType:Int
 
 enum ActionButtonCellType:Int
 {
-    case Edit = 1
+    case Edit = 0
     case Add
     case Delete
     case Archive

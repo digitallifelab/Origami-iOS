@@ -280,8 +280,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     @IBAction func doneButtonTap(sender:UIButton)
     {
-        if newElement.title != nil && newElement.details != nil
+        if newElement.title != nil //&& newElement.details != nil
         {
+            if newElement.details == nil
+            {
+                newElement.details = ""
+            }
             if !contactIDsToPass.isEmpty
             {
                 var contactIDs = Array(contactIDsToPass)
