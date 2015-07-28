@@ -258,14 +258,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 // attaches will be wull screen width
                 offsetX = mainFrame.origin.x
-                let attachesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 100.0) //TODO: tweak attaches cell frame height properly
+                let attachesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 80.0) //TODO: tweak attaches cell frame height properly
                 let attachesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
                 var attachesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: attachesIndexPath)
                 attachesAttribute.frame = attachesFrame
                 cellLayoutAttributes[attachesIndexPath] = attachesAttribute
                 itemIndex += 1
                 
-                offsetY += attachesFrame.size.width; println("Moved Down after ATTACHes cell")
+                offsetY += attachesFrame.size.height; println("Moved Down after ATTACHes cell")
             }
             
             if privateStruct.buttonsCell

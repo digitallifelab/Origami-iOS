@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate {
 
     var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
@@ -42,18 +42,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         
         prepareCollectionViewDataAndLayout()
-//        collectionDataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
-//        collectionDataSource!.handledElement = currentElement
-//        collectionDataSource!.displayMode = self.displayMode
-//        if collectionDataSource != nil
-//        {
-//            collectionView.dataSource = collectionDataSource!
-//        }
-//        
-//        if let layout = prepareCollectionLayoutForElement(currentElement)
-//        {
-//            collectionView.setCollectionViewLayout(layout, animated: false)
-//        }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
+        
+        queryAttachesPreviewData()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -67,11 +60,92 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingForTitle:", name: kElementEditTextNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
     }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    //MARK: -----
+    func queryAttachesPreviewData()
+    {
+        DataSource.sharedInstance.loadAttachesForElement(self.currentElement!, completion: { (attachFileArray) -> () in
+            if let attaches = attachFileArray
+            {
+                let countAttaches = attaches.count
+                println("Loaded \(countAttaches) attaches for current element.")
+                
+                
+                println(" Starting to load attaches previewImages...")
+                let bgQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
+                
+                dispatch_async(bgQueue, {[weak self] () -> Void in
+                    if let previewImageDatas = DataSource.sharedInstance.getSnapshotsArrayForAttaches(attaches)
+                    {
+                        let countPreviews = previewImageDatas.count
+                        
+                        if countAttaches != countPreviews
+                        {
+                            println(" starting to load missing attach file datas...")
+                        }
+                        else
+                        {
+                            println(" Loaded all previews for attaches from local storage.")
+                            if let weakSelf = self, attachesCollectionHandler = weakSelf.collectionDataSource?.attachesHandler
+                            {
+                                var attachDataHolder = [AttachFile:MediaFile]()
+                                for var i = 0; i < countAttaches; i++
+                                {
+                                    let lvAttachFile = attaches[i]
+                                    let lvAttachData = previewImageDatas[i]
+                                    
+                                    var lvMediaFile = MediaFile()
+                                    lvMediaFile.data = lvAttachData
+                                    lvMediaFile.name = lvAttachFile.fileName ?? ""
+                                    lvMediaFile.type = .Image
+                                    
+                                    attachDataHolder[lvAttachFile] = lvMediaFile
+                                }
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
+                                })
+                                
+                            }
+                            
+                            
+                        }
+                    }
+                    else
+                    {
+                        if let weakSelf = self
+                        {
+                            weakSelf.startLoadingDataForMissingAttaches(attaches)
+                        }
+                    }
+                })
+                
+            }
+            else
+            {
+                println("Loaded No Attaches for current element")
+            }
+        })
+    }
+    
+    func startLoadingDataForMissingAttaches(attaches:[AttachFile])
+    {
+        DataSource.sharedInstance.loadAttachFileDataForAttaches(attaches, completion: { () -> () in
+            NSNotificationCenter.defaultCenter().postNotificationName(kAttachFileDataLoadingCompleted, object: nil)
+        })
+    }
+    
+    func loadingAttachFileDataCompleted(notification:NSNotification)
+    {
+        println(" Recieved notification about finishing of loading missing attach file datas")
+        queryAttachesPreviewData()
     }
     
     //MARK: Day/Night Mode
@@ -115,17 +189,28 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         collectionDataSource!.handledElement = currentElement
         collectionDataSource!.displayMode = self.displayMode
         collectionDataSource!.subordinateTapDelegate = self
+        collectionDataSource!.attachTapDelegate = self
         
         if collectionDataSource != nil
         {
             collectionView.dataSource = collectionDataSource!
             collectionView.delegate = collectionDataSource!
+            
+            if let attachesHandler = collectionDataSource!.attachesHandler
+            {
+//                if attachesHandler.attachedItems.count > 0
+//                {
+//                    
+//                }
+                
+                if let layout = prepareCollectionLayoutForElement(currentElement)
+                {
+                    collectionView.setCollectionViewLayout(layout, animated: false)
+                }
+            }
+            
         }
         
-        if let layout = prepareCollectionLayoutForElement(currentElement)
-        {
-            collectionView.setCollectionViewLayout(layout, animated: false)
-        }
     }
     //MARK: Custom CollectionView Layout
     func prepareCollectionLayoutForElement(element:Element?) -> UICollectionViewFlowLayout?
@@ -425,6 +510,113 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         nextViewController.currentElement = element
         self.navigationController?.pushViewController(nextViewController, animated: true)
     }
+    
+    //MARK: AttachmentSelectionDelegate
+    func attachedFileTapped(attachFile:AttachFile)
+    {
+        if let attachId = attachFile.attachID
+        {
+            showAttachentDetailsVC(attachFile)
+        }
+    }
+    
+    func showAttachentDetailsVC(file:AttachFile)
+    {
+        //if it is image - get full image from disc and display in new view controller
+        NSOperationQueue().addOperationWithBlock { () -> Void in
+            let lvFileHandler = FileHandler()
+            lvFileHandler.loadFileNamed(file.fileName!, completion: { (fileData, loadingError) -> Void in
+                if fileData != nil
+                {
+                    if let imageToDisplay = UIImage(data: fileData)
+                    {
+                        NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self]() -> Void in
+                            if let aSelf = self
+                            {
+                                if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName)
+                                {
+                                    switch fileToDisplay.type
+                                    {
+                                    case .Image:
+                                        if let destinationVC = aSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
+                                        {
+                                            destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
+                                            destinationVC.title = fileToDisplay.name
+                                            
+                                            aSelf.navigationController?.pushViewController(destinationVC, animated: true)
+                                        }
+                                    case .Document:
+                                        fallthrough //TODO: Display some external pdf or text viewer or display inside app
+                                    case .Sound:
+                                        fallthrough //TODO: display VC with music player
+                                    case .Video:
+                                        fallthrough //TODO: display VC with Video player
+                                    default: break
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+            })
+        }
+    }
+    
+    func startAddingNewAttachFile(notification:NSNotification)
+    {
+        if let attachImagePickerVC = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePickerVC") as? ImagePickingViewController
+        {
+            attachImagePickerVC.attachPickingDelegate = self
+            
+            self.presentViewController(attachImagePickerVC, animated: true, completion: nil)
+        }
+    }
+    
+    //MARK: AttachPickingDelegate
+    func mediaPicker(picker:AnyObject, didPickMediaToAttach mediaFile:MediaFile)
+    {
+        
+        if picker is ImagePickingViewController
+        {
+            picker.dismissViewControllerAnimated(true, completion: nil)
+        }
+        
+        DataSource.sharedInstance.attachFile(mediaFile, toElementId: self.currentElement!.elementId!) { (success, error) -> () in
+            NSOperationQueue.mainQueue().addOperationWithBlock({[weak self] () -> Void in
+                if !success
+                {
+                    if error != nil
+                    {
+                        println("Error Adding attach file: \n \(error)")
+                    }
+                    return
+                }
+                
+                if let aSelf = self, currentElementToRefresh = aSelf.currentElement
+                {
+                    DataSource.sharedInstance.refreshAttachesForElement(currentElementToRefresh, completion: {[weak self] (attaches) -> () in
+                        if let attachObjects = attaches
+                        {
+                            if let aSelf = self
+                            {
+                               // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5) ), dispatch_get_main_queue(), { () -> Void in
+                                    aSelf.queryAttachesPreviewData()
+                                //})
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    }
+    
+    func mediaPickerDidCancel(picker:AnyObject)
+    {
+        picker.dismissViewControllerAnimated(true, completion: nil)
+
+    }
+    
+    
     
     //MARK: Alert
     func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)

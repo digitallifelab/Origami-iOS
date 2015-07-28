@@ -369,7 +369,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DashHeader" id="XLf-fl-1NQ" customClass="DashHeaderView" customModule="Origami" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="64" width="600" height="30"/>
+                                    <rect key="frame" x="0.0" y="64" width="414" height="30"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signals" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rjN-dc-B59" userLabel="titleLabel">
@@ -1451,7 +1451,7 @@
                                     <constraint firstAttribute="height" constant="64" id="7yT-fa-Tc7"/>
                                 </constraints>
                             </view>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
                                 <rect key="frame" x="0.0" y="20" width="414" height="716"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ta0-yn-MRa">
@@ -1676,15 +1676,15 @@
                                             <outlet property="messagesTable" destination="GAU-tE-rwI" id="FQ4-ix-RNN"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ElementAttachesHolderCell" id="qZF-hQ-yGa" customClass="SingleElementAttachesCollectionHolderCell" customModule="Origami" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ElementAttachesHolderCell" id="qZF-hQ-yGa" customClass="SingleElementAttachesCollectionHolderCell" customModule="Origami" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="vpX-j8-nMT">
-                                                    <rect key="frame" x="0.0" y="0.0" width="400" height="100"/>
+                                                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="vpX-j8-nMT">
+                                                    <rect key="frame" x="22" y="0.0" width="378" height="100"/>
                                                     <color key="backgroundColor" red="0.49216635949999998" green="0.74209418559999996" blue="0.61380253279999997" alpha="1" colorSpace="calibratedRGB"/>
                                                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="VZN-zb-bEZ">
                                                         <size key="itemSize" width="50" height="50"/>
@@ -1693,7 +1693,7 @@
                                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     </collectionViewFlowLayout>
                                                     <cells>
-                                                        <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" reuseIdentifier="AttachedFileCell" id="FF7-1U-MAP" userLabel="attachCell" customClass="ElementDashboardAttachedFileCell" customModule="Origami" customModuleProvider="target">
+                                                        <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="AttachedFileCell" id="FF7-1U-MAP" userLabel="attachCell" customClass="ElementDashboardAttachedFileCell" customModule="Origami" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -1750,16 +1750,34 @@
                                                         </collectionViewCell>
                                                     </cells>
                                                 </collectionView>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UKu-i7-Rdr" userLabel="addAttachFileButton">
+                                                    <rect key="frame" x="0.0" y="10" width="30" height="82"/>
+                                                    <color key="backgroundColor" red="0.12941176469999999" green="0.60784313729999995" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="82" id="GUM-YJ-oFs"/>
+                                                    </constraints>
+                                                    <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <state key="normal" title="+">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="addAttachmentPressed:" destination="qZF-hQ-yGa" eventType="touchUpInside" id="zYj-s6-cTi"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <constraints>
+                                            <constraint firstItem="vpX-j8-nMT" firstAttribute="leading" secondItem="UKu-i7-Rdr" secondAttribute="trailing" constant="-8" id="5DJ-PI-dFW"/>
+                                            <constraint firstItem="UKu-i7-Rdr" firstAttribute="top" secondItem="qZF-hQ-yGa" secondAttribute="topMargin" constant="2" id="Cdn-wf-dBV"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="vpX-j8-nMT" secondAttribute="bottom" constant="-8" id="GkX-5U-ons"/>
-                                            <constraint firstItem="vpX-j8-nMT" firstAttribute="leading" secondItem="qZF-hQ-yGa" secondAttribute="leadingMargin" constant="-8" id="R5X-Ue-GAk"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="vpX-j8-nMT" secondAttribute="trailing" constant="-8" id="VBA-ST-S3x"/>
+                                            <constraint firstItem="UKu-i7-Rdr" firstAttribute="bottom" secondItem="qZF-hQ-yGa" secondAttribute="bottomMargin" id="ZXf-wn-y9g"/>
+                                            <constraint firstItem="UKu-i7-Rdr" firstAttribute="leading" secondItem="qZF-hQ-yGa" secondAttribute="leading" id="q2z-1E-ALC"/>
                                             <constraint firstItem="vpX-j8-nMT" firstAttribute="top" secondItem="qZF-hQ-yGa" secondAttribute="topMargin" constant="-8" id="r6U-jc-OgF"/>
                                         </constraints>
                                         <connections>
+                                            <outlet property="addAttachmentButton" destination="UKu-i7-Rdr" id="i5e-i9-YQg"/>
                                             <outlet property="attachesCollectionView" destination="vpX-j8-nMT" id="M1L-iv-hMK"/>
                                         </connections>
                                     </collectionViewCell>
@@ -2008,7 +2026,7 @@
                             <constraint firstAttribute="trailing" secondItem="lwg-b4-rtA" secondAttribute="trailing" id="D3d-Fj-ToD"/>
                             <constraint firstItem="yD8-pd-zzj" firstAttribute="top" secondItem="lwg-b4-rtA" secondAttribute="bottom" id="IX8-nL-R3s"/>
                             <constraint firstItem="pmf-DG-P16" firstAttribute="bottom" secondItem="lwg-b4-rtA" secondAttribute="top" id="OaD-qT-XiE"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="pmf-DG-P16" secondAttribute="trailing" constant="-16" id="Sg0-zA-agC"/>
+                            <constraint firstAttribute="trailing" secondItem="pmf-DG-P16" secondAttribute="trailing" id="Sg0-zA-agC"/>
                             <constraint firstItem="pmf-DG-P16" firstAttribute="leading" secondItem="XgA-qY-sW5" secondAttribute="leading" id="Wrb-P6-e0p"/>
                             <constraint firstItem="lwg-b4-rtA" firstAttribute="leading" secondItem="XgA-qY-sW5" secondAttribute="leading" id="qOq-1Z-zLx"/>
                             <constraint firstItem="pmf-DG-P16" firstAttribute="top" secondItem="xqc-k9-7Qs" secondAttribute="bottom" constant="-64" id="vie-bW-1oG"/>
@@ -2023,12 +2041,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jpy-27-TYM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2627" y="1016"/>
+            <point key="canvasLocation" x="2656" y="1065"/>
         </scene>
         <!--Image Picking View Controller-->
         <scene sceneID="aTY-AU-tPj">
             <objects>
-                <viewController id="1BA-qx-qiz" customClass="ImagePickingViewController" customModule="Origami" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagePickerVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1BA-qx-qiz" customClass="ImagePickingViewController" customModule="Origami" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RYj-Ok-6We"/>
                         <viewControllerLayoutGuide type="bottom" id="wS0-vq-GgP"/>
@@ -2037,6 +2055,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KYP-KT-9V9" userLabel="navigationBarBackgroundView">
+                                <rect key="frame" x="0.0" y="-44" width="414" height="64"/>
+                                <color key="backgroundColor" red="0.12941176469999999" green="0.60784313729999995" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="64" id="wzh-Ag-h6M"/>
+                                </constraints>
+                            </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8vC-8C-sCB">
                                 <rect key="frame" x="0.0" y="692" width="414" height="44"/>
                                 <constraints>
@@ -2075,12 +2100,15 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="8vC-8C-sCB" firstAttribute="leading" secondItem="AXE-1Z-HOA" secondAttribute="leading" id="4TZ-a2-TSK"/>
+                            <constraint firstAttribute="trailing" secondItem="KYP-KT-9V9" secondAttribute="trailing" id="5KI-Lh-4PG"/>
                             <constraint firstItem="8vC-8C-sCB" firstAttribute="bottom" secondItem="wS0-vq-GgP" secondAttribute="top" id="7TG-cY-M9X"/>
+                            <constraint firstItem="KYP-KT-9V9" firstAttribute="leading" secondItem="AXE-1Z-HOA" secondAttribute="leading" id="IxG-Sh-7h0"/>
                             <constraint firstItem="naJ-vE-x8r" firstAttribute="top" secondItem="RYj-Ok-6We" secondAttribute="bottom" id="N4n-TA-afo"/>
                             <constraint firstItem="8vC-8C-sCB" firstAttribute="top" secondItem="naJ-vE-x8r" secondAttribute="bottom" constant="7" id="Y18-3V-1hv"/>
                             <constraint firstAttribute="trailingMargin" secondItem="naJ-vE-x8r" secondAttribute="trailing" constant="37" id="ZZW-aC-wqY"/>
                             <constraint firstItem="naJ-vE-x8r" firstAttribute="leading" secondItem="AXE-1Z-HOA" secondAttribute="leadingMargin" constant="38" id="aMY-gY-5PO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="naJ-vE-x8r" secondAttribute="trailing" constant="8" id="aiR-l5-LJg"/>
+                            <constraint firstItem="RYj-Ok-6We" firstAttribute="top" secondItem="KYP-KT-9V9" secondAttribute="bottom" id="u0j-55-An5"/>
                             <constraint firstItem="naJ-vE-x8r" firstAttribute="leading" secondItem="AXE-1Z-HOA" secondAttribute="leadingMargin" constant="9" id="uMl-47-7LB"/>
                             <constraint firstItem="naJ-vE-x8r" firstAttribute="leading" secondItem="AXE-1Z-HOA" secondAttribute="leadingMargin" priority="500" constant="48" id="v7Z-rg-Mlk"/>
                             <constraint firstAttribute="trailing" secondItem="8vC-8C-sCB" secondAttribute="trailing" id="yxq-CC-Cdf"/>
@@ -2110,6 +2138,7 @@
                     <size key="freeformSize" width="414" height="736"/>
                     <connections>
                         <outlet property="cameraButton" destination="zY1-RR-uUZ" id="L13-LR-Rk5"/>
+                        <outlet property="navigationBackgroundView" destination="KYP-KT-9V9" id="b3r-TN-p9P"/>
                         <outlet property="preview" destination="naJ-vE-x8r" id="y5J-bM-y7K"/>
                     </connections>
                 </viewController>

@@ -113,7 +113,7 @@ class ElementActionButtonsLayout: UICollectionViewFlowLayout {
                 
                 if screenWidth < CGRectGetMaxX(frame) || i == 7
                 {
-                    println(" Counting second row for action buttons cell")
+                    //println(" Counting second row for action buttons cell")
                     offsetX =  actionButtonSideDimension
                     offsetY += self.minimumLineSpacing + actionButtonSideDimension
                     frame.origin.x = offsetX

@@ -37,7 +37,14 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         let attachCount = self.attachedItems.count
-       
+        if attachCount == 1 //check for
+        {
+            let attachFile = attachedItems[0]
+            if attachFile.attachID == nil
+            {
+                return 0
+            }
+        }
         //collectionView.collectionViewLayout.invalidateLayout()
         return attachCount
     }
@@ -46,16 +53,26 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     {
         var attachCell = collectionView.dequeueReusableCellWithReuseIdentifier("AttachedFileCell", forIndexPath: indexPath) as! ElementDashboardAttachedFileCell
         configureCell(attachCell, forIndexPath: indexPath)
-        attachCell.setNeedsUpdateConstraints()
+       // attachCell.setNeedsUpdateConstraints()
 
         return attachCell
     }
-    
 
     func configureCell( cell:ElementDashboardAttachedFileCell, forIndexPath indexPath:NSIndexPath) {
         if indexPath.item < attachedItems.count
         {
             let attachFile = attachedItems[indexPath.item]
+            
+            if attachFile.attachID == nil
+            {
+                if let delegate = self.collectionView?.delegate
+                {
+                    
+                }
+                cell.attachIcon.image = UIImage(named: "icon-addAttachment")
+                return
+            }
+            
             cell.titleLabel.text = attachFile.fileName
             cell.attachIcon.image = noImageIcon
            
@@ -72,10 +89,10 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                 case .Video:
                     cell.attachIcon.image = attachIconVideo
                 }
-                
             }
         }
     }
+    
     func reloadCollectionWithData(newData:[AttachFile:MediaFile])
     {
         for (lvAttachFile,lvMediaFile) in newData //assign data locally
@@ -96,6 +113,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
 //        }
 //    }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        
         self.attachTapDelegate?.attachedFileTapped(attachedItems[indexPath.item])
     }
     

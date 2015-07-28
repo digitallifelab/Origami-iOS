@@ -15,7 +15,7 @@ import ImageIO
     typealias messagesArrayClosure = ([Message]?) -> ()
     typealias elementsArrayClosure = ([Element]?) -> ()
     typealias contactsArrayClosure = ([Contact]?) -> ()
-    typealias attachesArrayClosure = ([AttachFile]) -> ()
+    typealias attachesArrayClosure = ([AttachFile]?) -> ()
     typealias userClosure = (User?) -> ()
     typealias errorClosure = (NSError?) -> ()
     
@@ -864,13 +864,13 @@ import ImageIO
                 }
                 else
                 {
-                    completion([AttachFile]())
+                    completion(nil)
                 }
             })
         }
         else
         {
-            completion([AttachFile]())
+            completion(nil)
         }
     }
     
@@ -892,14 +892,22 @@ import ImageIO
                     }
                     else
                     {
-                        completion([AttachFile]())
+                        completion(nil)
                     }
             })
         }
     }
     
-    func attachFile(file:MediaFile, toElementId elementId:NSNumber, completion completionClosure:(success:Bool, error: NSError?)->() ) {
-        serverRequester.attachFile(file, toElement: elementId) { (successAttached, attachId ,errorAttached) -> () in
+    func attachFile(file:MediaFile, toElementId elementId:NSNumber?, completion completionClosure:(success:Bool, error: NSError?)->() ) {
+        
+        if elementId == nil || (elementId!.integerValue <= 0)
+        {
+            let errorId = NSError(domain: "Element id error", code: -65, userInfo: [NSLocalizedDescriptionKey:"Colud not start attaching file. Reason: wrong element id format."])
+            completionClosure(success: false, error: nil)
+            return
+        }
+        
+        serverRequester.attachFile(file, toElement: elementId!) { (successAttached, attachId ,errorAttached) -> () in
             
             if successAttached {
                 
@@ -978,6 +986,32 @@ import ImageIO
         fileHandler.eraseFileNamed(attach.fileName, completion: nil)
     }
     
+    func getSnapshotsArrayForAttaches(attaches:[AttachFile]) -> [NSData]?
+    {
+        if attaches.isEmpty
+        {
+            return nil
+        }
+        
+        var toReturnArray = [NSData]()
+        for anAttach in attaches
+        {
+            if let existingSnapshot = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(anAttach)
+            {
+                toReturnArray.append(existingSnapshot)
+            }
+        }
+        
+        if toReturnArray.isEmpty
+        {
+            println(" empty snapshots array. returning nil.")
+            return nil
+        }
+        
+        println(" returning \(toReturnArray.count) snapshotDatas for \(attaches.count) AttacFiles")
+        return toReturnArray
+    }
+    
     func getSnapshotImageDataForAttachFile(file:AttachFile) -> NSData?
     {
         if let cachedData = DataSource.sharedInstance.getAttachFileDataFromCache(file)
@@ -994,7 +1028,7 @@ import ImageIO
     private func getAttachFileDataFromFileSystem(attachFile:AttachFile) -> NSData?
     {
         let lvFileHandler = FileHandler()
-        let waiterGroup = dispatch_group_create()
+        //let waiterGroup = dispatch_group_create()
         //dispatch_group_enter(waiterGroup)
         var outerFileData:NSData? = nil
         //let bgQueue:dispatch_queue_t = dispatch_queue_create("Origami.DataReading.Queue", DISPATCH_QUEUE_SERIAL)
@@ -1065,6 +1099,13 @@ import ImageIO
     
     func loadAttachFileDataForAttaches(attaches:[AttachFile], completion completionClosure:(()->())? = nil )
     {
+        if attaches.isEmpty
+        {
+            completionClosure?()
+            return
+        }
+        
+        
         let dispatchGroup = dispatch_group_create()
         let fileManager = FileHandler()
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -1086,10 +1127,13 @@ import ImageIO
                 if attachFileData != nil
                 {
                     fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
-                        if path != nil {
+                        if path != nil
+                        {
                             //println("Saved file to : \(path!)")
                         }
-                        if saveError != nil{
+                        
+                        if saveError != nil
+                        {
                             println("Failed to save data to disc: \n \(saveError?.localizedDescription)")
                         }
                          DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = nil
@@ -1108,14 +1152,14 @@ import ImageIO
        
     
         dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), { () -> Void in
-            print("\n ....finished loading all attachment file datas. >>>>>\n")
+            print("\n ....finished loading all \(attaches.count) attachment file datas. >>>>>\n")
             
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            if completionClosure != nil
-            {
-                completionClosure!()
-            }
+//            if completionClosure != nil
+//            {
+                completionClosure?()
+//            }
         })
     }
     

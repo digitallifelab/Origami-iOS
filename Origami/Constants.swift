@@ -85,3 +85,7 @@ let kMenu_Switch_Night_Mode_Changed = "NightModeChanged"
 let kElementFavouriteButtonTapped = "ElementFavouriteButtonTapped"
 let kElementActionButtonPressedNotification = "ElementActionButtonTapped"
 let kElementEditTextNotification = "ElementEditTextTapped"
+let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"
+let kAddNewAttachFileTapped = "AddNewAttachFile"
+
+

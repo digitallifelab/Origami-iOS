@@ -489,14 +489,22 @@ class ServerRequester: NSObject
                 success: { [weak self] (operation, result) -> Void in
                     if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
                     {
-                        NSOperationQueue().addOperationWithBlock({ [weak self]() -> Void in
-                            if self != nil
-                            {
-                                let attaches = ObjectsConverter.converttoAttaches(attachesArray)// convertToAttaches(attachesArray)
-                                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                        NSOperationQueue().addOperationWithBlock({/* [weak self]*/() -> Void in
+//                            if let weakSelf = self
+//                            {
+                                if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
+                                {
+                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                                     completion(attaches, nil)
-                                })
+                                    })
+                                }
+                                else
+                                {
+                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                                        completion(nil,nil)
+                                    })
                             }
+//                            }
                         })
                     }
                     else

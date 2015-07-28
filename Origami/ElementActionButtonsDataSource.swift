@@ -51,7 +51,7 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
             buttonCell.imageView.backgroundColor = buttonModel.backgroundColor //backgroundColorForButton(button)
             buttonCell.imageView.tintColor = buttonModel.tintColor
         }
-        println("tint color: \(buttonCell.imageView.tintColor)")
+        //println("tint color: \(buttonCell.imageView.tintColor)")
         return buttonCell
     }
     

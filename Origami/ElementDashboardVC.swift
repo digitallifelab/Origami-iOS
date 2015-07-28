@@ -8,14 +8,28 @@
 
 import UIKit
 
- class ElementDashboardVC: UIViewController, ElementSelectionDelegate, MessageObserver, ElementTextEditingDelegate, ButtonTapDelegate , AttachPickingDelegate, AttachmentSelectionDelegate, UIViewControllerTransitioningDelegate, ElementComposingDelegate {
+struct AttachToDisplay {
     
-    struct AttachToDisplay {
+    var type:FileType
+    var data:NSData
+    var name:String
     
-        var type:FileType
-        var data:NSData
-        var name:String
+    init?(type:FileType, fileData:NSData?, fileName:String?)
+    {
+        if fileData == nil || fileName == nil
+        {
+            return nil
+        }
+        
+        self.type = type
+        self.data = fileData!
+        self.name = fileName!
     }
+}
+
+class ElementDashboardVC: UIViewController, ElementSelectionDelegate, MessageObserver, ElementTextEditingDelegate, ButtonTapDelegate , AttachPickingDelegate, AttachmentSelectionDelegate, UIViewControllerTransitioningDelegate, ElementComposingDelegate {
+    
+    
     
     @IBOutlet var table:UITableView!
     @IBOutlet var navigationBackgroundView:UIView!
@@ -294,39 +308,45 @@ import UIKit
             println("loadAttachesData called from Notification");
         }
         
-        DataSource.sharedInstance.loadAttachesForElement(self.element, completion: { [weak self](attaches) -> () in
-            
-            if !attaches.isEmpty
+        DataSource.sharedInstance.loadAttachesForElement(self.element, completion: { [weak self] (attaches) -> () in
+            if let attachObjects = attaches
             {
-                println("Loaded Attaches For Element.  : \(attaches.count)")
-                if self != nil
+                if !attachObjects.isEmpty
                 {
-                    if let newAttachesHandler = ElementAttachedFilesCollectionHandler(items: attaches)
+                    println("Loaded Attaches For Element.  : \(attachObjects.count)")
+                    if let weakSelf = self
                     {
-                        newAttachesHandler.attachTapDelegate = self
-                        self!.tableHandler!.attachesCollectionHandler = newAttachesHandler
-                        self!.tableHandler!.displayAttachesTableCellIfNeeded()
-                    }
-                    
-                    let bgQueue = dispatch_queue_create("Origami.AttachesInfoLoading.Queue", DISPATCH_QUEUE_SERIAL)
-                    dispatch_async(bgQueue, { [weak self] () -> Void in
-                        if self != nil
+                        if let newAttachesHandler = ElementAttachedFilesCollectionHandler(items: attachObjects)
                         {
-                            self!.performLoadingFileDataforAttaches(attaches, completion: { [weak self] (dataDictionary) -> () in
-                                
-                                if dataDictionary.count > 0
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        
-                                        if self != nil
-                                        {
-                                            self!.tableHandler!.attachesCollectionHandler!.reloadCollectionWithData(dataDictionary)
-                                        }
-                                    })
-                                }
-                            })
+                            newAttachesHandler.attachTapDelegate = weakSelf
+                            weakSelf.tableHandler?.attachesCollectionHandler = newAttachesHandler
+                            weakSelf.tableHandler?.displayAttachesTableCellIfNeeded()
                         }
-                    })
+                        
+                        let bgQueue = dispatch_queue_create("Origami.AttachesInfoLoading.Queue", DISPATCH_QUEUE_SERIAL)
+                        dispatch_async(bgQueue, { [weak self] () -> Void in
+                            if let aSelf = self
+                            {
+                                aSelf.performLoadingFileDataforAttaches(attachObjects, completion: { [weak self] (dataDictionary) -> () in
+                                    
+                                    if dataDictionary.count > 0
+                                    {
+                                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                            
+                                            if let weakSelf = self
+                                            {
+                                                weakSelf.tableHandler!.attachesCollectionHandler!.reloadCollectionWithData(dataDictionary)
+                                            }
+                                            })
+                                    }
+                                    })
+                            }
+                            })
+                    }
+                }
+                else
+                {
+                    println(" - No Attaches for element found. -")
                 }
             }
             else
@@ -335,6 +355,7 @@ import UIKit
             }
         })
     }
+    
     func performLoadingFileDataforAttaches(attaches:[AttachFile], completion completionClosure:([AttachFile:MediaFile])->() )
     {
         var fileDataDict = [AttachFile:MediaFile]()
@@ -468,12 +489,12 @@ import UIKit
                         if self != nil
                         {
                             DataSource.sharedInstance.refreshAttachesForElement(self!.element, completion: {[weak self] (attaches) -> () in
-                                if attaches.count > 0
+                                if let attachedObjects = attaches
                                 {
-                                    if self != nil
+                                    if let weakSelf = self
                                     {
                                         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5) ), dispatch_get_main_queue(), { () -> Void in
-                                            self!.loadAttachesData(nil) //reload data
+                                            weakSelf.loadAttachesData(nil) //reload data
                                         })
                                         
                                     }
@@ -499,17 +520,16 @@ import UIKit
                     if let imageToDisplay = UIImage(data: fileData)
                     {
                         NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self]() -> Void in
-                            if self != nil
+                            if let weakSelf = self
                             {
-                                self!.fileToDisplay = AttachToDisplay(type: .Image, data: fileData, name:file.fileName!)
-                                self!.performSegueWithIdentifier("ShowSelectedImage", sender: nil)
+                                weakSelf.fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName!)
+                                weakSelf.performSegueWithIdentifier("ShowSelectedImage", sender: nil)
                             }
                         })
                     }
                 }
             })
         }
-        
     }
     //MARK: Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

@@ -10,11 +10,15 @@ import Foundation
 
 class ObjectsConverter {
     
-    class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]
+    class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]?
     {
+        if dictionaries.isEmpty
+        {
+            return nil
+        }
         var attaches = [AttachFile]()
-        let lvDicts = dictionaries
-        for lvDict in lvDicts
+        //let lvDicts = dictionaries
+        for lvDict in dictionaries
         {
             let attach = AttachFile(info: lvDict)
             attaches.append(attach)

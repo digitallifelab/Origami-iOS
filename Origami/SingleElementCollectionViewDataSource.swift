@@ -46,12 +46,15 @@ struct ElementCellsOptions
     }
 }
 
+
+
 class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate
 {
     var displayMode:DisplayMode = .Day
     var titleCellMode:ElementDashboardTitleCellMode = .Title
     var editingEnabled = false
     var subordinateTapDelegate:ElementSelectionDelegate?
+    var attachTapDelegate:AttachmentSelectionDelegate?
     
     var handledElement:Element? {
         didSet {
@@ -158,7 +161,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         if attaches.isEmpty
         {
-            return nil
+            return ElementAttachedFilesCollectionHandler()
         }
         
         return ElementAttachedFilesCollectionHandler(items: attaches)
@@ -358,8 +361,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 return datesCell
             }
             
-            
-            
         case .Chat:
             var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell", forIndexPath: indexPath) as! SingleElementLastMessagesCell
             chatCell.displayMode = self.displayMode
@@ -378,6 +379,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
         case .Attaches:
             var attachesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementAttachesHolderCell", forIndexPath: indexPath) as! SingleElementAttachesCollectionHolderCell
+            if let attachHandler = self.attachesHandler
+            {
+                attachesHolderCell.attachesCollectionView.delegate = attachHandler
+                attachesHolderCell.attachesCollectionView.dataSource = attachHandler
+                attachesHandler?.collectionView = attachesHolderCell.attachesCollectionView
+                attachesHolderCell.attachesCollectionView.setCollectionViewLayout(AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count), animated: false)
+                attachHandler.attachTapDelegate = self.attachTapDelegate
+            }
+            
             return attachesHolderCell
             
         case .Buttons:
@@ -552,17 +562,5 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         NSNotificationCenter.defaultCenter().postNotificationName(kElementEditTextNotification, object: nil, userInfo: ["title" : titleEdit])
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 }

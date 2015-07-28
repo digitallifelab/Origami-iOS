@@ -11,6 +11,7 @@ import UIKit
 class ImagePickingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     private var imagePickerController:UIImagePickerController = UIImagePickerController()
+    @IBOutlet var navigationBackgroundView:UIView!
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
     var attachPickingDelegate:AttachPickingDelegate?
@@ -39,11 +40,44 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         }
         imagePickerController.delegate = self
         // Do any additional setup after loading the view.
+        
+        setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    //MARK: Appearance
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        if nightModeOn
+        {
+            //self.displayMode = .Night
+            self.view.backgroundColor = UIColor.blackColor()
+            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+            // UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+            
+            //self.tabBarController?.tabBar.tintColor = kWhiteColor
+            //self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            //self.displayMode = .Day
+            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            //UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+            
+            //self.tabBarController?.tabBar.tintColor = kWhiteColor
+            //self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            
+        }
+        
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
     }
     
     //MARK: UIImagePickerControllerDelegate
@@ -112,9 +146,9 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
                 1.0)
             
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                if self != nil
+                if let aSelf = self
                 {
-                    self!.selectedMedia = lvSelectedMedia
+                    aSelf.selectedMedia = lvSelectedMedia
                 }
             })
         })
