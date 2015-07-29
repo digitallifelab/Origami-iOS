@@ -22,6 +22,7 @@ class ElementDashboardCollectionViewCell: UITableViewCell //this cell contains E
             collectionView.reloadData()
         }
     }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -32,13 +33,4 @@ class ElementDashboardCollectionViewCell: UITableViewCell //this cell contains E
         collectionView.dataSource = collectionHandler
         collectionView.scrollEnabled = false
     }
-
-//    override func setSelected(selected: Bool, animated: Bool)
-//    {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-  
-
 }

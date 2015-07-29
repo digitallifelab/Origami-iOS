@@ -41,6 +41,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         
+        configureRightBarButtonItem()
+        
         prepareCollectionViewDataAndLayout()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
@@ -67,6 +69,20 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func configureRightBarButtonItem()
+    {
+        //self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        var rightButton = UIButton.buttonWithType(.Custom) as! UIButton
+        rightButton.frame = CGRectMake(0, 0, 44, 44)
+        rightButton.imageEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
+        rightButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
+        rightButton.addTarget(self, action: "optionsBarButtonTapped:", forControlEvents: .TouchUpInside)
+        rightButton.tintColor = UIColor.whiteColor()
+        
+        let rightBarButton = UIBarButtonItem(customView: rightButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
     //MARK: -----
@@ -164,7 +180,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         else
         {
             self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor//kDayCellBackgroundColor
+            //self.collectionView.backgroundColor = kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             //UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
             
@@ -244,24 +261,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: Handling buttons and other elements tap in collection view
     func startEditingForTitle(notification:NSNotification?)
     {
-        if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementEditingVC") as? ElementTitleAndDetailsEditingVC
+        if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController //self.storyboard?.instantiateViewControllerWithIdentifier("ElementEditingVC") as? ElementTitleAndDetailsEditingVC
         {
-            editingVC.editingElement = self.currentElement
+            editingVC.rootElementID = self.currentElement?.rootElementId?.integerValue
             
             editingVC.modalPresentationStyle = .Custom
             editingVC.transitioningDelegate = self
-            
-            var editTitleBool:Bool?
-            
-            if let userInfo = notification?.userInfo as? [String:Bool], isEditTitle = userInfo["title"]
-            {
-                editTitleBool = isEditTitle
-            }
-            
-            editingVC.shouldEditTitle = editTitleBool
+            editingVC.newElement = self.currentElement!
+            editingVC.composingDelegate = self
             
             self.presentViewController(editingVC, animated: true, completion: { () -> Void in
-                
+                editingVC.editingStyle = ElementEditingStyle.EditCurrent
             })
         }
     }
@@ -373,7 +383,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 newElementCreator.modalPresentationStyle = .Custom
                 newElementCreator.transitioningDelegate = self
                 
-                self.presentViewController(newElementCreator, animated: true, completion: nil)
+                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
+                    newElementCreator.editingStyle = .AddNew
+                })
             }
         }
     }
@@ -404,6 +416,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         println("Solution tapped.")
     }
     
+    
+    func optionsBarButtonTapped(sender:UIButton?)
+    {
+        
+    }
+    
     //MARK: ElementComposingDelegate
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
@@ -412,7 +430,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
         composer.dismissViewControllerAnimated(true, completion: nil)
-        handleAddingNewElement(newElement)
+        
+        switch composer.editingStyle
+        {
+        case .AddNew:
+            handleAddingNewElement(newElement)
+        case .EditCurrent:
+            handleEditingElement(newElement)
+        }
+        
     }
     //MARK: -----
     func handleAddingNewElement(element:Element)
@@ -475,6 +501,24 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         })
     }
     
+    func handleEditingElement(element:Element)
+    {
+        var elementCopy = Element(info: element.toDictionary())
+        
+        DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
+            if let aSelf = self
+            {
+                if edited
+                {
+                    aSelf.prepareCollectionViewDataAndLayout()
+                }
+                else
+                {
+                    aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+                }
+            }
+        })
+    }
     
     func handleDeletingCurrentElement()
     {

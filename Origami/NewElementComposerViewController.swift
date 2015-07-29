@@ -8,25 +8,39 @@
 
 import UIKit
 
+enum CurrentEditingConfiguration:Int
+{
+    case Title
+    case Details
+    case None
+}
+
 class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UIViewControllerTransitioningDelegate, TextEditingDelegate {
 
-    var rootElementID:Int = 0
+    var rootElementID:Int?
     var composingDelegate:ElementComposingDelegate?
     lazy var contactIDsToPass:Set<Int> = Set([Int]())
-    var newElement = Element()
+    var newElement:Element?
     var transitionAnimator:FadeOpaqueAnimator?
-    let allContacts = DataSource.sharedInstance.getAllContacts()
+    var allContacts = DataSource.sharedInstance.getAllContacts()
     
+    var editingConfuguration:CurrentEditingConfiguration = .None
     
+    var editingStyle:ElementEditingStyle = .EditCurrent{
+        didSet{
+            configureBottomToolbar()
+        }
+    }
     
-    @IBOutlet weak var table: UITableView!
+    @IBOutlet var table: UITableView!
+    @IBOutlet var toolbar:UIToolbar!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // table view delegate and data source are set in interface builder
         transitionAnimator = FadeOpaqueAnimator()
-        table.estimatedRowHeight = 50.0
+        table.estimatedRowHeight = 80.0
         table.rowHeight = UITableViewAutomaticDimension
     }
 
@@ -37,14 +51,42 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     override func viewDidAppear(animated: Bool) {
         table.reloadData()
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates", name: "UpdateTextiewCell", object: nil)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    
+    func configureBottomToolbar()
+    {
+        switch editingStyle
+        {
+        case .AddNew:
+            var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
+            var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            var doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
+            toolbar.items = [cancelBarButton, flexibleSpace, doneBarButtonItem]
+        case .EditCurrent:
+            var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
+            var flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            var archiveBarButton = UIBarButtonItem(title: "Archive", style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
+            var flexibleSpaceCenter = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            var deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
+            var flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            var doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
+            toolbar.items = [cancelBarButton, flexibleSpaceLeft, archiveBarButton, flexibleSpaceCenter, deleteBarButton, flexibleSpaceRight, doneBarButtonItem]
+        }
     }
     
     //MARK:UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 4 //title, description, buttons, contacts
+        return 3 // no bunnon cells -//   //4 //title, description, buttons, contacts
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section < 3
+        if section < 2//3
         {
             return 1
         }
@@ -53,20 +95,39 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             return allContacts?.count ?? 0
         }
     }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         switch indexPath.section
         {
-            case 1:
-                fallthrough
             case 0:
-                var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-                configureTextCell(textCell, forIndexPath:indexPath)
-                return textCell
+                if editingConfuguration == .Title
+                {
+                    var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
+                    configureTextViewCell(textViewCell, forIndexPath: indexPath)
+                    return textViewCell
+                }
+                else
+                {
+                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
+                    configureTextCell(textCell, forIndexPath:indexPath)
+                    return textCell
+                }
+            
+            case 1:
+                if editingConfuguration == .Details
+                {
+                    var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
+                    configureTextViewCell(textViewCell, forIndexPath: indexPath)
+                    return textViewCell
+                }
+                else
+                {
+                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
+                    configureTextCell(textCell, forIndexPath:indexPath)
+                    return textCell
+                }
+            
             case 2:
-                var buttonsCell = tableView.dequeueReusableCellWithIdentifier("ActionButtonsCell", forIndexPath: indexPath) as! ElementDashboardActionButtonsCell
-                buttonsCell.actionButtonDelegate = self
-                return buttonsCell
-            case 3:
                 var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
                 configureContactCell(contactCell, forIndexPath:indexPath)
                 return contactCell
@@ -76,7 +137,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 3
+        if section == 2
         {
             if contactIDsToPass.isEmpty
             {
@@ -98,7 +159,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             cell.isTitleCell = true
             
-            if let title = newElement.title as? String
+            if let title = newElement?.title as? String
             {
                 let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.blackColor()]
                 cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
@@ -107,10 +168,19 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         else
         {
             cell.isTitleCell = false
-            if let description = newElement.details as? String
+            if let description = newElement?.details as? String
             {
-                let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.blackColor()]
-                cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
+                if description != ""
+                {
+                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                    cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
+                }
+                else
+                {
+                    let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
+                    cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                }
+                
             }
             else
             {
@@ -119,10 +189,42 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
         }
     }
-    
-    func configureButtonsCell(cell:ElementDashboardActionButtonsCell)
+
+    func configureTextViewCell(cell:NewElementTextViewCell, forIndexPath indexPath:NSIndexPath)
     {
-        
+        if indexPath.section == 0
+        {
+            cell.isTitleCell = true
+            
+            if let title = newElement?.title as? String
+            {
+                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
+            }
+        }
+        else
+        {
+            cell.isTitleCell = false
+            if let description = newElement?.details as? String
+            {
+                if description != ""
+                {
+                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                    cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
+                }
+                else
+                {
+                    let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
+                    cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                }
+                
+            }
+            else
+            {
+                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
+                cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+            }
+        }
     }
     
     func configureContactCell(cell:ContactCheckerCell, forIndexPath indexPath:NSIndexPath)
@@ -186,24 +288,46 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     //MARK: UITableVIewDelegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.section < 3
+        if indexPath.section < 2//3
         {
-            if indexPath.section == 0
+            if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextLabelCell
             {
-                startEditingElementText(true) //edit title
+                if cell.isTitleCell
+                {
+                    editingConfuguration = .Title
+                }
+                else
+                {
+                    editingConfuguration = .Details
+                }
             }
-            if indexPath.section == 1
+            else if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextViewCell
             {
-                startEditingElementText(false) //edit description
+                if cell.isTitleCell
+                {
+                    editingConfuguration = .None
+                }
+                else
+                {
+                    editingConfuguration = .None
+                }
             }
         }
         else
         {
+            editingConfuguration = .None
             contactTappedAtIndexPath(indexPath)
-            
         }
         
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        let titlePath = NSIndexPath(forRow: 0, inSection: 0)
+        let detailsPath = NSIndexPath(forRow: 0, inSection: 1)
+        tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
+        
+        //tableView.deselectRowAtIndexPath(indexPath, animated: false)
+    }
+    
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
     
     //MARK: ButtonTapDelegate
@@ -227,12 +351,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             var reloadTitleCell = false
             if textEditor.isEditingElementTitle
             {
-                newElement.title = newText
+                newElement?.title = newText
                 reloadTitleCell = true
             }
             else
             {
-                newElement.details = newText
+                newElement?.details = newText
             }
             
             textEditor.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
@@ -242,6 +366,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
             })
         }
+    }
+    
+    
+    func reloadTableViewUpdates()
+    {
+        table.beginUpdates()
+        table.endUpdates()
     }
     
     //MARK: UIViewControllerTransitioningDelegate
@@ -273,30 +404,30 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-    @IBAction func cancelButtonTap(sender:UIButton)
+    func cancelButtonTap(sender:AnyObject?)
     {
         composingDelegate?.newElementComposerWantsToCancel(self)
     }
     
-    @IBAction func doneButtonTap(sender:UIButton)
+    func doneButtonTap(sender:AnyObject?)
     {
-        if newElement.title != nil //&& newElement.details != nil
+        if let anElement = self.newElement, let currentTitle = newElement?.title as? String
         {
-            if newElement.details == nil
+            if anElement.details == nil
             {
-                newElement.details = ""
+                anElement.details = ""
             }
             if !contactIDsToPass.isEmpty
             {
                 var contactIDs = Array(contactIDsToPass)
                 contactIDs.sort(>)
-                newElement.passWhomIDs = contactIDs
+                anElement.passWhomIDs = contactIDs
             }
-            if rootElementID > 0
+            if let rootID = self.rootElementID
             {
-                newElement.rootElementId = NSNumber(integer: rootElementID)
+                anElement.rootElementId = NSNumber(integer: rootID)
             }
-            composingDelegate?.newElementComposer(self, finishedCreatingNewElement: newElement)
+            composingDelegate?.newElementComposer(self, finishedCreatingNewElement: anElement)
         }
         else
         {
@@ -304,4 +435,19 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-}
+    func deleteElementToolBarButtonTapped(sender:UIButton?)
+    {
+        
+    }
+    
+    func archiveElementToolBarButtonTapped(sender:UIButton?)
+    {
+        
+    }
+    
+    
+    
+    
+}// class end
+
+

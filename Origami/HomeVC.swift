@@ -232,7 +232,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             newElementCreator.modalPresentationStyle = .Custom
             newElementCreator.transitioningDelegate = self
             
-            self.presentViewController(newElementCreator, animated: true, completion: nil)
+            self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
+                newElementCreator.editingStyle = .AddNew
+            })
         }
     }
     
@@ -240,13 +242,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
     {
-        if sender is Element
-        {
-            if let destinationVC = segue.destinationViewController as? ElementDashboardVC
-            {
-                destinationVC.element = sender as! Element
-            }
-        }
+//        if sender is Element
+//        {
+//            if let destinationVC = segue.destinationViewController as? ElementDashboardVC
+//            {
+//                destinationVC.element = sender as! Element
+//            }
+//        }
     }
     
     func menuButtonTapped(sender:AnyObject?)

@@ -328,6 +328,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]?
     {
+        println("\(rect)")
         if let superAttrs = super.layoutAttributesForElementsInRect(rect)
         {
             var existingAttrs = [UICollectionViewLayoutAttributes]()
@@ -358,13 +359,13 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                 }
             }
             
-            existingAttrs.filter({ (attributeToCheck) -> Bool in
-                if rect.intersects(attributeToCheck.frame)
-                {
-                    return true
-                }
-                return false
-            })
+//            existingAttrs.filter({ (attributeToCheck) -> Bool in
+//                if rect.intersects(attributeToCheck.frame)
+//                {
+//                    return true
+//                }
+//                return false
+//            })
             
             if existingAttrs.isEmpty
             {
@@ -381,5 +382,19 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         }
         
         return nil
+    }
+    
+    // fixing collection view jump up when switching to this Layout
+    override func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint) -> CGPoint
+    {
+        if let collectionView = self.collectionView
+        {
+            let currentContentOffset = collectionView.contentOffset
+            if currentContentOffset.y < proposedContentOffset.y
+            {
+                return currentContentOffset
+            }
+        }
+        return proposedContentOffset
     }
 }

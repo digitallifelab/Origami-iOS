@@ -262,7 +262,7 @@ import UIKit
             {
                 newLayout = HomeSignalsHiddenFlowLayout(signals: realSignals.count + 1, favourites: favourites, other: other)
             }
-             collectionView.collectionViewLayout.invalidateLayout()
+             //collectionView.collectionViewLayout.invalidateLayout()
 //            collectionView.performBatchUpdates({ () -> Void in
             
                 collectionView.setCollectionViewLayout(newLayout!, animated: true)

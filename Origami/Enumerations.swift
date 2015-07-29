@@ -36,6 +36,12 @@ enum ElementDashboardTitleCellMode : Int
     case Dates = 1
 }
 
+enum ElementEditingStyle
+{
+    case AddNew
+    case EditCurrent
+}
+
 enum DashCellType:Int
 {
     case Signal = 1
