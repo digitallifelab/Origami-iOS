@@ -15,7 +15,7 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, TextEditingDelegate/*, UIViewControllerTransitioningDelegate */ {
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, TextEditingDelegate {
 
     var rootElementID:Int?
     var composingDelegate:ElementComposingDelegate?
@@ -36,6 +36,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     var editingStyle:ElementEditingStyle = .EditCurrent{
         didSet{
+            if editingStyle == .AddNew
+            {
+                self.newElement = Element()
+                self.newElement?.rootElementId = self.rootElementID
+                self.newElement?.passWhomIDs = Array(self.contactIDsToPass)
+            }
             configureBottomToolbar()
         }
     }
@@ -297,6 +303,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     //MARK: UITableVIewDelegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if self.newElement == nil // we ara for
+        {
+            
+        }
         if indexPath.section < 2//3
         {
             if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextLabelCell
@@ -309,25 +320,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 {
                     editingConfuguration = .Details
                 }
-                
-//                switch indexPath.section
-//                {
-//                case 0: //title celll
-//                    let indexpathForDetailsCell = NSIndexPath(forRow: 0, inSection: 1)
-//                    if let detailsCell = table.cellForRowAtIndexPath(indexpathForDetailsCell) as? NewElementTextViewCell
-//                    {
-//                        self.newElement?.details = detailsCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
-//                    }
-//                case 1: //details cell
-//                    let indexpathForTitleCell = NSIndexPath(forRow: 0, inSection: 0)
-//                    if let titleCell = table.cellForRowAtIndexPath(indexpathForTitleCell) as? NewElementTextViewCell
-//                    {
-//                        self.newElement?.title = titleCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
-//                    }
-//                default:
-//                    break
-//                }
-                
             }
             else if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextViewCell
             {
@@ -418,35 +410,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         table.beginUpdates()
         table.endUpdates()
     }
-    
-    //MARK: UIViewControllerTransitioningDelegate
-//    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//        transitionAnimator?.transitionDirection = .FadeIn
-//        return transitionAnimator
-//    }
-//    
-//    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//        transitionAnimator?.transitionDirection = .FadeOut
-//        return transitionAnimator
-//    }
-    
-    
-    //MARK Modal View Controler
-//    func startEditingElementText(isTitle:Bool)
-//    {
-//        
-//        //self.performSegueWithIdentifier("ShowTextEditing", sender: isTitle)
-//        let storyBoard = self.storyboard
-//        if let textEditorVC = storyboard!.instantiateViewControllerWithIdentifier("SimpleTextEditor") as? SimpleTextEditorVC
-//        {
-//            textEditorVC.isEditingElementTitle = isTitle
-//            textEditorVC.editingDelegate = self
-//            textEditorVC.modalPresentationStyle = .Custom
-//            textEditorVC.transitioningDelegate = self
-//            
-//            self.presentViewController(textEditorVC, animated: true, completion: nil)
-//        }
-//    }
     
     func cancelButtonTap(sender:AnyObject?)
     {

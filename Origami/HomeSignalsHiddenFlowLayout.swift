@@ -10,7 +10,7 @@ import Foundation
 
 class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
 {
-    var cellAttributes:[NSIndexPath : UICollectionViewLayoutAttributes]?
+    var cellAttributes:  [NSIndexPath : UICollectionViewLayoutAttributes]?
     var headerAttributes:[NSIndexPath : UICollectionViewLayoutAttributes]?
     
     //override contentSize function
@@ -150,7 +150,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             let headerFrame = CGRectMake(0.0, offsetY, self.headerReferenceSize.width, self.headerReferenceSize.height)
             sectionHeaderAttributes.frame = headerFrame
             
-            self.headerAttributes![indexPathForSection] = sectionHeaderAttributes
+            headerAttributes![indexPathForSection] = sectionHeaderAttributes
             
             //move down
             offsetY += sectionHeaderAttributes.frame.size.height + self.minimumLineSpacing
@@ -193,7 +193,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                     {
                         itemAttributes.zIndex = 1000
                         itemAttributes.frame = itemFrame
-                        self.cellAttributes![indexPathForItem] = itemAttributes
+                        cellAttributes![indexPathForItem] = itemAttributes
                     }
                     else if currentItem == 1 //MessagesHolderCell
                     {
@@ -207,13 +207,13 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                         }
                         
                         itemAttributes.frame = messagesCellFrame
-                        self.cellAttributes![indexPathForItem] = itemAttributes
+                        cellAttributes![indexPathForItem] = itemAttributes
                     }
                     else
                     {
                         itemAttributes.zIndex = itemAttributes.indexPath.item
                         itemAttributes.frame = itemFrame
-                        self.cellAttributes![indexPathForItem] = itemAttributes
+                        cellAttributes![indexPathForItem] = itemAttributes
                     }
                 }
                 else if section > 0
@@ -271,17 +271,18 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         
         let contentSizeLocal = CGSizeMake(viewWidth, bottom)
         self.sizeOfContent = contentSizeLocal
+        
     }
     
     override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
         if let oldBounds = self.collectionView?.bounds
         {
-            if oldBounds != newBounds
+            if oldBounds.size != newBounds.size
             {
-                cellAttributes?.removeAll(keepCapacity: false)
-                headerAttributes?.removeAll(keepCapacity: false)
-                cellAttributes = nil
-                headerAttributes = nil
+//                cellAttributes?.removeAll(keepCapacity: false)
+//                headerAttributes?.removeAll(keepCapacity: false)
+//                cellAttributes = nil
+//                headerAttributes = nil
                 
                 return true
             }
@@ -292,7 +293,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
     {
         var superForIndexPath = super.layoutAttributesForItemAtIndexPath(indexPath)
-        if let existingItemAttrs =  self.cellAttributes?[indexPath]
+        if let existingItemAttrs =  cellAttributes?[indexPath]
         {
             superForIndexPath = existingItemAttrs
         }
@@ -307,7 +308,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     {
         if elementKind == UICollectionElementKindSectionHeader
         {
-            if let headerAttrs = self.headerAttributes?[indexPath]
+            if let headerAttrs = headerAttributes?[indexPath]
             {
                 return headerAttrs
             }
@@ -328,44 +329,59 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]?
     {
-        println("\(rect)")
+        //println("\(rect)")
         if let superAttrs = super.layoutAttributesForElementsInRect(rect)
         {
             var existingAttrs = [UICollectionViewLayoutAttributes]()
             
-            for attr in superAttrs
+//            for attr in superAttrs
+//            {
+//                let currentElementCategory = attr.representedElementCategory.rawValue
+//                
+//                switch currentElementCategory
+//                {
+//                case UICollectionElementCategory.Cell.rawValue:
+//                    if let existingItemAttr = cellAttributes?[attr.indexPath]
+//                    {
+//                        existingAttrs.append(existingItemAttr)
+//                    }
+//                case UICollectionElementCategory.SupplementaryView.rawValue:
+//                    if attr.representedElementKind == UICollectionElementKindSectionHeader
+//                    {
+//                        if let existingHeader = headerAttributes?[attr.indexPath]
+//                        {
+//                            existingAttrs.append(existingHeader)
+//                        }
+//                    }
+//                case UICollectionElementCategory.DecorationView.rawValue:
+//                    break
+//                default:
+//                    break
+//                }
+//            }
+            
+            if let cellAttrs = cellAttributes
             {
-                let currentElementCategory = attr.representedElementCategory.rawValue
-                
-                switch currentElementCategory
+                for (_ , cellAttr) in cellAttributes!
                 {
-                case UICollectionElementCategory.Cell.rawValue:
-                    if let existingItemAttr = self.cellAttributes?[attr.indexPath]
+                    if CGRectIntersectsRect(rect, cellAttr.frame)
                     {
-                        existingAttrs.append(existingItemAttr)
+                        existingAttrs.append(cellAttr)
                     }
-                case UICollectionElementCategory.SupplementaryView.rawValue:
-                    if attr.representedElementKind == UICollectionElementKindSectionHeader
-                    {
-                        if let existingHeader = self.headerAttributes?[attr.indexPath]
-                        {
-                            existingAttrs.append(existingHeader)
-                        }
-                    }
-                case UICollectionElementCategory.DecorationView.rawValue:
-                    break
-                default:
-                    break
                 }
             }
             
-//            existingAttrs.filter({ (attributeToCheck) -> Bool in
-//                if rect.intersects(attributeToCheck.frame)
-//                {
-//                    return true
-//                }
-//                return false
-//            })
+            if let headerAttrs = headerAttributes
+            {
+                for (_, headerAttr) in headerAttributes!
+                {
+                    if CGRectIntersectsRect(rect, headerAttr.frame)
+                    {
+                        existingAttrs.append(headerAttr)
+                    }
+                }
+            }
+           
             
             if existingAttrs.isEmpty
             {
@@ -373,11 +389,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                 return superAttrs
             }
             
-            //println(" returning <<<EXISTING>>> attributes fo rect: \(rect)")
-//            for attr in existingAttrs
-//            {
-//                println("\n kind: \(attr.representedElementKind), frame: \(attr.frame)")
-//            }
             return existingAttrs
         }
         

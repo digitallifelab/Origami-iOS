@@ -63,6 +63,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
+        prepareCollectionViewDataAndLayout()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -383,6 +384,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 newElementCreator.composingDelegate = self
                 newElementCreator.rootElementID = elementId
+                if let passwhomIDs = currentElement?.passWhomIDs
+                {
+                    newElementCreator.contactIDsToPass = Set(passwhomIDs)// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
+                }
                 newElementCreator.modalPresentationStyle = .Custom
                 newElementCreator.transitioningDelegate = self
                 

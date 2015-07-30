@@ -195,7 +195,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             //println(" returning <<<EXISTING>>> attributes fo rect: \(rect)")
 //            for attr in existingAttrs
 //            {
-//                println("\n kind: \(attr.representedElementKind), frame: \(attr.frame)")
+//                println("\n kind: \(attr.representedElementKind), frame: \(attr.frame)\n")
 //            }
             return existingAttrs
             

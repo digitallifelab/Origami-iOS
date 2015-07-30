@@ -751,6 +751,7 @@ import ImageIO
     
     func deleteElementFromLocalStorage(elementId:Int)
     {
+        NSLog("   ->Started deleting element from local storage.")
         var index = -1
         var counter = 0
         for element in DataSource.sharedInstance.elements
@@ -827,6 +828,8 @@ import ImageIO
                 }
             }
         }
+        
+        NSLog("   ->Finished deleting element from local storage.")
     }
     
     func cleanAttachesForElement(elementId:Int)
