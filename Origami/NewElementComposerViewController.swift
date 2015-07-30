@@ -15,13 +15,21 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UIViewControllerTransitioningDelegate, TextEditingDelegate {
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, TextEditingDelegate/*, UIViewControllerTransitioningDelegate */ {
 
     var rootElementID:Int?
     var composingDelegate:ElementComposingDelegate?
     lazy var contactIDsToPass:Set<Int> = Set([Int]())
-    var newElement:Element?
-    var transitionAnimator:FadeOpaqueAnimator?
+    var newElement:Element? {
+        didSet{
+            if let passIDs = newElement?.passWhomIDs
+            {
+                contactIDsToPass = Set(passIDs)
+            }
+            table.reloadData()
+        }
+    }
+    //var transitionAnimator:FadeOpaqueAnimator?
     var allContacts = DataSource.sharedInstance.getAllContacts()
     
     var editingConfuguration:CurrentEditingConfiguration = .None
@@ -39,9 +47,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         super.viewDidLoad()
 
         // table view delegate and data source are set in interface builder
-        transitionAnimator = FadeOpaqueAnimator()
+        //transitionAnimator = FadeOpaqueAnimator()
         table.estimatedRowHeight = 80.0
         table.rowHeight = UITableViewAutomaticDimension
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -109,7 +118,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 else
                 {
                     var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-                    configureTextCell(textCell, forIndexPath:indexPath)
+                    configureTextLabelCell(textCell, forIndexPath:indexPath)
                     return textCell
                 }
             
@@ -123,7 +132,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 else
                 {
                     var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-                    configureTextCell(textCell, forIndexPath:indexPath)
+                    configureTextLabelCell(textCell, forIndexPath:indexPath)
                     return textCell
                 }
             
@@ -153,7 +162,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     //MARK:  Tools
-    func configureTextCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
+    func configureTextLabelCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
     {
         if indexPath.section == 0
         {
@@ -249,7 +258,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             cell.nameLabel.text = nameLabelText
             
             //set proper checkbox image
-            if contactIDsToPass.contains(lvContact.contactId!.integerValue)
+            if contactIDsToPass.contains(lvContact.contactId!)
             {
                 cell.checkBox.image = checkedCheckboxImage
             }
@@ -271,13 +280,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
             if let lvContact = self.allContacts?[indexPath.row]
             {
-                if self.contactIDsToPass.contains(lvContact.contactId!.integerValue)
+                if self.contactIDsToPass.contains(lvContact.contactId!)
                 {
-                    self.contactIDsToPass.remove(lvContact.contactId!.integerValue)
+                    self.contactIDsToPass.remove(lvContact.contactId!)
                 }
                 else
                 {
-                    self.contactIDsToPass.insert(lvContact.contactId!.integerValue)
+                    self.contactIDsToPass.insert(lvContact.contactId!)
                 }
                 //self.table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                 self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
@@ -300,24 +309,59 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 {
                     editingConfuguration = .Details
                 }
+                
+//                switch indexPath.section
+//                {
+//                case 0: //title celll
+//                    let indexpathForDetailsCell = NSIndexPath(forRow: 0, inSection: 1)
+//                    if let detailsCell = table.cellForRowAtIndexPath(indexpathForDetailsCell) as? NewElementTextViewCell
+//                    {
+//                        self.newElement?.details = detailsCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
+//                    }
+//                case 1: //details cell
+//                    let indexpathForTitleCell = NSIndexPath(forRow: 0, inSection: 0)
+//                    if let titleCell = table.cellForRowAtIndexPath(indexpathForTitleCell) as? NewElementTextViewCell
+//                    {
+//                        self.newElement?.title = titleCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
+//                    }
+//                default:
+//                    break
+//                }
+                
             }
             else if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextViewCell
             {
                 if cell.isTitleCell
                 {
+                    self.newElement?.title = cell.textView.text //when we switch off editing in the title section - assign current value to our editing element
                     editingConfuguration = .None
                 }
                 else
                 {
+                    self.newElement?.details = cell.textView.text //when we switch off editing in the details section - assign current value to our editing element
                     editingConfuguration = .None
                 }
             }
         }
         else
         {
+           
             editingConfuguration = .None
             contactTappedAtIndexPath(indexPath)
         }
+        
+        let indexpathForDetailsCell = NSIndexPath(forRow: 0, inSection: 1)
+        if let detailsCell = table.cellForRowAtIndexPath(indexpathForDetailsCell) as? NewElementTextViewCell
+        {
+            self.newElement?.details = detailsCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
+        }
+        let indexpathForTitleCell = NSIndexPath(forRow: 0, inSection: 0)
+        if let titleCell = table.cellForRowAtIndexPath(indexpathForTitleCell) as? NewElementTextViewCell
+        {
+            self.newElement?.title = titleCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
+        }
+        
+        
         
         let titlePath = NSIndexPath(forRow: 0, inSection: 0)
         let detailsPath = NSIndexPath(forRow: 0, inSection: 1)
@@ -326,9 +370,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         //tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-    }
+//    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+//        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+//    }
     
     //MARK: ButtonTapDelegate
     func didTapOnButton(button: UIButton) {
@@ -369,40 +413,40 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     
-    func reloadTableViewUpdates()
+    func reloadTableViewUpdates() // this needed to make table view cell grow automatically.
     {
         table.beginUpdates()
         table.endUpdates()
     }
     
     //MARK: UIViewControllerTransitioningDelegate
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transitionAnimator?.transitionDirection = .FadeIn
-        return transitionAnimator
-    }
-    
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        transitionAnimator?.transitionDirection = .FadeOut
-        return transitionAnimator
-    }
+//    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        transitionAnimator?.transitionDirection = .FadeIn
+//        return transitionAnimator
+//    }
+//    
+//    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        transitionAnimator?.transitionDirection = .FadeOut
+//        return transitionAnimator
+//    }
     
     
     //MARK Modal View Controler
-    func startEditingElementText(isTitle:Bool)
-    {
-        
-        //self.performSegueWithIdentifier("ShowTextEditing", sender: isTitle)
-        let storyBoard = self.storyboard
-        if let textEditorVC = storyboard!.instantiateViewControllerWithIdentifier("SimpleTextEditor") as? SimpleTextEditorVC
-        {
-            textEditorVC.isEditingElementTitle = isTitle
-            textEditorVC.editingDelegate = self
-            textEditorVC.modalPresentationStyle = .Custom
-            textEditorVC.transitioningDelegate = self
-            
-            self.presentViewController(textEditorVC, animated: true, completion: nil)
-        }
-    }
+//    func startEditingElementText(isTitle:Bool)
+//    {
+//        
+//        //self.performSegueWithIdentifier("ShowTextEditing", sender: isTitle)
+//        let storyBoard = self.storyboard
+//        if let textEditorVC = storyboard!.instantiateViewControllerWithIdentifier("SimpleTextEditor") as? SimpleTextEditorVC
+//        {
+//            textEditorVC.isEditingElementTitle = isTitle
+//            textEditorVC.editingDelegate = self
+//            textEditorVC.modalPresentationStyle = .Custom
+//            textEditorVC.transitioningDelegate = self
+//            
+//            self.presentViewController(textEditorVC, animated: true, completion: nil)
+//        }
+//    }
     
     func cancelButtonTap(sender:AnyObject?)
     {
@@ -417,15 +461,30 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 anElement.details = ""
             }
+           
             if !contactIDsToPass.isEmpty
             {
-                var contactIDs = Array(contactIDsToPass)
-                contactIDs.sort(>)
-                anElement.passWhomIDs = contactIDs
+                if self.editingStyle == .AddNew
+                {
+                    var contactIDs = Array(contactIDsToPass)
+                    contactIDs.sort(>)
+                    anElement.passWhomIDs = contactIDs
+                }
+                else //EditCurrent
+                {
+                    var contactIDs = Array(contactIDsToPass)
+                    contactIDs.sort(>)
+                    anElement.passWhomIDs = contactIDs
+                }
             }
+            else
+            {
+                
+            }
+           
             if let rootID = self.rootElementID
             {
-                anElement.rootElementId = NSNumber(integer: rootID)
+                anElement.rootElementId = rootID
             }
             composingDelegate?.newElementComposer(self, finishedCreatingNewElement: anElement)
         }

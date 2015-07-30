@@ -119,7 +119,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return nil
         }
-        else if element!.elementId!.integerValue <= 0
+        else if element!.elementId! <= 0
         {
             return nil
         }

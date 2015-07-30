@@ -309,7 +309,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         if let rootId = element.elementId
         {
-            if rootId.integerValue == 0
+            if rootId == 0
             {
                 if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
                 {
@@ -388,7 +388,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             passWhomIDs = [Int]()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number.integerValue)
+                passWhomIDs!.append(number)
             }
         }
         
@@ -398,7 +398,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 if let passWhomIDsArray = passWhomIDs
                 {
                     
-                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsArray, toElement: NSNumber(integer:lvElementId), completion: { (succeededIDs, failedIDs) -> () in
+                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsArray, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
                             println(" added to \(succeededIDs)")

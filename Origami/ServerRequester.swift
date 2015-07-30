@@ -300,7 +300,7 @@ class ServerRequester: NSObject
     }
     
     
-    func loadPassWhomIdsForElementID(elementId:NSNumber, completion completionClosure:([NSNumber]?, NSError?)->() )
+    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:([Int]?, NSError?)->() )
     {
         if let userToken = DataSource.sharedInstance.user?.token as? String{
             
@@ -807,7 +807,7 @@ class ServerRequester: NSObject
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let resultDict = result as? [String:AnyObject]
                 {
-                    println(resultDict)
+                    println("\n ->passElement Response from server: \(resultDict)")
                     completionClosure(success: true, error: nil)
                     return
                 }
@@ -841,7 +841,7 @@ class ServerRequester: NSObject
     {
         let token = DataSource.sharedInstance.user!.token! as! String
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSOperationQueue().addOperationWithBlock { () -> Void in
+        NSOperationQueue.currentQueue()!.addOperationWithBlock { () -> Void in
             var failedIDs = [Int]()
             var succededIDs = [Int]()
             for lvUserID in contactIDs
@@ -854,6 +854,8 @@ class ServerRequester: NSObject
                     request.HTTPMethod = "POST"
                     var lvError:NSError? = nil
                     var urlResponse:NSURLResponse? = nil
+                    
+                    //using SYNCHRONOUS requests because we need to wait FOR loop to finish
                     var responseData:NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse: &urlResponse, error: &lvError)
                     
                     if let error = lvError

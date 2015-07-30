@@ -61,7 +61,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingForTitle:", name: kElementEditTextNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
     }
     
@@ -259,19 +259,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     
     //MARK: Handling buttons and other elements tap in collection view
-    func startEditingForTitle(notification:NSNotification?)
+    func startEditingElement(notification:NSNotification?)
     {
         if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController //self.storyboard?.instantiateViewControllerWithIdentifier("ElementEditingVC") as? ElementTitleAndDetailsEditingVC
         {
-            editingVC.rootElementID = self.currentElement?.rootElementId?.integerValue
+            editingVC.rootElementID = self.currentElement?.rootElementId
             
             editingVC.modalPresentationStyle = .Custom
             editingVC.transitioningDelegate = self
-            editingVC.newElement = self.currentElement!
+            //create copy of current element
+            let copyElement = Element(info:  self.currentElement!.toDictionary())
+            //editingVC.newElement =  copyElement
             editingVC.composingDelegate = self
             
             self.presentViewController(editingVC, animated: true, completion: { () -> Void in
                 editingVC.editingStyle = ElementEditingStyle.EditCurrent
+                editingVC.newElement =  copyElement
             })
         }
     }
@@ -280,7 +283,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         if let element = currentElement,  favourite = element.isFavourite
         {
-            var isFavourite = !favourite.boolValue
+            var isFavourite = !favourite
             var elementCopy = Element(info: element.toDictionary())
             var titleCell:SingleElementTitleCell?
             if let titleCellCheck = notification.object as? SingleElementTitleCell
@@ -293,7 +296,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     if edited
                     {
-                        weakSelf.currentElement!.isFavourite = NSNumber(bool: isFavourite)
+                        weakSelf.currentElement!.isFavourite = isFavourite
                         titleCell?.favourite = isFavourite
                     }
                 }
@@ -341,8 +344,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         if let theElement = currentElement , isSignal = theElement.isSignal
         {
             var elementCopy = Element(info: theElement.toDictionary())
-            let isCurrentlySignal = !isSignal.boolValue
-            elementCopy.isSignal = NSNumber(bool: isCurrentlySignal)
+            let isCurrentlySignal = !isSignal
+            elementCopy.isSignal = isCurrentlySignal
             
             DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
                 if let aSelf = self
@@ -379,7 +382,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             if let elementId = currentElement?.elementId
             {
                 newElementCreator.composingDelegate = self
-                newElementCreator.rootElementID = elementId.integerValue
+                newElementCreator.rootElementID = elementId
                 newElementCreator.modalPresentationStyle = .Custom
                 newElementCreator.transitioningDelegate = self
                 
@@ -452,7 +455,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             passWhomIDs = [Int]()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number.integerValue)
+                passWhomIDs!.append(number)
             }
         }
         
@@ -462,7 +465,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 if let passWhomIDsArray = passWhomIDs // 2
                 {
-                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsArray, toElement: NSNumber(integer:lvElementId), completion: { (succeededIDs, failedIDs) -> () in
+                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsArray, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
                             println(" added to \(succeededIDs)")
@@ -503,9 +506,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func handleEditingElement(element:Element)
     {
-        var elementCopy = Element(info: element.toDictionary())
         
-        DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
+        
+        DataSource.sharedInstance.editElement(element, completionClosure: {[weak self] (edited) -> () in
             if let aSelf = self
             {
                 if edited
@@ -514,17 +517,57 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
                 else
                 {
-                    aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+                    aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
                 }
             }
         })
+        
+        if let passWhomIDs = element.passWhomIDs
+        {
+            if let existingPassWhonIDs = self.currentElement?.passWhomIDs
+            {
+                let existingSet = Set(existingPassWhonIDs)
+                let editedPassWhomIDs = Set(passWhomIDs)
+                
+                let exclusiveSet = existingSet.exclusiveOr(editedPassWhomIDs)
+            }
+            else
+            {
+                if let currentElementID = self.currentElement?.elementId
+                {
+                    DataSource.sharedInstance.addSeveralContacts(passWhomIDs, toElement: currentElementID, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+                        
+                        if let weakSelf = self
+                        {
+                            if succeededIDs.count == passWhomIDs.count
+                            {
+                                
+                                //weakSelf.currentElement?.passWhomIDs = succeededIDs
+                                //commented because theese IDs are already set in "addSeveralContacts"  success method
+                                println("PAssed IDS: \(passWhomIDs) to element")
+                            }
+                            else
+                            {
+                                weakSelf.showAlertWithTitle("Error", message: "Could not assign some contacts to element&", cancelButtonTitle: "Close")
+                            }
+                        }
+                    })
+                }
+                else
+                {
+                    println("  -> Warning >> No Current Element Found....")
+                }
+              
+            }
+          
+        }
     }
     
     func handleDeletingCurrentElement()
     {
         if let elementId = self.currentElement?.elementId
         {
-            DataSource.sharedInstance.deleteElementFromServer(elementId.integerValue, completion: { [weak self] (deleted, error) -> () in
+            DataSource.sharedInstance.deleteElementFromServer(elementId, completion: { [weak self] (deleted, error) -> () in
                 if let weakSelf = self
                 {
                     if deleted
@@ -532,7 +575,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         if let elementId = weakSelf.currentElement?.elementId
                         {
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
-                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementId.integerValue)
+                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementId)
                             
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }

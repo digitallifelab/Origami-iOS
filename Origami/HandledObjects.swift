@@ -159,7 +159,7 @@ class Contact:NSObject
     var userName:NSString?
   
     var lastSync:NSString?
-    var contactId:NSNumber?
+    var contactId:Int?
     
     var mood:NSString?
     var state:NSNumber?
@@ -191,7 +191,7 @@ class Contact:NSObject
         {
             self.elementId = element
         }
-        if let lvContactId = info["ContactId"] as? NSNumber
+        if let lvContactId = info["ContactId"] as? Int
         {
             self.contactId = lvContactId
         }
@@ -283,13 +283,18 @@ class Contact:NSObject
     {
         if let object = contact as? Contact
         {
-            return self.contactId?.integerValue == object.contactId?.integerValue
+            if let selfContactId = self.contactId, let objectContactId = object.contactId
+            {
+                if selfContactId == objectContactId
+                {
+                    return true
+                }
+            }
         }
-        else
-        {
-            return false
-        }
+        
+        return false
     }
+    
     override var hash:Int
     {
         return self.userName!.hashValue ^ self.contactId!.hashValue
@@ -299,15 +304,15 @@ class Contact:NSObject
 
 class Element:NSObject
 {
-    var elementId:NSNumber?
-    var rootElementId:NSNumber?
+    var elementId:Int?
+    var rootElementId:Int?
     var typeId:NSNumber?
     var title:NSString?
     var details:NSString?
     var attachIDs:[NSNumber]?
-    var passWhomIDs:[NSNumber]?
-    var isSignal:NSNumber?
-    var isFavourite:NSNumber?
+    var passWhomIDs:[Int]?
+    var isSignal:Bool?
+    var isFavourite:Bool?
     var hasAttaches:NSNumber?
     var finishState:NSNumber?
     var finishDate:NSDate?
@@ -322,11 +327,7 @@ class Element:NSObject
     convenience init(info:[String:AnyObject])
     {
         self.init()
-        
-        if let passIDs = info["PassWhomIds"] as? [NSNumber]
-        {
-            self.passWhomIDs = passIDs
-        }
+       
         if let attachFiles = info["Attaches"] as? [NSNumber]
         {
             self.attachIDs = attachFiles
@@ -337,11 +338,11 @@ class Element:NSObject
         }
         if let fav = info["IsFavorite"] as? NSNumber
         {
-            self.isFavourite = fav
+            self.isFavourite = fav.boolValue
         }
         if let signal = info["IsSignal"] as? NSNumber
         {
-            self.isSignal = signal
+            self.isSignal = signal.boolValue
         }
         if let lvTitle = info["Title"] as? NSString
         {
@@ -351,11 +352,11 @@ class Element:NSObject
         {
             self.details = lvDescription
         }
-        if let lvId = info["ElementId"] as? NSNumber
+        if let lvId = info["ElementId"] as? Int
         {
             self.elementId = lvId
         }
-        if let rootId = info["RootElementId"] as? NSNumber
+        if let rootId = info["RootElementId"] as? Int
         {
             self.rootElementId = rootId
         }
@@ -395,6 +396,18 @@ class Element:NSObject
         {
             self.archiveDate = archDate
         }
+        if let passIDsValue = info["PassWhomIds"]
+        {
+            if let passIDs = passIDsValue as? [Int]
+            {
+                self.passWhomIDs = passIDs
+                println(" -> \(passIDs) for element \(self.elementId)")
+            }
+            else
+            {
+                println("->Null passWhomIDs for element \(self.elementId)")
+            }
+        }
     }
     
     func toDictionary() -> [String:AnyObject]
@@ -431,7 +444,7 @@ class Element:NSObject
     
     override var hash:Int
         {
-            let integer = self.title!.hashValue ^ self.elementId!.integerValue.hashValue
+            let integer = self.title!.hashValue ^ self.elementId!.hashValue
         return integer
     }
     
@@ -440,24 +453,14 @@ class Element:NSObject
         {
             if self.elementId != nil && lvElement.elementId != nil
             {
-                if self.elementId!.compare(lvElement.elementId!) == .OrderedSame
+                if self.elementId! == lvElement.elementId!
                 {
                     return true
                 }
-                else
-                {
-                    return false
-                }
-            }
-            else
-            {
-                return false
             }
         }
-        else
-        {
-            return false
-        }
+        
+        return false
     }
 }
 

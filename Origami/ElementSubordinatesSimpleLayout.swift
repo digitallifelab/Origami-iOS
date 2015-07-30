@@ -220,8 +220,8 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
     
     private func getSortedElementsDictFromElementsArray(elements:[Element]) -> [String:[Element]]
     {
-        var lvSignals = elements.filter({ (includeElement) -> Bool in  return includeElement.isSignal!.integerValue == 1 })
-        var lvFavourite = elements.filter( { (includeElement) -> Bool in return includeElement.isFavourite!.integerValue == 1})
+        var lvSignals = elements.filter({ (includeElement) -> Bool in  return includeElement.isSignal! == true })
+        var lvFavourite = elements.filter( { (includeElement) -> Bool in return includeElement.isFavourite! == true})
         var otherSet = Set(elements).subtract( Set(lvSignals))
         var otherArray = Array(otherSet)
         
