@@ -15,7 +15,7 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, TextEditingDelegate {
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate/*, TextEditingDelegate*/ {
 
     var rootElementID:Int?
     var composingDelegate:ElementComposingDelegate?
@@ -377,37 +377,37 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     //MARK: TextEditingDelegate
-    func textEditorDidCancel(editor:AnyObject)
-    {
-        if let viewController = editor as? UIViewController
-        {
-            viewController.dismissViewControllerAnimated(true, completion: nil)
-        }
-    }
-    
-    func textEditor(editor: AnyObject, wantsToSubmitNewText newText:String)
-    {
-        if let textEditor = editor as? SimpleTextEditorVC
-        {
-            var reloadTitleCell = false
-            if textEditor.isEditingElementTitle
-            {
-                newElement?.title = newText
-                reloadTitleCell = true
-            }
-            else
-            {
-                newElement?.details = newText
-            }
-            
-            textEditor.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
-                if let weakSelf = self
-                {
-                    weakSelf.table.reloadSections(NSIndexSet(index:(reloadTitleCell) ? 0 : 1), withRowAnimation: .Fade)
-                }
-            })
-        }
-    }
+//    func textEditorDidCancel(editor:AnyObject)
+//    {
+//        if let viewController = editor as? UIViewController
+//        {
+//            viewController.dismissViewControllerAnimated(true, completion: nil)
+//        }
+//    }
+//    
+//    func textEditor(editor: AnyObject, wantsToSubmitNewText newText:String)
+//    {
+//        if let textEditor = editor as? SimpleTextEditorVC
+//        {
+//            var reloadTitleCell = false
+//            if textEditor.isEditingElementTitle
+//            {
+//                newElement?.title = newText
+//                reloadTitleCell = true
+//            }
+//            else
+//            {
+//                newElement?.details = newText
+//            }
+//            
+//            textEditor.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
+//                if let weakSelf = self
+//                {
+//                    weakSelf.table.reloadSections(NSIndexSet(index:(reloadTitleCell) ? 0 : 1), withRowAnimation: .Fade)
+//                }
+//            })
+//        }
+//    }
     
     
     func reloadTableViewUpdates() // this needed to make table view cell grow automatically.
