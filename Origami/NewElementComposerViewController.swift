@@ -64,13 +64,15 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(animated: Bool)
+    {
         table.reloadData()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates", name: "UpdateTextiewCell", object: nil)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(animated: Bool)
+    {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -97,9 +99,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     //MARK:UITableViewDataSource
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    {
         return 3 // no bunnon cells -//   //4 //title, description, buttons, contacts
     }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section < 2//3
         {
@@ -220,6 +224,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         else
         {
             cell.isTitleCell = false
+            
             if let description = newElement?.details as? String
             {
                 if description != ""
@@ -236,8 +241,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             else
             {
-                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-                cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+                cell.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
             }
         }
     }

@@ -52,8 +52,8 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
     {
         var attachCell = collectionView.dequeueReusableCellWithReuseIdentifier("AttachedFileCell", forIndexPath: indexPath) as! ElementDashboardAttachedFileCell
+        
         configureCell(attachCell, forIndexPath: indexPath)
-       // attachCell.setNeedsUpdateConstraints()
 
         return attachCell
     }
@@ -76,6 +76,10 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             cell.titleLabel.text = attachFile.fileName
             cell.attachIcon.image = noImageIcon
            
+            if attachData.isEmpty
+            {
+                return
+            }
             if let mediaFile = attachData[attachFile.attachID!]
             {
                 switch mediaFile.type!

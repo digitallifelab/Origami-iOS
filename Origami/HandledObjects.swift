@@ -396,16 +396,16 @@ class Element:NSObject
         {
             self.archiveDate = archDate
         }
-        if let passIDsValue = info["PassWhomIds"]
+        if info["PassWhomIds"] != nil
         {
-            if let passIDs = passIDsValue as? [Int]
+            if let passIDs = info["PassWhomIds"] as? [Int]
             {
                 self.passWhomIDs = passIDs
                 println(" -> \(passIDs) for element \(self.elementId)")
             }
             else
             {
-                println("->Null passWhomIDs for element \(self.elementId)")
+                //println("->Null passWhomIDs for element \(self.elementId)")
             }
         }
     }

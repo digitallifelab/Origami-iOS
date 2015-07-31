@@ -100,7 +100,7 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
         }
         else
         {
-            return super.layoutAttributesForItemAtIndexPath(indexPath)
+            return UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
         }
     }
     

@@ -300,7 +300,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                             {
                                 if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId).isEmpty
                                 {
-                                    elementWidth *= 2
+                                    elementWidth = HomeCellWideDimension
                                 }
                             }
                         }
@@ -310,7 +310,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                             {
                                 if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId).isEmpty
                                 {
-                                    elementWidth *= 2
+                                    elementWidth = HomeCellWideDimension
                                 }
                             }
                         }

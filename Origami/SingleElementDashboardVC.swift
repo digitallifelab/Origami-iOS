@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate {
 
     var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
@@ -63,7 +63,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
-        prepareCollectionViewDataAndLayout()
+        //prepareCollectionViewDataAndLayout()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -129,10 +129,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                     weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
                                 })
-                                
                             }
-                            
-                            
                         }
                     }
                     else
@@ -378,6 +375,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementAddNewSubordinatePressed()
     {
+//        let semaphore = dispatch_semaphore_create(0)
+//        
+//        if let presentedPopover = self.presentedViewController
+//        {
+//           self.dismissViewControllerAnimated(true, completion: { () -> Void in
+//                dispatch_semaphore_signal(semaphore)
+//           })
+//        }
+//        else
+//        {
+//            dispatch_semaphore_signal(semaphore)
+//        }
+//        
+//        
+//        var timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)) )
+//        dispatch_semaphore_wait(semaphore, timeout)
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
             if let elementId = currentElement?.elementId
@@ -424,12 +437,68 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         println("Solution tapped.")
     }
     
-    
+    //MARK: top left menu popover
     func optionsBarButtonTapped(sender:UIButton?)
     {
-        
+        if let leftTopMenuPopupVC = self.storyboard?.instantiateViewControllerWithIdentifier("EditingMenuPopupVC") as? EditingMenuPopupVC
+        {
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "popoverItemTapped:", name: "PopupMenuItemPressed", object: leftTopMenuPopupVC)
+            leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
+            leftTopMenuPopupVC.modalInPopover = false//true // true disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
+            //leftTopMenuPopupVC.view.frame = CGRectMake(0, 0, 200.0, 150.0)
+            
+            //var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
+            var popoverObject = leftTopMenuPopupVC.popoverPresentationController
+            popoverObject?.permittedArrowDirections = .Any
+            popoverObject?.barButtonItem = self.navigationItem.rightBarButtonItem
+            popoverObject?.delegate = self
+            
+            //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
+            leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 150.0)
+            self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
+                
+            })
+        }
     }
-    
+    //MARK: top left menu popover action
+    func popoverItemTapped(notification:NSNotification?)
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "PopupMenuItemPressed", object: notification?.object)
+        if let note = notification
+        {
+            if let vc = note.object as? EditingMenuPopupVC
+            {
+                var target:String? = nil
+                if let destinationTitle = note.userInfo?["title"] as? String
+                {
+                    target = destinationTitle
+                }
+                self.dismissViewControllerAnimated(true, completion: { [weak self]() -> Void in
+                    if let weakSelf = self
+                    {
+                        if target != nil
+                        {
+                            switch target!
+                            {
+                                case "Add Element":
+                                    weakSelf.elementAddNewSubordinatePressed()
+                                case "Add Attachment":
+                                    weakSelf.startAddingNewAttachFile(nil)
+                                case "Chat":
+                                    weakSelf.showChatForCurrentElement()
+                                default:
+                                    break
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+    //MARK: UIPopoverPresentationControllerDelegate
+    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.None
+    }
     //MARK: ElementComposingDelegate
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
@@ -654,7 +723,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
-    func startAddingNewAttachFile(notification:NSNotification)
+    func startAddingNewAttachFile(notification:NSNotification?)
     {
         if let attachImagePickerVC = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePickerVC") as? ImagePickingViewController
         {
@@ -704,10 +773,19 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func mediaPickerDidCancel(picker:AnyObject)
     {
-        picker.dismissViewControllerAnimated(true, completion: nil)
-
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
+    //MARK: Chat stuff
+    func showChatForCurrentElement()
+    {
+        if let chatVC = self.storyboard?.instantiateViewControllerWithIdentifier("ChatVC") as? ChatVC
+        {
+            chatVC.currentElement = self.currentElement
+            self.navigationController?.pushViewController(chatVC, animated: true)
+        }
+    }
     
     
     //MARK: Alert

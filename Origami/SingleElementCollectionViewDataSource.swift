@@ -157,6 +157,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementAttachesHandler() -> ElementAttachedFilesCollectionHandler?
     {
+        if let existingHandler = attachesHandler
+        {
+            return existingHandler
+        }
+        
         let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
         
         if attaches.isEmpty
@@ -381,11 +386,13 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             var attachesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementAttachesHolderCell", forIndexPath: indexPath) as! SingleElementAttachesCollectionHolderCell
             if let attachHandler = self.attachesHandler
             {
+                attachHandler.attachTapDelegate = self.attachTapDelegate
                 attachesHolderCell.attachesCollectionView.delegate = attachHandler
                 attachesHolderCell.attachesCollectionView.dataSource = attachHandler
                 attachesHandler?.collectionView = attachesHolderCell.attachesCollectionView
-                attachesHolderCell.attachesCollectionView.setCollectionViewLayout(AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count), animated: false)
-                attachHandler.attachTapDelegate = self.attachTapDelegate
+                let aLayout = AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count)
+                attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
+                
             }
             
             return attachesHolderCell
