@@ -202,7 +202,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         if checkOffset < offsetX
         {
             offsetX = checkOffset
-            offsetY += titleFrame.size.height
+            offsetY += titleFrame.size.height // + 10
         }
         
         var itemIndex = 1 //because title in already stored in cellLayoutAttributes  fith indexpath 0-0

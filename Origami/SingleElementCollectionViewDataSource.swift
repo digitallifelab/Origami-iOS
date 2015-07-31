@@ -581,4 +581,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         NSNotificationCenter.defaultCenter().postNotificationName(kElementEditTextNotification, object: nil, userInfo: ["title" : titleEdit])
     }
     
+    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+        if let aCell = cell as? SingleElementTitleCell
+        {
+            aCell.cleanShadow()
+        }
+    }
+    
 }

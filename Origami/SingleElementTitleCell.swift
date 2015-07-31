@@ -17,7 +17,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 self.backgroundColor = kDayCellBackgroundColor
                 favouriteButton.backgroundColor = kDaySignalColor
             case .Night:
-                self.backgroundColor = UIColor.clearColor()
+                self.backgroundColor = UIColor.blackColor()
                 favouriteButton.backgroundColor = kNightSignalColor
             }
         }
@@ -53,21 +53,59 @@ class SingleElementTitleCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let bounds = favouriteButton.bounds
-        let roundedLeftBottomPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
+        //apply shadow to fav button
+        let buttonBounds = favouriteButton.bounds
         
+        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
         var shape = CAShapeLayer()
-        shape.frame = bounds
+        shape.frame = buttonBounds
         shape.path = roundedLeftBottomPath.CGPath
-        
         favouriteButton.layer.mask = shape
         
-        self.layer.shadowOpacity = 0.7
-        self.layer.shadowColor = UIColor.blackColor().CGColor
-        self.layer.shadowRadius = 3.0
-        self.layer.shadowOffset = CGSizeMake(0, 3)
-        self.layer.zPosition = 1000
         self.layer.masksToBounds = false
+        //apply bottom rounded corners to us (CollectionViewCell)
+        let selfBounds = self.bounds
+//        let roundedRectSelfPath = UIBezierPath(roundedRect: selfBounds, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+//        var selfShape = CAShapeLayer()
+//        selfShape.frame = selfBounds
+//        selfShape.path = roundedRectSelfPath.CGPath
+//        self.layer.mask = selfShape
+        
+        //apply shadow to us
+    
+        let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
+        let shadowOpacity:Float = 0.5
+        let shadowOffset = CGSizeMake(0.0, 5.0)
+        let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+
+        
+        self.layer.shadowPath = offsetPath.CGPath
+        self.layer.shadowColor = shadowColor
+        self.layer.shadowOpacity = shadowOpacity
+        self.layer.shadowRadius = 3.0
+        self.layer.zPosition = 1000
+        
     }
     
+    deinit
+    {
+        cleanShadow()
+    }
+    
+    
+    func cleanShadow()
+    {
+        for aLayer in self.superview!.layer.sublayers
+        {
+            if let layer = aLayer as? CALayer
+            {
+                if layer.zPosition == 900
+                {
+                    layer.removeFromSuperlayer()
+                    break
+                }
+            }
+        }
+    }
 }
