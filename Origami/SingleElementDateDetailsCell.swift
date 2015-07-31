@@ -27,6 +27,17 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     @IBOutlet var datesTable:UITableView!
     
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        self.layer.shadowOpacity = 0.7
+        self.layer.shadowColor = UIColor.blackColor().CGColor
+        self.layer.shadowRadius = 3.0
+        self.layer.shadowOffset = CGSizeMake(0, 3)
+        self.layer.zPosition = 1000
+        self.layer.masksToBounds = false
+    }
+    
     //MARK: UITableViewDataSource
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

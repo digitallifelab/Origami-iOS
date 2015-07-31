@@ -1,0 +1,857 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05015B0D142FD40A42BB5D04 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407101A16934C9A59EF1AC50 /* Foundation.framework */; };
+		31FF6E5F795F3BD06B761DCE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407101A16934C9A59EF1AC50 /* Foundation.framework */; };
+		3DE4D1F5123F23707D4BF621 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407101A16934C9A59EF1AC50 /* Foundation.framework */; };
+		4344D24E0A709EB370A13C8E /* LGSideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = FFA05C8DA1A93A2742286CDF /* LGSideMenuController.h */; };
+		552E47DAFBCE9DF27CDD0E5C /* LGSideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = FFA05C8DA1A93A2742286CDF /* LGSideMenuController.h */; };
+		5541C18594F88F7CB14C2E68 /* LGSideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B3C8CE4DD3A56C3CBEBA1EC /* LGSideMenuController.m */; };
+		887F4375BEBDC58849C5BD37 /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9321F6DC768C7550F9BB67A6 /* Pods-dummy.m */; };
+		9512A114A5B6F1C7E2B71239 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407101A16934C9A59EF1AC50 /* Foundation.framework */; };
+		A6CA43391308BB888A599CDA /* LGSideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B3C8CE4DD3A56C3CBEBA1EC /* LGSideMenuController.m */; };
+		B276D77DDD5E9FFC018AE7DB /* LGSideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = FFA05C8DA1A93A2742286CDF /* LGSideMenuController.h */; };
+		B2B0DB9A72E7E7846EA3A5DE /* Pods-OrigamiTests-LGSideMenuController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3389826E70421F62FC61BA9B /* Pods-OrigamiTests-LGSideMenuController-dummy.m */; };
+		B98BE3A9DA6B5B69FB577064 /* Pods-Origami-LGSideMenuController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 356F699B458CF0F4DE2648AE /* Pods-Origami-LGSideMenuController-dummy.m */; };
+		C8E3002A1FE7D0C9D561B918 /* Pods-OrigamiTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = BFC056F171FC7FE2178AFE59 /* Pods-OrigamiTests-dummy.m */; };
+		D4FEC6BAA516E23097AC787B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407101A16934C9A59EF1AC50 /* Foundation.framework */; };
+		ECA16963727C464EFA42B2B0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 407101A16934C9A59EF1AC50 /* Foundation.framework */; };
+		F02624D196967DC32D1D169B /* LGSideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B3C8CE4DD3A56C3CBEBA1EC /* LGSideMenuController.m */; };
+		F9A688A1A05BC10A02361205 /* Pods-Origami-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 87A5B8D2EF71233683CCB0C4 /* Pods-Origami-dummy.m */; };
+		FA1EBCF2219C56F8BE73863F /* Pods-LGSideMenuController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 019EB3E7A7B5F68E9A4B045A /* Pods-LGSideMenuController-dummy.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		23B429CC52879B5C828624E0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 788999817C65540DA186C42D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 64BC55E86C5EA7CF08D1DDA1;
+			remoteInfo = "Pods-OrigamiTests-LGSideMenuController";
+		};
+		7478C650F1D302C10A6D5413 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 788999817C65540DA186C42D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01F705B9F692B7DF90953F86;
+			remoteInfo = "Pods-LGSideMenuController";
+		};
+		ED219D5D011AF67723C82B3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 788999817C65540DA186C42D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD179E21A1410F9919F034E;
+			remoteInfo = "Pods-Origami-LGSideMenuController";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		019EB3E7A7B5F68E9A4B045A /* Pods-LGSideMenuController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-LGSideMenuController-dummy.m"; sourceTree = "<group>"; };
+		0286D8F3935B7E75F844E165 /* Pods-LGSideMenuController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LGSideMenuController.xcconfig"; sourceTree = "<group>"; };
+		0A69AC557ACE9F6E9D2DECA3 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
+		0F6D93472489D8E6F6CB15D3 /* Pods-OrigamiTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-OrigamiTests-acknowledgements.plist"; sourceTree = "<group>"; };
+		174F7199C76A77AAFC17F840 /* Pods-OrigamiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-OrigamiTests.release.xcconfig"; sourceTree = "<group>"; };
+		1A6C8C38D4AE9DD10D23A23A /* Pods-Origami.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Origami.debug.xcconfig"; sourceTree = "<group>"; };
+		1B8DA37DC50EA6F6D634DA3C /* libPods-OrigamiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OrigamiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1FB46598F9790066258973B4 /* Pods-OrigamiTests-LGSideMenuController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OrigamiTests-LGSideMenuController-Private.xcconfig"; path = "../Pods-OrigamiTests-LGSideMenuController/Pods-OrigamiTests-LGSideMenuController-Private.xcconfig"; sourceTree = "<group>"; };
+		2144278C0F27F41ACE3D8EDC /* libPods-LGSideMenuController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-LGSideMenuController.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		262B72F40FC83D042ED5E151 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A45A10F13EF7B125497AD9E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
+		31A22DA5CE5FC69F0831383B /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
+		3389826E70421F62FC61BA9B /* Pods-OrigamiTests-LGSideMenuController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "Pods-OrigamiTests-LGSideMenuController-dummy.m"; path = "../Pods-OrigamiTests-LGSideMenuController/Pods-OrigamiTests-LGSideMenuController-dummy.m"; sourceTree = "<group>"; };
+		356F699B458CF0F4DE2648AE /* Pods-Origami-LGSideMenuController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "Pods-Origami-LGSideMenuController-dummy.m"; path = "../Pods-Origami-LGSideMenuController/Pods-Origami-LGSideMenuController-dummy.m"; sourceTree = "<group>"; };
+		3737655B33F9A7015550260A /* Pods-OrigamiTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-OrigamiTests-resources.sh"; sourceTree = "<group>"; };
+		391570B8D0F4D8425B789843 /* Pods-OrigamiTests-LGSideMenuController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OrigamiTests-LGSideMenuController.xcconfig"; path = "../Pods-OrigamiTests-LGSideMenuController/Pods-OrigamiTests-LGSideMenuController.xcconfig"; sourceTree = "<group>"; };
+		3A119911BF6E28A4768F68FE /* Pods-Origami-LGSideMenuController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Origami-LGSideMenuController-Private.xcconfig"; path = "../Pods-Origami-LGSideMenuController/Pods-Origami-LGSideMenuController-Private.xcconfig"; sourceTree = "<group>"; };
+		3F72500B07C2E12249907C85 /* libPods-OrigamiTests-LGSideMenuController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OrigamiTests-LGSideMenuController.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		407101A16934C9A59EF1AC50 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS7.1.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		54D23CE9B61EB0AF392D01E7 /* Pods-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-environment.h"; sourceTree = "<group>"; };
+		6CD6707F7168545C2174449C /* Pods-Origami-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Origami-acknowledgements.markdown"; sourceTree = "<group>"; };
+		7E928C75A990B98F73B4FE41 /* Pods-OrigamiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-OrigamiTests.debug.xcconfig"; sourceTree = "<group>"; };
+		805F5AC9C6F2BD072DA8BB39 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
+		8320466D64B6364B2DB3BAD9 /* libPods-Origami-LGSideMenuController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Origami-LGSideMenuController.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		836E2B96419831510227EBFD /* Pods-LGSideMenuController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-LGSideMenuController-prefix.pch"; sourceTree = "<group>"; };
+		87A5B8D2EF71233683CCB0C4 /* Pods-Origami-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Origami-dummy.m"; sourceTree = "<group>"; };
+		8B3C8CE4DD3A56C3CBEBA1EC /* LGSideMenuController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LGSideMenuController.m; path = LGSideMenuController/LGSideMenuController.m; sourceTree = "<group>"; };
+		8FF0E85DDA72CF573514F97F /* Pods-OrigamiTests-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-OrigamiTests-environment.h"; sourceTree = "<group>"; };
+		9321F6DC768C7550F9BB67A6 /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
+		A34F4B54F9C827BBDB88EBA4 /* Pods-Origami-LGSideMenuController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "Pods-Origami-LGSideMenuController-prefix.pch"; path = "../Pods-Origami-LGSideMenuController/Pods-Origami-LGSideMenuController-prefix.pch"; sourceTree = "<group>"; };
+		A46E16029398CD0E1F75DE67 /* libPods-Origami.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Origami.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A831F0E9E2306AE19FCFA5C9 /* Pods-Origami-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Origami-acknowledgements.plist"; sourceTree = "<group>"; };
+		B5201B29D992C0BCE8DEFF6F /* Pods-Origami-LGSideMenuController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Origami-LGSideMenuController.xcconfig"; path = "../Pods-Origami-LGSideMenuController/Pods-Origami-LGSideMenuController.xcconfig"; sourceTree = "<group>"; };
+		B60A102F2777EBDA86DB8C28 /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
+		BFC056F171FC7FE2178AFE59 /* Pods-OrigamiTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-OrigamiTests-dummy.m"; sourceTree = "<group>"; };
+		C48D583EA4C1971F0F97CD00 /* Pods-OrigamiTests-LGSideMenuController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "Pods-OrigamiTests-LGSideMenuController-prefix.pch"; path = "../Pods-OrigamiTests-LGSideMenuController/Pods-OrigamiTests-LGSideMenuController-prefix.pch"; sourceTree = "<group>"; };
+		DAA9652841733E70004B2676 /* Pods-Origami-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Origami-resources.sh"; sourceTree = "<group>"; };
+		DE9A1A487DA89809D538D1B8 /* Pods-LGSideMenuController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-LGSideMenuController-Private.xcconfig"; sourceTree = "<group>"; };
+		F35B0F9544BE2F53AB69CA3E /* Pods-OrigamiTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-OrigamiTests-acknowledgements.markdown"; sourceTree = "<group>"; };
+		F39291E7A7E47326E29AF992 /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F6D4C3C948ACAEA255EA8A08 /* Pods-Origami.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Origami.release.xcconfig"; sourceTree = "<group>"; };
+		FD0A0F513B231F8318E22C23 /* Pods-Origami-environment.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-Origami-environment.h"; sourceTree = "<group>"; };
+		FFA05C8DA1A93A2742286CDF /* LGSideMenuController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = LGSideMenuController.h; path = LGSideMenuController/LGSideMenuController.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		740CFB77F03A293B7E7C6AFC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9512A114A5B6F1C7E2B71239 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89501EFD25A0818EB325FA77 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31FF6E5F795F3BD06B761DCE /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9EDB3566A2C22170F130E6A8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4FEC6BAA516E23097AC787B /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8EDEB1373067C3899068671 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECA16963727C464EFA42B2B0 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F98C0B42B23F982FBE9FC079 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DE4D1F5123F23707D4BF621 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF1BEE5A4F2BB514469DF682 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05015B0D142FD40A42BB5D04 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		389EACD0D73C0F61B65A79D4 = {
+			isa = PBXGroup;
+			children = (
+				F39291E7A7E47326E29AF992 /* Podfile */,
+				E5E720F66B2E35982F41EBA1 /* Frameworks */,
+				A013415A7584CFF68910B283 /* Pods */,
+				8E32515DFD827B70C936E546 /* Products */,
+				C4B7FD50604E9EAEC76A5B1A /* Targets Support Files */,
+			);
+			sourceTree = "<group>";
+		};
+		3ABFE40D9F7583D1964FD60F /* Pods-OrigamiTests */ = {
+			isa = PBXGroup;
+			children = (
+				F35B0F9544BE2F53AB69CA3E /* Pods-OrigamiTests-acknowledgements.markdown */,
+				0F6D93472489D8E6F6CB15D3 /* Pods-OrigamiTests-acknowledgements.plist */,
+				BFC056F171FC7FE2178AFE59 /* Pods-OrigamiTests-dummy.m */,
+				8FF0E85DDA72CF573514F97F /* Pods-OrigamiTests-environment.h */,
+				3737655B33F9A7015550260A /* Pods-OrigamiTests-resources.sh */,
+				7E928C75A990B98F73B4FE41 /* Pods-OrigamiTests.debug.xcconfig */,
+				174F7199C76A77AAFC17F840 /* Pods-OrigamiTests.release.xcconfig */,
+			);
+			name = "Pods-OrigamiTests";
+			path = "Target Support Files/Pods-OrigamiTests";
+			sourceTree = "<group>";
+		};
+		7554512B89B854BDE60F8373 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				0286D8F3935B7E75F844E165 /* Pods-LGSideMenuController.xcconfig */,
+				DE9A1A487DA89809D538D1B8 /* Pods-LGSideMenuController-Private.xcconfig */,
+				019EB3E7A7B5F68E9A4B045A /* Pods-LGSideMenuController-dummy.m */,
+				836E2B96419831510227EBFD /* Pods-LGSideMenuController-prefix.pch */,
+				B5201B29D992C0BCE8DEFF6F /* Pods-Origami-LGSideMenuController.xcconfig */,
+				3A119911BF6E28A4768F68FE /* Pods-Origami-LGSideMenuController-Private.xcconfig */,
+				356F699B458CF0F4DE2648AE /* Pods-Origami-LGSideMenuController-dummy.m */,
+				A34F4B54F9C827BBDB88EBA4 /* Pods-Origami-LGSideMenuController-prefix.pch */,
+				391570B8D0F4D8425B789843 /* Pods-OrigamiTests-LGSideMenuController.xcconfig */,
+				1FB46598F9790066258973B4 /* Pods-OrigamiTests-LGSideMenuController-Private.xcconfig */,
+				3389826E70421F62FC61BA9B /* Pods-OrigamiTests-LGSideMenuController-dummy.m */,
+				C48D583EA4C1971F0F97CD00 /* Pods-OrigamiTests-LGSideMenuController-prefix.pch */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/Pods-LGSideMenuController";
+			sourceTree = "<group>";
+		};
+		7DC0C3CA232D349BB3939271 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0A69AC557ACE9F6E9D2DECA3 /* Pods-acknowledgements.markdown */,
+				805F5AC9C6F2BD072DA8BB39 /* Pods-acknowledgements.plist */,
+				9321F6DC768C7550F9BB67A6 /* Pods-dummy.m */,
+				54D23CE9B61EB0AF392D01E7 /* Pods-environment.h */,
+				B60A102F2777EBDA86DB8C28 /* Pods-resources.sh */,
+				31A22DA5CE5FC69F0831383B /* Pods.debug.xcconfig */,
+				2A45A10F13EF7B125497AD9E /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			path = "Target Support Files/Pods";
+			sourceTree = "<group>";
+		};
+		7EE60BD0659EAC56E28DC25A /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				407101A16934C9A59EF1AC50 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		8E32515DFD827B70C936E546 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				262B72F40FC83D042ED5E151 /* libPods.a */,
+				2144278C0F27F41ACE3D8EDC /* libPods-LGSideMenuController.a */,
+				A46E16029398CD0E1F75DE67 /* libPods-Origami.a */,
+				8320466D64B6364B2DB3BAD9 /* libPods-Origami-LGSideMenuController.a */,
+				1B8DA37DC50EA6F6D634DA3C /* libPods-OrigamiTests.a */,
+				3F72500B07C2E12249907C85 /* libPods-OrigamiTests-LGSideMenuController.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A013415A7584CFF68910B283 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				A10C6D2F599474ED4FB1425F /* LGSideMenuController */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		A10C6D2F599474ED4FB1425F /* LGSideMenuController */ = {
+			isa = PBXGroup;
+			children = (
+				FFA05C8DA1A93A2742286CDF /* LGSideMenuController.h */,
+				8B3C8CE4DD3A56C3CBEBA1EC /* LGSideMenuController.m */,
+				7554512B89B854BDE60F8373 /* Support Files */,
+			);
+			path = LGSideMenuController;
+			sourceTree = "<group>";
+		};
+		AB75CDF4D86228BB5A09F64B /* Pods-Origami */ = {
+			isa = PBXGroup;
+			children = (
+				6CD6707F7168545C2174449C /* Pods-Origami-acknowledgements.markdown */,
+				A831F0E9E2306AE19FCFA5C9 /* Pods-Origami-acknowledgements.plist */,
+				87A5B8D2EF71233683CCB0C4 /* Pods-Origami-dummy.m */,
+				FD0A0F513B231F8318E22C23 /* Pods-Origami-environment.h */,
+				DAA9652841733E70004B2676 /* Pods-Origami-resources.sh */,
+				1A6C8C38D4AE9DD10D23A23A /* Pods-Origami.debug.xcconfig */,
+				F6D4C3C948ACAEA255EA8A08 /* Pods-Origami.release.xcconfig */,
+			);
+			name = "Pods-Origami";
+			path = "Target Support Files/Pods-Origami";
+			sourceTree = "<group>";
+		};
+		C4B7FD50604E9EAEC76A5B1A /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				7DC0C3CA232D349BB3939271 /* Pods */,
+				AB75CDF4D86228BB5A09F64B /* Pods-Origami */,
+				3ABFE40D9F7583D1964FD60F /* Pods-OrigamiTests */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		E5E720F66B2E35982F41EBA1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7EE60BD0659EAC56E28DC25A /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		1CCD29A1AABD07B70F61CD8E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4344D24E0A709EB370A13C8E /* LGSideMenuController.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		26094713AE66779E1849F7B8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B276D77DDD5E9FFC018AE7DB /* LGSideMenuController.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8B5DD8336B64602EC2788B2 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				552E47DAFBCE9DF27CDD0E5C /* LGSideMenuController.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		01F705B9F692B7DF90953F86 /* Pods-LGSideMenuController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 41B03E4BD8E5B40DDCB0B6B6 /* Build configuration list for PBXNativeTarget "Pods-LGSideMenuController" */;
+			buildPhases = (
+				3C7AF596BCA4A1860C7F8626 /* Sources */,
+				F8EDEB1373067C3899068671 /* Frameworks */,
+				A8B5DD8336B64602EC2788B2 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-LGSideMenuController";
+			productName = "Pods-LGSideMenuController";
+			productReference = 2144278C0F27F41ACE3D8EDC /* libPods-LGSideMenuController.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		0BDE87E53D5DD15F8A2E3DBE /* Pods-Origami */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 894CC7D650684F56F6B0D278 /* Build configuration list for PBXNativeTarget "Pods-Origami" */;
+			buildPhases = (
+				8704BDEA7A922C0610DF835A /* Sources */,
+				9EDB3566A2C22170F130E6A8 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9DE25A5019CE669DF776B867 /* PBXTargetDependency */,
+			);
+			name = "Pods-Origami";
+			productName = "Pods-Origami";
+			productReference = A46E16029398CD0E1F75DE67 /* libPods-Origami.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		4D79F4B4BDA893D314F62021 /* Pods */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 11EE69CEC91522BC385237B5 /* Build configuration list for PBXNativeTarget "Pods" */;
+			buildPhases = (
+				8513A5999A75860F39EE19D4 /* Sources */,
+				F98C0B42B23F982FBE9FC079 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B87D97014667E20057432184 /* PBXTargetDependency */,
+			);
+			name = Pods;
+			productName = Pods;
+			productReference = 262B72F40FC83D042ED5E151 /* libPods.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		64BC55E86C5EA7CF08D1DDA1 /* Pods-OrigamiTests-LGSideMenuController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 63A6607AE2E279F227E44671 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests-LGSideMenuController" */;
+			buildPhases = (
+				E22E25A879CC85A685258AE4 /* Sources */,
+				89501EFD25A0818EB325FA77 /* Frameworks */,
+				26094713AE66779E1849F7B8 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-OrigamiTests-LGSideMenuController";
+			productName = "Pods-OrigamiTests-LGSideMenuController";
+			productReference = 3F72500B07C2E12249907C85 /* libPods-OrigamiTests-LGSideMenuController.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		8DD179E21A1410F9919F034E /* Pods-Origami-LGSideMenuController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9BDF2AE4601F1E3BE2569F57 /* Build configuration list for PBXNativeTarget "Pods-Origami-LGSideMenuController" */;
+			buildPhases = (
+				3DB0570764CA81709CBA28D8 /* Sources */,
+				FF1BEE5A4F2BB514469DF682 /* Frameworks */,
+				1CCD29A1AABD07B70F61CD8E /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Pods-Origami-LGSideMenuController";
+			productName = "Pods-Origami-LGSideMenuController";
+			productReference = 8320466D64B6364B2DB3BAD9 /* libPods-Origami-LGSideMenuController.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		EDA4C42C5DC9FB6F7B39BE5B /* Pods-OrigamiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EB9AB5C989D8ADA233CA9CC8 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests" */;
+			buildPhases = (
+				9B2EBE6F459D6480BAD1088F /* Sources */,
+				740CFB77F03A293B7E7C6AFC /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C4EE504C7F27DA25B7762F9C /* PBXTargetDependency */,
+			);
+			name = "Pods-OrigamiTests";
+			productName = "Pods-OrigamiTests";
+			productReference = 1B8DA37DC50EA6F6D634DA3C /* libPods-OrigamiTests.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		788999817C65540DA186C42D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
+			buildConfigurationList = B13AEF364C1666C003ED5DBB /* Build configuration list for PBXProject "Pods" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 389EACD0D73C0F61B65A79D4;
+			productRefGroup = 8E32515DFD827B70C936E546 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4D79F4B4BDA893D314F62021 /* Pods */,
+				01F705B9F692B7DF90953F86 /* Pods-LGSideMenuController */,
+				0BDE87E53D5DD15F8A2E3DBE /* Pods-Origami */,
+				8DD179E21A1410F9919F034E /* Pods-Origami-LGSideMenuController */,
+				EDA4C42C5DC9FB6F7B39BE5B /* Pods-OrigamiTests */,
+				64BC55E86C5EA7CF08D1DDA1 /* Pods-OrigamiTests-LGSideMenuController */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3C7AF596BCA4A1860C7F8626 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6CA43391308BB888A599CDA /* LGSideMenuController.m in Sources */,
+				FA1EBCF2219C56F8BE73863F /* Pods-LGSideMenuController-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DB0570764CA81709CBA28D8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F02624D196967DC32D1D169B /* LGSideMenuController.m in Sources */,
+				B98BE3A9DA6B5B69FB577064 /* Pods-Origami-LGSideMenuController-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8513A5999A75860F39EE19D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				887F4375BEBDC58849C5BD37 /* Pods-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8704BDEA7A922C0610DF835A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F9A688A1A05BC10A02361205 /* Pods-Origami-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B2EBE6F459D6480BAD1088F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8E3002A1FE7D0C9D561B918 /* Pods-OrigamiTests-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E22E25A879CC85A685258AE4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5541C18594F88F7CB14C2E68 /* LGSideMenuController.m in Sources */,
+				B2B0DB9A72E7E7846EA3A5DE /* Pods-OrigamiTests-LGSideMenuController-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9DE25A5019CE669DF776B867 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-Origami-LGSideMenuController";
+			target = 8DD179E21A1410F9919F034E /* Pods-Origami-LGSideMenuController */;
+			targetProxy = ED219D5D011AF67723C82B3A /* PBXContainerItemProxy */;
+		};
+		B87D97014667E20057432184 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-LGSideMenuController";
+			target = 01F705B9F692B7DF90953F86 /* Pods-LGSideMenuController */;
+			targetProxy = 7478C650F1D302C10A6D5413 /* PBXContainerItemProxy */;
+		};
+		C4EE504C7F27DA25B7762F9C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "Pods-OrigamiTests-LGSideMenuController";
+			target = 64BC55E86C5EA7CF08D1DDA1 /* Pods-OrigamiTests-LGSideMenuController */;
+			targetProxy = 23B429CC52879B5C828624E0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0A089A18659DFFB16BFA05DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F6D4C3C948ACAEA255EA8A08 /* Pods-Origami.release.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		0C27B4BD5B0B50D94D5641FB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE9A1A487DA89809D538D1B8 /* Pods-LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-LGSideMenuController/Pods-LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		1591A94C45C4F1F6632687E1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				ONLY_ACTIVE_ARCH = YES;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+			};
+			name = Debug;
+		};
+		2A072F3FAF86AE2B8D83A47E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1FB46598F9790066258973B4 /* Pods-OrigamiTests-LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-OrigamiTests-LGSideMenuController/Pods-OrigamiTests-LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		4037AFFC49B3E3649A809FB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2A45A10F13EF7B125497AD9E /* Pods.release.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		4A48AE4EB854520BDEB83328 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1A6C8C38D4AE9DD10D23A23A /* Pods-Origami.debug.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		4D39CC11676E8A1B66E6983A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E928C75A990B98F73B4FE41 /* Pods-OrigamiTests.debug.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		62793D22957F4A3723861FC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1FB46598F9790066258973B4 /* Pods-OrigamiTests-LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-OrigamiTests-LGSideMenuController/Pods-OrigamiTests-LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		970AAE2E2F7583BB767A2A81 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A119911BF6E28A4768F68FE /* Pods-Origami-LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-Origami-LGSideMenuController/Pods-Origami-LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		A84AB7ECE634E512ADBF0241 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31A22DA5CE5FC69F0831383B /* Pods.debug.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		AA4F6E8D3D39EE47C45183B6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 174F7199C76A77AAFC17F840 /* Pods-OrigamiTests.release.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		B6194BD2E024758044B5E4A8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE9A1A487DA89809D538D1B8 /* Pods-LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-LGSideMenuController/Pods-LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		BF5AF2C85F9514869847677C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3A119911BF6E28A4768F68FE /* Pods-Origami-LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/Pods-Origami-LGSideMenuController/Pods-Origami-LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		E2AD299DB6A40559B69E49DD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_PREPROCESSOR_DEFINITIONS = "RELEASE=1";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				STRIP_INSTALLED_PRODUCT = NO;
+				SYMROOT = "${SRCROOT}/../build";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		11EE69CEC91522BC385237B5 /* Build configuration list for PBXNativeTarget "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A84AB7ECE634E512ADBF0241 /* Debug */,
+				4037AFFC49B3E3649A809FB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		41B03E4BD8E5B40DDCB0B6B6 /* Build configuration list for PBXNativeTarget "Pods-LGSideMenuController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C27B4BD5B0B50D94D5641FB /* Debug */,
+				B6194BD2E024758044B5E4A8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		63A6607AE2E279F227E44671 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests-LGSideMenuController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				62793D22957F4A3723861FC8 /* Debug */,
+				2A072F3FAF86AE2B8D83A47E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		894CC7D650684F56F6B0D278 /* Build configuration list for PBXNativeTarget "Pods-Origami" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A48AE4EB854520BDEB83328 /* Debug */,
+				0A089A18659DFFB16BFA05DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9BDF2AE4601F1E3BE2569F57 /* Build configuration list for PBXNativeTarget "Pods-Origami-LGSideMenuController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF5AF2C85F9514869847677C /* Debug */,
+				970AAE2E2F7583BB767A2A81 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B13AEF364C1666C003ED5DBB /* Build configuration list for PBXProject "Pods" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1591A94C45C4F1F6632687E1 /* Debug */,
+				E2AD299DB6A40559B69E49DD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EB9AB5C989D8ADA233CA9CC8 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4D39CC11676E8A1B66E6983A /* Debug */,
+				AA4F6E8D3D39EE47C45183B6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 788999817C65540DA186C42D /* Project object */;
+}

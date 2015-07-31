@@ -62,7 +62,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
+//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
         //prepareCollectionViewDataAndLayout()
     }
     
@@ -211,6 +211,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             collectionView.dataSource = collectionDataSource!
             collectionView.delegate = collectionDataSource!
             
+            if let layout = prepareCollectionLayoutForElement(currentElement)
+            {
+                collectionView.setCollectionViewLayout(layout, animated: false)
+            }
+            
             if let attachesHandler = collectionDataSource!.attachesHandler
             {
 //                if attachesHandler.attachedItems.count > 0
@@ -218,12 +223,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
 //                    
 //                }
                 
-                if let layout = prepareCollectionLayoutForElement(currentElement)
-                {
-                    collectionView.setCollectionViewLayout(layout, animated: false)
-                }
+               
             }
-            
         }
         
     }

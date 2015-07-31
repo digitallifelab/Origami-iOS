@@ -42,10 +42,11 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         shape.path = roundedLeftBottomPath.CGPath
         
         chatIcon.layer.mask = shape
-        
+       
         let angle = CGFloat(-90.0 * CGFloat(M_PI) / 180.0)
+        chatIcon.layer.anchorPoint = CGPointMake(0.0, 1.0)
         chatIcon.transform = CGAffineTransformMakeRotation(angle)
-        
+    
         self.messagesTable.dataSource = self
         
     }
@@ -61,6 +62,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var messageCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
+        messageCell.selectionStyle = .None
         messageCell.displayMode = self.displayMode
         
         if let lvMessages = self.messages

@@ -231,27 +231,35 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             
             if let detailsString = privateStruct.details
             {
-                offsetX = mainFrame.origin.x
-                let detailsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                var detailsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 120.0) //TODO: calculate details height
-                if CGRectGetMaxX(detailsFrame) > mainFrameWidth
+                if !detailsString.isEmpty
                 {
-                    offsetY += detailsFrame.size.height
-                    detailsFrame.origin = CGPointMake(offsetX, offsetY)
+                    offsetX = mainFrame.origin.x
+                    let detailsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
+                    var detailsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 120.0) //TODO: calculate details height
+                    if CGRectGetMaxX(detailsFrame) > mainFrameWidth
+                    {
+                        offsetY += detailsFrame.size.height
+                        detailsFrame.origin = CGPointMake(offsetX, offsetY)
+                    }
+                    var detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
+                    detailsAttribute.frame = detailsFrame
+                    cellLayoutAttributes[detailsIndexPath] = detailsAttribute
+                    itemIndex += 1
+                    
+                    offsetY += CGRectGetHeight(detailsFrame); println("moved down from DETAILS cell")
+                    
+                    if twoColumnDisplay
+                    {
+                        offsetX += (itemWidth + self.minimumInteritemSpacing)
+                    }
+                    
+                    offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
                 }
-                var detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
-                detailsAttribute.frame = detailsFrame
-                cellLayoutAttributes[detailsIndexPath] = detailsAttribute
-                itemIndex += 1
-                
-                offsetY += CGRectGetHeight(detailsFrame); println("moved down from DETAILS cell")
-                
-                if twoColumnDisplay
+                else
                 {
-                    offsetX += (itemWidth + self.minimumInteritemSpacing)
+                    println("\n -> Will not calculate leyout for empty details collectiobView cell <- ")
                 }
                 
-                offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
             }
             
             if privateStruct.attachesCell

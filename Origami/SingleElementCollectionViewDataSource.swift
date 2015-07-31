@@ -72,8 +72,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             if let details = getElementDetails()
             {
-                println("\n appended DETAILS")
-                options.append(.Details)
+                if !details.isEmpty
+                {
+                    println("\n appended DETAILS")
+                    options.append(.Details)
+                }
+                
             }
             if let attachesCollectionHandler = getElementAttachesHandler()
             {
@@ -166,7 +170,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         if attaches.isEmpty
         {
-            return ElementAttachedFilesCollectionHandler()
+            return nil//ElementAttachedFilesCollectionHandler()
         }
         
         return ElementAttachedFilesCollectionHandler(items: attaches)
@@ -199,6 +203,13 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
             var elementDetails:String? = self.handledElement?.details as? String
+            if elementDetails != nil
+            {
+                if elementDetails!.isEmpty
+                {
+                    elementDetails = nil
+                }
+            }
             var messages:Bool = options.cellTypes.contains(.Chat)
             var attaches:Bool = options.cellTypes.contains(.Attaches)
             var buttons = options.cellTypes.contains(.Buttons)

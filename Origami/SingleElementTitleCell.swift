@@ -50,4 +50,24 @@ class SingleElementTitleCell: UICollectionViewCell {
         NSNotificationCenter.defaultCenter().postNotification(tapNotification)
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let bounds = favouriteButton.bounds
+        let roundedLeftBottomPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
+        
+        var shape = CAShapeLayer()
+        shape.frame = bounds
+        shape.path = roundedLeftBottomPath.CGPath
+        
+        favouriteButton.layer.mask = shape
+        
+        self.layer.shadowOpacity = 0.7
+        self.layer.shadowColor = UIColor.blackColor().CGColor
+        self.layer.shadowRadius = 3.0
+        self.layer.shadowOffset = CGSizeMake(0, 3)
+        self.layer.zPosition = 1000
+        self.layer.masksToBounds = false
+    }
+    
 }
