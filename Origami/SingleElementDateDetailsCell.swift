@@ -17,7 +17,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
                 self.backgroundColor = kDayCellBackgroundColor
                
             case .Night:
-                self.backgroundColor = UIColor.clearColor()
+                self.backgroundColor = UIColor.blackColor()
                 
             }
         }

@@ -48,13 +48,17 @@ struct ElementCellsOptions
 
 
 
-class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate
+class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate
 {
     var displayMode:DisplayMode = .Day
     var titleCellMode:ElementDashboardTitleCellMode = .Title
     var editingEnabled = false
     var subordinateTapDelegate:ElementSelectionDelegate?
     var attachTapDelegate:AttachmentSelectionDelegate?
+    var messageTapDelegate:MessageTapDelegate?
+    
+    var titleCell:SingleElementTitleCell?
+    var detailsCell:SingleElementDetailsCell?
     
     var handledElement:Element? {
         didSet {
@@ -62,36 +66,36 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             var options:[ElementCellType] = [ElementCellType]()
             if let title = getElementTitle()
             {
-                println("\n appended Title")
+                //println("\n appended Title")
                 options.append(.Title)
             }
             if let chatMessages = getElementLastMessages()
             {
-                println("\n appended CHAT")
+                //println("\n appended CHAT")
                 options.append(.Chat)
             }
             if let details = getElementDetails()
             {
                 if !details.isEmpty
                 {
-                    println("\n appended DETAILS")
+                    //println("\n appended DETAILS")
                     options.append(.Details)
                 }
                 
             }
             if let attachesCollectionHandler = getElementAttachesHandler()
             {
-                println("\n appended ATTACHES")
+                //println("\n appended ATTACHES")
                 self.attachesHandler = attachesCollectionHandler
                 options.append(.Attaches)
             }
             
-            println("\n appended BUTTONS")
+            //println("\n appended BUTTONS")
             options.append(.Buttons) // buttons always visible
             
             if let subordinates = getElementSubordinates()
             {
-                println("\n appended Subordinates")
+                //println("\n appended Subordinates")
                 options.append(.Subordinates)
             }
             
@@ -109,6 +113,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     override init() {
         //self.handledElement = Element()
         super.init()
+        
     }
     
     convenience init?(element:Element?)
@@ -129,6 +134,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
         
         self.handledElement = element!
+        
     }
     
     func getElementTitle() -> String?
@@ -246,6 +252,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     subordinatesInfo = lvSubordinatesInfo
                 }
             }
+            
+            
             
             //finally
             let targetStruct = ElementDetailsStruct(title: elementTitle!, details: elementDetails, messagesCell: messages, buttonsCell: buttons, attachesCell: attaches, subordinateItems: subordinatesInfo)
@@ -368,6 +376,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     titleCell.favourite = isFavourite
                 }
+                
+                self.titleCell = titleCell
+                
                 return titleCell
             case .Dates:
                 var datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell", forIndexPath: indexPath) as! SingleElementDateDetailsCell
@@ -384,13 +395,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             {
                 chatCell.messages = messages
             }
-            
+            chatCell.cellMessageTapDelegate = self
             return chatCell
             
         case .Details:
             var detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell", forIndexPath: indexPath) as! SingleElementDetailsCell
             detailsCell.textLabel.text = getElementDetails()
             detailsCell.displayMode = self.displayMode
+            
+            self.detailsCell = detailsCell
+            
             return detailsCell
             
         case .Attaches:
@@ -560,6 +574,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                         {
                             sendStartEditingForTitle(false) //edit element description
                         }
+                    case .Chat:
+                        self.chatMessageWasTapped(nil)
                     default: break
                 }
                 
@@ -588,4 +604,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
     }
     
+    
+    //MARK: MessageTapDelegate
+    func chatMessageWasTapped(message: Message?) {
+        self.messageTapDelegate?.chatMessageWasTapped(message)
+    }
 }

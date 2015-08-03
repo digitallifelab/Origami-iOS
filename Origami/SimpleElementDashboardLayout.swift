@@ -168,19 +168,19 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
     {
         let currentScreenInfo = FrameCounter.getCurrentTraitCollection()
         
-        var twoColumnDisplay = false
+//        var twoColumnDisplay = false
         let currentScreenWidth = UIScreen.mainScreen().bounds.size.width
         var itemMargin = self.minimumInteritemSpacing
         var itemWidth = currentScreenWidth //- itemMargin
         
         if currentScreenInfo.horizontalSizeClass == .Regular // ipads ans iphone6+ in landscape mode
         {
-            if currentScreenWidth > 700
-            {
-                twoColumnDisplay = true
-                itemMargin = self.minimumInteritemSpacing * 3
-                itemWidth = currentScreenWidth / 2 - itemMargin
-            }
+//            if currentScreenWidth > 700
+//            {
+//                twoColumnDisplay = true
+//                itemMargin = self.minimumInteritemSpacing * 3
+//                itemWidth = currentScreenWidth / 2 - itemMargin
+//            }
         }
         
         let mainFrameWidth = currentScreenWidth// - self.minimumInteritemSpacing * 2
@@ -188,10 +188,22 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         var offsetX = mainFrame.origin.x
         var offsetY = mainFrame.origin.y
+        var titleFrame = CGRectMake(offsetX, offsetY, mainFrame.width, 150.0) //TODO: change height to proper value. 150 is test value
         
+        if let aDataSource = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
+        {
+            if let titleCellFromDataSource = aDataSource.titleCell
+            {
+                //titleCellFromDataSource.labelTitle?.text = self.elementStruct?.title
+                
+                var size = titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size, withHorizontalFittingPriority: 1000.0, verticalFittingPriority: 50.0)
+                //
+                // titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size)
+                
+                titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
+            }
+        }
         
-        
-        let titleFrame = CGRectMake(offsetX, offsetY, mainFrame.width, 150.0) //TODO: change height to proper value. 150 is test value
         let titleIndexPath = NSIndexPath(forItem: 0, inSection: 0)
         var attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: titleIndexPath)
         attribute.frame = titleFrame
@@ -213,17 +225,17 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 let messagesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
                 
-                if twoColumnDisplay
-                {
-                    offsetX += (itemWidth + self.minimumInteritemSpacing)
-                }
-                var messagesFrame = CGRectMake(offsetX, offsetY, itemWidth, 132.0) //TODO: change to proper height messages cell
+//                if twoColumnDisplay
+//                {
+//                    offsetX += (itemWidth + self.minimumInteritemSpacing)
+//                }
+                var messagesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 132.0) //TODO: change to proper height messages cell
                 var messagesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: messagesIndexPath)
                 messagesAttribute.frame = messagesFrame
                 cellLayoutAttributes[messagesIndexPath] = messagesAttribute
                 itemIndex += 1
                 
-                offsetY += CGRectGetHeight(messagesFrame); println("moved down from MESSAGES cell")
+                offsetY += CGRectGetHeight(messagesFrame); //println("moved down from MESSAGES cell")
                 
                 
                 offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
@@ -241,17 +253,27 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                         offsetY += detailsFrame.size.height
                         detailsFrame.origin = CGPointMake(offsetX, offsetY)
                     }
+                    
+                    if let aDataSource = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
+                    {
+                        if let detailsCellFromDataSource = aDataSource.detailsCell
+                        {
+                            var detailsSize = detailsCellFromDataSource.systemLayoutSizeFittingSize(detailsFrame.size, withHorizontalFittingPriority: 1000, verticalFittingPriority: 50)
+                            detailsFrame.size = CGSizeMake(mainFrame.size.width, detailsSize.height)
+                        }
+                    }
+                    
                     var detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
                     detailsAttribute.frame = detailsFrame
                     cellLayoutAttributes[detailsIndexPath] = detailsAttribute
                     itemIndex += 1
                     
-                    offsetY += CGRectGetHeight(detailsFrame); println("moved down from DETAILS cell")
+                    offsetY += CGRectGetHeight(detailsFrame); //println("moved down from DETAILS cell")
                     
-                    if twoColumnDisplay
-                    {
-                        offsetX += (itemWidth + self.minimumInteritemSpacing)
-                    }
+//                    if twoColumnDisplay
+//                    {
+//                        offsetX += (itemWidth + self.minimumInteritemSpacing)
+//                    }
                     
                     offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
                 }
@@ -273,7 +295,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 cellLayoutAttributes[attachesIndexPath] = attachesAttribute
                 itemIndex += 1
                 
-                offsetY += attachesFrame.size.height; println("Moved Down after ATTACHes cell")
+                offsetY += attachesFrame.size.height;// println("Moved Down after ATTACHes cell")
             }
             
             if privateStruct.buttonsCell
@@ -290,16 +312,16 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 cellLayoutAttributes[buttonsIndexPath] = buttonsAttribute
                 itemIndex += 1
                 
-                if twoColumnDisplay
-                {
-                    offsetX += (itemWidth + self.minimumInteritemSpacing)
-                }
+//                if twoColumnDisplay
+//                {
+//                    offsetX += (itemWidth + self.minimumInteritemSpacing)
+//                }
                 let checkOffsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
                 
                 if checkOffsetX < offsetX
                 {
                     offsetX = checkOffsetX
-                    offsetY += CGRectGetHeight(buttonsFrame); println("moved down left after BUTTONS cell")
+                    offsetY += CGRectGetHeight(buttonsFrame); //println("moved down left after BUTTONS cell")
                 }
             }
             
@@ -307,7 +329,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 offsetX = self.minimumInteritemSpacing
                 offsetY += self.minimumLineSpacing + HomeCellNormalDimension
-                println("moved to left, and down for 10 points. ...  Starting to calculate subordinates..")
+                //println("moved to left, and down for 10 points. ...  Starting to calculate subordinates..")
                 
                 let subordinatesCount = subordinateData.count
                 
@@ -339,7 +361,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     {
                         offsetX = self.minimumInteritemSpacing
                         offsetY += (CGRectGetHeight(cellFrame) + self.minimumLineSpacing)
-                        println("Movet to left ant down after SUBORDINATE  cell")
+                        //println("Movet to left ant down after SUBORDINATE  cell")
                     }
                 }
                 

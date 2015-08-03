@@ -86,8 +86,6 @@ class SingleElementTitleCell: UICollectionViewCell {
         
         //self.layer.shouldRasterize = true
         self.layer.zPosition = 1000
-        
-
     }
     
 //    deinit

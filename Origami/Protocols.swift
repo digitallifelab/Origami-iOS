@@ -61,3 +61,7 @@ protocol TextEditingDelegate
     func textEditor(editor: AnyObject, wantsToSubmitNewText newText:String)
 }
 
+protocol MessageTapDelegate
+{
+    func chatMessageWasTapped(message:Message?)
+}

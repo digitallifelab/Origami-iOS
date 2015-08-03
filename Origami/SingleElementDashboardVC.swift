@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate {
 
     var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
@@ -55,6 +55,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+//        if let layout = prepareCollectionLayoutForElement(currentElement)
+//        {
+//            collectionView.setCollectionViewLayout(layout, animated: false)
+//        }
+        self.collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+        
+        
+        
+    }
+    
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        
+    }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -64,6 +83,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
         //prepareCollectionViewDataAndLayout()
+//        if let layout = prepareCollectionLayoutForElement(currentElement)
+//        {
+//            collectionView.setCollectionViewLayout(layout, animated: false)
+//        }
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -205,11 +229,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         collectionDataSource!.displayMode = self.displayMode
         collectionDataSource!.subordinateTapDelegate = self
         collectionDataSource!.attachTapDelegate = self
+        collectionDataSource!.messageTapDelegate = self
         
         if collectionDataSource != nil
         {
             collectionView.dataSource = collectionDataSource!
             collectionView.delegate = collectionDataSource!
+            
+            collectionView.reloadData()
             
             if let layout = prepareCollectionLayoutForElement(currentElement)
             {
@@ -228,6 +255,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
         
     }
+    
     //MARK: Custom CollectionView Layout
     func prepareCollectionLayoutForElement(element:Element?) -> UICollectionViewFlowLayout?
     {
@@ -786,6 +814,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             chatVC.currentElement = self.currentElement
             self.navigationController?.pushViewController(chatVC, animated: true)
         }
+    }
+    
+    //MARK: MessageTapDelegate
+    func chatMessageWasTapped(message: Message?) {
+        showChatForCurrentElement()
     }
     
     

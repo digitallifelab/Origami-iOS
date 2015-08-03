@@ -8,17 +8,20 @@
 
 import UIKit
 
-class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
+class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource, UITableViewDelegate
 {
+    var cellMessageTapDelegate:MessageTapDelegate?
     var messages:[Message]?
     var displayMode:DisplayMode = .Day {
         didSet{
             switch displayMode{
             case .Day:
                 chatIcon.backgroundColor = kDaySignalColor
+                self.backgroundColor = UIColor.lightGrayColor()
             
             case .Night:
                 chatIcon.backgroundColor = kNightSignalColor
+                self.backgroundColor = UIColor.clearColor()
             }
         }
     }
@@ -26,8 +29,13 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     @IBOutlet var chatIcon:UILabel!
     @IBOutlet var messagesTable:UITableView!
     
+    override func awakeFromNib() {
+        self.backgroundColor = UIColor.clearColor()
+    }
+    
     override func prepareForReuse() {
         messages = nil
+        self.backgroundColor = UIColor.clearColor()
     }
     
     override func layoutSubviews() {
@@ -48,7 +56,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         chatIcon.transform = CGAffineTransformMakeRotation(angle)
     
         self.messagesTable.dataSource = self
-        
+        self.messagesTable.delegate = self
     }
     
     //MARK: UITableViewDataSource
@@ -77,5 +85,20 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         }
         
         return messageCell
+    }
+    
+    //MARK: UITableViewDelegate
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        if let
+            delegate = self.cellMessageTapDelegate,
+            currentMessages = self.messages
+        {
+            if indexPath.row >= 0 && indexPath.row < currentMessages.count
+            {
+                let tappedMessage = currentMessages[indexPath.row]
+                delegate.chatMessageWasTapped(tappedMessage)
+            }
+        }
     }
 }
