@@ -353,7 +353,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DashHeader" id="XLf-fl-1NQ" customClass="DashHeaderView" customModule="Origami" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="64" width="414" height="30"/>
+                                    <rect key="frame" x="0.0" y="64" width="320" height="30"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signals" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rjN-dc-B59" userLabel="titleLabel">
@@ -652,10 +652,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pmf-DG-P16" userLabel="navigationBarBackgroundView">
-                                <rect key="frame" x="0.0" y="-44" width="320" height="64"/>
+                                <rect key="frame" x="0.0" y="-44" width="320" height="150"/>
                                 <color key="backgroundColor" red="0.12941176469999999" green="0.60784313729999995" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="7yT-fa-Tc7"/>
+                                    <constraint firstAttribute="height" constant="150" id="7yT-fa-Tc7"/>
                                 </constraints>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
@@ -1231,7 +1231,7 @@
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="lwg-b4-rtA" secondAttribute="trailing" id="D3d-Fj-ToD"/>
                             <constraint firstItem="yD8-pd-zzj" firstAttribute="top" secondItem="lwg-b4-rtA" secondAttribute="bottom" id="IX8-nL-R3s"/>
-                            <constraint firstItem="pmf-DG-P16" firstAttribute="bottom" secondItem="lwg-b4-rtA" secondAttribute="top" id="OaD-qT-XiE"/>
+                            <constraint firstItem="pmf-DG-P16" firstAttribute="bottom" secondItem="lwg-b4-rtA" secondAttribute="top" constant="86" id="OaD-qT-XiE"/>
                             <constraint firstAttribute="trailing" secondItem="pmf-DG-P16" secondAttribute="trailing" id="Sg0-zA-agC"/>
                             <constraint firstItem="pmf-DG-P16" firstAttribute="leading" secondItem="XgA-qY-sW5" secondAttribute="leading" id="Wrb-P6-e0p"/>
                             <constraint firstItem="lwg-b4-rtA" firstAttribute="leading" secondItem="XgA-qY-sW5" secondAttribute="leading" id="qOq-1Z-zLx"/>
@@ -1733,7 +1733,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="menu item name" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KVD-ty-xaM">
                                                     <rect key="frame" x="51" y="11" width="261" height="38"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
-                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>

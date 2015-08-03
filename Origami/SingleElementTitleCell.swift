@@ -65,6 +65,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         self.layer.masksToBounds = false
         //apply bottom rounded corners to us (CollectionViewCell)
         let selfBounds = self.bounds
+
 //        let roundedRectSelfPath = UIBezierPath(roundedRect: selfBounds, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
 //        var selfShape = CAShapeLayer()
 //        selfShape.frame = selfBounds
@@ -77,21 +78,22 @@ class SingleElementTitleCell: UICollectionViewCell {
         let shadowOpacity:Float = 0.5
         let shadowOffset = CGSizeMake(0.0, 5.0)
         let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
-        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
-
-        
-        self.layer.shadowPath = offsetPath.CGPath
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+        self.layer.shadowPath = offsetPath.CGPath
+        
+        //self.layer.shouldRasterize = true
         self.layer.zPosition = 1000
         
+
     }
     
-    deinit
-    {
-        cleanShadow()
-    }
+//    deinit
+//    {
+//        cleanShadow()
+//    }
     
     
     func cleanShadow()
