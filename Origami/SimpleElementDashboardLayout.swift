@@ -27,7 +27,7 @@ struct ElementDetailsStruct
     var title:String
     var details:String?
     var messagesPreviewCell:Bool = false
-    var buttonsCell:Bool = true
+    var buttonsCell:Bool = false
     var attachesCell:Bool = true
     var subordinates:[SubordinateItemLayoutWidth]?
     
@@ -194,13 +194,18 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         {
             if let titleCellFromDataSource = aDataSource.titleCell
             {
-                //titleCellFromDataSource.labelTitle?.text = self.elementStruct?.title
-                
                 var size = titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size, withHorizontalFittingPriority: 1000.0, verticalFittingPriority: 50.0)
                 //
                 // titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size)
+                if aDataSource.titleCellMode == .Title
+                {
+                    titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
+                }
+                else // .Dates
+                {
+                    titleFrame.size = CGSizeMake(mainFrame.width, 170.0)
+                }
                 
-                titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
             }
         }
         
@@ -288,6 +293,8 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 // attaches will be wull screen width
                 offsetX = mainFrame.origin.x
+                offsetY += self.minimumLineSpacing
+                
                 let attachesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 80.0) //TODO: tweak attaches cell frame height properly
                 let attachesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
                 var attachesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: attachesIndexPath)
@@ -328,8 +335,16 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             if let subordinateData = privateStruct.subordinates
             {
                 offsetX = self.minimumInteritemSpacing
-                offsetY += self.minimumLineSpacing + HomeCellNormalDimension
-                //println("moved to left, and down for 10 points. ...  Starting to calculate subordinates..")
+                offsetY += self.minimumLineSpacing //+ HomeCellNormalDimension
+                
+                
+//                let checkOffsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
+//                
+//                if checkOffsetX < offsetX
+//                {
+//                    offsetX = checkOffsetX
+//                    offsetY += HomeCellNormalDimension // CGRectGetHeight(buttonsFrame); //println("moved down left after BUTTONS cell")
+//                }
                 
                 let subordinatesCount = subordinateData.count
                 
@@ -394,7 +409,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         if offset > frame.size.width / 2.0
         {
             newOffset = frame.origin.x
-            println("\n -> Moved to Left...")
+            //println("\n -> Moved to Left...")
         }
         
         return newOffset

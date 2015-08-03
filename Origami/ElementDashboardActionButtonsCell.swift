@@ -12,8 +12,8 @@ class ElementDashboardActionButtonsCell: UITableViewCell //cell contains action 
 {
 
     var actionButtonDelegate:ButtonTapDelegate?
-//    private var backgroundColors:[Int:UIColor] = [Int:UIColor]()
     var elementIsOwned = false
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -86,38 +86,4 @@ class ElementDashboardActionButtonsCell: UITableViewCell //cell contains action 
             return nil
         }
     }
-//    
-//    func setBackgroundColor(color:UIColor, forButtonTag tag:Int)
-//    {
-//        backgroundColors[tag] = color
-//    }
-    
-//    func configureButtonsAppearance()
-//    {
-//        let subviewsCount = self.contentView.subviews.count
-//        if subviewsCount > 0
-//        {
-//            var firstFourButtons = [UIButton]()
-//            for lvButton in self.contentView.subviews
-//            {
-//                if let button = lvButton as? UIButton
-//                {
-//                    if firstFourButtons.count < 4
-//                    {
-//                        firstFourButtons.append(lvButton as! UIButton)
-//                    }
-//                    else
-//                    {
-//                        break
-//                    }
-//                }
-//            }
-//            
-//            for button in firstFourButtons
-//            {
-//                button.layer.borderColor = UIColor.grayColor().CGColor
-//                button.layer.borderWidth = 1.0
-//            }
-//        }
-//    }
 }

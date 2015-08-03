@@ -8,46 +8,6 @@
 
 import UIKit
 
-struct ElementCellsOptions
-{
-    var cellTypes:Set<ElementCellType>
-    
-    init()
-    {
-       self.cellTypes = Set([.Title, .Buttons]) //default value
-    }
-    
-    init(types:Set<ElementCellType>)
-    {
-        self.cellTypes = types
-    }
-    
-    mutating func setTypes(types:Set<ElementCellType>)
-    {
-        self.cellTypes = types
-    }
-    
-    mutating func addOptions(types:Set<ElementCellType>)
-    {
-        self.cellTypes.unionInPlace(types)
-    }
-    
-    var countOptions:Int {
-        return self.cellTypes.count
-    }
-    
-    var orderedOptions:[ElementCellType] {
-        
-        var options = Array(cellTypes)
-        options.sort { (option1, option2) -> Bool in
-            return option1.rawValue < option2.rawValue
-        }
-        return options
-    }
-}
-
-
-
 class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate
 {
     var displayMode:DisplayMode = .Day
@@ -91,7 +51,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
             //println("\n appended BUTTONS")
-            options.append(.Buttons) // buttons always visible
+//            if self.elementIsOwned()
+//            {
+//                 options.append(.Buttons)
+//            }
+           
             
             if let subordinates = getElementSubordinates()
             {
@@ -380,10 +344,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 self.titleCell = titleCell
                 
                 return titleCell
+                
             case .Dates:
                 var datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell", forIndexPath: indexPath) as! SingleElementDateDetailsCell
                 datesCell.displayMode = self.displayMode
                 datesCell.handledElement = self.handledElement
+                
+                
+                datesCell.setupActionButtons(elementIsOwned())
+               
                 
                 return datesCell
             }
@@ -437,6 +406,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 buttonsHolderCell.buttonsLayout = ElementActionButtonsLayout(buttonTypes: buttonTypes)
             }
             return buttonsHolderCell
+            
         case .Subordinates:
             var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
            
@@ -462,10 +432,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func createActionButtonModels() -> [ActionButtonModel]?
     {
         //check
-        var elementIsOwned = false
-        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId!.integerValue
+        var elementIsOwned = self.elementIsOwned()
+        if !elementIsOwned //don`t show SingleElementButtons cell
         {
-            elementIsOwned = true
+            return nil
         }
         
         //try to add models
@@ -538,6 +508,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
     }
     
+    func elementIsOwned() -> Bool
+    {
+        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId!.integerValue
+        {
+            return true
+        }
+        
+        return false
+    }
     
     
     //MARK: UICollectionViewDelegate
@@ -552,12 +531,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 switch cellType
                 {
                     case .Title:
-                        if editingEnabled
-                        {
-                            sendStartEditingForTitle(true) //edit element title
-                        }
-                        else
-                        {
+//                        if editingEnabled
+//                        {
+//                            sendStartEditingForTitle(true) //edit element title
+//                        }
+//                        else
+//                        {
                             switch titleCellMode
                             {
                             case .Title:
@@ -567,13 +546,14 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             }
                             
                             collectionView.reloadItemsAtIndexPaths([indexPath])
-                        }
+//                        }
                     
                     case .Details:
-                        if editingEnabled
-                        {
-                            sendStartEditingForTitle(false) //edit element description
-                        }
+                        break
+//                        if editingEnabled
+//                        {
+//                            sendStartEditingForTitle(false) //edit element description
+//                        }
                     case .Chat:
                         self.chatMessageWasTapped(nil)
                     default: break
@@ -590,12 +570,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
     }
     
-    func sendStartEditingForTitle(titleEdit:Bool)
-    {
-        kElementEditTextNotification
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(kElementEditTextNotification, object: nil, userInfo: ["title" : titleEdit])
-    }
+//    func sendStartEditingForTitle(titleEdit:Bool)
+//    {
+//        NSNotificationCenter.defaultCenter().postNotificationName(kElementEditTextNotification, object: nil, userInfo: ["title" : titleEdit])
+//    }
+    
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
         if let aCell = cell as? SingleElementTitleCell

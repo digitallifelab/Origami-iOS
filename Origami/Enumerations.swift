@@ -90,10 +90,10 @@ enum ActionButtonCellType:Int
     case Add
     case Delete
     case Archive
-    case Signal
-    case CheckMark
-    case Idea
-    case Solution
+    case Signal  //4
+    case CheckMark  //5
+    case Idea //6
+    case Solution //7
 }
 
 enum FadedTransitionDirection:String {

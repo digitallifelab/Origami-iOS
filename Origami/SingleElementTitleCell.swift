@@ -15,10 +15,10 @@ class SingleElementTitleCell: UICollectionViewCell {
             switch self.displayMode{
             case .Day:
                 self.backgroundColor = kDayCellBackgroundColor
-                favouriteButton.backgroundColor = kDaySignalColor
+                //avouriteButton.backgroundColor = kDaySignalColor
             case .Night:
                 self.backgroundColor = UIColor.blackColor()
-                favouriteButton.backgroundColor = kNightSignalColor
+                //favouriteButton.backgroundColor = kNightSignalColor
             }
         }
     }
@@ -54,23 +54,17 @@ class SingleElementTitleCell: UICollectionViewCell {
         super.layoutSubviews()
         
         //apply shadow to fav button
-        let buttonBounds = favouriteButton.bounds
-        
-        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
-        var shape = CAShapeLayer()
-        shape.frame = buttonBounds
-        shape.path = roundedLeftBottomPath.CGPath
-        favouriteButton.layer.mask = shape
+//        let buttonBounds = favouriteButton.bounds
+//        
+//        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
+//        var shape = CAShapeLayer()
+//        shape.frame = buttonBounds
+//        shape.path = roundedLeftBottomPath.CGPath
+//        favouriteButton.layer.mask = shape
         
         self.layer.masksToBounds = false
         //apply bottom rounded corners to us (CollectionViewCell)
         let selfBounds = self.bounds
-
-//        let roundedRectSelfPath = UIBezierPath(roundedRect: selfBounds, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
-//        var selfShape = CAShapeLayer()
-//        selfShape.frame = selfBounds
-//        selfShape.path = roundedRectSelfPath.CGPath
-//        self.layer.mask = selfShape
         
         //apply shadow to us
     

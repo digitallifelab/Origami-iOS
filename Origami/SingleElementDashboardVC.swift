@@ -380,7 +380,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     if edited
                     {
                         aSelf.currentElement?.isSignal = isCurrentlySignal
-                        aSelf.prepareCollectionViewDataAndLayout()
+                        //aSelf.prepareCollectionViewDataAndLayout()
+                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                     else
                     {
@@ -393,13 +394,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementEditingToggled()
     {
-        println("Edit element toggled.")
-        if let source = collectionDataSource
-        {
-            collectionDataSource!.editingEnabled = !source.editingEnabled
-            
-            self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-        }
+//        println("Edit element toggled.")
+//        if let source = collectionDataSource
+//        {
+//            collectionDataSource!.editingEnabled = !source.editingEnabled
+//            
+//            self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+//        }
+        startEditingElement(nil)
     }
     
     func elementAddNewSubordinatePressed()
@@ -616,6 +618,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 if edited
                 {
+                    aSelf.currentElement?.title = element.title
+                    aSelf.currentElement?.details = element.details
                     aSelf.prepareCollectionViewDataAndLayout()
                 }
                 else
@@ -662,7 +666,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
               
             }
-          
         }
     }
     
