@@ -15,10 +15,10 @@ class SingleElementTitleCell: UICollectionViewCell {
             switch self.displayMode{
             case .Day:
                 self.backgroundColor = kDayCellBackgroundColor
-                //avouriteButton.backgroundColor = kDaySignalColor
+                buttonTrueColor = kDaySignalColor
             case .Night:
                 self.backgroundColor = UIColor.blackColor()
-                //favouriteButton.backgroundColor = kNightSignalColor
+                buttonTrueColor = kNightSignalColor
             }
         }
     }
@@ -37,7 +37,9 @@ class SingleElementTitleCell: UICollectionViewCell {
         }
     }
     
-    
+    var handledElement:Element?
+    var buttonTrueColor = kDaySignalColor
+    var buttonFalseColor = UIColor.whiteColor()
     
     @IBOutlet var labelTitle:UILabel!
     @IBOutlet var labelDate:UILabel!
@@ -102,4 +104,77 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
         }
     }
+    
+    
+    func setupActionButtons(active:Bool)
+    {
+        if active
+        {
+            buttonFalseColor = UIColor.whiteColor()
+            
+        }
+        else
+        {
+            buttonFalseColor = UIColor.lightGrayColor()
+//            hideActionButtons()
+        }
+        addActionToButtons()
+    }
+    
+    //MARK: element is owned
+    func addActionToButtons()
+    {
+        for var i = 0; i < 8; i++
+        {
+            if let buttonSubView = self.viewWithTag(i) as? UIButton
+            {
+                if buttonSubView.hidden
+                {
+                    buttonSubView.hidden = false
+                }
+                
+                buttonSubView.tintColor = buttonFalseColor
+                
+                if buttonFalseColor == UIColor.whiteColor()
+                {
+                    buttonSubView.addTarget(self, action: "actionButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+                }
+            }
+        }
+        
+        setupSignalButton()
+    }
+    
+    private func setupSignalButton()
+    {
+        if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue)
+        {
+            signalButton.tintColor = (currentElement.isSignal!) ? buttonTrueColor : buttonFalseColor
+        }
+    }
+    
+    func actionButtonTapped(sender:AnyObject?)
+    {
+        if let button = sender as? UIButton
+        {
+            var theTag = button.tag
+            if theTag > 7
+            {
+                theTag = 0
+            }
+            NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: self, userInfo: ["actionButtonIndex" : theTag])
+        }
+    }
+    
+    //MARK: element is not owned
+//    private func hideActionButtons()
+//    {
+//        for var i = 0; i < 8; i++
+//        {
+//            if let buttonSubView = self.viewWithTag(i) as? UIButton
+//            {
+//                buttonSubView.hidden = true
+//            }
+//        }
+//    }
 }

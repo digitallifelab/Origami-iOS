@@ -61,7 +61,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
 //        {
 //            collectionView.setCollectionViewLayout(layout, animated: false)
 //        }
-        self.collectionView.collectionViewLayout.invalidateLayout()
+        //self.collectionView.contentInset = UIEdgeInsetsMake(self.navigationController!.navigationBar.bounds.size.height, 0, 0, 0)
+        //self.collectionView.collectionViewLayout.invalidateLayout()
+
+        
+        //self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
     }
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
@@ -83,10 +87,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
         //prepareCollectionViewDataAndLayout()
-//        if let layout = prepareCollectionLayoutForElement(currentElement)
-//        {
-//            collectionView.setCollectionViewLayout(layout, animated: false)
-//        }
+        if let layout = prepareCollectionLayoutForElement(currentElement)
+        {
+            collectionView.setCollectionViewLayout(layout, animated: true)
+        }
         
     }
     
@@ -94,6 +98,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        self.collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func configureRightBarButtonItem()

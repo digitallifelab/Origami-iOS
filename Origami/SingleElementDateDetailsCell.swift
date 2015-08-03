@@ -15,16 +15,14 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
             switch self.displayMode{
             case .Day:
                 self.backgroundColor = kDayCellBackgroundColor
-                buttonInformColor = kDaySignalColor
                
             case .Night:
                 self.backgroundColor = UIColor.blackColor()
-                buttonInformColor = kNightSignalColor
+           
             }
         }
     }
     var handledElement:Element?
-    var buttonInformColor = kDaySignalColor
     @IBOutlet var datesTable:UITableView!
     
     
@@ -79,7 +77,8 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     
     func setupActionButtons(active:Bool)
     {
-        if active{
+        if active
+        {
             addActionToButtons()
         }
         else
@@ -106,37 +105,19 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         }
     }
     
+   
+    
      //MARK: element is owned
     private func addActionToButtons()
     {
-        for var i = 0; i < 8; i++
-        {
-            if let buttonSubView = self.viewWithTag(i) as? UIButton
-            {
-                if buttonSubView.hidden
-                {
-                    buttonSubView.hidden = false
-                }
-                buttonSubView.addTarget(self, action: "actionButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
-            }
-        }
-        
         if let editButton = self.viewWithTag(256) as? UIButton
         {
             editButton.hidden = false
             editButton.addTarget(self, action: "actionButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
         }
-        
-        setupSignalButton()
     }
     
-    private func setupSignalButton()
-    {
-        if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue)
-        {
-            signalButton.tintColor = (currentElement.isSignal!) ? buttonInformColor : UIColor.whiteColor()
-        }
-    }
+    
     
     func actionButtonTapped(sender:AnyObject?)
     {
@@ -152,16 +133,8 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     }
     
     //MARK: element is not owned
-    func hideActionButtons()
+    private func hideActionButtons()
     {
-        for var i = 0; i < 8; i++
-        {
-            if let buttonSubView = self.viewWithTag(i) as? UIButton
-            {
-                buttonSubView.hidden = true
-                //buttonSubView.addTarget(self, action: "actionButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
-            }
-        }
         if let editButton = self.viewWithTag(256) as? UIButton
         {
             editButton.hidden = true

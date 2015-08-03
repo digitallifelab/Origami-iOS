@@ -340,7 +340,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     titleCell.favourite = isFavourite
                 }
-                
+                titleCell.handledElement = self.handledElement
+                titleCell.setupActionButtons(elementIsOwned())
                 self.titleCell = titleCell
                 
                 return titleCell
@@ -522,6 +523,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     //MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
     {
+        
+        if let
+            subordinatesStore = self.subordinatesByIndexPath,
+            lvElement = subordinatesStore[indexPath]
+        {
+            subordinateTapDelegate?.didTapOnElement(lvElement)
+            return
+        }
+        
         if indexPath.item < 3
         {
             if let currentCettOptionsArray = currentCellsOptions?.orderedOptions
@@ -531,12 +541,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 switch cellType
                 {
                     case .Title:
-//                        if editingEnabled
-//                        {
-//                            sendStartEditingForTitle(true) //edit element title
-//                        }
-//                        else
-//                        {
                             switch titleCellMode
                             {
                             case .Title:
@@ -546,14 +550,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             }
                             
                             collectionView.reloadItemsAtIndexPaths([indexPath])
-//                        }
                     
                     case .Details:
                         break
-//                        if editingEnabled
-//                        {
-//                            sendStartEditingForTitle(false) //edit element description
-//                        }
                     case .Chat:
                         self.chatMessageWasTapped(nil)
                     default: break
@@ -562,12 +561,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
         }
         
-        else if let
-            subordinatesStore = self.subordinatesByIndexPath,
-            lvElement = subordinatesStore[indexPath]
-        {
-            subordinateTapDelegate?.didTapOnElement(lvElement)
-        }
+    
     }
     
 //    func sendStartEditingForTitle(titleEdit:Bool)

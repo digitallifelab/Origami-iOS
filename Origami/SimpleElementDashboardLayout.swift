@@ -143,26 +143,18 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         return nil
     }
     
-//    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
-//    {
-//        if elementKind == UICollectionElementKindSectionHeader
-//        {
-//            if let headerAttrs = headerLayoutAttributes[indexPath]
-//            {
-//                return headerAttrs
-//            }
-//            else
-//            {
-//                let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
-//                return superAttrs
-//            }
-//        }
-//        else
-//        {
-//            let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
-//            return superAttrs
-//        }
-//    }
+    override func targetContentOffsetForProposedContentOffset(proposedContentOffset: CGPoint) -> CGPoint {
+        if let collectionView = self.collectionView
+        {
+            let currentContentOffset = collectionView.contentOffset
+            if currentContentOffset.y < proposedContentOffset.y
+            {
+                return currentContentOffset
+            }
+        }
+        return proposedContentOffset
+    }
+    
     
     func performLayoutCalculating()
     {
@@ -194,6 +186,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         {
             if let titleCellFromDataSource = aDataSource.titleCell
             {
+                println("\n->Current title to calculate: \(titleCellFromDataSource.labelTitle.text ) \n")
                 var size = titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size, withHorizontalFittingPriority: 1000.0, verticalFittingPriority: 50.0)
                 //
                 // titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size)
@@ -203,7 +196,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 }
                 else // .Dates
                 {
-                    titleFrame.size = CGSizeMake(mainFrame.width, 170.0)
+                    titleFrame.size = CGSizeMake(mainFrame.width, 140.0)
                 }
                 
             }
