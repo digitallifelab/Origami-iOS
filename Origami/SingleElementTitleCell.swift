@@ -15,10 +15,10 @@ class SingleElementTitleCell: UICollectionViewCell {
             switch self.displayMode{
             case .Day:
                 self.backgroundColor = kDayCellBackgroundColor
-                buttonTrueColor = kDaySignalColor
+                //buttonTrueColor = UIColor.whiteColor()
             case .Night:
                 self.backgroundColor = UIColor.blackColor()
-                buttonTrueColor = kNightSignalColor
+                //buttonTrueColor = UIColor.whiteColor()
             }
         }
     }
@@ -28,18 +28,20 @@ class SingleElementTitleCell: UICollectionViewCell {
             
             if favourite
             {
-                favouriteButton.tintColor = UIColor.yellowColor()
+                favouriteButton.tintColor = buttonTrueColor
+                favouriteButton.backgroundColor = (displayMode == .Day) ? kDaySignalColor : kNightSignalColor
             }
             else
             {
-                favouriteButton.tintColor = kWhiteColor
+                favouriteButton.tintColor = (displayMode == .Day) ? kDayCellBackgroundColor : UIColor.blackColor()//buttonFalseColor
+                favouriteButton.backgroundColor = buttonFalseColor
             }
         }
     }
     
     var handledElement:Element?
-    var buttonTrueColor = kDaySignalColor
-    var buttonFalseColor = UIColor.whiteColor()
+    var buttonTrueColor = UIColor.whiteColor()
+    var buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
     
     @IBOutlet var labelTitle:UILabel!
     @IBOutlet var labelDate:UILabel!
@@ -56,13 +58,13 @@ class SingleElementTitleCell: UICollectionViewCell {
         super.layoutSubviews()
         
         //apply shadow to fav button
-//        let buttonBounds = favouriteButton.bounds
-//        
-//        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
-//        var shape = CAShapeLayer()
-//        shape.frame = buttonBounds
-//        shape.path = roundedLeftBottomPath.CGPath
-//        favouriteButton.layer.mask = shape
+        let buttonBounds = favouriteButton.bounds
+        
+        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
+        var shape = CAShapeLayer()
+        shape.frame = buttonBounds
+        shape.path = roundedLeftBottomPath.CGPath
+        favouriteButton.layer.mask = shape
         
         self.layer.masksToBounds = false
         //apply bottom rounded corners to us (CollectionViewCell)
@@ -108,21 +110,29 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     func setupActionButtons(active:Bool)
     {
+        //buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
+
+        colorizeButtons()
+        
         if active
         {
-            buttonFalseColor = UIColor.whiteColor()
-            
+            addActionToButtons()
         }
-        else
-        {
-            buttonFalseColor = UIColor.lightGrayColor()
-//            hideActionButtons()
-        }
-        addActionToButtons()
     }
     
     //MARK: element is owned
     func addActionToButtons()
+    {
+        for var i = 0; i < 8; i++
+        {
+            if let buttonSubView = self.viewWithTag(i) as? UIButton
+            {
+                buttonSubView.addTarget(self, action: "actionButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
+            }
+        }
+    }
+    
+    func colorizeButtons()
     {
         for var i = 0; i < 8; i++
         {
@@ -134,11 +144,6 @@ class SingleElementTitleCell: UICollectionViewCell {
                 }
                 
                 buttonSubView.tintColor = buttonFalseColor
-                
-                if buttonFalseColor == UIColor.whiteColor()
-                {
-                    buttonSubView.addTarget(self, action: "actionButtonTapped:", forControlEvents: UIControlEvents.TouchUpInside)
-                }
             }
         }
         

@@ -43,26 +43,35 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             
             if contacts != nil && currentElement != nil
             {
-                let passwhomIDsSet = Set(currentElement!.passWhomIDs!)
-                var allContactsSet:Set<Contact> = Set(contacts!)
-                
-                checkedContacts = contacts!.filter({ (lvContact) -> Bool in
-                    let contains = passwhomIDsSet.contains(lvContact.contactId!)
-                    return contains
-                })
-                //sort alphabeticaly
-                sortContactsAlphabeticaly(&checkedContacts)
-                
-                var uncheckedContactsSet = allContactsSet.subtract(Set(checkedContacts))
-                uncheckedContacts = Array(uncheckedContactsSet)
-                
-                sortContactsAlphabeticaly(&uncheckedContacts)
-                
-                contactsTable.delegate = self
-                contactsTable.dataSource = self
-                contactsTable.reloadData()
+                if let passwhomIDs = currentElement!.passWhomIDs
+                {
+                    let passWhomIDsSet = Set(passwhomIDs)
+                    var allContactsSet:Set<Contact> = Set(contacts!)
+                    
+                    checkedContacts = contacts!.filter({ (lvContact) -> Bool in
+                        let contains = passWhomIDsSet.contains(lvContact.contactId!)
+                        return contains
+                    })
+                    //sort alphabeticaly
+                    sortContactsAlphabeticaly(&checkedContacts)
+                    
+                    var uncheckedContactsSet = allContactsSet.subtract(Set(checkedContacts))
+                    uncheckedContacts = Array(uncheckedContactsSet)
+                    
+                    sortContactsAlphabeticaly(&uncheckedContacts)
+                }
+                else
+                {
+                    uncheckedContacts += contacts!
+                    sortContactsAlphabeticaly(&uncheckedContacts)
+                }
             }
+            
         }
+        
+        contactsTable.delegate = self
+        contactsTable.dataSource = self
+        contactsTable.reloadData()
     }
     
     func sortContactsAlphabeticaly(inout contactArray:[Contact])
@@ -92,6 +101,8 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.navigationController?.popViewControllerAnimated(true)
     }
     
+    
+    
     func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
     {
         switch indexPath.section
@@ -105,6 +116,12 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     }
     
     //MARK: UITableViewDataSource
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int
+    {
+        return 2
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section
         {
@@ -129,9 +146,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
+   
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -176,7 +191,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         
         if !selectionEnabled
         {
-            // current user is now creator of current element. We can`t assign or delete contacts.
+            // current user is not creator of current element. We can`t assign or delete contacts.
             return
         }
         

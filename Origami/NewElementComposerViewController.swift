@@ -235,14 +235,14 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 else
                 {
                     let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-                    cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                    cell.textView.text = ""// NSAttributedString(string: "add description", attributes: descriptionAttributes)
                 }
                 
             }
             else
             {
                 let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
-                cell.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                cell.textView.text = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
             }
         }
     }
@@ -330,7 +330,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 if cell.isTitleCell
                 {
-                    self.newElement?.title = cell.textView.text //when we switch off editing in the title section - assign current value to our editing element
+                    if let titText = cell.textView.text
+                    {
+                        self.newElement?.title = titText
+                    }
+                    //self.newElement?.title = cell.textView.text //when we switch off editing in the title section - assign current value to our editing element
                     editingConfuguration = .None
                 }
                 else
@@ -350,7 +354,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         let indexpathForDetailsCell = NSIndexPath(forRow: 0, inSection: 1)
         if let detailsCell = table.cellForRowAtIndexPath(indexpathForDetailsCell) as? NewElementTextViewCell
         {
-            self.newElement?.details = detailsCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
+            if let detText = detailsCell.textView.text
+            {
+                self.newElement?.details = detText
+            }
+            //detailsCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
         }
         let indexpathForTitleCell = NSIndexPath(forRow: 0, inSection: 0)
         if let titleCell = table.cellForRowAtIndexPath(indexpathForTitleCell) as? NewElementTextViewCell
@@ -367,47 +375,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         //tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
-//    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
-//        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-//    }
     
     //MARK: ButtonTapDelegate
     func didTapOnButton(button: UIButton) {
         
     }
-    
-    //MARK: TextEditingDelegate
-//    func textEditorDidCancel(editor:AnyObject)
-//    {
-//        if let viewController = editor as? UIViewController
-//        {
-//            viewController.dismissViewControllerAnimated(true, completion: nil)
-//        }
-//    }
-//    
-//    func textEditor(editor: AnyObject, wantsToSubmitNewText newText:String)
-//    {
-//        if let textEditor = editor as? SimpleTextEditorVC
-//        {
-//            var reloadTitleCell = false
-//            if textEditor.isEditingElementTitle
-//            {
-//                newElement?.title = newText
-//                reloadTitleCell = true
-//            }
-//            else
-//            {
-//                newElement?.details = newText
-//            }
-//            
-//            textEditor.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
-//                if let weakSelf = self
-//                {
-//                    weakSelf.table.reloadSections(NSIndexSet(index:(reloadTitleCell) ? 0 : 1), withRowAnimation: .Fade)
-//                }
-//            })
-//        }
-//    }
     
     
     func reloadTableViewUpdates() // this needed to make table view cell grow automatically.

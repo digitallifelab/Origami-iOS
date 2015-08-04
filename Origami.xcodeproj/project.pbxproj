@@ -21,8 +21,6 @@
 		F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */; };
 		F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */; };
 		F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
-		F85A71601B666A1A00180ADE /* ElementTitleAndDetailsEditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715F1B666A1A00180ADE /* ElementTitleAndDetailsEditingVC.swift */; };
-		F85FFA101B383E240071F1D2 /* ElementTextEditingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85FFA0F1B383E240071F1D2 /* ElementTextEditingVC.swift */; };
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
@@ -35,7 +33,6 @@
 		F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */; };
 		F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
 		F872A4441B469DED000A6AA3 /* NewElementTextLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4431B469DED000A6AA3 /* NewElementTextLabelCell.swift */; };
-		F872A4461B46B876000A6AA3 /* TextEditorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4451B46B876000A6AA3 /* TextEditorVC.swift */; };
 		F874D90F1B27049000B867BF /* ElementDashboardTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D90E1B27049000B867BF /* ElementDashboardTextViewCell.swift */; };
 		F874D9111B2704D200B867BF /* ElementDashboardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9101B2704D200B867BF /* ElementDashboardCollectionViewCell.swift */; };
 		F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
@@ -136,8 +133,6 @@
 		F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementLastMessagesCell.swift; sourceTree = "<group>"; };
 		F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDetailsCell.swift; sourceTree = "<group>"; };
 		F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDateDetailsCell.swift; sourceTree = "<group>"; };
-		F85A715F1B666A1A00180ADE /* ElementTitleAndDetailsEditingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementTitleAndDetailsEditingVC.swift; sourceTree = "<group>"; };
-		F85FFA0F1B383E240071F1D2 /* ElementTextEditingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementTextEditingVC.swift; sourceTree = "<group>"; };
 		F86F237A1B208AEE00234EFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
 		F86F237D1B208C7D00234EFD /* FileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandler.h; sourceTree = "<group>"; };
@@ -152,7 +147,6 @@
 		F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileFlowLayout.swift; sourceTree = "<group>"; };
 		F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementComposerViewController.swift; sourceTree = "<group>"; };
 		F872A4431B469DED000A6AA3 /* NewElementTextLabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementTextLabelCell.swift; sourceTree = "<group>"; };
-		F872A4451B46B876000A6AA3 /* TextEditorVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextEditorVC.swift; sourceTree = "<group>"; };
 		F874D90E1B27049000B867BF /* ElementDashboardTextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardTextViewCell.swift; sourceTree = "<group>"; };
 		F874D9101B2704D200B867BF /* ElementDashboardCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardCollectionViewCell.swift; sourceTree = "<group>"; };
 		F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
@@ -383,9 +377,6 @@
 		F872A4401B46927E000A6AA3 /* EditingAndCreation */ = {
 			isa = PBXGroup;
 			children = (
-				F85FFA0F1B383E240071F1D2 /* ElementTextEditingVC.swift */,
-				F85A715F1B666A1A00180ADE /* ElementTitleAndDetailsEditingVC.swift */,
-				F872A4451B46B876000A6AA3 /* TextEditorVC.swift */,
 				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
 				F872A4431B469DED000A6AA3 /* NewElementTextLabelCell.swift */,
 				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
@@ -854,7 +845,6 @@
 				F81BAD6A1B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift in Sources */,
 				F86F237B1B208AEE00234EFD /* Constants.swift in Sources */,
 				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
-				F85A71601B666A1A00180ADE /* ElementTitleAndDetailsEditingVC.swift in Sources */,
 				F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */,
 				F8D0A3481B5FCE7F0033FD43 /* MenuVC.swift in Sources */,
 				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
@@ -901,7 +891,6 @@
 				F874D90F1B27049000B867BF /* ElementDashboardTextViewCell.swift in Sources */,
 				F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */,
 				F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */,
-				F85FFA101B383E240071F1D2 /* ElementTextEditingVC.swift in Sources */,
 				F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */,
 				F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */,
 				F8C62DC51B3AC2A500324C0B /* AttachesCollectionViewLayout.swift in Sources */,
@@ -939,7 +928,6 @@
 				F880D1971B25BB4000E702D3 /* AFHTTPRequestOperationManager.m in Sources */,
 				F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */,
 				F89F3B661B21E86A00156CEC /* DashCells.swift in Sources */,
-				F872A4461B46B876000A6AA3 /* TextEditorVC.swift in Sources */,
 				F880D19D1B25BB4000E702D3 /* AFURLResponseSerialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

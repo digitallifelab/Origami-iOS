@@ -17,7 +17,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             switch displayMode{
             case .Day:
                 chatIcon.backgroundColor = kDaySignalColor
-                self.backgroundColor = UIColor.lightGrayColor()
+                self.backgroundColor = UIColor(red: 240.0/255.0, green: 240.0/255.0, blue: 240.0/255.0, alpha: 1.0)
             
             case .Night:
                 chatIcon.backgroundColor = kNightSignalColor

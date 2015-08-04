@@ -186,10 +186,13 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         {
             if let titleCellFromDataSource = aDataSource.titleCell
             {
+                titleCellFromDataSource.labelTitle.sizeToFit()
+                titleCellFromDataSource.setNeedsDisplay()
+                
                 println("\n->Current title to calculate: \(titleCellFromDataSource.labelTitle.text ) \n")
                 var size = titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size, withHorizontalFittingPriority: 1000.0, verticalFittingPriority: 50.0)
                 //
-                // titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size)
+                //var sizeTest = titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size)
                 if aDataSource.titleCellMode == .Title
                 {
                     titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
@@ -227,7 +230,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
 //                {
 //                    offsetX += (itemWidth + self.minimumInteritemSpacing)
 //                }
-                var messagesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 132.0) //TODO: change to proper height messages cell
+                var messagesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 152.0) //TODO: change to proper height messages cell
                 var messagesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: messagesIndexPath)
                 messagesAttribute.frame = messagesFrame
                 cellLayoutAttributes[messagesIndexPath] = messagesAttribute

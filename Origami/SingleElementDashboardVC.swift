@@ -293,7 +293,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: Handling buttons and other elements tap in collection view
     func startEditingElement(notification:NSNotification?)
     {
-        if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController //self.storyboard?.instantiateViewControllerWithIdentifier("ElementEditingVC") as? ElementTitleAndDetailsEditingVC
+        if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController //
         {
             editingVC.rootElementID = self.currentElement?.rootElementId
             

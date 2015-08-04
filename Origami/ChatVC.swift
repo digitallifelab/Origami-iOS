@@ -14,6 +14,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     @IBOutlet var chatTable:UITableView!
     @IBOutlet var bottomControlsContainerView:ChatTextInputView!
+    @IBOutlet var topNavBarBackgroundView:UIView!
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
     @IBOutlet weak var textHolderHeightConstraint: NSLayoutConstraint!
     var defaultTextInputViewHeight:CGFloat?
@@ -56,12 +57,55 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         //scrollToLastMessage()
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        setAppearanceForNightModeToggled(nightModeOn)
+    }
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         DataSource.sharedInstance.removeAllObserversForNewMessages()
         
         removeObserversForKeyboard()
     }
+    
+    
+    //MARK: Appearance
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        if nightModeOn
+        {
+            self.view.backgroundColor = UIColor.blackColor()
+            self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
+            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            
+        }
+        
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        
+        
+        //TODO: switch message cells night-day modes
+       // self.collectionSource?.turnNightModeOn(nightModeOn)
+       // self.collectionDashboard.reloadData()
+        
+    }
+    
     
     //MARK: ChatInputViewDelegate
     func chatInputView(inputView: ChatTextInputView, wantsToChangeToNewSize desiredSize:CGSize) {
@@ -84,6 +128,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         self.view.layoutIfNeeded()
         
     }
+    
     func chatInputView(inputView:ChatTextInputView, sendButtonTapped button:UIButton)
     {
         if let textToSend = inputView.textView.text
@@ -120,9 +165,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 }
             }
         }
-        
-       
     }
+    
     func chatInputView(inputView:ChatTextInputView, attachButtonTapped button:UIButton) {
         
     }
@@ -216,7 +260,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         backButton.frame = CGRectMake(0, 0, 40.0, 40.0)
         backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 20)
         backButton.setImage( UIImage(named: "icon-back")?.imageWithRenderingMode(.AlwaysTemplate), forState: UIControlState.Normal)
-        backButton.tintColor = kDaySignalColor
+        backButton.tintColor = UIColor.whiteColor()
         backButton.addTarget(self, action: "dismissSelf", forControlEvents: UIControlEvents.TouchUpInside)
         
         
@@ -226,9 +270,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         var contactsButton = UIButton.buttonWithType(.Custom) as! UIButton
         contactsButton.frame = CGRectMake(0, 0, 35.0, 35.0)
-        contactsButton.imageEdgeInsets = UIEdgeInsetsMake(0, 10.0, 0, -10.0)
-        contactsButton.setImage(UIImage(named: "icon-No-Avatar")?.imageWithRenderingMode(.AlwaysOriginal), forState: .Normal)
-        contactsButton.tintColor = kDaySignalColor
+        contactsButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        contactsButton.imageEdgeInsets = UIEdgeInsetsMake(5, 10.0, 5, -10.0)
+        contactsButton.setImage(UIImage(named: "icon-contacts"), forState: .Normal)
+        contactsButton.tintColor = UIColor.whiteColor()
         contactsButton.addTarget(self, action: "showContactsChecker", forControlEvents: .TouchUpInside)
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: contactsButton)
