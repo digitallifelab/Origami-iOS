@@ -167,12 +167,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         if currentScreenInfo.horizontalSizeClass == .Regular // ipads ans iphone6+ in landscape mode
         {
-//            if currentScreenWidth > 700
-//            {
-//                twoColumnDisplay = true
-//                itemMargin = self.minimumInteritemSpacing * 3
-//                itemWidth = currentScreenWidth / 2 - itemMargin
-//            }
+
         }
         
         let mainFrameWidth = currentScreenWidth// - self.minimumInteritemSpacing * 2
@@ -207,6 +202,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         let titleIndexPath = NSIndexPath(forItem: 0, inSection: 0)
         var attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: titleIndexPath)
+        attribute.zIndex = 1000
         attribute.frame = titleFrame
         cellLayoutAttributes[titleIndexPath] = attribute
         
@@ -225,13 +221,10 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             if privateStruct.messagesPreviewCell
             {
                 let messagesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                
-//                if twoColumnDisplay
-//                {
-//                    offsetX += (itemWidth + self.minimumInteritemSpacing)
-//                }
+
                 var messagesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 152.0) //TODO: change to proper height messages cell
                 var messagesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: messagesIndexPath)
+                messagesAttribute.zIndex = 400
                 messagesAttribute.frame = messagesFrame
                 cellLayoutAttributes[messagesIndexPath] = messagesAttribute
                 itemIndex += 1
@@ -265,17 +258,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     }
                     
                     var detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
+                    detailsAttribute.zIndex = 200
                     detailsAttribute.frame = detailsFrame
                     cellLayoutAttributes[detailsIndexPath] = detailsAttribute
                     itemIndex += 1
                     
                     offsetY += CGRectGetHeight(detailsFrame); //println("moved down from DETAILS cell")
                     
-//                    if twoColumnDisplay
-//                    {
-//                        offsetX += (itemWidth + self.minimumInteritemSpacing)
-//                    }
-                    
+
                     offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
                 }
                 else
@@ -315,10 +305,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 cellLayoutAttributes[buttonsIndexPath] = buttonsAttribute
                 itemIndex += 1
                 
-//                if twoColumnDisplay
-//                {
-//                    offsetX += (itemWidth + self.minimumInteritemSpacing)
-//                }
+
                 let checkOffsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
                 
                 if checkOffsetX < offsetX
@@ -332,15 +319,6 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 offsetX = self.minimumInteritemSpacing
                 offsetY += self.minimumLineSpacing //+ HomeCellNormalDimension
-                
-                
-//                let checkOffsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
-//                
-//                if checkOffsetX < offsetX
-//                {
-//                    offsetX = checkOffsetX
-//                    offsetY += HomeCellNormalDimension // CGRectGetHeight(buttonsFrame); //println("moved down left after BUTTONS cell")
-//                }
                 
                 let subordinatesCount = subordinateData.count
                 

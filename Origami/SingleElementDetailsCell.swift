@@ -22,9 +22,11 @@ class SingleElementDetailsCell: UICollectionViewCell {
             case .Day:
                 self.textLabel.textColor = UIColor.blackColor()
                 self.moreLessButton.tintColor = kDaySignalColor
+                self.backgroundColor = UIColor.whiteColor()
             case .Night:
                 self.textLabel.textColor = UIColor.grayColor()
                 self.moreLessButton.tintColor = kNightSignalColor
+                self.backgroundColor = UIColor.blackColor()
             }
         }
     }
@@ -41,23 +43,21 @@ class SingleElementDetailsCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-//        if let labelTapper = labelTapRecognizer
-//        {
-//            
-//        }
-//        else
-//        {
-//            labelTapRecognizer = UITapGestureRecognizer(target: self, action: "labelTapped:")
-//            labelTapRecognizer!.numberOfTapsRequired = 1
-//            labelTapRecognizer!.numberOfTouchesRequired = 1
-//            textLabel.userInteractionEnabled = true
-//            textLabel.addGestureRecognizer(labelTapRecognizer!)
-//        }
+
+        //apply shadow to us
+        self.layer.masksToBounds = false
+        let selfBounds = self.bounds
+        
+        let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
+        let shadowOpacity:Float = 0.5
+        let shadowOffset = CGSizeMake(0.0, 3.0)
+        let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
+        self.layer.shadowColor = shadowColor
+        self.layer.shadowOpacity = shadowOpacity
+        self.layer.shadowRadius = 3.0
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+        self.layer.shadowPath = offsetPath.CGPath
     }
     
-//    private func labelTapped(sender:UITapGestureRecognizer)
-//    {
-//        //
-//    }
-//    
+
 }

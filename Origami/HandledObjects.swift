@@ -323,7 +323,6 @@ class Element:NSObject
     var changeDate:NSString?
     var archiveDate:NSString?
     
-    
     convenience init(info:[String:AnyObject])
     {
         self.init()

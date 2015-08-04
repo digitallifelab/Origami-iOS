@@ -21,7 +21,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             
             case .Night:
                 chatIcon.backgroundColor = kNightSignalColor
-                self.backgroundColor = UIColor.clearColor()
+                self.backgroundColor = UIColor.blackColor()
             }
         }
     }
@@ -42,21 +42,39 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         
         super.layoutSubviews()
         
-        let bounds = chatIcon.bounds
-        let roundedLeftBottomPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: UIRectCorner.BottomLeft, cornerRadii: CGSizeMake(5, 5))
+        let chatIconBounds = chatIcon.bounds
+        let roundedLeftBottomPath = UIBezierPath(roundedRect: chatIconBounds, byRoundingCorners: UIRectCorner.BottomLeft, cornerRadii: CGSizeMake(5, 5))
         
         var shape = CAShapeLayer()
-        shape.frame = bounds
+        shape.frame = chatIconBounds
         shape.path = roundedLeftBottomPath.CGPath
         
         chatIcon.layer.mask = shape
-       
+        
+        //rotate chatIcon
         let angle = CGFloat(-90.0 * CGFloat(M_PI) / 180.0)
         chatIcon.layer.anchorPoint = CGPointMake(0.0, 1.0)
         chatIcon.transform = CGAffineTransformMakeRotation(angle)
     
         self.messagesTable.dataSource = self
         self.messagesTable.delegate = self
+        
+    
+         //apply shadow to us
+        self.layer.masksToBounds = false
+        let selfBounds = self.bounds
+        
+        let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
+        let shadowOpacity:Float = 0.5
+        let shadowOffset = CGSizeMake(0.0, 2.0)
+        let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
+        self.layer.shadowColor = shadowColor
+        self.layer.shadowOpacity = shadowOpacity
+        self.layer.shadowRadius = 2.0
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+        self.layer.shadowPath = offsetPath.CGPath
+        
+        //self.layer.shouldRasterize = true
     }
     
     //MARK: UITableViewDataSource

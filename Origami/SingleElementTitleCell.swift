@@ -74,7 +74,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     
         let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
         let shadowOpacity:Float = 0.5
-        let shadowOffset = CGSizeMake(0.0, 5.0)
+        let shadowOffset = CGSizeMake(0.0, 3.0)
         let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
@@ -83,7 +83,6 @@ class SingleElementTitleCell: UICollectionViewCell {
         self.layer.shadowPath = offsetPath.CGPath
         
         //self.layer.shouldRasterize = true
-        self.layer.zPosition = 1000
     }
     
 //    deinit

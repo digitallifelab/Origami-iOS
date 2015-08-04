@@ -116,14 +116,23 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func configureLeftBarButtonItem()
     {
-        let menuButton = UIButton.buttonWithType(.Custom) as! UIButton
-        menuButton.frame = CGRectMake(0, 0, 35 , 35)
-        menuButton.tintColor = UIColor.whiteColor()
-        menuButton.setImage(UIImage(named: "icon-menu"), forState: UIControlState.Normal)
-        menuButton.imageEdgeInsets = UIEdgeInsetsMake(2, 2, 2, 2)
-        menuButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+//        let menuButton = UIButton.buttonWithType(.Custom) as! UIButton
+//        menuButton.frame = CGRectMake(0, 0, 35 , 35)
+//        menuButton.tintColor = UIColor.whiteColor()
+//        menuButton.setImage(UIImage(named: "icon-menu"), forState: UIControlState.Normal)
+//        menuButton.imageEdgeInsets = UIEdgeInsetsMake(2, 2, 2, 2)
+//        menuButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         
-        var leftBarButton = UIBarButtonItem(customView: menuButton)
+        var rightButton = UIButton.buttonWithType(.Custom) as! UIButton
+        rightButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
+        rightButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        rightButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
+        rightButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+        rightButton.tintColor = UIColor.whiteColor()
+        
+        var leftBarButton = UIBarButtonItem(customView: rightButton)
+        
+        //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
@@ -519,37 +528,31 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        self.tabBarController?.tabBar.tintColor = kWhiteColor
+        
         if nightModeOn
         {
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-//            self.navigationController?.navigationBar.backgroundColor = UIColor.blackColor()
-//            self.navigationController?.navigationBar.barStyle = UIBarStyle.Black; //- See more at: http://motzcod.es/post/110755300272/ios-tip-change-status-bar-icon-text-colors#sthash.nnMUCkq5.dpuf
+
             
-             self.tabBarController?.tabBar.tintColor = kWhiteColor
-             self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
+            self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
         }
         else
         {
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-//            self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-//            self.navigationController?.navigationBar.barStyle = UIBarStyle.Black; //- See more at: http://motzcod.es/post/110755300272/ios-tip-change-status-bar-icon-text-colors#sthash.nnMUCkq5.dpuf
             
-            self.tabBarController?.tabBar.tintColor = kWhiteColor
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
 
         }
-        
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-       
-       
         
         self.collectionSource?.turnNightModeOn(nightModeOn)
         self.collectionDashboard.reloadData()

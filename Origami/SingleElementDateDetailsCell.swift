@@ -34,7 +34,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         let selfBounds = self.bounds
         let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
         let shadowOpacity:Float = 0.5
-        let shadowOffset = CGSizeMake(0.0, 5.0)
+        let shadowOffset = CGSizeMake(0.0, 3.0)
         let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
         let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
         
@@ -43,7 +43,6 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
-        self.layer.zPosition = 1000
     }
     
     //MARK: UITableViewDataSource

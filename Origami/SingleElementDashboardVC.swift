@@ -55,29 +55,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-//        if let layout = prepareCollectionLayoutForElement(currentElement)
-//        {
-//            collectionView.setCollectionViewLayout(layout, animated: false)
-//        }
-        //self.collectionView.contentInset = UIEdgeInsetsMake(self.navigationController!.navigationBar.bounds.size.height, 0, 0, 0)
-        //self.collectionView.collectionViewLayout.invalidateLayout()
-
-        
-        //self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-    }
-    
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-        
-        
-        
-    }
-    
-    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
-        
-    }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
@@ -87,10 +64,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
         //prepareCollectionViewDataAndLayout()
-        if let layout = prepareCollectionLayoutForElement(currentElement)
-        {
-            collectionView.setCollectionViewLayout(layout, animated: true)
-        }
+//        if let layout = prepareCollectionLayoutForElement(currentElement)
+//        {
+//            collectionView.setCollectionViewLayout(layout, animated: true)
+//        }
         
     }
     
@@ -103,16 +80,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func configureRightBarButtonItem()
     {
-        //self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
-        var rightButton = UIButton.buttonWithType(.Custom) as! UIButton
-        rightButton.frame = CGRectMake(0, 0, 44, 44)
-        rightButton.imageEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
-        rightButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
-        rightButton.addTarget(self, action: "optionsBarButtonTapped:", forControlEvents: .TouchUpInside)
-        rightButton.tintColor = UIColor.whiteColor()
+//        var rightButton = UIButton.buttonWithType(.Custom) as! UIButton
+//        rightButton.frame = CGRectMake(0, 0, 44, 44)
+//        rightButton.imageEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
+//        rightButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
+//        rightButton.addTarget(self, action: "optionsBarButtonTapped:", forControlEvents: .TouchUpInside)
+//        rightButton.tintColor = UIColor.whiteColor()
+//        
+//        let rightBarButton = UIBarButtonItem(customView: rightButton)
+//        self.navigationItem.rightBarButtonItem = rightBarButton
         
-        let rightBarButton = UIBarButtonItem(customView: rightButton)
-        self.navigationItem.rightBarButtonItem = rightBarButton
+        var addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "optionsBarButtonTapped:")
+        self.navigationItem.rightBarButtonItem = addButton
     }
     
     //MARK: -----
@@ -140,7 +119,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         else
                         {
                             println(" Loaded all previews for attaches from local storage.")
-                            if let weakSelf = self, attachesCollectionHandler = weakSelf.collectionDataSource?.attachesHandler
+                            if let weakSelf = self
                             {
                                 var attachDataHolder = [AttachFile:MediaFile]()
                                 for var i = 0; i < countAttaches; i++
@@ -155,9 +134,30 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                     
                                     attachDataHolder[lvAttachFile] = lvMediaFile
                                 }
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
-                                })
+                                
+                                if let attachesCollectionHandler = weakSelf.collectionDataSource?.attachesHandler
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        println("\n Reloading attaches collection view \n")
+                                        weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
+                                    })
+                                }
+                                else
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        
+                                        println("\n Assigning new  attaches handler and reloading collection view \n")
+                                        var attachesHandler = ElementAttachedFilesCollectionHandler(items: attaches)
+                                        weakSelf.collectionDataSource?.attachesHandler = attachesHandler
+                                        weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                                        weakSelf.collectionView.reloadData()
+                                        weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
+                                        if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
+                                        {
+                                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                                        }
+                                    })
+                                }
                             }
                         }
                     }
@@ -194,34 +194,24 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: Day/Night Mode
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
-        if nightModeOn
-        {
-            self.displayMode = .Night
-            self.view.backgroundColor = UIColor.blackColor()
-            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
-           // UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            
-            //self.tabBarController?.tabBar.tintColor = kWhiteColor
-            //self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
-        }
-        else
-        {
-            self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor//kDayCellBackgroundColor
-            //self.collectionView.backgroundColor = kDayViewBackgroundColor
-            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
-            //UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            
-            //self.tabBarController?.tabBar.tintColor = kWhiteColor
-            //self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
-            
-        }
-        
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
         
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        
+        if nightModeOn
+        {
+            self.displayMode = .Night
+            self.view.backgroundColor = UIColor.blackColor()
+            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            self.displayMode = .Day
+            self.view.backgroundColor = kDayViewBackgroundColor//kDayCellBackgroundColor
+            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+        }
         
         self.collectionView.reloadData()
         
@@ -230,35 +220,24 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func prepareCollectionViewDataAndLayout()
     {
         collectionDataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
-        collectionDataSource!.handledElement = currentElement
-        collectionDataSource!.displayMode = self.displayMode
-        collectionDataSource!.subordinateTapDelegate = self
-        collectionDataSource!.attachTapDelegate = self
-        collectionDataSource!.messageTapDelegate = self
+        collectionDataSource?.handledElement = currentElement
+        collectionDataSource?.displayMode = self.displayMode
+        collectionDataSource?.subordinateTapDelegate = self
+        collectionDataSource?.attachTapDelegate = self
+        collectionDataSource?.messageTapDelegate = self
         
         if collectionDataSource != nil
         {
             collectionView.dataSource = collectionDataSource!
             collectionView.delegate = collectionDataSource!
             
-            collectionView.reloadData()
+            //collectionView.reloadData()
             
             if let layout = prepareCollectionLayoutForElement(currentElement)
             {
                 collectionView.setCollectionViewLayout(layout, animated: false)
             }
-            
-            if let attachesHandler = collectionDataSource!.attachesHandler
-            {
-//                if attachesHandler.attachedItems.count > 0
-//                {
-//                    
-//                }
-                
-               
-            }
         }
-        
     }
     
     //MARK: Custom CollectionView Layout
@@ -474,7 +453,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     
     //MARK: top left menu popover
-    func optionsBarButtonTapped(sender:UIButton?)
+    func optionsBarButtonTapped(sender:AnyObject?)
     {
         if let leftTopMenuPopupVC = self.storyboard?.instantiateViewControllerWithIdentifier("EditingMenuPopupVC") as? EditingMenuPopupVC
         {
