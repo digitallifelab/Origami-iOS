@@ -170,7 +170,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             if shouldReloadCollection
                             {
                                 aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
-                                aSelf.collectionSource!.elementSelectionDelegate = self
+                                aSelf.collectionSource!.elementSelectionDelegate = aSelf
                                 
                                 aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
                                 aSelf.collectionDashboard!.delegate = aSelf.collectionSource
@@ -188,25 +188,26 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         {
                             if shouldReloadCollection
                             {
+                                aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                
                                 let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
                                 
-                                aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: false)
+                             
                                 
                                 aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
                                     
-//                                     aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: false)
+                                    aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
+                                    aSelf.collectionSource!.elementSelectionDelegate = aSelf
+                                    
+                                    aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
+                                    aSelf.collectionDashboard!.delegate = aSelf.collectionSource
+                                    aSelf.collectionDashboard.reloadData()
+                                    aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
                                 }, completion: { (finished) -> Void in
                                     if shouldReloadCollection
                                     {
-                                        aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
-                                        aSelf.collectionSource!.elementSelectionDelegate = self
-                                        
-                                        aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
-                                        aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-                                        aSelf.collectionDashboard.reloadData()
-                                        //set new layout
-                                        
+                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
                                     }
                                 })
                             }

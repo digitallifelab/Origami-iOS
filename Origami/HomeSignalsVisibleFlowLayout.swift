@@ -93,18 +93,18 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
     }
     //MARK: Override methods
     override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
-        if let oldBounds = self.collectionView?.bounds
-        {
-            if oldBounds != newBounds
-            {
-                cellAttributes?.removeAll(keepCapacity: false)
-                headerAttributes?.removeAll(keepCapacity: false)
-                cellAttributes = nil
-                headerAttributes = nil
-                
-                return true
-            }
-        }
+//        if let oldBounds = self.collectionView?.bounds
+//        {
+//            if oldBounds != newBounds
+//            {
+//                cellAttributes?.removeAll(keepCapacity: false)
+//                headerAttributes?.removeAll(keepCapacity: false)
+//                cellAttributes = nil
+//                headerAttributes = nil
+//                
+//                return true
+//            }
+//        }
         return false
     }
     
@@ -158,14 +158,14 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 switch currentElementCategory
                 {
                 case UICollectionElementCategory.Cell.rawValue:
-                    if let existingItemAttr = self.cellAttributes?[attr.indexPath]
+                    if let existingItemAttr = cellAttributes?[attr.indexPath]
                     {
                         existingAttrs.append(existingItemAttr)
                     }
                 case UICollectionElementCategory.SupplementaryView.rawValue:
                     if attr.representedElementKind == UICollectionElementKindSectionHeader
                     {
-                        if let existingHeader = self.headerAttributes?[attr.indexPath]
+                        if let existingHeader = headerAttributes?[attr.indexPath]
                         {
                             existingAttrs.append(existingHeader)
                         }
@@ -258,7 +258,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 let headerFrame = CGRectMake(0.0, offsetY, self.headerReferenceSize.width, self.headerReferenceSize.height)
                 sectionHeaderAttributes.frame = headerFrame
                 
-                self.headerAttributes![indexPathForSection] = sectionHeaderAttributes
+                headerAttributes![indexPathForSection] = sectionHeaderAttributes
                 
                 //move down
                 offsetY += sectionHeaderAttributes.frame.size.height + self.minimumLineSpacing
@@ -330,7 +330,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                             let itemFrame = CGRectMake(offsetX, offsetY, elementWidth, self.itemSize.height)
                             itemAttributes.frame = itemFrame
                             
-                            self.cellAttributes![indexPathForItem] = itemAttributes
+                            cellAttributes![indexPathForItem] = itemAttributes
                             offsetX += elementWidth + self.minimumInteritemSpacing
                         }
                         else if indexPathForItem.item == 1 //MessagesHolderCell
@@ -341,13 +341,13 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                             let itemFrame = CGRectMake(viewWidth - elementWidth * 2 , offsetY, elementWidth * 2, self.itemSize.height)
                             itemAttributes.frame = CGRectOffset(itemFrame, itemFrame.size.width * 2, 0)
                             
-                            self.cellAttributes![indexPathForItem] = itemAttributes
+                            cellAttributes![indexPathForItem] = itemAttributes
                         }
                         else
                         {
                             let itemFrame = CGRectMake(offsetX, offsetY, elementWidth, self.itemSize.height)
                             itemAttributes.frame = itemFrame
-                            self.cellAttributes![indexPathForItem] = itemAttributes
+                            cellAttributes![indexPathForItem] = itemAttributes
                             
                             offsetX += elementWidth + self.minimumInteritemSpacing
                         }
@@ -357,7 +357,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                         let itemFrame = CGRectMake(offsetX, offsetY, elementWidth, self.itemSize.height)
                         itemAttributes.frame = itemFrame
 
-                        self.cellAttributes![indexPathForItem] = itemAttributes
+                        cellAttributes![indexPathForItem] = itemAttributes
 
                         offsetX += elementWidth + self.minimumInteritemSpacing
                     }
@@ -378,7 +378,6 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             }
             
             self.sizeOfContent = CGSizeMake(viewWidth, bottom)
-            
         }
     }
     
