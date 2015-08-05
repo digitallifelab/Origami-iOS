@@ -10,7 +10,7 @@ import UIKit
 
 class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate {
 
-    var currentElement:Element?
+    weak var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
     var fadeViewControllerAnimator:FadeOpaqueAnimator?
     
@@ -43,11 +43,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         configureRightBarButtonItem()
         
-        prepareCollectionViewDataAndLayout()
+     
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         
-        queryAttachesPreviewData()
+//        queryAttachesPreviewData()
         
     }
 
@@ -64,32 +64,31 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
         //prepareCollectionViewDataAndLayout()
-//        if let layout = prepareCollectionLayoutForElement(currentElement)
-//        {
-//            collectionView.setCollectionViewLayout(layout, animated: true)
-//        }
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillAppear(animated: Bool)
+    {
+        prepareCollectionViewDataAndLayout()
+        queryAttachesPreviewData()
+    }
+    
+    override func viewWillDisappear(animated: Bool)
+    {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        self.collectionView.collectionViewLayout.invalidateLayout()
+        
+    }
+    
+    override func viewDidDisappear(animated: Bool)
+    {
+        super.viewDidDisappear(animated)
+        collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
     }
     
     func configureRightBarButtonItem()
     {
-//        var rightButton = UIButton.buttonWithType(.Custom) as! UIButton
-//        rightButton.frame = CGRectMake(0, 0, 44, 44)
-//        rightButton.imageEdgeInsets = UIEdgeInsetsMake(8, 8, 8, 8)
-//        rightButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
-//        rightButton.addTarget(self, action: "optionsBarButtonTapped:", forControlEvents: .TouchUpInside)
-//        rightButton.tintColor = UIColor.whiteColor()
-//        
-//        let rightBarButton = UIBarButtonItem(customView: rightButton)
-//        self.navigationItem.rightBarButtonItem = rightBarButton
-        
         var addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "optionsBarButtonTapped:")
         self.navigationItem.rightBarButtonItem = addButton
     }
@@ -232,11 +231,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             collectionView.delegate = collectionDataSource!
             
             //collectionView.reloadData()
-            
-            if let layout = prepareCollectionLayoutForElement(currentElement)
-            {
-                collectionView.setCollectionViewLayout(layout, animated: false)
-            }
+            collectionView.performBatchUpdates({ () -> Void in
+                
+            }, completion: {[unowned self] (finished) -> Void in
+                if let layout = self.prepareCollectionLayoutForElement(self.currentElement)
+                {
+                    self.collectionView.setCollectionViewLayout(layout, animated: false)
+                }
+            })
+
         }
     }
     
