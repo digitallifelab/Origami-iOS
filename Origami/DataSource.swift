@@ -768,6 +768,10 @@ import ImageIO
             //clean also subordinateElements and attached files from disc if present;
             if let target = DataSource.sharedInstance.getElementById(elementId)
             {
+                var set = Set(DataSource.sharedInstance.elements)
+                set.remove(target)
+                DataSource.sharedInstance.elements = Array(set)
+                
                 if let allSubordinatesTree = DataSource.sharedInstance.getSubordinateElementsTreeForElement(target)
                 {
                     //clean attaches if present
@@ -789,7 +793,9 @@ import ImageIO
                     toDelete.insert(target)
                     
                     let afterDeletionSet = allElements.subtract(toDelete)
-                    DataSource.sharedInstance.elements = Array(afterDeletionSet)
+                    var cleanedElements = Array(afterDeletionSet)
+                  
+                    DataSource.sharedInstance.elements = cleanedElements
                 }
                 
                 

@@ -56,22 +56,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool)
+    {
+        prepareCollectionViewDataAndLayout()
+        queryAttachesPreviewData()
+    }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "alementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
 //        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
         //prepareCollectionViewDataAndLayout()
         
     }
     
-    override func viewWillAppear(animated: Bool)
-    {
-        prepareCollectionViewDataAndLayout()
-        queryAttachesPreviewData()
-    }
+  
     
     override func viewWillDisappear(animated: Bool)
     {
@@ -84,7 +85,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     override func viewDidDisappear(animated: Bool)
     {
         super.viewDidDisappear(animated)
-        collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
+        if self.currentElement != nil
+        {
+            collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
+        }
     }
     
     func configureRightBarButtonItem()
@@ -101,7 +105,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 let countAttaches = attaches.count
                 println("Loaded \(countAttaches) attaches for current element.")
-                
                 
                 println(" Starting to load attaches previewImages...")
                 let bgQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
@@ -230,14 +233,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             collectionView.dataSource = collectionDataSource!
             collectionView.delegate = collectionDataSource!
             
-            //collectionView.reloadData()
-            collectionView.performBatchUpdates({ () -> Void in
+            if let layout = self.prepareCollectionLayoutForElement(self.currentElement)
+            {
+                self.collectionView.setCollectionViewLayout(layout, animated: false)
+            }
+            else
+            {
+                println(" ! -> Some error occured while reloading collectionView with new lyout.")
+            }
+            collectionView.performBatchUpdates({ [weak self]() -> Void in
                 
             }, completion: {[unowned self] (finished) -> Void in
-                if let layout = self.prepareCollectionLayoutForElement(self.currentElement)
-                {
-                    self.collectionView.setCollectionViewLayout(layout, animated: false)
-                }
+               
             })
 
         }
@@ -251,14 +258,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             return nil
         }
         
-        if let readyDataSource = self.collectionDataSource, layout = SimpleElementDashboardLayout(infoStruct: readyDataSource.getLayoutInfo())
+        if let readyDataSource = self.collectionDataSource
         {
-            return layout
+            if let infoStruct = readyDataSource.getLayoutInfo()
+            {
+                if let layout = SimpleElementDashboardLayout(infoStruct: infoStruct)
+                {
+                    return layout
+                }
+            }
         }
-        else
-        {
-            return nil
-        }
+        return nil
+        
     }
     
     //MARK: UIViewControllerTransitioningDelegate
@@ -318,7 +329,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
-    func alementActionButtonPressed(notification:NSNotification?)
+    func elementActionButtonPressed(notification:NSNotification?)
     {
         if let notificationUserInfo = notification?.userInfo as? [String:Int], buttonIndex = notificationUserInfo["actionButtonIndex"]
         {
@@ -381,34 +392,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementEditingToggled()
     {
-//        println("Edit element toggled.")
-//        if let source = collectionDataSource
-//        {
-//            collectionDataSource!.editingEnabled = !source.editingEnabled
-//            
-//            self.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-//        }
         startEditingElement(nil)
     }
     
     func elementAddNewSubordinatePressed()
     {
-//        let semaphore = dispatch_semaphore_create(0)
-//        
-//        if let presentedPopover = self.presentedViewController
-//        {
-//           self.dismissViewControllerAnimated(true, completion: { () -> Void in
-//                dispatch_semaphore_signal(semaphore)
-//           })
-//        }
-//        else
-//        {
-//            dispatch_semaphore_signal(semaphore)
-//        }
-//        
-//        
-//        var timeout = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)) )
-//        dispatch_semaphore_wait(semaphore, timeout)
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
             if let elementId = currentElement?.elementId
@@ -513,6 +501,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
         }
     }
+    
     //MARK: UIPopoverPresentationControllerDelegate
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.None
@@ -533,8 +522,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         case .EditCurrent:
             handleEditingElement(newElement)
         }
-        
     }
+    
     //MARK: -----
     func handleAddingNewElement(element:Element)
     {
@@ -795,7 +784,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    
     //MARK: Chat stuff
     func showChatForCurrentElement()
     {
@@ -810,7 +798,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func chatMessageWasTapped(message: Message?) {
         showChatForCurrentElement()
     }
-    
     
     //MARK: Alert
     func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)

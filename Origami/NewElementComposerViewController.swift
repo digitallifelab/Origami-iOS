@@ -436,13 +436,32 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func deleteElementToolBarButtonTapped(sender:UIButton?)
     {
+        var alertController = UIAlertController(title: "Warning", message: "You are about to delete current element and all it`s subordinates.", preferredStyle: .Alert)
+        let deleteAction = UIAlertAction(title: "Delete", style: UIAlertActionStyle.Default ) { [unowned self](alertAction) -> Void in
+            
+            self.dismissViewControllerAnimated(true, completion: {[unowned self] () -> Void in
+                NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: self, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
+            })
+            
+        }
         
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (alertAction) -> Void in
+            
+        }
+        
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+    
     }
     
     func archiveElementToolBarButtonTapped(sender:UIButton?)
     {
         
     }
+    
+    
     
     
     

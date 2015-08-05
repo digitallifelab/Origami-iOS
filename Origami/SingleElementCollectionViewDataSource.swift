@@ -217,8 +217,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
             }
             
-            
-            
             //finally
             let targetStruct = ElementDetailsStruct(title: elementTitle!, details: elementDetails, messagesCell: messages, buttonsCell: buttons, attachesCell: attaches, subordinateItems: subordinatesInfo)
             return targetStruct
@@ -280,12 +278,14 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     //MARK: UICollectionViewDataSource
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int
+    {
         
         return 1
     }
 
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
+    {
         if let cellOptions = self.currentCellsOptions
         {
             var count = cellOptions.countOptions
@@ -302,7 +302,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         return 0
     }
 
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
+    {
         if let orderedOptions = currentCellsOptions?.orderedOptions
         {
             if indexPath.item >= orderedOptions.count
