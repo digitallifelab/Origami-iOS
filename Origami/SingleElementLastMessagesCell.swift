@@ -93,9 +93,40 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         
         if let lvMessages = self.messages
         {
-            let  message = lvMessages[indexPath.row]
+            let message = lvMessages[indexPath.row]
             messageCell.messageLabel.text = message.textBody
             messageCell.avatarView.image = UIImage(named: "icon-No-Avatar")
+            
+            if message.creatorId != nil
+            {
+                if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+                {
+                    DataSource.sharedInstance.loadAvatarForLoginName(DataSource.sharedInstance.user!.userName as! String, completion: {[weak messageCell] (image) -> () in
+                        if let cell = messageCell, avatarImage = image
+                        {
+                            cell.avatarView.image = avatarImage
+                        }
+                    })
+                }
+                else
+                {
+//                    if let contacts = self.contactsForLastMessages
+//                    {
+//                        for aContact in contacts
+//                        {
+//                            if let userName = aContact.userName as? String
+//                            {
+//                                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak chatCell] (image) -> () in
+//                                    if let cell = chatCell, avatarImage = image
+//                                    {
+//                                        cell.avatarView.image = avatarImage
+//                                    }
+//                                })
+//                            }
+//                        }
+//                    }
+                }
+            }
         }
         else
         {

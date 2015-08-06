@@ -9,7 +9,7 @@
 
 /*
 NOTE: 
-This class is created only for subclassing
+This class is created only for subclassing (aka Abstract)
 */
 import Foundation
 import UIKit
