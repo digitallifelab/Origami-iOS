@@ -21,6 +21,7 @@
 		F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */; };
 		F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */; };
 		F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
+		F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F864AB191B7252F600686EB1 /* ImageFilter.swift */; };
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
@@ -133,6 +134,7 @@
 		F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementLastMessagesCell.swift; sourceTree = "<group>"; };
 		F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDetailsCell.swift; sourceTree = "<group>"; };
 		F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDateDetailsCell.swift; sourceTree = "<group>"; };
+		F864AB191B7252F600686EB1 /* ImageFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFilter.swift; sourceTree = "<group>"; };
 		F86F237A1B208AEE00234EFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
 		F86F237D1B208C7D00234EFD /* FileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandler.h; sourceTree = "<group>"; };
@@ -275,6 +277,9 @@
 			children = (
 				F8016FF01B304614002A1620 /* FrameCounter.swift */,
 				F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */,
+				F864AB191B7252F600686EB1 /* ImageFilter.swift */,
+				F86F237D1B208C7D00234EFD /* FileHandler.h */,
+				F86F237E1B208C7D00234EFD /* FileHandler.m */,
 			);
 			name = tools;
 			sourceTree = "<group>";
@@ -657,8 +662,6 @@
 				F8D2FF2B1B283DE900584B8D /* Enumerations.swift */,
 				F8DEE7EF1B68FCC60004F0CB /* Structs.swift */,
 				F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */,
-				F86F237D1B208C7D00234EFD /* FileHandler.h */,
-				F86F237E1B208C7D00234EFD /* FileHandler.m */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F874D90C1B26FA8A00B867BF /* ViewControllers */,
 				F8016FF21B304619002A1620 /* tools */,
@@ -855,6 +858,7 @@
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F880D1981B25BB4000E702D3 /* AFHTTPSessionManager.m in Sources */,
 				F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */,
+				F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */,
 				F88564021B31CBD1005D223E /* ChatMessageRecievedCell.swift in Sources */,
 				F872A4441B469DED000A6AA3 /* NewElementTextLabelCell.swift in Sources */,
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,

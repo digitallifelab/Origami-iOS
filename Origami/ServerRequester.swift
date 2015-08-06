@@ -727,6 +727,138 @@ class ServerRequester: NSObject
             completionClosure!(success: false, error: noUserTokenError)
         }
     }
+    
+    
+    //MARK: Avatars
+    func loadAvatarDataForUserName(loginName:String, completion completionBlock:((avatarData:NSData?, error:NSError?) ->())? )
+    {
+        /*
+        NSString *userAvatarRequestURL = [NSString stringWithFormat:@"%@GetPhoto?userName=%@", BasicURL, userLoginName];
+        NSURL *requestURL = [NSURL URLWithString:userAvatarRequestURL];
+        
+        NSMutableURLRequest *avatarRequest = [NSMutableURLRequest requestWithURL:requestURL];
+        [avatarRequest setHTTPMethod:@"GET"];
+        
+        [NSURLConnection sendAsynchronousRequest:avatarRequest
+        queue:[NSOperationQueue currentQueue]
+        completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+        {
+        //NSLog(@"Response: \r %@", response);
+        if (completionBlock)
+        {
+        if (!connectionError)
+        {
+        if (data.length > 0)
+        {
+        NSError *jsonError;
+        id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+        
+        if (jsonObject)
+        {
+        if ([(NSDictionary *)jsonObject objectForKey:@"GetPhotoResult"] != [NSNull null])
+        {
+        NSArray *result = [(NSDictionary *)jsonObject objectForKey:@"GetPhotoResult"];
+        
+        NSMutableData *mutableData = [NSMutableData data];
+        
+        for (NSNumber *number in result) //iterate through array and convert digits to bytes
+        {
+        int digit = [number intValue];
+        
+        NSData *lvData = [NSData dataWithBytes:&digit length:1];
+        
+        [mutableData appendData:lvData];
+        }
+        
+        NSData *photoData = [NSData dataFromIntegersArray:result];
+        
+        if (mutableData.length == photoData.length)
+        {
+        NSLog(@"\n  PHOTO TEST PASSED \n");
+        }
+        
+        UIImage *photo = [UIImage imageWithData:mutableData];
+        if (photo)
+        {
+        NSDictionary *photoDict = @{userLoginName : photo};
+        completionBlock(photoDict, nil);
+        }
+        else
+        {
+        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
+        code:NSKeyValueValidationError
+        userInfo:@{NSLocalizedDescriptionKey:@"Could not convert data to Image"}];
+        completionBlock(nil, lvError);
+        }
+        
+        }
+        else
+        {
+        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
+        code:NSKeyValueValidationError
+        userInfo:@{NSLocalizedDescriptionKey:@"No Image for User"}];
+        completionBlock(nil, lvError);
+        }
+        }
+        else
+        {
+        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
+        code:NSKeyValueValidationError
+        userInfo:@{NSLocalizedDescriptionKey:@"Wrong response object"}];
+        completionBlock(nil, lvError);
+        }
+        
+        }
+        else
+        {
+        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
+        code:NSKeyValueValidationError
+        userInfo:@{NSLocalizedDescriptionKey:@"Wrong data format"} ];
+        completionBlock(nil, lvError);
+        }
+        }
+        else
+        {
+        completionBlock(nil, connectionError);
+        }
+        }
+        }];
+        */
+        
+        let userAvatarRequestURLString = serverURL + "GetPhoto?userName=" + loginName
+        if let requestURL = NSURL(string: userAvatarRequestURLString)
+        {
+            var mutableRequest = NSMutableURLRequest(URL: requestURL)
+            mutableRequest.timeoutInterval = 30.0
+            mutableRequest.HTTPMethod = "GET"
+            
+            let sessionTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData, response, responseError) -> Void in
+                if let toReturnCompletion = completionBlock
+                {
+                    if let responseBytes = responseData
+                    {
+                        var jsonError:NSError?
+                        if let
+                            jsonObject = NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? [String:AnyObject],
+                            response = jsonObject["GetPhotoResult"] as? [Int]
+                        {
+                            if let aData = NSData.dataFromIntegersArray(response)
+                            {
+                                toReturnCompletion(avatarData: aData, error: nil)
+                            }
+                        }
+                        return
+                    }
+                    toReturnCompletion(avatarData: nil, error: responseError)
+                }
+            })
+            
+            sessionTask.resume()
+        }
+        
+    }
+    
+    
     //MARK: Contacts
     
     /** Queries server for contacts and  on completion or timeout returns  array of contacts or error

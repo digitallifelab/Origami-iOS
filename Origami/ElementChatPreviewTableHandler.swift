@@ -15,6 +15,9 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     lazy var messageObjects:[Message] = [Message]()
     let noAvatarImage = UIImage(named: "icon-No-Avatar")
+    let imageFilterer = ImageFilter()
+    var contactsForLastMessages:[Contact]?
+    
     override init()
     {
         super.init()
@@ -32,6 +35,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             return nil
         }
         self.messageObjects = messages!
+        self.trytoGetContactsForLastMessages()
     }
     
     func reloadLastMessagesForElementId(elementId:NSNumber)
@@ -39,7 +43,21 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: elementId, lastMessageId: nil)
         {
             self.messageObjects = messages
+            trytoGetContactsForLastMessages()
         }
+    }
+    
+    private func trytoGetContactsForLastMessages()
+    {
+        var contactIDs = Set<Int>()
+            for aMessage in self.messageObjects
+            {
+                contactIDs.insert(aMessage.creatorId!.integerValue)
+            }
+            if let contacts = DataSource.sharedInstance.getContactsByIds(contactIDs)
+            {
+                self.contactsForLastMessages = Array(contacts)
+            }
     }
 
     //DataSource
@@ -53,7 +71,51 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     {
         var chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         chatCell.messageLabel.text = messageObjects[indexPath.row].textBody
-        chatCell.avatarView.image = noAvatarImage
+        
+        // nest two filtering method calls are test stuff
+        //1st
+        //imageFilterer.filterImageBlackAndWhiteInBackGround(UIImage(named: "testImageToFilter")!, completeInMainQueue: true) { [weak chatCell](image) -> () in
+        //    if let chatWeakCell = chatCell
+        //    {
+        //        chatWeakCell.avatarView.image = image
+        //    }
+        //}
+        //2nd
+        //chatCell.avatarView.image = ImageFilter().filterImageBlackAndWhite(UIImage(named: "testImageToFilter")!)
+        
+        //chatCell.avatarView.image = UIImage(named: "testImageToFilter")
+        let message = self.messageObjects[indexPath.row]
+        if message.creatorId != nil
+        {
+            if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+            {
+                DataSource.sharedInstance.loadAvatarForLoginName(DataSource.sharedInstance.user!.userName as! String, completion: {[weak chatCell] (image) -> () in
+                    if let cell = chatCell, avatarImage = image
+                    {
+                        cell.avatarView.image = avatarImage
+                    }
+                })
+            }
+            else
+            {
+                if let contacts = self.contactsForLastMessages
+                {
+                    for aContact in contacts
+                    {
+                        if let userName = aContact.userName as? String
+                        {
+                            DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak chatCell] (image) -> () in
+                                if let cell = chatCell, avatarImage = image
+                                {
+                                    cell.avatarView.image = avatarImage
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+        }
+        
         chatCell.displayMode = self.displayMode
         return chatCell
     }

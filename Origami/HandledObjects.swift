@@ -37,7 +37,7 @@ class User
         
         if info.count > 0
         {
-            if let userName = info["UserName"] as? NSString
+            if let userName = info["LoginName"] as? NSString
             {
                 self.userName = userName
             }
@@ -112,9 +112,9 @@ class User
         }
     }
     
-    func toDictionary() -> NSDictionary
+    func toDictionary() -> [NSObject:AnyObject]
     {
-        var toReturn = NSMutableDictionary(capacity: 10)
+        var toReturn = [NSObject:AnyObject]()
         toReturn["LoginName"]   = self.userName //?? NSNull()
         toReturn["Password"]    = self.password //?? NSNull()
         

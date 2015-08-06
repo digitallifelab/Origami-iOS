@@ -279,10 +279,16 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             
             //set avatar image
-            if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(lvContact.userName! as String)
+            if let userName = lvContact.userName as? String
             {
-                cell.avatar.image = UIImage(data:avatarData)
+                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: { (image) -> () in
+                    if let avatar = image
+                    {
+                        cell.avatar.image = avatar
+                    }
+                })
             }
+
         }
     }
     

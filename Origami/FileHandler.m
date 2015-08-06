@@ -77,48 +77,107 @@
     [languages writeToFile:languagesPath atomically:YES];
 }
 
--(UIImage *)getUserAvatarFromDisk
+#pragma mark  Avatars
+
+
+-(NSString *) pathToAvatarFolder
 {
-    NSString *imagePath = [self pathForUserAvatar];
-    NSData *imageData = [NSData dataWithContentsOfFile:imagePath];
-    if (imageData)
+    NSString *pathToDocs = [self rootDocumentsDirectory];
+    NSString *pathToDirectory = [pathToDocs stringByAppendingString:@"/Origami/Avatars/"];
+    
+    //check for current directory
+    BOOL isDirectory = YES;
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:pathToDirectory isDirectory:&isDirectory])
     {
-        UIImage *userImage = [UIImage imageWithData:imageData];
-        return userImage;
+        NSError *lvFolderError;
+        BOOL didCreateDicertory = [[NSFileManager defaultManager] createDirectoryAtPath:pathToDirectory withIntermediateDirectories:YES attributes:nil error:&lvFolderError];
+        if (!didCreateDicertory)
+        {
+            if(lvFolderError)
+            {
+                NSLog(@"... Error Creating Origami  Avatars folder: \n %@", lvFolderError.description);
+                return nil;
+            }
+            else
+            {
+                NSLog(@"... Error Creating Origami  Avatars folder: \n Unknown Error");
+                return nil;
+            }
+        }
+        
     }
-    return nil;
-
+    return pathToDirectory;
 }
 
--(void) saveUserAvatarToDisk:(UIImage *)userImage
+-(void) saveAvatar:(NSData *)imageData forLoginName:(NSString *)loginName completion:(void(^)(NSError* saveError)) completionBlock
 {
-    NSString *imagePath = [self pathForUserAvatar];
-    NSData *imageData = UIImagePNGRepresentation(userImage);
-    if (imageData)
+    if (completionBlock != nil)
     {
-        [imageData writeToFile:imagePath atomically:YES];
+        NSString *avatarsFolderDirectory = [self pathToAvatarFolder];
+        
+        if (avatarsFolderDirectory != nil)
+        {
+            NSString *fileName = [loginName stringByAppendingString:@".png"];
+            NSString *filePath = [avatarsFolderDirectory stringByAppendingString:fileName];
+            
+            NSError *writingError = nil;
+            BOOL avatarWritten = [imageData writeToFile:filePath options:NSDataWritingAtomic error:&writingError];
+            
+            if (avatarWritten)
+            {
+                completionBlock(nil);
+            }
+            else if (writingError)
+            {
+                completionBlock(writingError);
+            }
+            else
+            {
+                NSError *unknownError = [NSError errorWithDomain:@"Origami.AvatarSavingError" code:405 userInfo:@{NSLocalizedDescriptionKey:@"Unknown Error while saving avatar to disc"}];
+                completionBlock(unknownError);
+            }
+        }
+        else
+        {
+            NSError *noFolderError = [NSError errorWithDomain:@"Origami.AvatarSavingError" code:406 userInfo:@{NSLocalizedDescriptionKey:@"No Directory For Avatars."}];
+            completionBlock(noFolderError);
+        }
     }
+    
 }
 
-- (BOOL)saveAvatar:(NSData *)fileData forName:(NSString *)userLoginName
+-(void) loadAvatarDataForLoginName:(NSString *)loginName completion:(void(^)(NSData* avatarData, NSError* saveError)) completionBlock
 {
-    NSString *appDocsDir = [self rootDocumentsDirectory];
-    
-    NSString *filePath = [NSString stringWithFormat:@"%@/%@.png", appDocsDir, userLoginName];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    BOOL success = [fileManager createFileAtPath:filePath contents:fileData attributes:nil];
-    
-    return success;
-}
-
--(NSData *)imageDataForUserAvatarWithUserName:(NSString *)userLoginName;
-{
-    NSString *avatarURL = [NSString stringWithFormat:@"%@/%@.png",[self rootDocumentsDirectory], userLoginName ];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    NSData *contents = [fileManager contentsAtPath:avatarURL];
-    return contents; //nil if no file
+    NSString *pathToFolder = [self pathToAvatarFolder];
+    if (pathToFolder != nil)
+    {
+        NSString *fileName = [loginName stringByAppendingString:@".png"];
+        NSString *filePath = [pathToFolder stringByAppendingString:fileName];
+        if ([[NSFileManager defaultManager] fileExistsAtPath: filePath])
+        {
+            NSData *file = [NSData dataWithContentsOfFile:filePath];
+            if (file != nil)
+            {
+                completionBlock(file, nil);
+            }
+            else
+            {
+                NSError *readingError = [NSError errorWithDomain:@"Origami.AvatarReadingError" code:405 userInfo:@{NSLocalizedDescriptionKey:@"Unknown Error while reading avatar from disc"}];
+                completionBlock(nil, readingError);
+            }
+        }
+        else
+        {
+            NSError *noFileError = [NSError errorWithDomain:@"Origami.AvatarSavingError" code:406 userInfo:@{NSLocalizedDescriptionKey:@"No File For Avatar."}];
+            completionBlock(nil, noFileError);
+        }
+    }
+    else
+    {
+        NSError *noFolderError = [NSError errorWithDomain:@"Origami.AvatarSavingError" code:406 userInfo:@{NSLocalizedDescriptionKey:@"No Directory For Avatars."}];
+        completionBlock(nil, noFolderError);
+    }
 }
 
 #pragma mark EmotionsSound
@@ -145,35 +204,18 @@
 -(void) saveCurrentUserToDisk:(NSDictionary *)userInfo
 {
     NSString *savingPath = [self pathToUser];
-//    BOOL didSave = NO;// [userInfo writeToFile:savingPath atomically:YES];
-//    
-////    NSData *plistFile = [NSData data]
-////    NSError * error = nil;
-////    BOOL success = [plistFile writeToFile:path options:NSDataWritingAtomic error:&error];
-////    NSLog(@"Success = %d, error = %@", success, error);
-//    
-//    if (!didSave)
-//    {
-        //NSLog(@"\r - Error Saving User to disk.");
-        NSError *lvError;
-        NSData *userData = [NSPropertyListSerialization dataWithPropertyList:userInfo format:NSPropertyListXMLFormat_v1_0 options:0 error:&lvError];
-        if (lvError)
-        {
-            //NSLog(@"\r - Error Creating User Data: \n%@", lvError);
-        }
-        else
-        {
-            [userData writeToFile:savingPath options:NSDataWritingAtomic error:&lvError];
-//            if (lvError)
-//            {
-//               // NSLog(@"\r - Error Writing User Data: \n%@", lvError);
-//            }
-//            else
-//            {
-////                NSLog(@"\r - Saved Current User to Documents___.");
-//            }
-        }
-//    }
+
+    NSError *lvError;
+    NSData *userData = [NSPropertyListSerialization dataWithPropertyList:userInfo format:NSPropertyListXMLFormat_v1_0 options:0 error:&lvError];
+    if (lvError)
+    {
+        NSLog(@"\r - Error Creating User Data: \n%@", lvError);
+    }
+    else
+    {
+        [userData writeToFile:savingPath options:NSDataWritingAtomic error:&lvError];
+    }
+
 }
 
 -(NSDictionary *)getSavedUser
@@ -238,17 +280,11 @@
     
     if (!lvError)
     {
-        //NSURL *toReturn = [NSURL URLWithString:savePath];
-        //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^
-        //{
-            completion(savePath);
-      //  });
+        completion(savePath);
         return savePath;
     }
     
-    //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        completion(nil);
-    //});
+    completion(nil);
     
     return nil;
 }
@@ -294,6 +330,7 @@
     
     return pathToFile;
 }
+
 -(void) saveFileToDisc:(NSData *)file fileName:(NSString *)fileName completion:(void(^)(NSString *filePath, NSError *error)) completionBlock
 {
     NSString *savePath = [self pathToFileNamed:fileName];
@@ -302,11 +339,11 @@
     
     if (!lvError)
     {
-        NSLog(@" ->  file %@ written = %d", fileName, written);
+        NSLog(@" ->  file %@ WAS written = %d", fileName, written);
         completionBlock(savePath, nil);
         return;
     }
-    NSLog(@" ->  file %@ written = %d", fileName, written);
+    NSLog(@" ->  file %@ NOT written = %d", fileName, written);
     NSLog(@"......Failed to save file to disc: \n%@", lvError.localizedDescription);
     completionBlock(nil, lvError);
 }

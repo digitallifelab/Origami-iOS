@@ -70,14 +70,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewWillAppear(animated: Bool) {
-        
+    override func viewWillAppear(animated: Bool)
+    {
         super.viewWillAppear(animated)
         nightModeDidChange(nil)
     }
     
-    override func viewDidAppear(animated: Bool) {
-        
+    override func viewDidAppear(animated: Bool)
+    {
         super.viewDidAppear(animated)
         
         //register for night-day modes switching
@@ -271,43 +271,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         if let rootId = element.rootElementId // we have to show breadcrumbs instead of back button in navigationItem
         {
-            testPresentNewSingleElementVC(element)
-//            if rootId.integerValue == 0
-//            {
-//                performSegueWithIdentifier("PresentChildElement", sender: element)
-//            }
-//            else
-//            {
-//                //calculate all the subordinates tree
-//                if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
-//                {
-//                    var viewControllers = [UIViewController]()
-//
-//                    //create viewControllers for all elements
-//                    
-//                    for lvElement in elementsTree.reverse()
-//                    {
-//                        if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementDashboard") as? ElementDashboardVC
-//                        {
-//                            dashboardVC.element = lvElement
-//                            viewControllers.append(dashboardVC)
-//                        }
-//                    }
-//                    //append last view controller on top of the navigation controller`s stack
-//                    if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementDashboard") as? ElementDashboardVC
-//                    {
-//                        targetVC.element = element
-//                        viewControllers.append(targetVC)
-//                    }
-//                    //show last
-//                    if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
-//                    {
-//                        var vcS = currentVCs
-//                        vcS += viewControllers
-//                        self.navigationController?.setViewControllers(vcS, animated: true)
-//                    }
-//                }
-//            }
+            presentNewSingleElementVC(element)
         }
         else
         {
@@ -315,7 +279,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
     }
     
-    func testPresentNewSingleElementVC(element:Element)
+    func presentNewSingleElementVC(element:Element)
     {
         if let rootId = element.elementId
         {

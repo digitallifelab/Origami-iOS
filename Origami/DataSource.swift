@@ -37,7 +37,14 @@ import ImageIO
     // properties
     lazy var messagesObservers = [NSNumber:MessageObserver]()
     
-    var user:User?
+    var user:User? /*{
+        willSet (newUser){
+            println("User was set.  User: \n \(newUser!.toDictionary())")
+        }
+        didSet{
+            
+        }
+    } */
     
     private var messages =  [NSNumber:[Message]] () // {elementId: [Messages]}
     
@@ -111,11 +118,11 @@ import ImageIO
         
         if let userName = NSUserDefaults.standardUserDefaults().objectForKey(loginNameKey) as? String, let password = NSUserDefaults.standardUserDefaults().objectForKey(passwordKey) as? String
         {
-            serverRequester.loginWith(userName, password: password, completion: {[weak self] (userResult, loginError) -> () in
+            serverRequester.loginWith(userName, password: password, completion: { (userResult, loginError) -> () in
                 if let lvUser = userResult as? User
                 {
-                    self!.user = lvUser
-                    completion(user: self!.user, error: nil)
+                    DataSource.sharedInstance.user = lvUser
+                    completion(user: DataSource.sharedInstance.user, error: nil)
                 }
                 else
                 {
@@ -1223,6 +1230,7 @@ import ImageIO
                     }
                     else
                     {
+                        println(" -> Loaded contacts: \(contacts!.count)")
                         DataSource.sharedInstance.contacts = contacts!
                     }
                 }
@@ -1230,6 +1238,31 @@ import ImageIO
             return nil
         }
         return DataSource.sharedInstance.contacts
+    }
+    
+    func getContactsByIds(contactIDs:Set<Int>) -> [Contact]?
+    {
+        if !DataSource.sharedInstance.contacts.isEmpty
+        {
+            
+            let foundContacts = DataSource.sharedInstance.contacts.filter({ (contact) -> Bool in
+                if let contactId = contact.contactId
+                {
+                    if contactIDs.contains(contactId)
+                    {
+                        return true
+                    }
+                }
+                return false
+            })
+            
+            if !foundContacts.isEmpty
+            {
+                return foundContacts
+            }
+            
+        }
+        return nil
     }
     
     func getContactsForElement(elementId:Int, completion:contactsArrayClosure?)
@@ -1428,16 +1461,96 @@ import ImageIO
         return response
     }
     
-    func getAvatarDataForContactUserName(userName:String?) -> NSData?
+    private func getAvatarDataForContactUserName(userName:String?) -> NSData?
     {
         if let lvName = userName
         {
             if let existingBytes = DataSource.sharedInstance.avatarsHolder[lvName]
             {
+                println(" returning avatar Data from RAM")
                 return existingBytes
             }
         }
-        
         return nil
-    }    
+    }
+    
+    private func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
+    {
+        if let block = completionBlock
+        {
+            let fileHandler = FileHandler()
+            
+            fileHandler.loadAvatarDataForLoginName(loginName, completion: { (avatarData, error) -> Void in
+                if let avatarBytes = avatarData
+                {
+                    if let image = UIImage(data: avatarBytes)
+                    {
+                        block(image: image, error: nil)
+                        DataSource.sharedInstance.avatarsHolder[loginName] = avatarBytes //save to RAM also
+                    }
+                    else
+                    {
+                        let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
+                        block(image: nil, error: imageCreatingError)
+                    }
+                }
+                else
+                {
+                    block(image: nil, error: error)
+                }
+            })
+        }
+    }
+        
+    func loadAvatarForLoginName(loginName:String, completion completionBlock:((image:UIImage?) ->())? )
+    {
+        if let complete = completionBlock
+        {
+            //step 1 try to get from RAM
+            if let existingAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), avatarImage = UIImage(data: existingAvatarData)
+            {
+                complete(image: avatarImage)
+                println(" got avatar from RAM")
+                return
+            }
+            
+            //step 2 try to get from disc
+            DataSource.sharedInstance.loadAvatarFromDiscForLoginName(loginName, completion: { (image, error) -> () in
+                
+                if let avatarImage = image
+                {
+                    complete(image: avatarImage)
+                    return
+                }
+                //step 3 try to load from server
+                DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(loginName, completion: { (avatarData, error) -> () in
+                    if let avatarBytes = avatarData
+                    {
+                        if let avatar = UIImage(data: avatarBytes)
+                        {
+                            complete(image: avatar) //return
+                            DataSource.sharedInstance.avatarsHolder[loginName] = avatarBytes //save to RAM also
+                            
+                            //save to disc
+                            let fileHandler = FileHandler()
+                            
+                            fileHandler.saveAvatar(avatarBytes, forLoginName: loginName, completion: { (errorSaving) -> Void in
+                                if let error = errorSaving
+                                {
+                                    println(" Did not save currently loaded avatar for user name: \(loginName)")
+                                }
+                            })
+                        }
+                        return
+                    }
+                    if let anError = error
+                    {
+                        println(" Error while downloading avatar for userName: \(loginName): \n \(anError.description) ")
+                    }
+                    
+                })
+
+            })
+        }
+    }
 }
