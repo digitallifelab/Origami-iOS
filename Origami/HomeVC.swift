@@ -23,6 +23,36 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
     
+        DataSource.sharedInstance.loadExistingDashboardElementsFromLocalDatabaseCompletion { (elements, error) -> () in
+            
+            if let elementsDict = elements
+            {
+                if let signals = elementsDict["signals"]
+                {
+                    for aSignalElement in signals
+                    {
+                        println("Signal: \(aSignalElement.title)")
+                    }
+                }
+                if let favourites = elementsDict["favor"]
+                {
+                    for aFavorite in favourites
+                    {
+                        println("Favourite: \(aFavorite.title)")
+                    }
+                }
+                if let other = elementsDict["usual"]
+                {
+                    for anUsual in other
+                    {
+                        println("Usual: \(anUsual.title)")
+                    }
+                }
+            }
+            
+            
+        }
+        
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
 
@@ -191,13 +221,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             customLayout.privFavourites = dashboardElements[2]!
                             customLayout.privOther = dashboardElements[3]!
                             
-                            customLayout.invalidateLayout() // to recalculate position of home elements
+                            //customLayout.invalidateLayout() // to recalculate position of home elements
                         }
                         else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
                         {
                             if shouldReloadCollection
                             {
-                                aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                //aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
                                 
                                 let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
                                 
@@ -269,62 +299,57 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
-        if let rootId = element.rootElementId // we have to show breadcrumbs instead of back button in navigationItem
-        {
+//        let rootId = element.rootElementId
+//        if rootId.boolValue
+//        {
             presentNewSingleElementVC(element)
-        }
-        else
-        {
-           performSegueWithIdentifier("PresentChildElement", sender: element)
-        }
+//        }
     }
     
     func presentNewSingleElementVC(element:Element)
     {
-        if let rootId = element.elementId
+        let rootId = element.rootElementId.integerValue
+        
+        if rootId == 0
         {
-            if rootId == 0
+            if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
             {
-                if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-                {
-                    newVC.currentElement = element
-                    self.navigationController?.pushViewController(newVC, animated: true)
-                }
+                newVC.currentElement = element
+                self.navigationController?.pushViewController(newVC, animated: true)
             }
-            else
+        }
+        else
+        {
+            //calculate all the subordinates tree
+            if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
             {
-                //calculate all the subordinates tree
-                if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
+                var viewControllers = [UIViewController]()
+                
+                //create viewControllers for all elements
+                
+                for lvElement in elementsTree.reverse()
                 {
-                    var viewControllers = [UIViewController]()
-                    
-                    //create viewControllers for all elements
-                    
-                    for lvElement in elementsTree.reverse()
+                    if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
                     {
-                        if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-                        {
-                            dashboardVC.currentElement = lvElement
-                            viewControllers.append(dashboardVC)
-                        }
+                        dashboardVC.currentElement = lvElement
+                        viewControllers.append(dashboardVC)
                     }
-                    //append last view controller on top of the navigation controller`s stack
-                    if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-                    {
-                        targetVC.currentElement = element
-                        viewControllers.append(targetVC)
-                    }
-                    //show last
-                    if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
-                    {
-                        var vcS = currentVCs
-                        vcS += viewControllers
-                        self.navigationController?.setViewControllers(vcS, animated: true)
-                    }
+                }
+                //append last view controller on top of the navigation controller`s stack
+                if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+                {
+                    targetVC.currentElement = element
+                    viewControllers.append(targetVC)
+                }
+                //show last
+                if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
+                {
+                    var vcS = currentVCs
+                    vcS += viewControllers
+                    self.navigationController?.setViewControllers(vcS, animated: true)
                 }
             }
         }
-        
     }
     
     //MARK: ElementComposingDelegate
@@ -357,12 +382,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         // 2 - send passWhomIDs, if present
         // 3 - if new element successfully added - reload dashboard collectionView
         var passWhomIDs:[Int]? 
-        if let nsNumberArray = element.passWhomIDs
+         let nsNumberArray = element.passWhomIDs
+        if !nsNumberArray.isEmpty
         {
             passWhomIDs = [Int]()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number)
+                passWhomIDs!.append(number.integerValue)
             }
         }
         

@@ -19,7 +19,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     var selectionEnabled = false
     override func viewDidLoad() {
         super.viewDidLoad()
-        if currentElement!.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+        if currentElement!.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
         {
             selectionEnabled = true
         }
@@ -43,7 +43,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             
             if contacts != nil && currentElement != nil
             {
-                if let passwhomIDs = currentElement!.passWhomIDs
+                if let passwhomIDs = currentElement?.passWhomIDs
                 {
                     let passWhomIDsSet = Set(passwhomIDs)
                     var allContactsSet:Set<Contact> = Set(contacts!)
@@ -202,7 +202,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             {
                 case 0:
                     //unchecked contact from participants
-                DataSource.sharedInstance.removeContact(selectedContact.contactId!, fromElement: currentElement!.elementId!, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.removeContact(selectedContact.contactId!, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
                     if self != nil
                     {
                         if success
@@ -221,7 +221,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                     }
                 })
                 case 1:
-                DataSource.sharedInstance.addContact(selectedContact.contactId!, toElement: currentElement!.elementId!, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.addContact(selectedContact.contactId!, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
                     if self != nil
                     {
                         if success

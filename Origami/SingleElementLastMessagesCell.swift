@@ -110,6 +110,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                 }
                 else
                 {
+                    //TODO: refactor to setup single object for Chat Preview Cell both for own messages preview and contacts` messages preview
 //                    if let contacts = self.contactsForLastMessages
 //                    {
 //                        for aContact in contacts

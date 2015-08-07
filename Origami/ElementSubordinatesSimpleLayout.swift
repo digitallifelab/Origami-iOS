@@ -158,7 +158,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                         
                         let element = collectionDataSourse.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
-                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!)
+                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!.integerValue)
                         if !subordinates.isEmpty
                         {
                             elementWidth = HomeCellWideDimension
@@ -192,7 +192,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                         
                         let element = collectionDataSource.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
-                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!)
+                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!.integerValue)
                         if !subordinates.isEmpty
                         {
                             elementWidth = HomeCellWideDimension
@@ -220,8 +220,8 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
     
     private func getSortedElementsDictFromElementsArray(elements:[Element]) -> [String:[Element]]
     {
-        var lvSignals = elements.filter({ (includeElement) -> Bool in  return includeElement.isSignal! == true })
-        var lvFavourite = elements.filter( { (includeElement) -> Bool in return includeElement.isFavourite! == true})
+        var lvSignals = elements.filter({ (includeElement) -> Bool in  return includeElement.isSignal.boolValue == true })
+        var lvFavourite = elements.filter( { (includeElement) -> Bool in return includeElement.isFavourite.boolValue == true})
         var otherSet = Set(elements).subtract( Set(lvSignals))
         var otherArray = Array(otherSet)
         

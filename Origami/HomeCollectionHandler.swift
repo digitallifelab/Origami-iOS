@@ -103,8 +103,8 @@ import UIKit
                         dashCell.descriptionLabel.text = lvDescription
                     }
                     
-                    if let isAsignal = existingElement.isSignal?.boolValue
-                    {
+                     let isAsignal = existingElement.isSignal.boolValue
+                    
                         if isAsignal
                         {
                             dashCell.signalDetectorView?.hidden = false
@@ -114,11 +114,6 @@ import UIKit
                         {
                             dashCell.signalDetectorView?.hidden = true
                         }
-                    }
-                    else
-                    {
-                        dashCell.signalDetectorView?.hidden = true
-                    }
                 }
             }
             

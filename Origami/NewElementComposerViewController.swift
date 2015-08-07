@@ -17,15 +17,20 @@ enum CurrentEditingConfiguration:Int
 
 class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate/*, TextEditingDelegate*/ {
 
-    var rootElementID:Int?
+    var rootElementID:Int = 0
     var composingDelegate:ElementComposingDelegate?
     lazy var contactIDsToPass:Set<Int> = Set([Int]())
     var newElement:Element? {
         didSet{
             if let passIDs = newElement?.passWhomIDs
             {
-                contactIDsToPass = Set(passIDs)
+                for number in passIDs
+                {
+                    contactIDsToPass.insert(number.integerValue)
+                }
+                //contactIDsToPass = Set(passIDs)
             }
+            println("Will pass to contact ids: \n \(contactIDsToPass)")
             table.reloadData()
         }
     }
@@ -39,7 +44,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             if editingStyle == .AddNew
             {
                 self.newElement = Element()
-                self.newElement?.rootElementId = self.rootElementID
+                self.newElement?.rootElementId = NSNumber(integer:self.rootElementID)
                 self.newElement?.passWhomIDs = Array(self.contactIDsToPass)
             }
             configureBottomToolbar()
@@ -428,10 +433,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 
             }
            
-            if let rootID = self.rootElementID
-            {
-                anElement.rootElementId = rootID
-            }
+            
+            
+            anElement.rootElementId = NSNumber(integer:  self.rootElementID)
+            
             composingDelegate?.newElementComposer(self, finishedCreatingNewElement: anElement)
         }
         else

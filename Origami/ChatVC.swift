@@ -281,7 +281,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func setupNavigationTitleView()
     {
-        if let participantsCount = currentElement?.passWhomIDs?.count
+        if let participantsCount = currentElement?.passWhomIDs.count
         {
             // setup title label
             var lvTitleLabel = UILabel(frame: CGRectMake(0, 0, 100.0, 40.0))

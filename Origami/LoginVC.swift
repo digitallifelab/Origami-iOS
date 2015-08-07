@@ -35,15 +35,19 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     @IBAction func loginButtonPress(sender:UIButton)
     {
-        DataSource.sharedInstance.tryToGetUser {[unowned self] (user, error) -> () in
-            if  user != nil
+        DataSource.sharedInstance.tryToGetUser {[weak self] (user, error) -> () in
+            if let weakSelf = self
             {
-                self.userDidLogin(user!)
+                if let aUser = user
+                {
+                    weakSelf.userDidLogin(aUser)
+                }
+                else if let anError = error, let localizedDescription = error?.localizedDescription
+                {
+                    weakSelf.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:localizedDescription, cancelButtonTitle:"Close".localizedWithComment(""))
+                }
             }
-            else if error != nil, let localizedDescription = error?.localizedDescription
-            {
-                self.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:localizedDescription, cancelButtonTitle:"Close".localizedWithComment(""))
-            }
+            
             
         }// User(info: dict)
         

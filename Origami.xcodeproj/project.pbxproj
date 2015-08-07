@@ -20,6 +20,12 @@
 		F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */; };
 		F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */; };
 		F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */; };
+		F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */; };
+		F855BBC41B74ED1400EC114C /* DBElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC31B74ED1400EC114C /* DBElement.m */; };
+		F855BBC71B74ED1500EC114C /* DBContact.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC61B74ED1500EC114C /* DBContact.m */; };
+		F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC91B74ED1500EC114C /* DBAttachment.m */; };
+		F855BBCD1B74ED1500EC114C /* DBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCC1B74ED1500EC114C /* DBMessage.m */; };
+		F855BBD01B74ED9B00EC114C /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */; };
 		F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
 		F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F864AB191B7252F600686EB1 /* ImageFilter.swift */; };
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
@@ -51,7 +57,6 @@
 		F87FE6C31B611836004CA576 /* ElementActionButtonsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */; };
 		F87FE6C51B6126BC004CA576 /* ElementActionButtonsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C41B6126BC004CA576 /* ElementActionButtonsDataSource.swift */; };
 		F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D17A1B2583CE00E702D3 /* Extensions.swift */; };
-		F880D17D1B25994300E702D3 /* DashMessagesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D17C1B25994300E702D3 /* DashMessagesHandler.swift */; };
 		F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D1801B25B22900E702D3 /* ServerRequester.swift */; };
 		F880D1961B25BB4000E702D3 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F880D1841B25BB4000E702D3 /* AFHTTPRequestOperation.m */; };
 		F880D1971B25BB4000E702D3 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F880D1861B25BB4000E702D3 /* AFHTTPRequestOperationManager.m */; };
@@ -133,6 +138,17 @@
 		F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementTitleCell.swift; sourceTree = "<group>"; };
 		F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementLastMessagesCell.swift; sourceTree = "<group>"; };
 		F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDetailsCell.swift; sourceTree = "<group>"; };
+		F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OrigamiModel.xcdatamodel; sourceTree = "<group>"; };
+		F855BBC21B74ED1400EC114C /* DBElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBElement.h; sourceTree = "<group>"; };
+		F855BBC31B74ED1400EC114C /* DBElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBElement.m; sourceTree = "<group>"; };
+		F855BBC51B74ED1500EC114C /* DBContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBContact.h; sourceTree = "<group>"; };
+		F855BBC61B74ED1500EC114C /* DBContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBContact.m; sourceTree = "<group>"; };
+		F855BBC81B74ED1500EC114C /* DBAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBAttachment.h; sourceTree = "<group>"; };
+		F855BBC91B74ED1500EC114C /* DBAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBAttachment.m; sourceTree = "<group>"; };
+		F855BBCB1B74ED1500EC114C /* DBMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBMessage.h; sourceTree = "<group>"; };
+		F855BBCC1B74ED1500EC114C /* DBMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBMessage.m; sourceTree = "<group>"; };
+		F855BBCE1B74ED9B00EC114C /* DatabaseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseHandler.h; sourceTree = "<group>"; };
+		F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseHandler.m; sourceTree = "<group>"; };
 		F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDateDetailsCell.swift; sourceTree = "<group>"; };
 		F864AB191B7252F600686EB1 /* ImageFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFilter.swift; sourceTree = "<group>"; };
 		F86F237A1B208AEE00234EFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -166,7 +182,6 @@
 		F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonsLayout.swift; sourceTree = "<group>"; };
 		F87FE6C41B6126BC004CA576 /* ElementActionButtonsDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonsDataSource.swift; sourceTree = "<group>"; };
 		F880D17A1B2583CE00E702D3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		F880D17C1B25994300E702D3 /* DashMessagesHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashMessagesHandler.swift; sourceTree = "<group>"; };
 		F880D1801B25B22900E702D3 /* ServerRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerRequester.swift; sourceTree = "<group>"; };
 		F880D1831B25BB4000E702D3 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		F880D1841B25BB4000E702D3 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
@@ -350,6 +365,32 @@
 			name = AttachesCell;
 			sourceTree = "<group>";
 		};
+		F855BB9D1B74A7AF00EC114C /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				F855BBCE1B74ED9B00EC114C /* DatabaseHandler.h */,
+				F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */,
+				F855BBD11B74EDB500EC114C /* DatabaseObjects */,
+				F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */,
+			);
+			name = CoreData;
+			sourceTree = "<group>";
+		};
+		F855BBD11B74EDB500EC114C /* DatabaseObjects */ = {
+			isa = PBXGroup;
+			children = (
+				F855BBCB1B74ED1500EC114C /* DBMessage.h */,
+				F855BBCC1B74ED1500EC114C /* DBMessage.m */,
+				F855BBC81B74ED1500EC114C /* DBAttachment.h */,
+				F855BBC91B74ED1500EC114C /* DBAttachment.m */,
+				F855BBC51B74ED1500EC114C /* DBContact.h */,
+				F855BBC61B74ED1500EC114C /* DBContact.m */,
+				F855BBC21B74ED1400EC114C /* DBElement.h */,
+				F855BBC31B74ED1400EC114C /* DBElement.m */,
+			);
+			name = DatabaseObjects;
+			sourceTree = "<group>";
+		};
 		F86F74251B56834E00E48E13 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
@@ -410,7 +451,6 @@
 			isa = PBXGroup;
 			children = (
 				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
-				F880D17C1B25994300E702D3 /* DashMessagesHandler.swift */,
 				F89F3B651B21E86A00156CEC /* DashCells.swift */,
 			);
 			name = Subclasses_For_UIKit_Stuff;
@@ -670,6 +710,7 @@
 				F880D1801B25B22900E702D3 /* ServerRequester.swift */,
 				F8D456C41B1DF15500172667 /* HandledObjects.swift */,
 				F8D9BAC21B399880006B507D /* MediaFile.swift */,
+				F855BB9D1B74A7AF00EC114C /* CoreData */,
 				F8D456A91B1DEFA100172667 /* Images.xcassets */,
 				F8D456AB1B1DEFA100172667 /* LaunchScreen.xib */,
 				F8D456A01B1DEFA100172667 /* Supporting Files */,
@@ -854,6 +895,8 @@
 				F86F742F1B5684A500E48E13 /* ContactListCell.swift in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
+				F855BBC41B74ED1400EC114C /* DBElement.m in Sources */,
+				F855BBC71B74ED1500EC114C /* DBContact.m in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F880D1981B25BB4000E702D3 /* AFHTTPSessionManager.m in Sources */,
@@ -870,7 +913,9 @@
 				F880D1961B25BB4000E702D3 /* AFHTTPRequestOperation.m in Sources */,
 				F81BAD681B5F874D00DB50F8 /* SingleElementDashboardVC.swift in Sources */,
 				F880D19C1B25BB4000E702D3 /* AFURLRequestSerialization.m in Sources */,
+				F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */,
 				F880D19B1B25BB4000E702D3 /* AFURLConnectionOperation.m in Sources */,
+				F855BBCD1B74ED1500EC114C /* DBMessage.m in Sources */,
 				F891BBE81B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
 				F87FE6C51B6126BC004CA576 /* ElementActionButtonsDataSource.swift in Sources */,
@@ -882,10 +927,10 @@
 				F88563FE1B31C48B005D223E /* ChatTextInputView.swift in Sources */,
 				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,
 				F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */,
-				F880D17D1B25994300E702D3 /* DashMessagesHandler.swift in Sources */,
 				F8885A911B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift in Sources */,
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
+				F855BBD01B74ED9B00EC114C /* DatabaseHandler.m in Sources */,
 				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,
 				F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */,
 				F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */,
@@ -913,6 +958,7 @@
 				F874D9151B27051E00B867BF /* ElementDashboardActionButtonsCell.swift in Sources */,
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
+				F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */,
 				F87637781B565D1A00AFE376 /* MenuTableViewController.swift in Sources */,
 				F87FE6C31B611836004CA576 /* ElementActionButtonsLayout.swift in Sources */,
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
@@ -1151,6 +1197,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */,
+			);
+			currentVersion = F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */;
+			path = OrigamiModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = F8D456951B1DEFA100172667 /* Project object */;
 }

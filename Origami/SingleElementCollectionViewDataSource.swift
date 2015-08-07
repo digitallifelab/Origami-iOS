@@ -92,7 +92,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return nil
         }
-        else if element!.elementId! <= 0
+        else if element!.elementId!.integerValue <= 0
         {
             return nil
         }
@@ -148,7 +148,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementSubordinates() -> [Element]?
     {
-        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId)
+        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId?.integerValue)
         
         if subordinates.isEmpty
         {
@@ -202,7 +202,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     let value = allValues[i] //again tuple
                     let lvElement = value.1
-                    if DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId).count > 0
+                    if DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue).count > 0
                     {
                         lvSubordinatesInfo.append(.Wide)
                     }
@@ -337,7 +337,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 
                 titleCell.labelTitle.text = getElementTitle()
                 
-                if let isFavourite = self.handledElement?.isFavourite?.boolValue
+                if let isFavourite = self.handledElement?.isFavourite.boolValue
                 {
                     titleCell.favourite = isFavourite
                 }
@@ -422,10 +422,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 subordinateCell.titleLabel.text = lvElement.title as? String
                 subordinateCell.descriptionLabel.text = lvElement.details as? String
                 subordinateCell.signalDetectorView?.hidden = true
-                if let signalFlag = lvElement.isSignal
-                {
-                    subordinateCell.signalDetectorView?.hidden = !signalFlag.boolValue
-                }
+                
+                let signalFlag = lvElement.isSignal.boolValue
+                subordinateCell.signalDetectorView?.hidden = !signalFlag
+                
             }
             return subordinateCell
         }
@@ -512,7 +512,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func elementIsOwned() -> Bool
     {
-        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId!.integerValue
+        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId.integerValue
         {
             return true
         }

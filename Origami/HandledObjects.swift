@@ -304,20 +304,20 @@ class Contact:NSObject
 
 class Element:NSObject
 {
-    var elementId:Int?
-    var rootElementId:Int?
+    var elementId:NSNumber?
+    var rootElementId:NSNumber = NSNumber(integer: 0)
     var typeId:NSNumber?
     var title:NSString?
     var details:NSString?
-    var attachIDs:[NSNumber]?
-    var passWhomIDs:[Int]?
-    var isSignal:Bool?
-    var isFavourite:Bool?
-    var hasAttaches:NSNumber?
+    var attachIDs:[NSNumber] = [NSNumber]()
+    var passWhomIDs:[NSNumber] = [NSNumber]()
+    var isSignal:NSNumber = NSNumber(integer: 0)
+    var isFavourite:NSNumber = NSNumber(integer: 0)
+    var hasAttaches:NSNumber = NSNumber(integer: 0)
     var finishState:NSNumber?
     var finishDate:NSDate?
     var remindDate:NSDate?
-    var creatorId:NSNumber?
+    var creatorId:NSNumber = NSNumber(integer: 0)
     var createDate:NSString?
     var changerId:NSNumber?
     var changeDate:NSString?
@@ -351,11 +351,11 @@ class Element:NSObject
         {
             self.details = lvDescription
         }
-        if let lvId = info["ElementId"] as? Int
+        if let lvId = info["ElementId"] as? NSNumber
         {
             self.elementId = lvId
         }
-        if let rootId = info["RootElementId"] as? Int
+        if let rootId = info["RootElementId"] as? NSNumber
         {
             self.rootElementId = rootId
         }
@@ -397,7 +397,7 @@ class Element:NSObject
         }
         if info["PassWhomIds"] != nil
         {
-            if let passIDs = info["PassWhomIds"] as? [Int]
+            if let passIDs = info["PassWhomIds"] as? [NSNumber]
             {
                 self.passWhomIDs = passIDs
                 println(" -> \(passIDs) for element \(self.elementId)")

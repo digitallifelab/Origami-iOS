@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14E46" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="DBAttachment" representedClassName="DBAttachment" syncable="YES">
+        <attribute name="attachId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fileSize" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBContact" inverseName="attaches" inverseEntity="DBContact" syncable="YES"/>
+        <relationship name="element" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBElement" inverseName="attaches" inverseEntity="DBElement" syncable="YES"/>
+    </entity>
+    <entity name="DBContact" representedClassName="DBContact" syncable="YES">
+        <attribute name="contactId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="loginName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="attaches" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DBAttachment" inverseName="creator" inverseEntity="DBAttachment" syncable="YES"/>
+        <relationship name="connectedElements" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DBElement" inverseName="participants" inverseEntity="DBElement" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DBMessage" inverseName="creator" inverseEntity="DBMessage" syncable="YES"/>
+        <relationship name="ownElements" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DBElement" inverseName="creator" inverseEntity="DBElement" syncable="YES"/>
+    </entity>
+    <entity name="DBElement" representedClassName="DBElement" syncable="YES">
+        <attribute name="archDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="changeDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="changerId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="createDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="creatorId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="elementId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="finishDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="finishState" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="hasAttaches" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isFavourite" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isSignal" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="remindDate" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="rootElementId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="attaches" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBAttachment" inverseName="element" inverseEntity="DBAttachment" syncable="YES"/>
+        <relationship name="childElements" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBElement" inverseName="rootElement" inverseEntity="DBElement" syncable="YES"/>
+        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBContact" inverseName="ownElements" inverseEntity="DBContact" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBMessage" inverseName="element" inverseEntity="DBMessage" syncable="YES"/>
+        <relationship name="participants" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DBContact" inverseName="connectedElements" inverseEntity="DBContact" syncable="YES"/>
+        <relationship name="rootElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBElement" inverseName="childElements" inverseEntity="DBElement" syncable="YES"/>
+    </entity>
+    <entity name="DBMessage" representedClassName="DBMessage" syncable="YES">
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="isNew" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="messageId" optional="YES" attributeType="Integer 32" syncable="YES"/>
+        <attribute name="textBody" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="creator" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBContact" inverseName="messages" inverseEntity="DBContact" syncable="YES"/>
+        <relationship name="element" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBElement" inverseName="messages" inverseEntity="DBElement" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="DBElement" positionX="-414" positionY="-18" width="128" height="373"/>
+        <element name="DBAttachment" positionX="-29" positionY="-117" width="128" height="133"/>
+        <element name="DBContact" positionX="205" positionY="9" width="128" height="163"/>
+        <element name="DBMessage" positionX="36" positionY="270" width="128" height="148"/>
+    </elements>
+</model>

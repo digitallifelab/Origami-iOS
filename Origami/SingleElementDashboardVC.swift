@@ -288,7 +288,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController //
         {
-            editingVC.rootElementID = self.currentElement?.rootElementId
+            if let rootElementId = self.currentElement?.rootElementId
+            {
+                editingVC.rootElementID = rootElementId.integerValue
+            }
+            
             
             editingVC.modalPresentationStyle = .Custom
             editingVC.transitioningDelegate = self
@@ -306,8 +310,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementFavouriteToggled(notification:NSNotification)
     {
-        if let element = currentElement,  favourite = element.isFavourite
+        if let element = currentElement
         {
+            let favourite = element.isFavourite.boolValue
             var isFavourite = !favourite
             var elementCopy = Element(info: element.toDictionary())
             var titleCell:SingleElementTitleCell?
@@ -366,8 +371,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         println("Signal element toggled.")
         
-        if let theElement = currentElement , isSignal = theElement.isSignal
+        if let theElement = currentElement
         {
+            let isSignal = theElement.isSignal.boolValue
             var elementCopy = Element(info: theElement.toDictionary())
             let isCurrentlySignal = !isSignal
             elementCopy.isSignal = isCurrentlySignal
@@ -402,10 +408,19 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             if let elementId = currentElement?.elementId
             {
                 newElementCreator.composingDelegate = self
-                newElementCreator.rootElementID = elementId
+                newElementCreator.rootElementID = elementId.integerValue
                 if let passwhomIDs = currentElement?.passWhomIDs
                 {
-                    newElementCreator.contactIDsToPass = Set(passwhomIDs)// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
+                    if passwhomIDs.count > 0
+                    {
+                        var idInts = Set<Int>()
+                        for number in passwhomIDs
+                        {
+                            idInts.insert(number.integerValue)
+                        }
+                         newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
+                    }
+                   
                 }
                 newElementCreator.modalPresentationStyle = .Custom
                 newElementCreator.transitioningDelegate = self
@@ -531,12 +546,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         // 2 - send passWhomIDs, if present
         // 3 - if new element successfully added - reload dashboard collectionView
         var passWhomIDs:[Int]?
-        if let nsNumberArray = element.passWhomIDs
+        let nsNumberArray = element.passWhomIDs
+        if !nsNumberArray.isEmpty
         {
             passWhomIDs = [Int]()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number)
+                passWhomIDs!.append(number.integerValue)
             }
         }
         
@@ -605,7 +621,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
         })
         
-        if let passWhomIDs = element.passWhomIDs
+        let passWhomIDs = element.passWhomIDs
+        if !passWhomIDs.isEmpty
         {
             if let existingPassWhonIDs = self.currentElement?.passWhomIDs
             {
@@ -613,12 +630,20 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 let editedPassWhomIDs = Set(passWhomIDs)
                 
                 let exclusiveSet = existingSet.exclusiveOr(editedPassWhomIDs)
+                self.currentElement?.passWhomIDs = Array(exclusiveSet)
             }
             else
             {
-                if let currentElementID = self.currentElement?.elementId
+                if let currentElementIDnumber = self.currentElement?.elementId
                 {
-                    DataSource.sharedInstance.addSeveralContacts(passWhomIDs, toElement: currentElementID, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+                    let currentElementID = currentElementIDnumber.integerValue
+                    var intsArray = [Int]()
+                    for number in passWhomIDs
+                    {
+                        intsArray.append(number.integerValue)
+                    }
+                    
+                    DataSource.sharedInstance.addSeveralContacts(intsArray, toElement: currentElementID, completion: {[weak self] (succeededIDs, failedIDs) -> () in
                         
                         if let weakSelf = self
                         {
@@ -647,14 +672,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func handleDeletingCurrentElement()
     {
-        if let elementId = self.currentElement?.elementId
+        if let elementId = self.currentElement?.elementId?.integerValue
         {
             DataSource.sharedInstance.deleteElementFromServer(elementId, completion: { [weak self] (deleted, error) -> () in
                 if let weakSelf = self
                 {
                     if deleted
                     {
-                        if let elementId = weakSelf.currentElement?.elementId
+                        if let elementId = weakSelf.currentElement?.elementId?.integerValue
                         {
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
                             DataSource.sharedInstance.deleteElementFromLocalStorage(elementId)

@@ -5,3 +5,4 @@
 #import "FileHandler.h"
 #import "AFNetworking.h"
 //#import "LGSideMenuController.h"
+#import "DatabaseHandler.h"

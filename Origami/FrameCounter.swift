@@ -28,7 +28,7 @@ class FrameCounter
             {
                 var lvFrameWidth:CGFloat = 100.0
                 let element = elements[counter]
-                if DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!).count > 0
+                if DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId?.integerValue).count > 0
                 {
                     lvFrameWidth = 200.0
                 }

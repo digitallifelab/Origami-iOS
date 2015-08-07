@@ -48,11 +48,7 @@ class ElementSubordinatesCollectionHandler: CollectionHandler
         var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDashCell", forIndexPath: indexPath) as! DashCell
         let element = elementForIndexPath(indexPath)
         subordinateCell.displayMode = self.displayMode
-        if let signalProperty = element.isSignal
-        {
-            subordinateCell.cellType = (signalProperty.boolValue) ? .Signal : .Other
-        }
-        
+        subordinateCell.cellType = (element.isSignal.boolValue) ? .Signal : .Other
         subordinateCell.titleLabel.text = element.title as? String
         subordinateCell.descriptionLabel.text = element.details as? String
         //subordinateCell.layer.borderWidth = 1.0

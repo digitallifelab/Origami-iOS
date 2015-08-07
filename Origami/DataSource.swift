@@ -18,8 +18,7 @@ import ImageIO
     typealias attachesArrayClosure = ([AttachFile]?) -> ()
     typealias userClosure = (User?) -> ()
     typealias errorClosure = (NSError?) -> ()
-    
-    
+
     enum ResponseType:Int
     {
         case Added = 1
@@ -28,23 +27,21 @@ import ImageIO
     
     override init() {
         super.init()
+        
         self.dataCache.countLimit = 50
+        
+        self.databaseHandler = DatabaseHandler(completionCallBack: {[weak self] () -> Void in
+            println("Finished initializing CoreData handler in AppDelegate.");
+        })
     }
     
-    //singletonegetSubordinateElementsForElement
+    //singletone
     static let sharedInstance = DataSource()
     
     // properties
     lazy var messagesObservers = [NSNumber:MessageObserver]()
     
-    var user:User? /*{
-        willSet (newUser){
-            println("User was set.  User: \n \(newUser!.toDictionary())")
-        }
-        didSet{
-            
-        }
-    } */
+    var user:User?
     
     private var messages =  [NSNumber:[Message]] () // {elementId: [Messages]}
     
@@ -58,6 +55,8 @@ import ImageIO
     
     private let serverRequester = ServerRequester()
     
+    private var databaseHandler:DatabaseHandler?
+    
     private lazy var dataCache:NSCache = NSCache()
     lazy var pendingAttachFileDataDownloads = [NSNumber:Bool]()
     //private stuff
@@ -68,6 +67,11 @@ import ImageIO
             return existingObserver
         }
         return nil
+    }
+    
+    func saveDB()
+    {
+        DataSource.sharedInstance.databaseHandler?.save()
     }
     
     func removeAllObserversForNewMessages()
@@ -175,7 +179,11 @@ import ImageIO
 //                                DataSource.sharedInstance.messages[keyElementId] = messages
 //                            }
                         }
-                        
+                        let messagesSet = Set(messagesArray)
+                        DataSource.sharedInstance.databaseHandler?.insertMessagesToLocalDatabase(messagesSet,
+                            completion: { (responseInfo, insertionError) in
+                            
+                        })
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
                         
@@ -415,7 +423,7 @@ import ImageIO
             if let successElement = result as? Element
             {
                 DataSource.sharedInstance.addNewElements([successElement], completion: nil)
-                closure(newElementId: successElement.elementId!, error: nil)
+                closure(newElementId: successElement.elementId?.integerValue, error: nil)
             }
             else
             {
@@ -454,15 +462,16 @@ import ImageIO
     
     func getRootElementTreeForElement(targetElement:Element) -> [Element]?
     {
-        if let root = targetElement.rootElementId
+        let root = targetElement.rootElementId.integerValue
+        if root > 0
         {
             var elements = [Element]()
             
             var tempElement = targetElement
             
-            while let rootElementId = tempElement.rootElementId
+            while tempElement.rootElementId.integerValue > 0
             {
-                if let foundRootElement = DataSource.sharedInstance.getElementById(rootElementId)
+                if let foundRootElement = DataSource.sharedInstance.getElementById(tempElement.rootElementId.integerValue)
                 {
                     elements.append(foundRootElement)
                     tempElement = foundRootElement
@@ -491,7 +500,7 @@ import ImageIO
         
         for lvElement in DataSource.sharedInstance.elements
         {
-            if lvElement.rootElementId! == elementId!
+            if lvElement.rootElementId.integerValue == elementId!
             {
                 elementsToReturn.append(lvElement)
             }
@@ -534,7 +543,7 @@ import ImageIO
     {
         var treeToReturn = [Element]()
         
-        let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId)
+        let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId?.integerValue)
         if currentSubordinates.isEmpty
         {
             return nil
@@ -545,7 +554,7 @@ import ImageIO
         
         for lvElement in currentSubordinates
         {
-            let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId)
+            let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue)
             if !subordinatesFirst.isEmpty
             {
                 let subSetFirst = Set(subordinatesFirst)
@@ -567,11 +576,7 @@ import ImageIO
             
             var signalElements = [Element]()
             var favouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
-                if let hasFavSet = checkedElement.isFavourite
-                {
-                    return hasFavSet.boolValue
-                }
-                return false
+                return checkedElement.isFavourite.boolValue
             })
             
             ObjectsConverter.sortElementsByDate(&favouriteElements)
@@ -579,16 +584,14 @@ import ImageIO
             var otherElements = [Element]()
             
             let filteredMainElements = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
-                if let rootId = element.rootElementId
-                {
-                    return (rootId == 0)
-                }
-                return false
+                let rootId = element.rootElementId
+                return (rootId.integerValue == 0)
+                
             })
             
             for lvElement in filteredMainElements
             {
-                if lvElement.isSignal!.boolValue
+                if lvElement.isSignal.boolValue
                 {
                     //println("appending SIGNALS: id= \(lvElement.elementId!)")
                     signalElements.append(lvElement)
@@ -606,11 +609,11 @@ import ImageIO
             // get all signals
             var filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
                 
-                if let signalValue = element.isSignal, rootId = element.rootElementId
-                {
-                    return (signalValue && (rootId > 0))
-                }
-                return false
+                let signalValue = element.isSignal.boolValue
+                let  rootId = element.rootElementId.integerValue
+                
+                return (signalValue && (rootId > 0))
+                
             })
             
             if !filteredSignals.isEmpty
@@ -635,6 +638,30 @@ import ImageIO
             })
         })
     }
+   
+    func loadExistingDashboardElementsFromLocalDatabaseCompletion( completion:((elements:[String:[DBElement]]?, error:NSError?)->()) )
+    {
+        DataSource.sharedInstance.databaseHandler?.queryDashboardElementsCompletion({ (elementsContainerDict) -> Void in
+            
+            if let dbElements = elementsContainerDict as? [String:[DBElement]]
+            {
+                completion(elements: dbElements, error: nil)
+            }
+//            else
+//            {
+//                if let error = elementsRequestEror
+//                {
+//                    completion(elements: nil, error: error)
+//                }
+//                else
+//                {
+//                    let unknownError = NSError(domain: "Origami.UnknownError", code: 100509, userInfo: [NSLocalizedDescriptionKey:"Unknown error while querrying Home screen elements"])
+//                    completion(elements: nil, error: unknownError);
+//                    
+//                }
+//            }
+        })
+    }
     
     func loadAllElements(completion:(success:Bool, failure:NSError?) ->())
     {
@@ -649,6 +676,19 @@ import ImageIO
                 DataSource.sharedInstance.elements += allElements
                 println("Count Elements = \(allElements.count)")
                 completion(success: true, failure: nil)
+                
+                //test stuff
+                DataSource.sharedInstance.databaseHandler?.insertElements(Set(DataSource.sharedInstance.elements), completion: { (finishInfo, error) -> Void in
+                    if let successInfo = finishInfo
+                    {
+                        println("\(successInfo)")
+                    }
+                    
+                    if let insertError = error
+                    {
+                        println("Error while saving ELEMENTS to local database;")
+                    }
+                })
             }
             else
             {
@@ -689,12 +729,15 @@ import ImageIO
         
             if success
             {
-                if let existingElement = DataSource.sharedInstance.getElementById(element.elementId!)
+                if let elementId = element.elementId?.integerValue
                 {
-                    existingElement.title = element.title
-                    existingElement.details = element.details
-                    existingElement.isFavourite = element.isFavourite
-                    existingElement.isSignal = element.isSignal
+                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                    {
+                        existingElement.title = element.title
+                        existingElement.details = element.details
+                        existingElement.isFavourite = element.isFavourite
+                        existingElement.isSignal = element.isSignal
+                    }
                 }
             }
         
@@ -738,7 +781,7 @@ import ImageIO
     
     func loadPassWhomIdsForElement(element:Element, comlpetion completionClosure:(finished:Bool)->() ) {
         
-        serverRequester.loadPassWhomIdsForElementID(element.elementId!, completion: { (passWhomIds, error) -> () in
+        serverRequester.loadPassWhomIdsForElementID(element.elementId!.integerValue, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
                 element.passWhomIDs = recievedIDs
@@ -790,7 +833,7 @@ import ImageIO
                     for lvSubordinateElement in allSubordinatesTree
                     {
                         bgQueue.addOperationWithBlock({ () -> Void in
-                            DataSource.sharedInstance.cleanAttachesForElement(lvSubordinateElement.elementId!)
+                            DataSource.sharedInstance.cleanAttachesForElement(lvSubordinateElement.elementId!.integerValue)
                         })
                     }
                     
@@ -810,9 +853,9 @@ import ImageIO
                 var setToDelete = Set<Element>()
                 for lvElement in DataSource.sharedInstance.elements
                 {
-                    if lvElement.rootElementId! > 0
+                    if lvElement.rootElementId.integerValue > 0
                     {
-                        if DataSource.sharedInstance.getElementById(lvElement.rootElementId!) == nil
+                        if DataSource.sharedInstance.getElementById(lvElement.rootElementId.integerValue) == nil
                         {
                             setToDelete.insert(lvElement)
                         }
@@ -821,7 +864,7 @@ import ImageIO
                 
                 for lvElement in setToDelete
                 {
-                    DataSource.sharedInstance.cleanAttachesForElement(lvElement.elementId!)
+                    DataSource.sharedInstance.cleanAttachesForElement(lvElement.elementId!.integerValue)
                 }
                 
                 var filterAgain = Set(DataSource.sharedInstance.elements)
@@ -1273,10 +1316,10 @@ import ImageIO
             
             if let lvElement = DataSource.sharedInstance.getElementById(elementId)
             {
-                if lvElement.passWhomIDs?.count > 0
+                if lvElement.passWhomIDs.count > 0
                 {
                     contactsToReturn = [Contact]()
-                    for lvContactId in lvElement.passWhomIDs!
+                    for lvContactId in lvElement.passWhomIDs
                     {
                         var lvContacts = DataSource.sharedInstance.contacts.filter {lvContact -> Bool in
                             
@@ -1315,8 +1358,13 @@ import ImageIO
            
             if requestSuccess
             {
-                if let element = DataSource.sharedInstance.getElementById(elementId), passWhomIDs = element.passWhomIDs
+                if let element = DataSource.sharedInstance.getElementById(elementId)
                 {
+                    let passWhomIDs = element.passWhomIDs
+                    if !passWhomIDs.isEmpty
+                    {
+                        
+                    }
                     var passWhomSet = Set(passWhomIDs)
                     let preInsertCount = passWhomSet.count
                     passWhomSet.insert(contactId)
@@ -1340,18 +1388,20 @@ import ImageIO
             
             if requestSuccess
             {
-                if let
-                    element = DataSource.sharedInstance.getElementById(elementId),
-                    passWhomIDs = element.passWhomIDs
+                if let element = DataSource.sharedInstance.getElementById(elementId)
                 {
-                    var passWhomSet = Set(passWhomIDs)
-                    if let removedContactId = passWhomSet.remove(contactId)
+                    let passWhomIDs = element.passWhomIDs
+                    if !passWhomIDs.isEmpty
                     {
-                        // successfully removed contact id from element`s pass whom ids
-                        println("Removed contact from chat Locally also.")
+                        var passWhomSet = Set(passWhomIDs)
+                        if let removedContactId = passWhomSet.remove(contactId)
+                        {
+                            // successfully removed contact id from element`s pass whom ids
+                            println("Removed contact from chat Locally also.")
+                        }
+                        var newPassWhomIDs = Array(passWhomSet)
+                        element.passWhomIDs = newPassWhomIDs
                     }
-                    var newPassWhomIDs = Array(passWhomSet)
-                    element.passWhomIDs = newPassWhomIDs
                 }
             }
             
@@ -1375,25 +1425,35 @@ import ImageIO
                 
                 DataSource.sharedInstance.serverRequester.passElement(elementId, toSeveratContacts: contactNumbers, completion: { (succeededIDs, failedIDs) -> () in
 
-                if succeededIDs.count > 0
+                if !succeededIDs.isEmpty
                 {
                     if let existingElement = DataSource.sharedInstance.getElementById(elementId)
                     {
-                        if let alredayExistIDs = existingElement.passWhomIDs
+                        var alreadyExistIDsSet = Set<Int>()
+                        for number in existingElement.passWhomIDs
                         {
-
+                            alreadyExistIDsSet.insert(number.integerValue)
                         }
-                        else
+                        
+                        let succseededIDsSet = Set(succeededIDs)
+                        
+                        let commonValuesSet = alreadyExistIDsSet.union(succseededIDsSet)
+                        
+                        var idsArray = [NSNumber]()
+                        for integer in commonValuesSet
                         {
-                            existingElement.passWhomIDs = succeededIDs
+                            idsArray.append(NSNumber(integer:integer))
                         }
+                        
+                        existingElement.passWhomIDs = idsArray
+                        
                     }
                 }
                 else
                 {
                     if failedIDs.count > 0
                     {
-
+                        println("failed to assign contacts to current element: Contact IDs: \(failedIDs)")
                     }
                 }
 

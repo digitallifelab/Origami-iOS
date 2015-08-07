@@ -153,7 +153,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     {
         if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue)
         {
-            signalButton.tintColor = (currentElement.isSignal!) ? buttonTrueColor : buttonFalseColor
+            signalButton.tintColor = (currentElement.isSignal.boolValue) ? buttonTrueColor : buttonFalseColor
         }
     }
     
