@@ -103,7 +103,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
         {
             attachData[lvAttachFile.attachID!] = lvMediaFile
         }
-        self.collectionView?.reloadSections(NSIndexSet(index: 0))
+        self.collectionView?.reloadData()//Sections(NSIndexSet(index: 0))
     }
     
     //MARK: Delegate

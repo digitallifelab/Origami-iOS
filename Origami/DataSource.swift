@@ -1076,7 +1076,7 @@ import ImageIO
             return nil
         }
         
-        println(" returning \(toReturnArray.count) snapshotDatas for \(attaches.count) AttacFiles")
+        println("  -> returning \(toReturnArray.count) snapshotDatas for \(attaches.count) AttacFiles\n")
         return toReturnArray
     }
     
@@ -1173,7 +1173,6 @@ import ImageIO
             return
         }
         
-        
         let dispatchGroup = dispatch_group_create()
         let fileManager = FileHandler()
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -1197,20 +1196,20 @@ import ImageIO
                     fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
                         if path != nil
                         {
-                            //println("Saved file to : \(path!)")
+                            println("\n -> Saved a file\n")
                         }
                         
                         if saveError != nil
                         {
-                            println("Failed to save data to disc: \n \(saveError?.localizedDescription)")
+                            println("\n ->Failed to save data to disc: \n \(saveError?.localizedDescription)")
                         }
-                         DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = nil
+                        DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = nil
                         dispatch_group_leave(dispatchGroup)
                     })
                 }
                 else
                 {
-                    println("Failed to load attach file data: \n \(error?.localizedDescription)")
+                    println(" \n ->Failed to load attach file data: \n \(error?.localizedDescription)")
                      DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = nil
                     dispatch_group_leave(dispatchGroup)
                 }
@@ -1224,10 +1223,10 @@ import ImageIO
             
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//            if completionClosure != nil
-//            {
-                completionClosure?()
-//            }
+            if let completionBlock = completionClosure
+            {
+                completionBlock()
+            }
         })
     }
     

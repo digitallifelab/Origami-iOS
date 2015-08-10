@@ -312,6 +312,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
             let currentCellType = orderedOptions[indexPath.item]
+            
             return returnCellByType(currentCellType, forIndexPath: indexPath, collection: collectionView)
         }
         else
@@ -390,7 +391,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
                 
             }
-            
+            println("\n-----------returning attach file collection holder cell-----------\n")
             return attachesHolderCell
             
         case .Buttons:

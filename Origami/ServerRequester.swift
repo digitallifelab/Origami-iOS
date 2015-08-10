@@ -538,61 +538,122 @@ class ServerRequester: NSObject
                 var fileDataRequest = NSMutableURLRequest(URL: requestURL)
                 fileDataRequest.HTTPMethod = "GET"
 
-                var synchronousError:NSError?
-                var synchroResponse:NSURLResponse?
-                var synchroData:NSData? = NSURLConnection.sendSynchronousRequest(fileDataRequest, returningResponse: &synchroResponse , error: &synchronousError)
-                if synchronousError != nil
-                {
-                    completionClosure(attachFileData: nil, error: synchronousError)
-                }
-                else if synchroData != nil
-                {
-                    var jsonReadingError:NSError? = nil
-                    if let responseDict = NSJSONSerialization.JSONObjectWithData(synchroData!, options: NSJSONReadingOptions.AllowFragments , error: &jsonReadingError) as? [NSObject:AnyObject]
+//                var synchronousError:NSError?
+//                var synchroResponse:NSURLResponse?
+//                var synchroData:NSData? = NSURLConnection.sendSynchronousRequest(fileDataRequest, returningResponse: &synchroResponse , error: &synchronousError)
+//                if synchronousError != nil
+//                {
+//                    completionClosure(attachFileData: nil, error: synchronousError)
+//                }
+//                else if synchroData != nil
+//                {
+//                    var jsonReadingError:NSError? = nil
+//                    if let responseDict = NSJSONSerialization.JSONObjectWithData(synchroData!, options: NSJSONReadingOptions.AllowFragments , error: &jsonReadingError) as? [NSObject:AnyObject]
+//                    {
+//                        if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
+//                        {
+//                            if arrayOfIntegers.isEmpty
+//                            {
+//                                println("Empty response for Attach File id = \(attachId)")
+//                                completionClosure(attachFileData: NSData(), error: nil)
+//                            }
+//                            else
+//                            {
+//                                if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
+//                                {
+//                                    completionClosure(attachFileData: lvData, error: nil)
+//                                }
+//                                else
+//                                {
+//                                    //error
+//                                    println("ERROR: Could not convert response to NSData object")
+//                                    let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
+//                                    completionClosure(attachFileData: nil, error: convertingError)
+//                                }
+//                            }
+//                        }
+//                        else
+//                        {
+//                            //error
+//                            println("ERROR: Could not convert to array of integers object.")
+//                            let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
+//                            completionClosure(attachFileData: nil, error: arrayConvertingError)
+//                        }
+//                    }
+//                    else
+//                    {
+//                        println(" ERROR: \(jsonReadingError)")
+//                        let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
+//                        completionClosure(attachFileData: nil, error: convertingError)
+//                    }
+//
+//                }
+//                else
+//                {
+//                    println("No response data..")
+//                    completionClosure(attachFileData: NSData(), error: nil)
+//                }
+                
+                let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void
+                    
+                    in
+                    
+                    if responseError != nil
                     {
-                        if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
+                        completionClosure(attachFileData: nil, error: responseError)
+                    }
+                    else if let synchroData = responseData
+                    {
+                        var jsonReadingError:NSError? = nil
+                        if let responseDict = NSJSONSerialization.JSONObjectWithData(synchroData, options: NSJSONReadingOptions.AllowFragments , error: &jsonReadingError) as? [NSObject:AnyObject]
                         {
-                            if arrayOfIntegers.isEmpty
+                            if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
                             {
-                                println("Empty response for Attach File id = \(attachId)")
-                                completionClosure(attachFileData: NSData(), error: nil)
-                            }
-                            else
-                            {
-                                if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
+                                if arrayOfIntegers.isEmpty
                                 {
-                                    completionClosure(attachFileData: lvData, error: nil)
+                                    println("Empty response for Attach File id = \(attachId)")
+                                    completionClosure(attachFileData: NSData(), error: nil)
                                 }
                                 else
                                 {
-                                    //error
-                                    println("ERROR: Could not convert response to NSData object")
-                                    let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
-                                    completionClosure(attachFileData: nil, error: convertingError)
+                                    if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
+                                    {
+                                        completionClosure(attachFileData: lvData, error: nil)
+                                    }
+                                    else
+                                    {
+                                        //error
+                                        println("ERROR: Could not convert response to NSData object")
+                                        let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
+                                        completionClosure(attachFileData: nil, error: convertingError)
+                                    }
                                 }
+                            }
+                            else
+                            {
+                                //error
+                                println("ERROR: Could not convert to array of integers object.")
+                                let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
+                                completionClosure(attachFileData: nil, error: arrayConvertingError)
                             }
                         }
                         else
                         {
-                            //error
-                            println("ERROR: Could not convert to array of integers object.")
-                            let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
-                            completionClosure(attachFileData: nil, error: arrayConvertingError)
+                            println(" ERROR: \(jsonReadingError)")
+                            let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
+                            completionClosure(attachFileData: nil, error: convertingError)
                         }
+                        
                     }
                     else
                     {
-                        println(" ERROR: \(jsonReadingError)")
-                        let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
-                        completionClosure(attachFileData: nil, error: convertingError)
+                        println("No response data..")
+                        completionClosure(attachFileData: NSData(), error: nil)
                     }
 
-                }
-                else
-                {
-                    println("No response data..")
-                    completionClosure(attachFileData: NSData(), error: nil)
-                }
+                })
+                
+                fileTask.resume()
             }
             
         }

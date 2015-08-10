@@ -300,12 +300,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 itemIndex += 1
                 
                 offsetY += attachesFrame.size.height;// println("Moved Down after ATTACHes cell")
+                
+                println("\n-----------Layout for attach file collection holder cell-----------\n")
             }
             
 //            if privateStruct.buttonsCell
 //            {
 //                let buttonsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-//                var buttonsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 110.0) //TODO: calculate or hardcode proper buttons cell width
+//                var buttonsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 110.0)
 //                if CGRectGetMaxX(buttonsFrame) > mainFrameWidth
 //                {
 //                    offsetX = mainFrame.origin.x
