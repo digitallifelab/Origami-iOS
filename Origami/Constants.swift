@@ -87,5 +87,6 @@ let kElementActionButtonPressedNotification = "ElementActionButtonTapped"
 let kElementEditTextNotification = "ElementEditTextTapped"
 let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"
 let kAddNewAttachFileTapped = "AddNewAttachFile"
+let kElementWasDeletedNotification = "ElementWasDeletedNotification"
 
 

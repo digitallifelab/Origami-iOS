@@ -679,10 +679,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     if deleted
                     {
-                        if let elementId = weakSelf.currentElement?.elementId?.integerValue
+                        if let elementID = weakSelf.currentElement?.elementId?.integerValue
                         {
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
-                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementId)
+                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementID)
+                            
+                            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementID)])
                             
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }

@@ -195,6 +195,103 @@ import UIKit
         return nil
     }
     
+    func indexpathForElementById(elementId:Int, shouldDelete:Bool) -> [NSIndexPath]?
+    {
+        var indexpaths = [NSIndexPath]()
+        var section:Int = 0
+        var item:Int?
+        if let sig = self.signals
+        {
+            for var i = 0; i < sig.count; i++
+            {
+                let element = sig[i]
+                
+                if element.elementId!.integerValue == elementId
+                {
+                    item = i + 2
+                    if shouldDelete
+                    {
+                        self.signals!.removeAtIndex(i)
+                    }
+                    break
+                }
+            }
+            if item != nil
+            {
+                let signalIndexPath = NSIndexPath(forItem: item!, inSection: section)
+                indexpaths.append(signalIndexPath)
+                item = nil
+            }
+        }
+        if let fav = self.favourites
+        {
+            section = 1
+            for var i = 0; i < fav.count; i++
+            {
+                let element = fav[i]
+                
+                if element.elementId!.integerValue == elementId
+                {
+                    item = i
+                    if shouldDelete
+                    {
+                        self.favourites!.removeAtIndex(i)
+                    }
+                    break
+                }
+            }
+            if item != nil
+            {
+                let favIndexPath = NSIndexPath(forItem: item!, inSection: section)
+                indexpaths.append(favIndexPath)
+            }
+            item = nil
+        }
+        if let other = self.other
+        {
+            if section == 1
+            {
+                section = 2
+            }
+            else
+            {
+                section = 1 // when no favourites
+            }
+            for var i = 0; i < other.count; i++
+            {
+                let element = other[i]
+                
+                if element.elementId!.integerValue == elementId
+                {
+                    item = i
+                    if shouldDelete
+                    {
+                        self.other!.removeAtIndex(i)
+                    }
+                    break
+                }
+            }
+            if item != nil
+            {
+                let otherIndexPath = NSIndexPath(forItem: item!, inSection: section)
+                indexpaths.append(otherIndexPath)
+            }
+            item = nil
+        }
+        
+        if !indexpaths.isEmpty
+        {
+            return indexpaths
+        }
+        
+        return nil
+    }
+    
+    func deleteElementById(elementId:Int)
+    {
+        //if let
+    }
+    
     func cellTypeForIndexPath(indexPath:NSIndexPath) -> DashCellType
     {
         switch indexPath.section {

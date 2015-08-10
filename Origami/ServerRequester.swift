@@ -875,7 +875,7 @@ class ServerRequester: NSObject
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
                 success: { [unowned self] (operation, result) -> Void in
-                
+                NSOperationQueue().addOperationWithBlock({ () -> Void in
                     if completionClosure != nil
                     {
                         if let lvContactsArray = result["GetContactsResult"] as? [[String:AnyObject]]
@@ -889,6 +889,7 @@ class ServerRequester: NSObject
                             completionClosure!(contacts:nil, error:error)
                         }
                     }
+                })
                     
             }, failure: { (operation, requestError) -> Void in
                 if completionClosure != nil

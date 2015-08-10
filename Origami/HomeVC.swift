@@ -88,6 +88,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             }
         }
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
+        
         configureRightBarButtonItem()
         configureLeftBarButtonItem()        
     }
@@ -212,7 +214,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                 aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
                                 aSelf.collectionDashboard!.delegate = aSelf.collectionSource
                                 aSelf.collectionDashboard.reloadData()
-                                //set new layout
+                                aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                
                             }
                             
                             customLayout.privSignals = dashboardElements[1]!.count
@@ -225,11 +229,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         {
                             if shouldReloadCollection
                             {
-                                //aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
                                 
                                 let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
-                                
-                             
                                 
                                 aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
                                     
@@ -253,8 +255,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         {
                             let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
                             
-                            
-                            
                             aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
                                 
                                 aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
@@ -268,7 +268,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                 }, completion: { (finished) -> Void in
 //                                    if shouldReloadCollection
 //                                    {
-                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
+                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: false)
 //                                    }
                             })
 
@@ -452,6 +452,19 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 }
             }
         })
+    }
+    
+    func elementWasDeleted(notification:NSNotification?)
+    {
+        if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
+        {
+            if let currentDataSource = self.collectionSource, foundIndexPaths = currentDataSource.indexpathForElementById(elementId.integerValue, shouldDelete:true)
+            {
+                self.collectionDashboard.reloadData()
+                
+                self.reloadDashboardView()
+            }
+        }
     }
     
     //MARK: UIViewControllerTransitioningDelegate
