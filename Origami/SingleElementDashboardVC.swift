@@ -61,25 +61,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         prepareCollectionViewDataAndLayout()
         queryAttachesPreviewData()
     }
+    
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
-//        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startAddingNewAttachFile:", name: kAddNewAttachFileTapped, object: nil)
-        //prepareCollectionViewDataAndLayout()
-        
+
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
     }
-    
-  
     
     override func viewWillDisappear(animated: Bool)
     {
         super.viewWillDisappear(animated)
         
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        
     }
     
     override func viewDidDisappear(animated: Bool)
@@ -457,7 +454,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         println("Solution tapped.")
     }
-    
+    func toggleMoreDetails(notification:NSNotification?)
+    {
+        if let simpleLayout = self.collectionView.collectionViewLayout as? SimpleElementDashboardLayout
+        {
+            simpleLayout.toggleDetailsTextVisibility()
+            self.collectionView.reloadSections(NSIndexSet(index: 0))
+        }
+    }
     //MARK: top left menu popover
     func optionsBarButtonTapped(sender:AnyObject?)
     {

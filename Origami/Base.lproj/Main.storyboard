@@ -843,7 +843,7 @@
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
-                                                        <action selector="moreLeccButtonTap:" destination="Dye-67-SwN" eventType="touchUpInside" id="Oa8-a9-6nb"/>
+                                                        <action selector="moreLessButtonTap:" destination="Dye-67-SwN" eventType="touchUpInside" id="2Yd-pM-n1U"/>
                                                     </connections>
                                                 </button>
                                                 <label userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ebd-9s-qKP">
