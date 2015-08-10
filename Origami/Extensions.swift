@@ -12,7 +12,8 @@ extension String
 {
     func localizedWithComment(comment:String) -> String
     {
-        return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: comment)
+        let toReturnDebug = NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: comment)
+        return toReturnDebug
     }
 }
 

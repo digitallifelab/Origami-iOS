@@ -13,7 +13,7 @@ import UIKit
     var signals:[Element]?
     var favourites:[Element]?
     var other:[Element]?
-    private var realSignals = [Element]()
+    //private var realSignals = [Element]()
     
     var elementSelectionDelegate:ElementSelectionDelegate?
   
@@ -25,7 +25,7 @@ import UIKit
         self.init()
         self.favourites = favourites
         self.other = other
-        realSignals += signals
+        self.signals = signals
     }
 
     
@@ -53,7 +53,10 @@ import UIKit
         switch section
         {
         case 0:
-            toReturn = realSignals.count + 2 // "toggle bubbon" cell + "last messages" cell
+            if let existSignals = self.signals
+            {
+                toReturn = existSignals.count + 2 // "toggle bubbon" cell + "last messages" cell
+            }
         case 1:
             if favourites!.count > 0
             {
@@ -87,7 +90,7 @@ import UIKit
             dashCell.cellType = cellType
             if cellType == .SignalsToggleButton
             {
-                dashCell.signalsCountLabel.text = "\(realSignals.count)"
+                dashCell.signalsCountLabel.text = "\(signals?.count ?? 0)"
                 dashCell.layer.zPosition = 1000
             }
             else
@@ -166,9 +169,9 @@ import UIKit
         let lvRow = indexPath.row
         switch indexPath.section {
         case 0:
-            if realSignals.count > indexPath.row - 2 && indexPath.row > 0
+            if signals!.count > indexPath.row - 2 && indexPath.row > 0
             {
-                return realSignals[(lvRow - 2)]
+                return signals![(lvRow - 2)]
             }
         case 1:
             if favourites!.count > 0 && favourites!.count > lvRow
@@ -199,13 +202,6 @@ import UIKit
         case 1:
             if favourites!.count > 0
             {
-//                if let element = elementForIndexPath(indexPath)
-//                {
-//                    if element.isSignal != nil && element.isSignal!.boolValue
-//                    {
-//                        return .Signal
-//                    }
-//                }
                 return .Other
             }
             return .Other
@@ -251,11 +247,11 @@ import UIKit
             var newLayout:UICollectionViewFlowLayout?
             if isSignalsToggled
             {
-                newLayout = HomeSignalsVisibleFlowLayout(signals: realSignals.count + 1, favourites: favourites, other: other)
+                newLayout = HomeSignalsVisibleFlowLayout(signals: signals!.count + 1, favourites: favourites, other: other)
             }
             else
             {
-                newLayout = HomeSignalsHiddenFlowLayout(signals: realSignals.count + 1, favourites: favourites, other: other)
+                newLayout = HomeSignalsHiddenFlowLayout(signals: signals!.count + 1, favourites: favourites, other: other)
             }
              //collectionView.collectionViewLayout.invalidateLayout()
 //            collectionView.performBatchUpdates({ () -> Void in
@@ -283,9 +279,13 @@ import UIKit
     }
     
     //for outer info
-    func countSignals()->Int
+    func countSignals() -> Int
     {
-        return realSignals.count
+        if let array = self.signals
+        {
+            return array.count
+        }
+        return 0
     }
 }
 

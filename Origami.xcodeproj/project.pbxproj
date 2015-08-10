@@ -20,6 +20,8 @@
 		F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */; };
 		F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */; };
 		F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */; };
+		F8521FEB1B78906500B418A3 /* HomeVCCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8521FEA1B78906500B418A3 /* HomeVCCollectionHandler.swift */; };
+		F8521FEF1B78966400B418A3 /* Localized.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localized.strings */; };
 		F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */; };
 		F855BBC41B74ED1400EC114C /* DBElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC31B74ED1400EC114C /* DBElement.m */; };
 		F855BBC71B74ED1500EC114C /* DBContact.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC61B74ED1500EC114C /* DBContact.m */; };
@@ -138,6 +140,11 @@
 		F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementTitleCell.swift; sourceTree = "<group>"; };
 		F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementLastMessagesCell.swift; sourceTree = "<group>"; };
 		F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDetailsCell.swift; sourceTree = "<group>"; };
+		F8521FEA1B78906500B418A3 /* HomeVCCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVCCollectionHandler.swift; sourceTree = "<group>"; };
+		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localized.strings; sourceTree = "<group>"; };
+		F8521FF21B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
+		F8521FF31B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		F8521FF41B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localized.strings; sourceTree = "<group>"; };
 		F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OrigamiModel.xcdatamodel; sourceTree = "<group>"; };
 		F855BBC21B74ED1400EC114C /* DBElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBElement.h; sourceTree = "<group>"; };
 		F855BBC31B74ED1400EC114C /* DBElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBElement.m; sourceTree = "<group>"; };
@@ -365,6 +372,14 @@
 			name = AttachesCell;
 			sourceTree = "<group>";
 		};
+		F8521FEC1B78963300B418A3 /* LocalizerStrings */ = {
+			isa = PBXGroup;
+			children = (
+				F8521FF11B78966400B418A3 /* Localized.strings */,
+			);
+			name = LocalizerStrings;
+			sourceTree = "<group>";
+		};
 		F855BB9D1B74A7AF00EC114C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -577,6 +592,7 @@
 			children = (
 				F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */,
 				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
+				F8521FEA1B78906500B418A3 /* HomeVCCollectionHandler.swift */,
 				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
 				F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */,
 				F891BBE71B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift */,
@@ -723,6 +739,7 @@
 		F8D456A01B1DEFA100172667 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F8521FEC1B78963300B418A3 /* LocalizerStrings */,
 				F811100E1B2AC2FF00115DF6 /* CustomFonts */,
 				F8D456A11B1DEFA100172667 /* Info.plist */,
 			);
@@ -811,6 +828,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = F8D456941B1DEFA100172667;
 			productRefGroup = F8D4569E1B1DEFA100172667 /* Products */;
@@ -834,6 +852,7 @@
 				F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */,
 				F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */,
 				F8D9BABF1B3985D2006B507D /* AttachesTableHeaderView.xib in Resources */,
+				F8521FEF1B78966400B418A3 /* Localized.strings in Resources */,
 				F8C7A3D61B298CED00EA2F4F /* MoreButtonHolderView.xib in Resources */,
 				F8D456AA1B1DEFA100172667 /* Images.xcassets in Resources */,
 			);
@@ -894,6 +913,7 @@
 				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F86F742F1B5684A500E48E13 /* ContactListCell.swift in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
+				F8521FEB1B78906500B418A3 /* HomeVCCollectionHandler.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F855BBC41B74ED1400EC114C /* DBElement.m in Sources */,
 				F855BBC71B74ED1500EC114C /* DBContact.m in Sources */,
@@ -1001,10 +1021,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		F8521FF11B78966400B418A3 /* Localized.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F8521FF01B78966400B418A3 /* en */,
+				F8521FF41B78971100B418A3 /* ru */,
+			);
+			name = Localized.strings;
+			sourceTree = "<group>";
+		};
 		F8D456A61B1DEFA100172667 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				F8D456A71B1DEFA100172667 /* Base */,
+				F8521FF21B78971100B418A3 /* ru */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -1013,6 +1043,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				F8D456AC1B1DEFA100172667 /* Base */,
+				F8521FF31B78971100B418A3 /* ru */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";

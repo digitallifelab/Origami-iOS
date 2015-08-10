@@ -1,0 +1,123 @@
+
+/* Class = "UILabel"; text = "3"; ObjectID = "0zZ-x0-oQP"; */
+"0zZ-x0-oQP.text" = "3";
+
+/* Class = "UILabel"; text = "19.06.2015 11:43"; ObjectID = "4Cd-4o-a9a"; */
+"4Cd-4o-a9a.text" = "19.06.2015 11:43";
+
+/* Class = "UILabel"; text = "Subordinate Title"; ObjectID = "5Fq-wn-KwM"; */
+"5Fq-wn-KwM.text" = "Subordinate Title";
+
+/* Class = "UILabel"; text = "firstName + lastName"; ObjectID = "6hu-Do-cSA"; */
+"6hu-Do-cSA.text" = "firstName + lastName";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "7az-Gp-NEg"; */
+"7az-Gp-NEg.text" = "Label";
+
+/* Class = "UILabel"; text = "message from me"; ObjectID = "8H9-w2-HGL"; */
+"8H9-w2-HGL.text" = "message from me";
+
+/* Class = "UILabel"; text = "firstName + lastName"; ObjectID = "9W8-RQ-YEr"; */
+"9W8-RQ-YEr.text" = "firstName + lastName";
+
+/* Class = "UITabBarItem"; title = " "; ObjectID = "A5W-o3-zcD"; */
+"A5W-o3-zcD.title" = " ";
+
+/* Class = "UITextField"; placeholder = "email"; ObjectID = "AKb-PF-R3o"; */
+"AKb-PF-R3o.placeholder" = "email";
+
+/* Class = "UIBarButtonItem"; title = "Archive"; ObjectID = "BoN-1Y-G47"; */
+"BoN-1Y-G47.title" = "Archive";
+
+/* Class = "UILabel"; text = "Message text from user in chat for this element. Single line and truncate"; ObjectID = "D09-U6-0Jc"; */
+"D09-U6-0Jc.text" = "Message text from user in chat for this element. Single line and truncate";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "DOH-i4-k5z"; */
+"DOH-i4-k5z.text" = "Label";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "FS5-ud-JMl"; */
+"FS5-ud-JMl.text" = "Label";
+
+/* Class = "UILabel"; text = "Archived"; ObjectID = "HKN-Ge-hVy"; */
+"HKN-Ge-hVy.text" = "Archived";
+
+/* Class = "UILabel"; text = "menu item name"; ObjectID = "KVD-ty-xaM"; */
+"KVD-ty-xaM.text" = "menu item name";
+
+/* Class = "UILabel"; text = "title"; ObjectID = "LG9-gz-wTP"; */
+"LG9-gz-wTP.text" = "title";
+
+/* Class = "UILabel"; text = "Message text from user in chat for this element. Single line and truncate"; ObjectID = "M6g-49-OvE"; */
+"M6g-49-OvE.text" = "Message text from user in chat for this element. Single line and truncate";
+
+/* Class = "UILabel"; text = "title"; ObjectID = "NBB-QC-zTD"; */
+"NBB-QC-zTD.text" = "title";
+
+/* Class = "UILabel"; text = "18.06.2015 12:27"; ObjectID = "OZB-6b-hhu"; */
+"OZB-6b-hhu.text" = "18.06.2015 12:27";
+
+/* Class = "UILabel"; text = "Element title label"; ObjectID = "PBu-aF-Ydb"; */
+"PBu-aF-Ydb.text" = "Element title label";
+
+/* Class = "UILabel"; text = "name or email or phone"; ObjectID = "PWk-AJ-c68"; */
+"PWk-AJ-c68.text" = "name or email or phone";
+
+/* Class = "UIButton"; normalTitle = "Login"; ObjectID = "Uxo-Jh-pfs"; */
+"Uxo-Jh-pfs.normalTitle" = "Login";
+
+/* Class = "UITextField"; placeholder = "password"; ObjectID = "Vhg-5m-q1o"; */
+"Vhg-5m-q1o.placeholder" = "password";
+
+/* Class = "UILabel"; text = "3"; ObjectID = "X69-zu-5f4"; */
+"X69-zu-5f4.text" = "3";
+
+/* Class = "UIButton"; normalTitle = "more"; ObjectID = "agd-AV-aTn"; */
+"agd-AV-aTn.normalTitle" = "more";
+
+/* Class = "UILabel"; text = "message from user"; ObjectID = "cXG-xX-3MC"; */
+"cXG-xX-3MC.text" = "message from user";
+
+/* Class = "UILabel"; text = "13:30, 2 Aug"; ObjectID = "dad-7V-46K"; */
+"dad-7V-46K.text" = "13:30, 2 Aug";
+
+/* Class = "UILabel"; text = "details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah"; ObjectID = "ebd-9s-qKP"; */
+"ebd-9s-qKP.text" = "details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah";
+
+/* Class = "UIBarButtonItem"; title = "Delete"; ObjectID = "ecv-ZC-JX7"; */
+"ecv-ZC-JX7.title" = "Delete";
+
+/* Class = "UILabel"; text = "R.E."; ObjectID = "iGB-EG-ehF"; */
+"iGB-EG-ehF.text" = "R.E.";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "j6H-Ye-WJB"; */
+"j6H-Ye-WJB.title" = "Cancel";
+
+/* Class = "UILabel"; text = "R.E."; ObjectID = "lJe-M9-mYy"; */
+"lJe-M9-mYy.text" = "R.E.";
+
+/* Class = "UITextView"; text = " "; ObjectID = "luj-sS-CsY"; */
+"luj-sS-CsY.text" = " ";
+
+/* Class = "UILabel"; text = "27.07.2015"; ObjectID = "nsE-RP-MTO"; */
+"nsE-RP-MTO.text" = "27.07.2015";
+
+/* Class = "UIBarButtonItem"; title = "Done"; ObjectID = "oJZ-8g-SUG"; */
+"oJZ-8g-SUG.title" = "Done";
+
+/* Class = "UILabel"; text = "Signals"; ObjectID = "rjN-dc-B59"; */
+"rjN-dc-B59.text" = "Signals";
+
+/* Class = "UILabel"; text = "12:30, 2 Aug 2015"; ObjectID = "sgw-dA-FiL"; */
+"sgw-dA-FiL.text" = "12:30, 2 Aug 2015";
+
+/* Class = "UILabel"; text = "13:30, 2 Aug"; ObjectID = "vXc-34-FCp"; */
+"vXc-34-FCp.text" = "13:30, 2 Aug";
+
+/* Class = "UILabel"; text = "Subordinate details go here"; ObjectID = "vbi-YH-E7f"; */
+"vbi-YH-E7f.text" = "Subordinate details go here";
+
+/* Class = "UILabel"; text = "Chat"; ObjectID = "wmB-xd-qK0"; */
+"wmB-xd-qK0.text" = "Chat";
+
+/* Class = "UILabel"; text = "menu item name"; ObjectID = "zMJ-w5-zdy"; */
+"zMJ-w5-zdy.text" = "menu item name";

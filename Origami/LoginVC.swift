@@ -26,6 +26,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
         
         nameField.text = userName
         passwordField.text = password
+        
+        loginButton.setTitle("LoginButtonTitle".localizedWithComment(""), forState: .Normal)
     }
 
     override func didReceiveMemoryWarning() {
