@@ -346,31 +346,29 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     
                     // create and store frame
                     let subordinateIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                    let cellFrame = CGRectMake(offsetX, offsetY, subordinateSize.width, subordinateSize.height)
+                    var cellFrame = CGRectMake(offsetX, offsetY, subordinateSize.width, subordinateSize.height)
                     var subordinateAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: subordinateIndexPath)
+                    
+                    // detect if next frame with this offset will be still visible
+                    if CGRectGetMaxX(cellFrame) > (mainFrame.size.width - self.minimumInteritemSpacing)
+                    {
+                        offsetX = self.minimumInteritemSpacing
+                        offsetY += (CGRectGetHeight(cellFrame) + self.minimumLineSpacing)
+                        cellFrame.origin.x = offsetX
+                        cellFrame.origin.y = offsetY
+                    }
+                    
                     subordinateAttribute.frame = cellFrame
                     cellLayoutAttributes[subordinateIndexPath] = subordinateAttribute
                     itemIndex += 1
                     
                     //create origin for next item
                     offsetX = CGRectGetMaxX(cellFrame) + self.minimumInteritemSpacing // move to right
-                    
-                    // detect if next frame with this offset will be still visible
-                    let checkOffset = checkCurrentCellOffset(offsetX, frame: mainFrame)
-                    if checkOffset < offsetX
-                    {
-                        offsetX = self.minimumInteritemSpacing
-                        offsetY += (CGRectGetHeight(cellFrame) + self.minimumLineSpacing)
-                        //println("Moved to left ant down after SUBORDINATE  cell")
-                    }
                 }
                 
                 println("\n Finished calculating subordinates")
             }
-            
         }
-        
-        
         // detect downmost frame
         
         var lastIndexPath:NSIndexPath = NSIndexPath(forItem: 0, inSection: 0)
@@ -394,7 +392,6 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         if offset > frame.size.width / 2.0
         {
             newOffset = frame.origin.x
-            //println("\n -> Moved to Left...")
         }
         
         return newOffset

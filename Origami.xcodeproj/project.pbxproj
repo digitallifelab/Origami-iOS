@@ -372,12 +372,12 @@
 			name = AttachesCell;
 			sourceTree = "<group>";
 		};
-		F8521FEC1B78963300B418A3 /* LocalizerStrings */ = {
+		F8521FEC1B78963300B418A3 /* LocalizedStrings */ = {
 			isa = PBXGroup;
 			children = (
 				F8521FF11B78966400B418A3 /* Localizable.strings */,
 			);
-			name = LocalizerStrings;
+			name = LocalizedStrings;
 			sourceTree = "<group>";
 		};
 		F855BB9D1B74A7AF00EC114C /* CoreData */ = {
@@ -739,7 +739,7 @@
 		F8D456A01B1DEFA100172667 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F8521FEC1B78963300B418A3 /* LocalizerStrings */,
+				F8521FEC1B78963300B418A3 /* LocalizedStrings */,
 				F811100E1B2AC2FF00115DF6 /* CustomFonts */,
 				F8D456A11B1DEFA100172667 /* Info.plist */,
 			);
