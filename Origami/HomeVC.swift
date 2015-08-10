@@ -49,8 +49,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     }
                 }
             }
-            
-            
         }
         
         self.title = "Home"
