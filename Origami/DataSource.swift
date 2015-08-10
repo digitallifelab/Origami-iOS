@@ -574,14 +574,14 @@ import ImageIO
         {
             [unowned self] in
             
-            var signalElements = [Element]()
+            
             var favouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
                 return checkedElement.isFavourite.boolValue
             })
             
             ObjectsConverter.sortElementsByDate(&favouriteElements)
             
-            var otherElements = [Element]()
+            var otherElementsSet = Set<Element>()//[Element]()
             
             let filteredMainElements = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
                 let rootId = element.rootElementId
@@ -591,49 +591,35 @@ import ImageIO
             
             for lvElement in filteredMainElements
             {
-                if lvElement.isSignal.boolValue
-                {
-                    //println("appending SIGNALS: id= \(lvElement.elementId!)")
-                    signalElements.append(lvElement)
-                }
-//                if lvElement.isFavourite!.boolValue
-//                {
-//                    //println("appending FAVOURITES: id= \(lvElement.elementId!)")
-//                    favouriteElements.append(lvElement)
-//                }
-                
-                //println("appending OTHER: id= \(lvElement.elementId!)")
-                otherElements.append(lvElement)
+                otherElementsSet.insert(lvElement)
             }
+            
+            var otherElementsArray = Array(otherElementsSet)
+            ObjectsConverter.sortElementsByDate(&otherElementsArray)
+            
             
             // get all signals
             var filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
                 
                 let signalValue = element.isSignal.boolValue
-                let  rootId = element.rootElementId.integerValue
+                //let  rootId = element.rootElementId.integerValue
                 
-                return (signalValue && (rootId > 0))
-                
+                return (signalValue )
             })
             
-            if !filteredSignals.isEmpty
-            {
-                ObjectsConverter.sortElementsByDate(&filteredSignals)
-                
-                //DEBUG START
-//                for lvElement in filteredSignals
-//                {
-//                    println("appending Non Root SIGNALS: id= \(lvElement.elementId!)")
-//                }
-                //DEBUG END
-                signalElements += filteredSignals
-            }
+            
+            
+            
+            var signalElementsSet = Set(filteredSignals)
+            var signalElementsArray = Array(signalElementsSet)
+            
+            ObjectsConverter.sortElementsByDate(&signalElementsArray)
             
             
             dispatch_async(dispatch_get_main_queue(),
             {
                 _ in
-                let toReturn = [1:signalElements, 2:favouriteElements, 3:otherElements]
+                let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
                 completion(toReturn)
             })
         })

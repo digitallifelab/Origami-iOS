@@ -73,7 +73,9 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         self.privFavourites = favourites
         self.privOther = other
         
-        self.configureAttributes()
+        println(" ------- Hidden Layout initialized with \(self.privSignals) signals")
+        
+        //self.configureAttributes()
     }
     
     required init(coder aDecoder: NSCoder)

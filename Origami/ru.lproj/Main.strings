@@ -63,16 +63,16 @@
 "PWk-AJ-c68.text" = "name or email or phone";
 
 /* Class = "UIButton"; normalTitle = "Login"; ObjectID = "Uxo-Jh-pfs"; */
-"Uxo-Jh-pfs.normalTitle" = "Login";
+"Uxo-Jh-pfs.normalTitle" = "Вход";
 
 /* Class = "UITextField"; placeholder = "password"; ObjectID = "Vhg-5m-q1o"; */
-"Vhg-5m-q1o.placeholder" = "password";
+"Vhg-5m-q1o.placeholder" = "пароль";
 
 /* Class = "UILabel"; text = "3"; ObjectID = "X69-zu-5f4"; */
 "X69-zu-5f4.text" = "3";
 
 /* Class = "UIButton"; normalTitle = "more"; ObjectID = "agd-AV-aTn"; */
-"agd-AV-aTn.normalTitle" = "more";
+"agd-AV-aTn.normalTitle" = "ещё";
 
 /* Class = "UILabel"; text = "message from user"; ObjectID = "cXG-xX-3MC"; */
 "cXG-xX-3MC.text" = "message from user";
@@ -84,13 +84,13 @@
 "ebd-9s-qKP.text" = "details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah";
 
 /* Class = "UIBarButtonItem"; title = "Delete"; ObjectID = "ecv-ZC-JX7"; */
-"ecv-ZC-JX7.title" = "Delete";
+"ecv-ZC-JX7.title" = "Удалить";
 
 /* Class = "UILabel"; text = "R.E."; ObjectID = "iGB-EG-ehF"; */
 "iGB-EG-ehF.text" = "R.E.";
 
 /* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "j6H-Ye-WJB"; */
-"j6H-Ye-WJB.title" = "Cancel";
+"j6H-Ye-WJB.title" = "Отмена";
 
 /* Class = "UILabel"; text = "R.E."; ObjectID = "lJe-M9-mYy"; */
 "lJe-M9-mYy.text" = "R.E.";
@@ -102,10 +102,10 @@
 "nsE-RP-MTO.text" = "27.07.2015";
 
 /* Class = "UIBarButtonItem"; title = "Done"; ObjectID = "oJZ-8g-SUG"; */
-"oJZ-8g-SUG.title" = "Done";
+"oJZ-8g-SUG.title" = "Готово";
 
 /* Class = "UILabel"; text = "Signals"; ObjectID = "rjN-dc-B59"; */
-"rjN-dc-B59.text" = "Signals";
+"rjN-dc-B59.text" = "Сигналы";
 
 /* Class = "UILabel"; text = "12:30, 2 Aug 2015"; ObjectID = "sgw-dA-FiL"; */
 "sgw-dA-FiL.text" = "12:30, 2 Aug 2015";
@@ -117,7 +117,7 @@
 "vbi-YH-E7f.text" = "Subordinate details go here";
 
 /* Class = "UILabel"; text = "Chat"; ObjectID = "wmB-xd-qK0"; */
-"wmB-xd-qK0.text" = "Chat";
+"wmB-xd-qK0.text" = "Чат";
 
 /* Class = "UILabel"; text = "menu item name"; ObjectID = "zMJ-w5-zdy"; */
 "zMJ-w5-zdy.text" = "menu item name";

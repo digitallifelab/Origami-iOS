@@ -26,6 +26,7 @@ import UIKit
         self.favourites = favourites
         self.other = other
         self.signals = signals
+        println("Initialized with \(self.signals?.count) signals");
     }
 
     
@@ -134,7 +135,7 @@ import UIKit
                 switch indexPath.section
                 {
                     case 0:
-                    headerView.label.text = "Signals".localizedWithComment("")
+                    headerView.label.text = NSLocalizedString("Signals", comment: "") // "Signals".localizedWithComment("")
                     headerView.displayDividerLine(false)
                     case 1:
                         if favourites?.count > 0

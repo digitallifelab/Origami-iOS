@@ -70,7 +70,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         self.privFavourites = favourites
         self.privOther = other
         
-        //self.configureAttributes()
+        println(" ------- Visible Layout initialized with \(self.privSignals) signals")
     }
     
     required init(coder aDecoder: NSCoder) {
