@@ -664,17 +664,17 @@ import ImageIO
                 completion(success: true, failure: nil)
                 
                 //test stuff
-                DataSource.sharedInstance.databaseHandler?.insertElements(Set(DataSource.sharedInstance.elements), completion: { (finishInfo, error) -> Void in
-                    if let successInfo = finishInfo
-                    {
-                        println("\(successInfo)")
-                    }
-                    
-                    if let insertError = error
-                    {
-                        println("Error while saving ELEMENTS to local database;")
-                    }
-                })
+//                DataSource.sharedInstance.databaseHandler?.insertElements(Set(DataSource.sharedInstance.elements), completion: { (finishInfo, error) -> Void in
+//                    if let successInfo = finishInfo
+//                    {
+//                        println("\(successInfo)")
+//                    }
+//                    
+//                    if let insertError = error
+//                    {
+//                        println("Error while saving ELEMENTS to local database;")
+//                    }
+//                })
             }
             else
             {

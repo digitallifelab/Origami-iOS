@@ -23,33 +23,33 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
     
-        DataSource.sharedInstance.loadExistingDashboardElementsFromLocalDatabaseCompletion { (elements, error) -> () in
-            
-            if let elementsDict = elements
-            {
-                if let signals = elementsDict["signals"]
-                {
-                    for aSignalElement in signals
-                    {
-                        println("Signal: \(aSignalElement.title)")
-                    }
-                }
-                if let favourites = elementsDict["favor"]
-                {
-                    for aFavorite in favourites
-                    {
-                        println("Favourite: \(aFavorite.title)")
-                    }
-                }
-                if let other = elementsDict["usual"]
-                {
-                    for anUsual in other
-                    {
-                        println("Usual: \(anUsual.title)")
-                    }
-                }
-            }
-        }
+//        DataSource.sharedInstance.loadExistingDashboardElementsFromLocalDatabaseCompletion { (elements, error) -> () in
+//            
+//            if let elementsDict = elements
+//            {
+//                if let signals = elementsDict["signals"]
+//                {
+//                    for aSignalElement in signals
+//                    {
+//                        println("Signal: \(aSignalElement.title)")
+//                    }
+//                }
+//                if let favourites = elementsDict["favor"]
+//                {
+//                    for aFavorite in favourites
+//                    {
+//                        println("Favourite: \(aFavorite.title)")
+//                    }
+//                }
+//                if let other = elementsDict["usual"]
+//                {
+//                    for anUsual in other
+//                    {
+//                        println("Usual: \(anUsual.title)")
+//                    }
+//                }
+//            }
+//        }
         
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
@@ -248,6 +248,30 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     }
                                 })
                             }
+                        }
+                        else
+                        {
+                            let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
+                            
+                            
+                            
+                            aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
+                                
+                                aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
+                                aSelf.collectionSource!.elementSelectionDelegate = aSelf
+                                
+                                aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
+                                aSelf.collectionDashboard!.delegate = aSelf.collectionSource
+                                //aSelf.collectionDashboard.reloadData()
+                                aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                
+                                }, completion: { (finished) -> Void in
+//                                    if shouldReloadCollection
+//                                    {
+                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
+//                                    }
+                            })
+
                         }
                         
                         aSelf.loadingAllElementsInProgress = false
