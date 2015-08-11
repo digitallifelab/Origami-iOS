@@ -53,6 +53,7 @@
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
 		F87637781B565D1A00AFE376 /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87637771B565D1A00AFE376 /* MenuTableViewController.swift */; };
 		F87E144E1B554A0C0072BE3A /* HomeScreenTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */; };
+		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
 		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
 		F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */; };
 		F87FE6C01B611726004CA576 /* ElementActionButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */; };
@@ -85,7 +86,7 @@
 		F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5D1B21C81600156CEC /* LoginVC.swift */; };
 		F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */; };
 		F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */; };
-		F89F3B661B21E86A00156CEC /* DashCells.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B651B21E86A00156CEC /* DashCells.swift */; };
+		F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B651B21E86A00156CEC /* DashCell.swift */; };
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
@@ -183,6 +184,7 @@
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
 		F87637771B565D1A00AFE376 /* MenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenTabBarController.swift; sourceTree = "<group>"; };
+		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
 		F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementButtonsCell.swift; sourceTree = "<group>"; };
 		F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonCell.swift; sourceTree = "<group>"; };
@@ -225,7 +227,7 @@
 		F89F3B5D1B21C81600156CEC /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCollectionHandler.swift; sourceTree = "<group>"; };
-		F89F3B651B21E86A00156CEC /* DashCells.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashCells.swift; sourceTree = "<group>"; };
+		F89F3B651B21E86A00156CEC /* DashCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashCell.swift; sourceTree = "<group>"; };
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
@@ -466,7 +468,6 @@
 			isa = PBXGroup;
 			children = (
 				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
-				F89F3B651B21E86A00156CEC /* DashCells.swift */,
 			);
 			name = Subclasses_For_UIKit_Stuff;
 			sourceTree = "<group>";
@@ -597,6 +598,8 @@
 				F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */,
 				F891BBE71B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift */,
 				F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */,
+				F89F3B651B21E86A00156CEC /* DashCell.swift */,
+				F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -932,6 +935,7 @@
 				F8DE59D41B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F880D1961B25BB4000E702D3 /* AFHTTPRequestOperation.m in Sources */,
 				F81BAD681B5F874D00DB50F8 /* SingleElementDashboardVC.swift in Sources */,
+				F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */,
 				F880D19C1B25BB4000E702D3 /* AFURLRequestSerialization.m in Sources */,
 				F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */,
 				F880D19B1B25BB4000E702D3 /* AFURLConnectionOperation.m in Sources */,
@@ -997,7 +1001,7 @@
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F880D1971B25BB4000E702D3 /* AFHTTPRequestOperationManager.m in Sources */,
 				F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */,
-				F89F3B661B21E86A00156CEC /* DashCells.swift in Sources */,
+				F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */,
 				F880D19D1B25BB4000E702D3 /* AFURLResponseSerialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
