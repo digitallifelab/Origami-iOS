@@ -304,6 +304,11 @@
 				F864AB191B7252F600686EB1 /* ImageFilter.swift */,
 				F86F237D1B208C7D00234EFD /* FileHandler.h */,
 				F86F237E1B208C7D00234EFD /* FileHandler.m */,
+				F86F237A1B208AEE00234EFD /* Constants.swift */,
+				F86F23801B20A29600234EFD /* Protocols.swift */,
+				F880D17A1B2583CE00E702D3 /* Extensions.swift */,
+				F8D2FF2B1B283DE900584B8D /* Enumerations.swift */,
+				F8DEE7EF1B68FCC60004F0CB /* Structs.swift */,
 			);
 			name = tools;
 			sourceTree = "<group>";
@@ -464,14 +469,6 @@
 			name = ViewControllers;
 			sourceTree = "<group>";
 		};
-		F874D90D1B26FAA600B867BF /* Subclasses_For_UIKit_Stuff */ = {
-			isa = PBXGroup;
-			children = (
-				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
-			);
-			name = Subclasses_For_UIKit_Stuff;
-			sourceTree = "<group>";
-		};
 		F87637791B56604100AFE376 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
@@ -480,6 +477,18 @@
 				F882328B1B6B702E00990A4E /* Right top options popup menu */,
 			);
 			name = Menu;
+			sourceTree = "<group>";
+		};
+		F87E9BF31B79E41C00D8E07B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F8D456C21B1DEFFC00172667 /* DataSource.swift */,
+				F880D1801B25B22900E702D3 /* ServerRequester.swift */,
+				F8D456C41B1DF15500172667 /* HandledObjects.swift */,
+				F8D9BAC21B399880006B507D /* MediaFile.swift */,
+				F855BB9D1B74A7AF00EC114C /* CoreData */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		F87FE6C11B611807004CA576 /* ActionButtonsHolderCell */ = {
@@ -715,21 +724,12 @@
 			isa = PBXGroup;
 			children = (
 				F8D456A21B1DEFA100172667 /* AppDelegate.swift */,
-				F86F237A1B208AEE00234EFD /* Constants.swift */,
-				F86F23801B20A29600234EFD /* Protocols.swift */,
-				F880D17A1B2583CE00E702D3 /* Extensions.swift */,
-				F8D2FF2B1B283DE900584B8D /* Enumerations.swift */,
-				F8DEE7EF1B68FCC60004F0CB /* Structs.swift */,
+				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
 				F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F874D90C1B26FA8A00B867BF /* ViewControllers */,
+				F87E9BF31B79E41C00D8E07B /* Model */,
 				F8016FF21B304619002A1620 /* tools */,
-				F874D90D1B26FAA600B867BF /* Subclasses_For_UIKit_Stuff */,
-				F8D456C21B1DEFFC00172667 /* DataSource.swift */,
-				F880D1801B25B22900E702D3 /* ServerRequester.swift */,
-				F8D456C41B1DF15500172667 /* HandledObjects.swift */,
-				F8D9BAC21B399880006B507D /* MediaFile.swift */,
-				F855BB9D1B74A7AF00EC114C /* CoreData */,
 				F8D456A91B1DEFA100172667 /* Images.xcassets */,
 				F8D456AB1B1DEFA100172667 /* LaunchScreen.xib */,
 				F8D456A01B1DEFA100172667 /* Supporting Files */,
