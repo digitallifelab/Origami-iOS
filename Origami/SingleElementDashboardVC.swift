@@ -167,7 +167,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                             {
                                                 println(" ERROR . \nCould not generate new layout for loaded attaches.")
                                             }
-                                            //weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
+                                            weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
                                             
                                         })
                                     })

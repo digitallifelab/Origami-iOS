@@ -1216,11 +1216,8 @@ import ImageIO
             })
         }
         
-       
-    
         dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), { () -> Void in
             print("\n ....finished loading all \(attaches.count) attachment file datas. >>>>>\n")
-            
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if let completionBlock = completionClosure
@@ -1512,7 +1509,7 @@ import ImageIO
         {
             if let existingBytes = DataSource.sharedInstance.avatarsHolder[lvName]
             {
-                println(" returning avatar Data from RAM")
+                //println(" returning avatar Data from RAM")
                 return existingBytes
             }
         }

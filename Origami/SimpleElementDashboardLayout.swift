@@ -368,7 +368,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     offsetX = CGRectGetMaxX(cellFrame) + self.minimumInteritemSpacing // move to right
                 }
                 
-                println("\n Finished calculating subordinates")
+                //println("\n Finished calculating subordinates")
             }
         }
         // detect downmost frame
