@@ -332,7 +332,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             switch titleCellMode
             {
             case .Title:
-                var titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell", forIndexPath: indexPath) as! SingleElementTitleCell
+                var titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell",
+                                                                                forIndexPath: indexPath) as! SingleElementTitleCell
                 
                 titleCell.displayMode = self.displayMode
                 
@@ -349,7 +350,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 return titleCell
                 
             case .Dates:
-                var datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell", forIndexPath: indexPath) as! SingleElementDateDetailsCell
+                var datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell",
+                                                                                forIndexPath: indexPath) as! SingleElementDateDetailsCell
                 datesCell.displayMode = self.displayMode
                 datesCell.handledElement = self.handledElement
                 
@@ -361,7 +363,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
         case .Chat:
-            var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell", forIndexPath: indexPath) as! SingleElementLastMessagesCell
+            var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell",
+                                                                                forIndexPath: indexPath) as! SingleElementLastMessagesCell
             chatCell.displayMode = self.displayMode
             if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: self.handledElement?.elementId, lastMessageId: 0)
             {
@@ -371,7 +374,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return chatCell
             
         case .Details:
-            var detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell", forIndexPath: indexPath) as! SingleElementDetailsCell
+            var detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell",
+                                                                                forIndexPath: indexPath) as! SingleElementDetailsCell
             detailsCell.textLabel.text = getElementDetails()
             detailsCell.displayMode = self.displayMode
             
@@ -380,7 +384,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return detailsCell
             
         case .Attaches:
-            var attachesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementAttachesHolderCell", forIndexPath: indexPath) as! SingleElementAttachesCollectionHolderCell
+            var attachesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementAttachesHolderCell",
+                                                                                            forIndexPath: indexPath) as! SingleElementAttachesCollectionHolderCell
             if let attachHandler = self.attachesHandler
             {
                 attachHandler.attachTapDelegate = self.attachTapDelegate

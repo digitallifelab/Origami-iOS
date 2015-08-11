@@ -146,12 +146,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                         
                                         println("\n Assigning new  attaches handler and reloading collection view \n")
+                                        var attachesHandler = ElementAttachedFilesCollectionHandler(items: attaches)
+                                        weakSelf.collectionDataSource?.attachesHandler = attachesHandler
+                                        weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                                        weakSelf.collectionView.dataSource = weakSelf.collectionDataSource
+                                        weakSelf.collectionView.delegate = weakSelf.collectionDataSource
+                                        weakSelf.collectionView.reloadData()
+                                        
                                         weakSelf.collectionView.performBatchUpdates({ () -> Void in
                                             
-                                            var attachesHandler = ElementAttachedFilesCollectionHandler(items: attaches)
-                                            weakSelf.collectionDataSource?.attachesHandler = attachesHandler
-                                            weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
-                                            weakSelf.collectionView.collectionViewLayout.invalidateLayout()
+                                            weakSelf.collectionView.reloadSections(NSIndexSet(index: 0)) //this another one reload needed for changing subordinateCcell into attachesCell bug fixing.
+                                            
+                                        }, completion: { (finished) -> Void in
                                             
                                             if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
                                             {
@@ -161,16 +167,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                             {
                                                 println(" ERROR . \nCould not generate new layout for loaded attaches.")
                                             }
-                                        }, completion: { (finished) -> Void in
-                                             weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
-                                            
-                                           
-
-                                            
+                                            //weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
                                             
                                         })
-                                        
-                                        
                                     })
                                 }
                             }
