@@ -101,8 +101,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.navigationController?.popViewControllerAnimated(true)
     }
     
-    
-    
     func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
     {
         switch indexPath.section
@@ -145,8 +143,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         default : return nil
         }
     }
-    
-   
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -202,7 +198,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             {
                 case 0:
                     //unchecked contact from participants
-                DataSource.sharedInstance.removeContact(selectedContact.contactId!, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.removeContact(selectedContact.contactId!.integerValue, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
                     if self != nil
                     {
                         if success
@@ -221,7 +217,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                     }
                 })
                 case 1:
-                DataSource.sharedInstance.addContact(selectedContact.contactId!, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.addContact(selectedContact.contactId!.integerValue, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
                     if self != nil
                     {
                         if success

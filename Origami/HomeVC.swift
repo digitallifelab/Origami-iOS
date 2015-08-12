@@ -403,14 +403,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         // 1 - send new element to server
         // 2 - send passWhomIDs, if present
         // 3 - if new element successfully added - reload dashboard collectionView
-        var passWhomIDs:[Int]? 
+        var passWhomIDs:Set<Int>?
          let nsNumberArray = element.passWhomIDs
         if !nsNumberArray.isEmpty
         {
-            passWhomIDs = [Int]()
+            passWhomIDs = Set<Int>()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number.integerValue)
+                passWhomIDs!.insert(number.integerValue)
             }
         }
         

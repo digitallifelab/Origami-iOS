@@ -574,7 +574,6 @@ import ImageIO
         {
             [unowned self] in
             
-            
             var favouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
                 return checkedElement.isFavourite.boolValue
             })
@@ -651,7 +650,7 @@ import ImageIO
     
     func loadAllElements(completion:(success:Bool, failure:NSError?) ->())
     {
-        serverRequester.loadAllElements {(result, error) -> () in
+        DataSource.sharedInstance.serverRequester.loadAllElements {(result, error) -> () in
             
             if let allElements = result as? [Element]
             {
@@ -767,9 +766,14 @@ import ImageIO
     
     func loadPassWhomIdsForElement(element:Element, comlpetion completionClosure:(finished:Bool)->() ) {
         
-        serverRequester.loadPassWhomIdsForElementID(element.elementId!.integerValue, completion: { (passWhomIds, error) -> () in
+        let elementIdInt = element.elementId!.integerValue
+        DataSource.sharedInstance.serverRequester.loadPassWhomIdsForElementID(elementIdInt, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
+                if let elementFromDataSource = DataSource.sharedInstance.getElementById(elementIdInt)
+                {
+                    elementFromDataSource.passWhomIDs = recievedIDs
+                }
                 element.passWhomIDs = recievedIDs
                 completionClosure(finished: true)
             }
@@ -1273,7 +1277,7 @@ import ImageIO
             let foundContacts = DataSource.sharedInstance.contacts.filter({ (contact) -> Bool in
                 if let contactId = contact.contactId
                 {
-                    if contactIDs.contains(contactId)
+                    if contactIDs.contains(contactId.integerValue)
                     {
                         return true
                     }
@@ -1336,7 +1340,7 @@ import ImageIO
     
     func addContact(contactId:Int, toElement elementId:Int, completion completionClosure:(success:Bool, error:NSError?) -> ())
     {
-        serverRequester.passElement(elementId, toContact: contactId, forDeletion: false) { (requestSuccess, resuertError) -> () in
+        DataSource.sharedInstance.serverRequester.passElement(elementId, toContact: contactId, forDeletion: false) { (requestSuccess, resuertError) -> () in
            
             if requestSuccess
             {
@@ -1391,19 +1395,18 @@ import ImageIO
         }
     }
     
-    func addSeveralContacts(contactIDs:[Int]?, toElement elementId:Int, completion completionClosure:(succeededIDs:[Int], failedIDs:[Int])->())
+    func addSeveralContacts(contactIDs:Set<Int>?, toElement elementId:Int, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())? )
     {
         if let contactNumbers = contactIDs
         {
             if contactNumbers.isEmpty
             {
-                completionClosure(succeededIDs: [], failedIDs: [])
+                completionClosure?(succeededIDs: [], failedIDs: [])
                 return
             }
             
             let backgroundQueue = NSOperationQueue()
             backgroundQueue.addOperationWithBlock({ () -> Void in
-                
                 
                 DataSource.sharedInstance.serverRequester.passElement(elementId, toSeveratContacts: contactNumbers, completion: { (succeededIDs, failedIDs) -> () in
 
@@ -1439,43 +1442,8 @@ import ImageIO
                     }
                 }
 
-                completionClosure(succeededIDs: succeededIDs, failedIDs: failedIDs)
-            })
-                
-//                    var contactIdToTest = contactNumbers.first!
-//                    DataSource.sharedInstance.serverRequester.passElement(elementId, toContact: contactIdToTest, forDeletion: false, completion: { (success, error) -> () in
-//                        
-//                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-//                            if success
-//                            {
-//                                if let existingElement = DataSource.sharedInstance.getElementById(elementId)
-//                                {
-//                                    if let alredayExistIDs = existingElement.passWhomIDs
-//                                    {
-//
-//                                    }
-//                                    else
-//                                    {
-//                                        existingElement.passWhomIDs = [contactIdToTest]
-//                                    }
-//                                }
-//                                completionClosure(succeededIDs: [contactIdToTest], failedIDs:[])
-//                            }
-//                            else if error != nil
-//                            {
-//                                println("Failed to add contact to element .. Reason: \n\(error)")
-//                                completionClosure(succeededIDs: [], failedIDs:[contactIdToTest])
-//                            }
-//                            else
-//                            {
-//                                println("Failed to add contact to element .. Unknown reason")
-//                                completionClosure(succeededIDs: [], failedIDs:[contactIdToTest])
-//                            }
-//                        })//end of main queue block
-//                        
-//                        
-//                    })
-                
+                    completionClosure?(succeededIDs: succeededIDs, failedIDs: failedIDs)
+                })
                 
             })//end of operationQueue Block
             
@@ -1483,8 +1451,43 @@ import ImageIO
         }
         else
         {
-            completionClosure(succeededIDs: [], failedIDs: [])
+            completionClosure?(succeededIDs: [], failedIDs: [])
         }
+    }
+    
+    func removeSeveralContacts(contactsIDsSet:Set<Int>, fromElement elementId:Int, completion completionBlock:((succeededIDs:[Int]?, failedIDs:[Int]?)->())?)
+    {
+        NSOperationQueue().addOperationWithBlock { () -> Void in
+            DataSource.sharedInstance.serverRequester.unPassElement(elementId, fromSeveralContacts: contactsIDsSet) { (succeededIds, failedIds) -> () in
+                
+                if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                {
+                    if !succeededIds.isEmpty
+                    {
+                        let succeededSet = Set(succeededIds)
+                        let currentPassWhomIDs = existingElement.passWhomIDs
+                        let filteredOut = currentPassWhomIDs.filter({ (contactID) -> Bool in
+                            if succeededSet.contains(contactID.integerValue)
+                            {
+                                return false
+                            }
+                            return true
+                        })
+                        existingElement.passWhomIDs = filteredOut
+                    }
+                    if !failedIds.isEmpty
+                    {
+                        println("\n Failed to detach contacts:\(failedIds) from element \(elementId)\n")
+                    }
+                }
+                
+                if let completionClosure = completionBlock
+                {
+                    completionClosure(succeededIDs: succeededIds, failedIDs: failedIds)
+                }
+            }
+        }
+        
     }
     //MARK: Avatars
     func addAvatarData(avatarBytes:NSData, forContactUserName userName:String) -> ResponseType

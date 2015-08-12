@@ -124,6 +124,7 @@ class ServerRequester: NSObject
                         var elements = [Element]()
                         for lvElementDict in elementsArray
                         {
+                            //println("\n -> element dict: \(lvElementDict) \n")
                             let lvElement = Element(info: lvElementDict)
                             //println("\(lvElement.toDictionary())")
                             elements.append(lvElement)
@@ -300,16 +301,17 @@ class ServerRequester: NSObject
     }
     
     
-    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:([Int]?, NSError?)->() )
+    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:([NSNumber]?, NSError?)->() )
     {
         if let userToken = DataSource.sharedInstance.user?.token as? String{
             
             let requestString = "\(serverURL)" + "\(passWhomelementUrlPart)" + "?elementId=" + "\(elementId)" + "&token=" + "\(userToken)"
             
             let requestIDsOperation = AFHTTPRequestOperationManager().GET(requestString, parameters: nil, success: { (operation, result) -> Void in
-                if let resultArray = result["GetPassWhomIdsResult"] as? [Int]
+                if let resultArray = result["GetPassWhomIdsResult"] as? [NSNumber]
                 {
-                    completionClosure(resultArray, nil)
+                    let idsSet = Set(resultArray)
+                    completionClosure(Array(idsSet), nil)
                 }
                 else
                 {
@@ -1031,7 +1033,7 @@ class ServerRequester: NSObject
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
-    func passElement(elementId : Int, toSeveratContacts contactIDs:[Int], completion completionClosure:(succeededIDs:[Int], failedIDs:[Int])->())
+    func passElement(elementId : Int, toSeveratContacts contactIDs:Set<Int>, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())?)
     {
         let token = DataSource.sharedInstance.user!.token! as! String
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -1072,8 +1074,14 @@ class ServerRequester: NSObject
                                 failedIDs.append(lvUserID)
                             }
                         }
-                        else
+                        else if let arr = NSJSONSerialization.JSONObjectWithData(responseData!, options: NSJSONReadingOptions.AllowFragments, error: &lvError) as? [AnyObject]
                         {
+                            println("response:\(arr)")
+                            failedIDs.append(lvUserID)
+                        }
+                        else if let string = NSString(data: responseData!, encoding: NSUTF8StringEncoding)
+                        {
+                            println(string)
                             failedIDs.append(lvUserID)
                         }
                     }
@@ -1086,8 +1094,16 @@ class ServerRequester: NSObject
             
             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                completionClosure(succeededIDs: succededIDs, failedIDs: failedIDs)
+                
+                println("succeeded contact ids: \(succededIDs)")
+                
+                completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
             })
         }
+    }
+    
+    func unPassElement(elementId :Int, fromSeveralContacts contactIDs:Set<Int>, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())?)
+    {
+        self.passElement((elementId * -1), toSeveratContacts: contactIDs, completion: completionClosure)
     }
 }

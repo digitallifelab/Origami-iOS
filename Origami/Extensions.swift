@@ -142,6 +142,63 @@ extension NSString
     }
 }
 
+extension String
+{
+    func dateFromServerDateString() -> NSDate?
+    {
+        let badCharacters = NSCharacterSet(charactersInString: "1234567890-+").invertedSet
+        let dateUTCstring = self.stringByTrimmingCharactersInSet(badCharacters)
+        
+        let lettersCount = count(dateUTCstring)
+        if lettersCount < 5
+        {
+            return nil
+        }
+        let stringIndex = advance(dateUTCstring.endIndex, -5)
+        var dateValueString = dateUTCstring.substringToIndex(stringIndex)
+        let newCount = count(dateValueString)
+        if newCount < 3
+        {
+            return nil
+        }
+        
+        let nextStringIndex = advance(dateValueString.endIndex, -3)
+        dateValueString = dateValueString.substringToIndex(nextStringIndex)
+        
+        let timeInterval = (dateValueString as NSString).doubleValue as NSTimeInterval
+        let date = NSDate(timeIntervalSince1970: timeInterval)
+        
+        return date
+    }
+    
+    func timeDateStringFromServerDateString() -> String?
+    {
+        let badChars = NSCharacterSet(charactersInString: "1234567890-+").invertedSet
+        var cleanString = self.stringByTrimmingCharactersInSet(badChars) as NSString
+        if cleanString.length < 5
+        {
+            return nil
+        }
+        
+        cleanString = cleanString.substringToIndex(cleanString.length - 5)
+        if cleanString.length < 3
+        {
+            return nil
+        }
+        
+        cleanString = cleanString.substringToIndex(cleanString.length - 3)
+        let timeInterval = cleanString.doubleValue as NSTimeInterval
+        let lvDate = NSDate(timeIntervalSince1970: timeInterval)
+        
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .MediumStyle
+        dateFormatter.timeStyle = .ShortStyle
+        let toReturn = dateFormatter.stringFromDate(lvDate)
+        
+        return toReturn as String
+    }
+}
+
 extension NSData
 {
     class func dataFromIntegersArray(array:[Int]) -> NSData?

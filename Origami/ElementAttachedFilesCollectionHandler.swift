@@ -45,7 +45,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                 return 0
             }
         }
-        //collectionView.collectionViewLayout.invalidateLayout()
+        
         return attachCount
     }
     
@@ -85,7 +85,8 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                 switch mediaFile.type!
                 {
                 case .Image:
-                    cell.attachIcon.image = UIImage(data: mediaFile.data) ?? noImageIcon
+                    let attachImage = UIImage(data: mediaFile.data) ?? noImageIcon
+                    cell.attachIcon.image = attachImage
                 case .Document:
                     cell.attachIcon.image = attachIconDocument
                 case .Sound:
@@ -99,30 +100,37 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     
     func reloadCollectionWithData(newData:[AttachFile:MediaFile])
     {
+        var setOfAttaches = Set(self.attachedItems)
         for (lvAttachFile,lvMediaFile) in newData //assign data locally
         {
             attachData[lvAttachFile.attachID!] = lvMediaFile
+            setOfAttaches.insert(lvAttachFile)
         }
-        self.collectionView?.reloadData()//Sections(NSIndexSet(index: 0))
+        var arrayOfAttaches = Array(setOfAttaches)
+        arrayOfAttaches.sort { (attach1, attach2) -> Bool in
+            if let dateString1 = attach1.createDate , dateString2 = attach2.createDate
+            {
+                if let date1 = (dateString1 as NSString).dateFromServerDateString(), date2 = (dateString2 as NSString).dateFromServerDateString()
+                {
+                    let comparisonResult = date1.compare(date2)
+                    
+                    return (comparisonResult == .OrderedAscending)
+                }
+            }
+            
+            return false
+        }
+        println("\n ->>Reloading attaches collection cell <<- \n \n")
+        self.attachedItems = arrayOfAttaches
+        self.collectionView?.reloadSections(NSIndexSet(index: 0))
     }
     
     //MARK: Delegate
     
-//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-//        //collectionView.collectionViewLayout.invalidateLayout()
-//        if let attachmentCell = cell as? ElementDashboardAttachedFileCell
-//        {
-//            attachmentCell.attachIcon.setNeedsDisplayInRect(attachmentCell.bounds)
-//            attachmentCell.titleLabel.setNeedsDisplayInRect(attachmentCell.bounds)
-//        }
-//    }
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
         self.attachTapDelegate?.attachedFileTapped(attachedItems[indexPath.item])
     }
     
-    //Flow
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
-//        return CGSizeMake(90.0, 70.0)
-//    }
+
 }

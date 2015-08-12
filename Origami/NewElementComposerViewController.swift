@@ -274,7 +274,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             cell.nameLabel.text = nameLabelText
             
             //set proper checkbox image
-            if contactIDsToPass.contains(lvContact.contactId!)
+            if contactIDsToPass.contains(lvContact.contactId!.integerValue)
             {
                 cell.checkBox.image = checkedCheckboxImage
             }
@@ -299,20 +299,20 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func contactTappedAtIndexPath(indexPath: NSIndexPath)
     {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
-            if let lvContact = self.allContacts?[indexPath.row]
+        if let lvContact = self.allContacts?[indexPath.row], lvContactIDInt = lvContact.contactId?.integerValue
+        {            
+            if self.contactIDsToPass.contains(lvContactIDInt)
             {
-                if self.contactIDsToPass.contains(lvContact.contactId!)
-                {
-                    self.contactIDsToPass.remove(lvContact.contactId!)
-                }
-                else
-                {
-                    self.contactIDsToPass.insert(lvContact.contactId!)
-                }
-                //self.table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
+                self.contactIDsToPass.remove(lvContactIDInt)
             }
+            else
+            {
+                self.contactIDsToPass.insert(lvContactIDInt)
+            }
+        }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
+            self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
         }
     }
     
@@ -430,7 +430,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             else
             {
-                
+                anElement.passWhomIDs.removeAll(keepCapacity: false)
             }
            
             

@@ -13,7 +13,6 @@
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
 		F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
-		F81752811B3B0A5E00D69A72 /* AttachesCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81752801B3B0A5E00D69A72 /* AttachesCollectionView.swift */; };
 		F81BAD681B5F874D00DB50F8 /* SingleElementDashboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */; };
 		F81BAD6A1B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD691B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift */; };
 		F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6B1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift */; };
@@ -134,7 +133,6 @@
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
 		F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashHeaderView.swift; sourceTree = "<group>"; };
-		F81752801B3B0A5E00D69A72 /* AttachesCollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachesCollectionView.swift; sourceTree = "<group>"; };
 		F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDashboardVC.swift; sourceTree = "<group>"; };
 		F81BAD691B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleElementDashboardLayout.swift; sourceTree = "<group>"; };
 		F81BAD6B1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementCollectionViewDataSource.swift; sourceTree = "<group>"; };
@@ -665,7 +663,6 @@
 				F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */,
 				F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */,
 				F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */,
-				F81752801B3B0A5E00D69A72 /* AttachesCollectionView.swift */,
 				F8B9B4F51B3D57E8006033DB /* Attach Files viewers  */,
 				F8C62DC31B3AC25600324C0B /* AttachesTableHeaderView */,
 			);
@@ -968,7 +965,6 @@
 				F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */,
 				F8C62DC51B3AC2A500324C0B /* AttachesCollectionViewLayout.swift in Sources */,
 				F86F74291B56838B00E48E13 /* ContactsListVC.swift in Sources */,
-				F81752811B3B0A5E00D69A72 /* AttachesCollectionView.swift in Sources */,
 				F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */,
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,

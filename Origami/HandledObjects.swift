@@ -159,7 +159,7 @@ class Contact:NSObject
     var userName:NSString?
   
     var lastSync:NSString?
-    var contactId:Int?
+    var contactId:NSNumber?
     
     var mood:NSString?
     var state:NSNumber?
@@ -191,7 +191,7 @@ class Contact:NSObject
         {
             self.elementId = element
         }
-        if let lvContactId = info["ContactId"] as? Int
+        if let lvContactId = info["ContactId"] as? NSNumber
         {
             self.contactId = lvContactId
         }
@@ -395,12 +395,12 @@ class Element:NSObject
         {
             self.archiveDate = archDate
         }
-        if info["PassWhomIds"] != nil
+        if info["PassWhomIds"] !== NSNull()
         {
             if let passIDs = info["PassWhomIds"] as? [NSNumber]
             {
                 self.passWhomIDs = passIDs
-                println(" -> \(passIDs) for element \(self.elementId)")
+                //println(" -> \(passIDs) for element \(self.elementId)")
             }
             else
             {

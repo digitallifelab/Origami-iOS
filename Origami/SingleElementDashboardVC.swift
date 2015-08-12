@@ -48,6 +48,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         
 //        queryAttachesPreviewData()
+        if let ourElement = self.currentElement
+        {
+            DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
+                if let aSelf = self
+                {
+                    if finished
+                    {
+                        aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElement.elementId!.integerValue)
+                    }
+                    else
+                    {
+                        
+                    }
+             
+                    
+                }
+            })
+        }
+        
         
     }
 
@@ -133,6 +152,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                     
                                     attachDataHolder[lvAttachFile] = lvMediaFile
                                 }
+                                
+                                let mediaCount = attachDataHolder.count
+                                println("\n ->prepared \(mediaCount) attachFilePairs\n")
                                 
                                 if let attachesCollectionHandler = weakSelf.collectionDataSource?.attachesHandler
                                 {
@@ -580,7 +602,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 if let passWhomIDsArray = passWhomIDs // 2
                 {
-                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsArray, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
+                    let passWhomSet = Set(passWhomIDsArray)
+                    DataSource.sharedInstance.addSeveralContacts(passWhomSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
                             println(" added to \(succeededIDs)")
@@ -619,18 +642,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         })
     }
     
-    func handleEditingElement(element:Element)
+    func handleEditingElement(editingElement:Element)
     {
-        
-        
-        DataSource.sharedInstance.editElement(element, completionClosure: {[weak self] (edited) -> () in
+        DataSource.sharedInstance.editElement(editingElement, completionClosure: {[weak self] (edited) -> () in
             if let aSelf = self
             {
                 if edited
                 {
-                    aSelf.currentElement?.title = element.title
-                    aSelf.currentElement?.details = element.details
-                    aSelf.prepareCollectionViewDataAndLayout()
+                    aSelf.currentElement?.title = editingElement.title
+                    aSelf.currentElement?.details = editingElement.details
+                    aSelf.collectionDataSource?.handledElement = aSelf.currentElement
+                    aSelf.collectionView.reloadData()
                 }
                 else
                 {
@@ -639,53 +661,65 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
         })
         
-        let passWhomIDs = element.passWhomIDs
-        if !passWhomIDs.isEmpty
+        
+        
+        let newPassWhomIDs = editingElement.passWhomIDs
+        let existingPassWhonIDs = self.currentElement!.passWhomIDs
+        
+        if newPassWhomIDs.isEmpty && existingPassWhonIDs.isEmpty
         {
-            if let existingPassWhonIDs = self.currentElement?.passWhomIDs
-            {
-                let existingSet = Set(existingPassWhonIDs)
-                let editedPassWhomIDs = Set(passWhomIDs)
+            return
+        }
+        
+        //prepare sets for later use
+        var newIDsSet = Set<Int>()
+        for aNumber in newPassWhomIDs
+        {
+            newIDsSet.insert(aNumber.integerValue)
+        }
+        
+        var existingIDsSet = Set<Int>()
+        for aNumber in existingPassWhonIDs
+        {
+            existingIDsSet.insert(aNumber.integerValue)
+        }
+        
+        if existingPassWhonIDs.isEmpty && !newPassWhomIDs.isEmpty
+        {
+            // add contacts to element
+            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
                 
-                let exclusiveSet = existingSet.exclusiveOr(editedPassWhomIDs)
-                self.currentElement?.passWhomIDs = Array(exclusiveSet)
-            }
-            else
+            })
+        }
+        else if !existingPassWhonIDs.isEmpty && newPassWhomIDs.isEmpty
+        {
+            //remove all contacts from element
+            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
+                println("ContactIDs removed: \n\(succeededIDs)\n failed to remove:\(failedIDs)")
+            })
+        }
+        else
+        {
+            let allContactIDsSet = existingIDsSet.union(newIDsSet)
+            let contactIDsToRemoveSet = allContactIDsSet.subtract(newIDsSet)
+            
+            if !contactIDsToRemoveSet.isEmpty
             {
-                if let currentElementIDnumber = self.currentElement?.elementId
-                {
-                    let currentElementID = currentElementIDnumber.integerValue
-                    var intsArray = [Int]()
-                    for number in passWhomIDs
-                    {
-                        intsArray.append(number.integerValue)
-                    }
+                //remove all contacts from element
+                DataSource.sharedInstance.removeSeveralContacts(contactIDsToRemoveSet, fromElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
                     
-                    DataSource.sharedInstance.addSeveralContacts(intsArray, toElement: currentElementID, completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                        
-                        if let weakSelf = self
-                        {
-                            if succeededIDs.count == passWhomIDs.count
-                            {
-                                
-                                //weakSelf.currentElement?.passWhomIDs = succeededIDs
-                                //commented because theese IDs are already set in "addSeveralContacts"  success method
-                                println("PAssed IDS: \(passWhomIDs) to element")
-                            }
-                            else
-                            {
-                                weakSelf.showAlertWithTitle("Error", message: "Could not assign some contacts to element&", cancelButtonTitle: "Close")
-                            }
-                        }
-                    })
-                }
-                else
-                {
-                    println("  -> Warning >> No Current Element Found....")
-                }
-              
+                })
+            }
+            
+            if !newIDsSet.isEmpty && newIDsSet.isDisjointWith(existingIDsSet)
+            {
+                // add contacts to element
+                DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
+                    
+                })
             }
         }
+        
     }
     
     func handleDeletingCurrentElement()
@@ -789,7 +823,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: AttachPickingDelegate
     func mediaPicker(picker:AnyObject, didPickMediaToAttach mediaFile:MediaFile)
     {
-        
         if picker is ImagePickingViewController
         {
             picker.dismissViewControllerAnimated(true, completion: nil)
