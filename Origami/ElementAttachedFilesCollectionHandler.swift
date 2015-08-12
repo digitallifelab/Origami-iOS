@@ -132,5 +132,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
         self.attachTapDelegate?.attachedFileTapped(attachedItems[indexPath.item])
     }
     
+    
+    
 
 }

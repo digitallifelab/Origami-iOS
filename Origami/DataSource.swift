@@ -31,7 +31,7 @@ import ImageIO
         self.dataCache.countLimit = 50
         
         self.databaseHandler = DatabaseHandler(completionCallBack: {[weak self] () -> Void in
-            println("Finished initializing CoreData handler in AppDelegate.");
+            println("Finished initializing CoreData handler in DataSource.");
         })
     }
     
