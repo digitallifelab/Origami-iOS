@@ -47,7 +47,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         
-//        queryAttachesPreviewData()
         if let ourElement = self.currentElement
         {
             DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
@@ -78,7 +77,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     override func viewWillAppear(animated: Bool)
     {
         prepareCollectionViewDataAndLayout()
-        queryAttachesPreviewData()
+        //queryAttachesPreviewData()
+        queryAttachesDataAndShowAttachesCellOnCompletion()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -133,6 +133,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         if countAttaches != countPreviews
                         {
                             println(" starting to load missing attach file datas...")
+                            assert(false, "load missing attaches")
                         }
                         else
                         {
@@ -143,14 +144,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                 for var i = 0; i < countAttaches; i++
                                 {
                                     let lvAttachFile = attaches[i]
-                                    let lvAttachData = previewImageDatas[i]
-                                    
-                                    var lvMediaFile = MediaFile()
-                                    lvMediaFile.data = lvAttachData
-                                    lvMediaFile.name = lvAttachFile.fileName ?? ""
-                                    lvMediaFile.type = .Image
-                                    
-                                    attachDataHolder[lvAttachFile] = lvMediaFile
+                                    let lvAttachDataDict = previewImageDatas[i]
+                                    if let fileData = lvAttachDataDict[lvAttachFile]
+                                    {
+                                        var lvMediaFile = MediaFile()
+                                        lvMediaFile.data = fileData
+                                        lvMediaFile.name = lvAttachFile.fileName ?? ""
+                                        lvMediaFile.type = .Image
+                                        attachDataHolder[lvAttachFile] = lvMediaFile
+                                    }
                                 }
                                 
                                 let mediaCount = attachDataHolder.count
@@ -208,7 +210,57 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
             else
             {
-                //println("Loaded No Attaches for current element")
+#if DEBUG
+                println("Loaded No Attaches for current element")
+#endif
+             }
+        })
+    }
+    
+    func queryAttachesDataAndShowAttachesCellOnCompletion()
+    {
+        DataSource.sharedInstance.loadAttachesForElement(self.currentElement!, completion: { [weak self](attaches) -> () in
+            if let arrayOfAttaches = attaches
+            {
+                if !arrayOfAttaches.isEmpty
+                {
+                    if let weakSelf = self
+                    {
+                        println("\n--> recieved \(arrayOfAttaches.count) attaches for current element\n")
+                        if let existingAttachesHandler = weakSelf.collectionDataSource?.getElementAttachesHandler()
+                        {
+                            if let attachesCellPath = weakSelf.collectionDataSource?.indexPathForAttachesCell()
+                            {
+                                weakSelf.collectionView.reloadItemsAtIndexPaths([attachesCellPath])
+                            }
+                            return
+                        }
+                        var attachesHandler = ElementAttachedFilesCollectionHandler(items: arrayOfAttaches)
+                        weakSelf.collectionDataSource?.attachesHandler = attachesHandler
+                        weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                        weakSelf.collectionView.dataSource = weakSelf.collectionDataSource
+                        weakSelf.collectionView.delegate = weakSelf.collectionDataSource
+                        weakSelf.collectionView.reloadData()
+                        
+                        if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
+                        {
+                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                             weakSelf.collectionView.reloadData()
+                        }
+                        else
+                        {
+                            println(" ERROR . \nCould not generate new layout for loaded attaches.")
+                        }
+                    }
+                }
+                else
+                {
+                    println("\n-->Loaded Empty Attaches array for current element\n")
+                }
+            }
+            else
+            {
+                println("\n-->Loaded No Attaches for current element\n")
             }
         })
     }

@@ -81,9 +81,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 if let wSelf = self
                 {
                     wSelf.loadingAllElementsInProgress = false
-                    #if DEBUG
+                   // #if DEBUG
                     wSelf.showAlertWithTitle("Failed", message: " this is a non production error message. \n Did not load Elements for dashboard.", cancelButtonTitle: "Ok")
-                    #endif
+                    //#endif
                 }
             }
         }

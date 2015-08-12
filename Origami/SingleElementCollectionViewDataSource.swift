@@ -526,6 +526,25 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         return false
     }
     
+    func indexPathForAttachesCell() -> NSIndexPath?
+    {
+        if let options = currentCellsOptions
+        {
+            let orderedOptions = options.orderedOptions
+            var indexPath:NSIndexPath?
+            for var i = 0; i < orderedOptions.count; i++
+            {
+                let currentCellType = orderedOptions[i]
+                if currentCellType == ElementCellType.Attaches
+                {
+                    indexPath = NSIndexPath(forItem: i, inSection: 0)
+                    break
+                }
+            }
+            return indexPath
+        }
+        return nil
+    }
     
     //MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)

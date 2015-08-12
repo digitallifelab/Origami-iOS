@@ -17,7 +17,7 @@ class ElementDashboardAttachmentCell: UITableViewCell {
             //collectionView.layer.borderWidth = 1.0
             collectionView.delegate = collectionHandler
             collectionView.dataSource = collectionHandler
-            
+            collectionHandler?.collectionView = self.collectionView
         }
     }
     

@@ -1058,14 +1058,14 @@ import ImageIO
         fileHandler.eraseFileNamed(attach.fileName, completion: nil)
     }
     
-    func getSnapshotsArrayForAttaches(attaches:[AttachFile]) -> [NSData]?
+    func getSnapshotsArrayForAttaches(attaches:[AttachFile]) -> [[AttachFile:NSData]]?
     {
         if attaches.isEmpty
         {
             return nil
         }
         
-        var toReturnArray = [NSData]()
+        var toReturnArray = [[AttachFile:NSData]]()
         for anAttach in attaches
         {
             if let existingSnapshot = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(anAttach)
@@ -1084,16 +1084,19 @@ import ImageIO
         return toReturnArray
     }
     
-    func getSnapshotImageDataForAttachFile(file:AttachFile) -> NSData?
+    func getSnapshotImageDataForAttachFile(file:AttachFile) -> [AttachFile:NSData]?
     {
         if let cachedData = DataSource.sharedInstance.getAttachFileDataFromCache(file)
         {
-            return cachedData
+            return [file:cachedData]
         }
         else
         {
-            var fileSystemData = DataSource.sharedInstance.getAttachFileDataFromFileSystem(file)
-            return fileSystemData
+            if let fileSystemData = DataSource.sharedInstance.getAttachFileDataFromFileSystem(file)
+            {
+                return [file:fileSystemData]
+            }
+            return nil
         }
     }
     

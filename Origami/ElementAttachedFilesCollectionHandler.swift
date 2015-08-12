@@ -75,18 +75,26 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             
             cell.titleLabel.text = attachFile.fileName
             cell.attachIcon.image = noImageIcon
-           
-            if attachData.isEmpty
-            {
-                return
-            }
+            
             if let mediaFile = attachData[attachFile.attachID!]
             {
                 switch mediaFile.type!
                 {
                 case .Image:
-                    let attachImage = UIImage(data: mediaFile.data) ?? noImageIcon
-                    cell.attachIcon.image = attachImage
+                    if let attachImage = UIImage(data: mediaFile.data)
+                    {
+                        cell.attachIcon.image = attachImage
+                    }
+                    else if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attachFile)
+                    {
+                        var lvMediaFile = MediaFile()
+                        lvMediaFile.data = filePreviewData[attachFile]! // Attention! assigning small image data to MediaFile, not full size image data. !
+                        lvMediaFile.name = attachFile.fileName!
+                        lvMediaFile.type = .Image
+                        
+                        attachData[attachFile.attachID!] = lvMediaFile
+                        cell.attachIcon.image = UIImage(data: lvMediaFile.data)
+                    }
                 case .Document:
                     cell.attachIcon.image = attachIconDocument
                 case .Sound:
@@ -95,7 +103,54 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                     cell.attachIcon.image = attachIconVideo
                 }
             }
+            else
+            {
+                self.loadAttachFileDataForAttachFile(attachFile, atIndexPath: indexPath, completion: {[weak self] (data) -> () in
+                    if let aSelf = self, previewData = data
+                    {
+                        aSelf.collectionView?.reloadItemsAtIndexPaths([indexPath])
+                    }
+                })
+            }
         }
+    }
+    
+    private func loadAttachFileDataForAttachFile(attach:AttachFile, atIndexPath indexPath:NSIndexPath,
+        completion completionBlock:((data:NSData?)->())?)
+    {
+        DataSource.sharedInstance.loadAttachFileDataForAttaches([attach], completion: { [weak self] () -> () in
+            let backgroundQueue = dispatch_queue_create("attached file data queue", DISPATCH_QUEUE_SERIAL)
+            
+            dispatch_async(backgroundQueue, {[weak self] () -> Void in
+                if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attach)
+                {
+                    var lvMediaFile = MediaFile()
+                    lvMediaFile.data = filePreviewData[attach]! // Attention! assigning small image data to MediaFile, not full size image data. !
+                    lvMediaFile.name = attach.fileName!
+                    lvMediaFile.type = .Image
+                    if let weakSelf = self, compBlock = completionBlock
+                    {
+                        weakSelf.attachData[attach.attachID!] = lvMediaFile
+                        
+                        dispatch_async(dispatch_get_main_queue(), { ()->() in
+                                
+                            compBlock(data: lvMediaFile.data)
+                        })
+                    }
+                    
+                }
+                else
+                {
+                    if let weakSelf = self, compBlock = completionBlock
+                    {
+                        dispatch_async(dispatch_get_main_queue(), { ()->() in
+                            
+                            compBlock(data: nil)
+                        })
+                    }
+                }
+            })
+        })
     }
     
     func reloadCollectionWithData(newData:[AttachFile:MediaFile])
