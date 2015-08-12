@@ -30,7 +30,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
                 //contactIDsToPass = Set(passIDs)
             }
-            println("Will pass to contact ids: \n \(contactIDsToPass)")
+            //println("Will pass to contact ids: \n \(contactIDsToPass)")
             table.reloadData()
         }
     }

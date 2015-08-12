@@ -211,7 +211,7 @@ class ServerRequester: NSObject
     {
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
-            var requestError = NSError()
+            var requestError:NSError?
             NSOperationQueue().addOperationWithBlock({ () -> Void in
                 let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
                 let elementDict = element.toDictionary()
@@ -234,17 +234,22 @@ class ServerRequester: NSObject
                         
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
-                        let responseString = operation.responseString
-                        if responseString.isEmpty
+                        if let responseString = operation.responseString
                         {
-                            requestError = error
+                            if responseString.isEmpty
+                            {
+                                requestError = error
+                            }
+                            else
+                            {
+                                requestError = NSError(domain: "ElementEditingError", code: -1002, userInfo: [NSLocalizedDescriptionKey:responseString])
+                            }
+                            completonClosure(success: false, error: requestError)
                         }
                         else
                         {
-                            requestError = NSError(domain: "ElementEditingError", code: -1002, userInfo: [NSLocalizedDescriptionKey:responseString])
-                            
-                        }
-                       completonClosure(success: false, error: requestError)
+                            completonClosure(success: false, error: error)
+                        }                        
                 })
                 
                 editRequestOperation.start()

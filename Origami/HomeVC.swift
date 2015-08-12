@@ -69,7 +69,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     
                     if let wSelf = self
                     {
-                        println(" \(wSelf) Loaded elements")
+                        //println(" \(wSelf) Loaded elements")
                         wSelf.loadingAllElementsInProgress = false
                         wSelf.reloadDashboardView()
                     }
@@ -233,8 +233,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                 
                                 let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
                                 
-                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
-                                    
+//                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
+                                
                                     aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
                                     aSelf.collectionSource!.elementSelectionDelegate = aSelf
                                     
@@ -243,12 +243,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard.reloadData()
                                     aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
-                                }, completion: { (finished) -> Void in
+//                                }, completion: { (finished) -> Void in
                                     if shouldReloadCollection
                                     {
                                         aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
                                     }
-                                })
+//                                })
                             }
                         }
                         else

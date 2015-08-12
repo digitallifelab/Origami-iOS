@@ -361,6 +361,9 @@ class Element:NSObject
         }
         if let type = info["TypeId"] as? NSNumber
         {
+//#if DEBUG
+            println("Element Current Type Id: \(type)")
+//#endif
             self.typeId = type
         }
         if let finish = info["FinishState"] as? NSNumber

@@ -56,21 +56,12 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             //self.displayMode = .Night
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
-            // UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            
-            //self.tabBarController?.tabBar.tintColor = kWhiteColor
-            //self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
         }
         else
         {
             //self.displayMode = .Day
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
-            //UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            
-            //self.tabBarController?.tabBar.tintColor = kWhiteColor
-            //self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
-            
         }
         
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
@@ -81,8 +72,6 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     }
     
     //MARK: UIImagePickerControllerDelegate
-
-    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         
         var selectedImage:UIImage = UIImage()

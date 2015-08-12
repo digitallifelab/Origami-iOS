@@ -188,7 +188,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 titleCellFromDataSource.labelTitle.sizeToFit()
                 titleCellFromDataSource.setNeedsDisplay()
                 
-                println("\n->Current title to calculate: \(titleCellFromDataSource.labelTitle.text ) \n")
+                //println("\n->Current title to calculate: \(titleCellFromDataSource.labelTitle.text ) \n")
                 var size = titleCellFromDataSource.systemLayoutSizeFittingSize(titleFrame.size, withHorizontalFittingPriority: 1000.0, verticalFittingPriority: 50.0)
                 //
                 if aDataSource.titleCellMode == .Title
@@ -385,7 +385,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         let lastAttribute = cellLayoutAttributes[lastIndexPath]
         
         self.sizeOfContent = CGSizeMake(CGRectGetMaxX(lastAttribute!.frame), CGRectGetMaxY(lastAttribute!.frame) + self.minimumLineSpacing * 2)
-        println("self.collectionViewContentSize()  should return \(sizeOfContent)")
+        //println("self.collectionViewContentSize()  should return \(sizeOfContent)")
     }
     
     private func checkCurrentCellOffset(offset:CGFloat, frame:CGRect) -> CGFloat

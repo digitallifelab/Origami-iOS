@@ -372,7 +372,7 @@ import ImageIO
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     if let completionBlock = completionClosure
                     {
-                        println(" Finished sorting last 3 messages for HomeScreen.")
+                        //println(" Finished sorting last 3 messages for HomeScreen.")
                         completionBlock(messages: lastThreeItems) //return result
                     }
                 })
@@ -383,7 +383,7 @@ import ImageIO
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     if let completionBlock = completionClosure
                     {
-                        println(" Finished sorting last 3 messages for HomeScreen.")
+                        //println(" Finished sorting last 3 messages for HomeScreen.")
                         completionBlock(messages: unsortedArray) //return result
                     }
                 })
@@ -1555,7 +1555,7 @@ import ImageIO
             if let existingAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), avatarImage = UIImage(data: existingAvatarData)
             {
                 complete(image: avatarImage)
-                println(" got avatar from RAM")
+                //println(" got avatar from RAM")
                 return
             }
             

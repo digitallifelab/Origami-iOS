@@ -26,7 +26,7 @@ import UIKit
         self.favourites = favourites
         self.other = other
         self.signals = signals
-        println("Initialized with \(self.signals?.count) signals");
+        println("---> HomeCollectionHandler -  Initialized with \(self.signals?.count) signals");
     }
 
     

@@ -208,7 +208,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
             else
             {
-                println("Loaded No Attaches for current element")
+                //println("Loaded No Attaches for current element")
             }
         })
     }
@@ -402,7 +402,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementSignalToggled()
     {
-        println("Signal element toggled.")
+        //println("Signal element toggled.")
         
         if let theElement = currentElement
         {
@@ -472,7 +472,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementDeletePressed()
     {
-        println("Delete element tapped.")
+        //println("Delete element tapped.")
         handleDeletingCurrentElement()
     }
     
@@ -687,15 +687,24 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         if existingPassWhonIDs.isEmpty && !newPassWhomIDs.isEmpty
         {
             // add contacts to element
-            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
+            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+                println("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
+                if let aSelf = self
+                {
+                    aSelf.currentElement?.passWhomIDs = Array(newPassWhomIDs)
+                }
                 
             })
         }
         else if !existingPassWhonIDs.isEmpty && newPassWhomIDs.isEmpty
         {
             //remove all contacts from element
-            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
-                println("ContactIDs removed: \n\(succeededIDs)\n failed to remove:\(failedIDs)")
+            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!.integerValue, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+                println("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
+                if let aSelf = self
+                {
+                    aSelf.currentElement?.passWhomIDs.removeAll(keepCapacity: false)
+                }
             })
         }
         else
@@ -706,16 +715,46 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             if !contactIDsToRemoveSet.isEmpty
             {
                 //remove all contacts from element
-                DataSource.sharedInstance.removeSeveralContacts(contactIDsToRemoveSet, fromElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
-                    
+                DataSource.sharedInstance.removeSeveralContacts(contactIDsToRemoveSet,
+                                                                        fromElement: editingElement.elementId!.integerValue,
+                                                                         completion: { [weak self](succeededIDs, failedIDs) -> () in
+                                                                            
+                    println("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
+                                                                            
+                    if let aSelf = self
+                    {
+                        var numbersSet = Set<NSNumber>()
+                        for anInt in contactIDsToRemoveSet
+                        {
+                            numbersSet.insert(NSNumber(integer: anInt))
+                        }
+                        let newSet = Set(existingPassWhonIDs).subtract(numbersSet)
+                        
+                        aSelf.currentElement?.passWhomIDs = Array(newSet)
+                    }
                 })
             }
             
             if !newIDsSet.isEmpty && newIDsSet.isDisjointWith(existingIDsSet)
             {
                 // add contacts to element
-                DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: { (succeededIDs, failedIDs) -> () in
+                DataSource.sharedInstance.addSeveralContacts(newIDsSet,
+                                                            toElement: editingElement.elementId!.integerValue,
+                                                           completion: {[weak self] (succeededIDs, failedIDs) -> () in
+                        
+                    println("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                     
+                    if let aSelf = self
+                    {
+                        var numbersSet = Set<NSNumber>()
+                        for anInt in newIDsSet
+                        {
+                            numbersSet.insert(NSNumber(integer: anInt))
+                        }
+                        let newSet = Set(existingPassWhonIDs).union(numbersSet)
+                        
+                        aSelf.currentElement?.passWhomIDs = Array(newSet)
+                    }
                 })
             }
         }

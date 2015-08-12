@@ -11,6 +11,7 @@ import UIKit
 class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
 
     @IBOutlet var imageScrollView:UIScrollView!
+    @IBOutlet var navigationBackgroundView:UIView!
     
     var imageToDisplay:UIImage?
     var imageHolder:UIImageView?
@@ -29,6 +30,9 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         doubleTapRecognizer?.numberOfTouchesRequired = 1
         imageScrollView.addGestureRecognizer(doubleTapRecognizer!)
         imageScrollView.delegate = self
+        
+        setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,6 +62,30 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     }
     override func viewDidLayoutSubviews() {
         addImageHolder()
+    }
+    
+    
+    //MARK: Appearance
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        if nightModeOn
+        {
+            //self.displayMode = .Night
+            self.view.backgroundColor = UIColor.blackColor()
+            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            //self.displayMode = .Day
+            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+        }
+        
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
     }
     
     @IBAction func closeBarButtonTapped(sender:UIBarButtonItem)
