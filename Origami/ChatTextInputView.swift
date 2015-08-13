@@ -33,7 +33,12 @@ class ChatTextInputView: UIView, UITextViewDelegate {
     {
         if clear
         {
-            textView.text = nil
+            let attributes = [NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] as [NSObject:AnyObject]
+            let attributedText = NSAttributedString(string: "Tap to start typing", attributes:attributes)
+            
+            textView.attributedText = attributedText
+            
+            
         }
         textView.resignFirstResponder()
     }

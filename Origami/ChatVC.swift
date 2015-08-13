@@ -54,7 +54,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         reloadChatTable()
         
-        //scrollToLastMessage()
+        bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
+        
     }
     
     override func viewWillAppear(animated: Bool) {

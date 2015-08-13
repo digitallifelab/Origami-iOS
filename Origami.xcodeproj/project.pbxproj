@@ -578,18 +578,10 @@
 			isa = PBXGroup;
 			children = (
 				F88563FA1B31C102005D223E /* ChatVC.swift */,
+				F88563FD1B31C48B005D223E /* ChatTextInputView.swift */,
 				F88564001B31CB82005D223E /* TableCells */,
-				F88563FF1B31CB79005D223E /* TextInputView */,
 			);
 			name = Chat;
-			sourceTree = "<group>";
-		};
-		F88563FF1B31CB79005D223E /* TextInputView */ = {
-			isa = PBXGroup;
-			children = (
-				F88563FD1B31C48B005D223E /* ChatTextInputView.swift */,
-			);
-			name = TextInputView;
 			sourceTree = "<group>";
 		};
 		F88564001B31CB82005D223E /* TableCells */ = {
