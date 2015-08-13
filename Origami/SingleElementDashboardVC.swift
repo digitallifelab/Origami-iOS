@@ -551,16 +551,35 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func elementCheckMarkPressed()
     {
         println("CheckMark tapped.")
+        let anOptionsConverter = ElementOptionsConverter()
+        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
+        var editingElement = Element(info: self.currentElement!.toDictionary())
+        editingElement.typeId = NSNumber(integer: newOptions)
+        
+        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        
     }
     
     func elementIdeaPressed()
     {
         println("Idea tapped.")
+        let anOptionsConverter = ElementOptionsConverter()
+        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
+        var editingElement = Element(info: self.currentElement!.toDictionary())
+        editingElement.typeId = NSNumber(integer: newOptions)
+        
+        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     
     func elementSolutionPressed()
     {
-        println("Solution tapped.")
+        println("Decision tapped.")
+        let anOptionsConverter = ElementOptionsConverter()
+        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 3)
+        var editingElement = Element(info: self.currentElement!.toDictionary())
+        editingElement.typeId = NSNumber(integer: newOptions)
+        
+        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     func toggleMoreDetails(notification:NSNotification?)
     {
@@ -712,6 +731,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
             }
         })
+    }
+    
+    func handleEditingElementOptions(element:Element, newOptions:NSNumber)
+    {
+        DataSource.sharedInstance.editElement(element, completionClosure: {[weak self] (edited) -> () in
+            if let aSelf = self
+            {
+                if edited
+                {
+                    aSelf.currentElement?.typeId = newOptions //the options target
+                    aSelf.collectionDataSource?.handledElement = aSelf.currentElement
+                    aSelf.collectionView.reloadData()
+                }
+                else
+                {
+                    aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
+                }
+            }
+            })
     }
     
     func handleEditingElement(editingElement:Element)

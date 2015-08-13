@@ -15,9 +15,16 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     @IBOutlet var messagesTable:UITableView!
     var currentMessages:[Message]?
     
-    //    override func awakeFromNib() {
-    //        self.layer.borderWidth = 1.0
-    //    }
+        override func awakeFromNib() {
+            NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
+            
+            if currentMessages == nil
+            {
+                currentMessages = [Message]()
+            }
+            
+            getLastMessages()
+        }
     override func prepareForReuse()
     {
         

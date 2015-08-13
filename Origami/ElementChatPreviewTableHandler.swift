@@ -15,7 +15,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     lazy var messageObjects:[Message] = [Message]()
     let noAvatarImage = UIImage(named: "icon-No-Avatar")
-    let imageFilterer = ImageFilter()
+    //var imageFilterer:ImageFilter? = ImageFilter()
     var contactsForLastMessages:[Contact]?
     
     override init()
@@ -74,12 +74,12 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         
         // nest two filtering method calls are test stuff
         //1st
-        //imageFilterer.filterImageBlackAndWhiteInBackGround(UIImage(named: "testImageToFilter")!, completeInMainQueue: true) { [weak chatCell](image) -> () in
-        //    if let chatWeakCell = chatCell
-        //    {
-        //        chatWeakCell.avatarView.image = image
-        //    }
-        //}
+//        imageFilterer.filterImageBlackAndWhiteInBackGround(UIImage(named: "testImageToFilter")!, completeInMainQueue: true) { [weak chatCell](image) -> () in
+//            if let chatWeakCell = chatCell
+//            {
+//                chatWeakCell.avatarView.image = image
+//            }
+//        }
         //2nd
         //chatCell.avatarView.image = ImageFilter().filterImageBlackAndWhite(UIImage(named: "testImageToFilter")!)
         

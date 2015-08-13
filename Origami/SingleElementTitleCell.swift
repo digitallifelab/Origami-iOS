@@ -38,6 +38,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
         }
     }
+    var optionsConverter = ElementOptionsConverter()
     
     var handledElement:Element?
     var buttonTrueColor = UIColor.whiteColor()
@@ -147,6 +148,9 @@ class SingleElementTitleCell: UICollectionViewCell {
         }
         
         setupSignalButton()
+        setupIdeaButton()
+        setupCheckMarkButton()
+        setupDecisionButton()
     }
     
     private func setupSignalButton()
@@ -156,7 +160,28 @@ class SingleElementTitleCell: UICollectionViewCell {
             signalButton.tintColor = (currentElement.isSignal.boolValue) ? buttonTrueColor : buttonFalseColor
         }
     }
+    private func setupIdeaButton()
+    {
+        if let currentElement = self.handledElement, ideaButton = self.viewWithTag(ActionButtonCellType.Idea.rawValue)
+        {
+            ideaButton.tintColor = (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue)) ? buttonTrueColor : buttonFalseColor
+        }
     
+    }
+    private func setupCheckMarkButton()
+    {
+        if let currentElement = self.handledElement, checkmarkButton = self.viewWithTag(ActionButtonCellType.CheckMark.rawValue)
+        {
+            checkmarkButton.tintColor = (optionsConverter.isOptionEnabled(ElementOptions.Done, forCurrentOptions: currentElement.typeId.integerValue)) ? buttonTrueColor : buttonFalseColor
+        }
+    }
+    private func setupDecisionButton()
+    {
+        if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Solution.rawValue)
+        {
+            decisionButton.tintColor = (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue)) ? buttonTrueColor : buttonFalseColor
+        }
+    }
     func actionButtonTapped(sender:AnyObject?)
     {
         if let button = sender as? UIButton

@@ -30,9 +30,9 @@ import ImageIO
         
         self.dataCache.countLimit = 50
         
-        self.databaseHandler = DatabaseHandler(completionCallBack: {[weak self] () -> Void in
-            println("Finished initializing CoreData handler in DataSource.");
-        })
+//        self.databaseHandler = DatabaseHandler(completionCallBack: {[weak self] () -> Void in
+//            println("Finished initializing CoreData handler in DataSource.");
+//        })
     }
     
     //singletone
@@ -701,7 +701,7 @@ import ImageIO
                         
                         // load connected userIDs for element
                         DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion: { (finished) -> () in
-                            println(" loadPassWhomIdsForElement completion block.")
+                            //println(" loadPassWhomIdsForElement completion block.")
                         })
                     }
                 })

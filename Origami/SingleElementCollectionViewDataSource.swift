@@ -396,7 +396,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
                     
                 }
-                println("\n-----------returning attach file collection holder cell-----------\n")
+                //println("\n-----------returning attach file collection holder cell-----------\n")
                 return attachesHolderCell
             }
             else

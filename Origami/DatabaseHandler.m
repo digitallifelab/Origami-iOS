@@ -375,12 +375,38 @@
             continue;
         }
         
-        DBMessage *message = [NSEntityDescription insertNewObjectForEntityForName:@"DBMessage" inManagedObjectContext:self.bgQueueContext];
-        message.messageId = lvMessage.messageId;
-        message.textBody = lvMessage.textBody;
-        message.dateCreated = lvMessage.dateCreated;
-        message.type = lvMessage.typeId;
-        message.isNew = lvMessage.isNew;
+        DBMessage *message;
+        NSArray *existingMessages = [self getMessagesByMessageId:lvMessage.messageId];
+        if (existingMessages != nil)
+        {
+            if (existingMessages.count > 1)
+            {
+                NSMutableSet *duplicateDBMessagesSet = [NSMutableSet setWithCapacity:existingMessages.count - 1];
+                for (NSInteger i = 1; i < existingMessages.count; i++)
+                {
+                    DBMessage *duplicatedMessage = [existingMessages objectAtIndex:i];
+                    [duplicateDBMessagesSet addObject:duplicatedMessage];
+                }
+                [self deleteMessages:duplicateDBMessagesSet];
+            }
+            
+            message = existingMessages.firstObject;
+            
+        }
+        else
+        {
+            message = [NSEntityDescription insertNewObjectForEntityForName:@"DBMessage" inManagedObjectContext:self.bgQueueContext];
+            message.messageId = lvMessage.messageId;
+            message.textBody = lvMessage.textBody;
+            message.dateCreated = lvMessage.dateCreated;
+            message.type = lvMessage.typeId;
+            message.isNew = lvMessage.isNew;
+        }
+        
+        if (message == nil)
+        {
+            NSAssert(false, @"Detected trouble within CoreData DBMessage object");
+        }
         
         // try to find contacts and elements for current message, or setup theese values later.
         
@@ -409,6 +435,30 @@
 -(void)queryMessagesForElement: (DBElement *)targetElement completion: (MessagesBlock)completion
 {
     
+}
+
+-(NSArray*) getMessagesByMessageId:(NSNumber *)messageId
+{
+    NSPredicate *messageByIdPredicate = [NSPredicate predicateWithFormat:@"messageId == %@", messageId];
+    NSFetchRequest *messagesRequest = [[NSFetchRequest alloc] initWithEntityName:@"DBMessage"];
+    messagesRequest.predicate = messageByIdPredicate;
+    NSError *requestError;
+    NSArray *resultMessages = [self.bgQueueContext executeFetchRequest:messagesRequest error:&requestError];
+    
+    if (resultMessages.count > 0)
+    {
+        return resultMessages;
+    }
+    return nil;
+}
+
+-(void) deleteMessages:(NSSet *)dbMessages
+{
+    for (DBMessage *message in dbMessages)
+    {
+        [self.bgQueueContext deleteObject:message];
+    }
+    [self savePrivateContext];
 }
 
 #pragma mark Attaches

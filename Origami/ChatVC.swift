@@ -167,8 +167,23 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         }
     }
     
-    func chatInputView(inputView:ChatTextInputView, attachButtonTapped button:UIButton) {
-        
+    func chatInputView(inputView:ChatTextInputView, attachButtonTapped button:UIButton)
+    {
+        if let viewControllers = self.navigationController?.viewControllers
+        {
+            if viewControllers.count > 1
+            {
+                if let elementViewController = viewControllers[viewControllers.count - 2] as? SingleElementDashboardVC
+                {
+                    if let attachImagePickerVC = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePickerVC") as? ImagePickingViewController
+                    {
+                        attachImagePickerVC.attachPickingDelegate = elementViewController
+                        
+                        self.presentViewController(attachImagePickerVC, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
     }
     
     

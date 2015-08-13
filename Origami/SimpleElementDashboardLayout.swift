@@ -301,7 +301,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 
                 offsetY += attachesFrame.size.height;// println("Moved Down after ATTACHes cell")
                 
-                println("\n-----------Layout for attach file collection holder cell-----------\n")
+                //println("\n-----------Layout for attach file collection holder cell-----------\n")
             }
             
 //            if privateStruct.buttonsCell
