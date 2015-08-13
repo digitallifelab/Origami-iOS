@@ -15,13 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     var window: UIWindow?
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
-//        NSUserDefaults.standardUserDefaults().setObject("yavorin@mailinator.com", forKey: loginNameKey)
-//        NSUserDefaults.standardUserDefaults().setObject("12345", forKey: passwordKey)
-//        NSUserDefaults.standardUserDefaults().synchronize()
-        
-        //UITabBar.appearance().backgroundColor = UIColor.clearColor()
-        //UITabBar.appearance().backgroundImage = UIImage(named: "HomeTabBarBack")
+
         UITabBar.appearance().backgroundImage = UIImage()
         
         return true

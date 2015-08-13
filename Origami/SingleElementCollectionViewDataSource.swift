@@ -136,14 +136,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return existingHandler
         }
         
-        let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
-        
-        if attaches.isEmpty
+        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
         {
-            return nil//ElementAttachedFilesCollectionHandler()
+            return ElementAttachedFilesCollectionHandler(items: attaches)
         }
+        return nil
         
-        return ElementAttachedFilesCollectionHandler(items: attaches)
     }
     
     func getElementSubordinates() -> [Element]?
@@ -384,20 +382,41 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return detailsCell
             
         case .Attaches:
-            var attachesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementAttachesHolderCell",
-                                                                                            forIndexPath: indexPath) as! SingleElementAttachesCollectionHolderCell
-            if let attachHandler = self.attachesHandler
+            
+            var aCell:AnyObject = collectionView.dequeueReusableCellWithReuseIdentifier("AttachesHolderCell", forIndexPath: indexPath)
+            if let attachesHolderCell = aCell as? SingleElementAttachesCollectionHolderCell
             {
-                attachHandler.attachTapDelegate = self.attachTapDelegate
-                attachesHolderCell.attachesCollectionView.delegate = attachHandler
-                attachesHolderCell.attachesCollectionView.dataSource = attachHandler
-                attachesHandler?.collectionView = attachesHolderCell.attachesCollectionView
-                let aLayout = AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count)
-                attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
-                
+                if let attachHandler = self.attachesHandler
+                {
+                    attachHandler.attachTapDelegate = self.attachTapDelegate
+                    attachesHolderCell.attachesCollectionView.delegate = attachHandler
+                    attachesHolderCell.attachesCollectionView.dataSource = attachHandler
+                    attachesHandler?.collectionView = attachesHolderCell.attachesCollectionView
+                    let aLayout = AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count)
+                    attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
+                    
+                }
+                println("\n-----------returning attach file collection holder cell-----------\n")
+                return attachesHolderCell
             }
-            println("\n-----------returning attach file collection holder cell-----------\n")
-            return attachesHolderCell
+            else
+            {
+                println("\n - ! ERROR: \n SingleElementCollectionViewDataSource Could not dequeue attachesHolder cell.\n Returning default collectionViewCell")
+                
+                var defaultCell = SingleElementAttachesCollectionHolderCell()
+                if let attachHandler = self.attachesHandler
+                {
+                    attachHandler.attachTapDelegate = self.attachTapDelegate
+                    defaultCell.attachesCollectionView.delegate = attachHandler
+                    defaultCell.attachesCollectionView.dataSource = attachHandler
+                    attachesHandler?.collectionView = defaultCell.attachesCollectionView
+                    let aLayout = AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count)
+                    defaultCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
+                    
+                }
+                return defaultCell
+            }
+           
             
         case .Buttons:
             var buttonsHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementButtonsHolderCell", forIndexPath: indexPath) as! SingleElementButtonsCell

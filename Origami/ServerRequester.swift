@@ -679,6 +679,8 @@ class ServerRequester: NSObject
         
         if let userToken = DataSource.sharedInstance.user?.token
         {
+            let attachedFileDataLength = file.data.length
+            println("\n -> attaching \"\(attachedFileDataLength)\" bytes...")
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             let postURLstring = "\(serverURL)" + attachToElementUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(file.name)" + "&token=" + "\(userToken)" as NSString
             let postURL = NSURL(string: postURLstring as String)

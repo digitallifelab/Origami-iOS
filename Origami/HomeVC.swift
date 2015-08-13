@@ -60,7 +60,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
         loadingAllElementsInProgress = true
-        DataSource.sharedInstance.loadAllElements {[weak self] (success, failure) -> () in
+        DataSource.sharedInstance.loadAllElementsInfo {[weak self] (success, failure) -> () in
             if let wSelf = self
             {
                 if success

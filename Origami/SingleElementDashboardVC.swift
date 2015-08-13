@@ -36,14 +36,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
+     
+        println(" ...viewDidLoad....")
         self.fadeViewControllerAnimator = FadeOpaqueAnimator()
         
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         
         configureRightBarButtonItem()
         
-     
+        queryAttachesDataAndShowAttachesCellOnCompletion()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         
@@ -60,13 +61,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     {
                         
                     }
-             
-                    
                 }
             })
         }
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,7 +75,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         prepareCollectionViewDataAndLayout()
         //queryAttachesPreviewData()
-        queryAttachesDataAndShowAttachesCellOnCompletion()
+     
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -219,6 +216,29 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func queryAttachesDataAndShowAttachesCellOnCompletion()
     {
+        if let existingAttaches = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
+        {
+            var attachesHandler = ElementAttachedFilesCollectionHandler(items: existingAttaches)
+            collectionDataSource?.attachesHandler = attachesHandler
+            collectionDataSource?.handledElement = currentElement
+            collectionView.dataSource = collectionDataSource
+            collectionView.delegate = collectionDataSource
+           
+            collectionView.reloadData()
+            
+            if let layout = self.prepareCollectionLayoutForElement(currentElement)
+            {
+                collectionView.setCollectionViewLayout(layout, animated: false)
+                //collectionView.reloadSections(NSIndexSet(index: 0))
+            }
+            else
+            {
+                println(" ERROR . \nCould not generate new layout for loaded attaches.")
+            }
+           
+            return
+        }
+        
         DataSource.sharedInstance.loadAttachesForElement(self.currentElement!, completion: { [weak self](attaches) -> () in
             if let arrayOfAttaches = attaches
             {
@@ -937,9 +957,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         {
                             if let aSelf = self
                             {
-                               // dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5) ), dispatch_get_main_queue(), { () -> Void in
-                                    aSelf.queryAttachesPreviewData()
-                                //})
+                                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5) ), dispatch_get_main_queue(), { () -> Void in
+                                    //aSelf.queryAttachesPreviewData()
+                                    aSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
+                                })
+                                //aSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
                             }
                         }
                     })

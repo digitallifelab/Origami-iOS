@@ -76,6 +76,8 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             cell.titleLabel.text = attachFile.fileName
             cell.attachIcon.image = noImageIcon
             
+            createMediaFileForAttachIfNotExist(attachFile)
+            
             if let mediaFile = attachData[attachFile.attachID!]
             {
                 switch mediaFile.type!
@@ -105,18 +107,39 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             }
             else
             {
-                self.loadAttachFileDataForAttachFile(attachFile, atIndexPath: indexPath, completion: {[weak self] (data) -> () in
-                    if let aSelf = self, previewData = data
+                self.loadAttachFileDataForAttachFile(attachFile, atIndexPath: indexPath, completion: {[weak self] (hasData) -> () in
+                    if let aSelf = self
                     {
-                        aSelf.collectionView?.reloadItemsAtIndexPaths([indexPath])
+                        if hasData == true
+                        {
+                            aSelf.collectionView?.reloadItemsAtIndexPaths([indexPath])
+                        }
                     }
                 })
             }
         }
     }
     
+    func createMediaFileForAttachIfNotExist(attachFile:AttachFile)
+    {
+        if let aMediaFile = attachData[attachFile.attachID!]
+        {
+            return
+        }
+        
+        if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attachFile)
+        {
+            var lvMediaFile = MediaFile()
+            lvMediaFile.data = filePreviewData[attachFile]! // Attention! assigning small image data to MediaFile, not full size image data. !
+            lvMediaFile.name = attachFile.fileName!
+            lvMediaFile.type = .Image
+            
+            attachData[attachFile.attachID!] = lvMediaFile
+        }
+    }
+    
     private func loadAttachFileDataForAttachFile(attach:AttachFile, atIndexPath indexPath:NSIndexPath,
-        completion completionBlock:((data:NSData?)->())?)
+        completion completionBlock:((hasData:Bool)->())?)
     {
         DataSource.sharedInstance.loadAttachFileDataForAttaches([attach], completion: { [weak self] () -> () in
             let backgroundQueue = dispatch_queue_create("attached file data queue", DISPATCH_QUEUE_SERIAL)
@@ -124,19 +147,16 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             dispatch_async(backgroundQueue, {[weak self] () -> Void in
                 if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attach)
                 {
-                    var lvMediaFile = MediaFile()
-                    lvMediaFile.data = filePreviewData[attach]! // Attention! assigning small image data to MediaFile, not full size image data. !
-                    lvMediaFile.name = attach.fileName!
-                    lvMediaFile.type = .Image
-                    if let weakSelf = self, compBlock = completionBlock
+                    if let weakSelf = self
                     {
-                        weakSelf.attachData[attach.attachID!] = lvMediaFile
-                        
-                        dispatch_async(dispatch_get_main_queue(), { ()->() in
-                                
-                            compBlock(data: lvMediaFile.data)
-                        })
+                        weakSelf.createMediaFileForAttachIfNotExist(attach)
                     }
+                        
+                    dispatch_async(dispatch_get_main_queue(), { ()->() in
+                            
+                        completionBlock?(hasData:true)
+                    })
+                    
                     
                 }
                 else
@@ -145,7 +165,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                     {
                         dispatch_async(dispatch_get_main_queue(), { ()->() in
                             
-                            compBlock(data: nil)
+                            compBlock(hasData:false)
                         })
                     }
                 }

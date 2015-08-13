@@ -680,8 +680,8 @@
 				F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */,
 				F8C62DC81B3AF93200324C0B /* ElementDashboardAttachmentCell.swift */,
 				F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */,
-				F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */,
 				F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */,
+				F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */,
 				F8C62DC31B3AC25600324C0B /* AttachesTableHeaderView */,
 			);
 			name = CollectionViewCell;

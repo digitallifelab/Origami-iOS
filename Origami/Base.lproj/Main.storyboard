@@ -987,7 +987,7 @@
                                             <outlet property="messagesTable" destination="GAU-tE-rwI" id="FQ4-ix-RNN"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ElementAttachesHolderCell" id="qZF-hQ-yGa" customClass="SingleElementAttachesCollectionHolderCell" customModule="Origami" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="AttachesHolderCell" id="qZF-hQ-yGa" customClass="SingleElementAttachesCollectionHolderCell" customModule="Origami" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">

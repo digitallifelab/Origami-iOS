@@ -648,7 +648,7 @@ import ImageIO
         })
     }
     
-    func loadAllElements(completion:(success:Bool, failure:NSError?) ->())
+    func loadAllElementsInfo(completion:(success:Bool, failure:NSError?) ->())
     {
         DataSource.sharedInstance.serverRequester.loadAllElements {(result, error) -> () in
             
@@ -674,6 +674,39 @@ import ImageIO
 //                        println("Error while saving ELEMENTS to local database;")
 //                    }
 //                })
+                
+                //start loading ather info in background
+                NSOperationQueue().addOperationWithBlock({ () -> Void in
+                    for anElement in DataSource.sharedInstance.elements
+                    {
+                        // load attach files info
+                        if !anElement.attachIDs.isEmpty
+                        {
+                            DataSource.sharedInstance.loadAttachesForElement(anElement, completion: { (attaches) -> () in
+                                if let existAttaches = attaches
+                                {
+                                    println("\n --> not empty IDS - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
+                                }
+                            })
+                        }
+                        else if anElement.hasAttaches.boolValue
+                        {
+                            DataSource.sharedInstance.loadAttachesForElement(anElement, completion: { (attaches) -> () in
+                                if let existAttaches = attaches
+                                {
+                                    println("\n --> has attaches - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
+                                }
+                            })
+                        }
+                        
+                        // load connected userIDs for element
+                        DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion: { (finished) -> () in
+                            println(" loadPassWhomIdsForElement completion block.")
+                        })
+                    }
+                })
+                
+                
             }
             else
             {
@@ -882,8 +915,7 @@ import ImageIO
     {
 //        if let currentElement = DataSource.sharedInstance.getElementById(NSNumber(integer:elementId))
 //        {
-            let attaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
-            if !attaches.isEmpty
+            if  let attaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
             {
                 for lvAttach in attaches
                 {
@@ -895,33 +927,32 @@ import ImageIO
     }
     
     //MARK: Attaches
-    func getAttachesForElementById(elementId:NSNumber?) -> [AttachFile]
+    func getAttachesForElementById(elementId:NSNumber?) -> [AttachFile]?
     {
-        var foundAttaches = [AttachFile]()
-        
         if elementId == nil
         {
-            return foundAttaches
+            return nil
         }
+        
+        var foundAttaches:[AttachFile]?
         
         if let attaches = DataSource.sharedInstance.attaches[elementId!]
         {
-            foundAttaches += attaches
+            if attaches.isEmpty
+            {
+                return nil
+            }
+            foundAttaches = attaches
+            return foundAttaches
         }
-        return foundAttaches
+        
+        return nil
     }
     
     func loadAttachesForElement(element:Element, completion:attachesArrayClosure)
     {
         if let localElementId = element.elementId
-        {
-            let existingAttachObjects = DataSource.sharedInstance.getAttachesForElementById(localElementId)
-            if !existingAttachObjects.isEmpty
-            {
-                //println("Datasource returning existing attach objects for element:\(element.title!)")
-                completion(existingAttachObjects)
-                return
-            }
+        {            
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
           
             serverRequester.loadAttachesListForElementId(localElementId,

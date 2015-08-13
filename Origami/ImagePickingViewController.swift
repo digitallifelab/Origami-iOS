@@ -124,15 +124,17 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             var fixedImage = image.fixOrientation()
             
             //reduce image size for networking
-            if fixedImage.size.width > 1000.0 || fixedImage.size.height > 1000.0
+            if fixedImage.size.width >= 1000.0 || fixedImage.size.height >= 1000.0
             {
-                let ratio = min(1000.0 / fixedImage.size.width , 1000 / fixedImage.size.height)
+                let ratio = min(600.0 / fixedImage.size.width , 600.0 / fixedImage.size.height)
+                let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
+                let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
                 fixedImage = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
             }
             lvSelectedMedia.type = .Image
             lvSelectedMedia.name = self?.mediaName ?? ""
             lvSelectedMedia.data = UIImageJPEGRepresentation(fixedImage,
-                1.0)
+                0.9)
             
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let aSelf = self
