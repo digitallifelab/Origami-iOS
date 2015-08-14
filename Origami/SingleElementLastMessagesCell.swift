@@ -151,4 +151,10 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             }
         }
     }
+    
+    //MARK: external calls
+    func reloadTable()
+    {
+        self.messagesTable.reloadData()
+    }
 }

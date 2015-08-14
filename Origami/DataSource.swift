@@ -294,7 +294,7 @@ import ImageIO
                 }
                 else
                 {
-                    let reversedArray = existingMessagesForElementId//.reverse()
+                    let reversedArray = existingMessagesForElementId.reverse()
                     for var i = 0; i < validQuantity; i++
                     {
                         let lvMessageToCheck = reversedArray[i]
@@ -331,10 +331,36 @@ import ImageIO
             return nil //[Message]()//empty array
         }
     }
-    func getLastMessagesQuantity()
+    
+    func getChatPreviewMessagesForElementId(elementId:NSNumber) -> [Message]?
     {
-        
+        let messagesQuantity:Int = 3
+        if let existingMessagesForElementId = DataSource.sharedInstance.getAllMessagesForElementId(elementId)
+        {
+            let sorted = existingMessagesForElementId.sorted { (message1, message2) -> Bool in
+                return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
+            }
+            let count = sorted.count
+            if count <= messagesQuantity
+            {
+                return sorted
+            }
+            else
+            {
+                var messagesToReturn = [Message]()
+                for var i = count - 1; i > count - (messagesQuantity + 1); i--
+                {
+                    let lastMessage = sorted[i]
+                    messagesToReturn.insert(lastMessage, atIndex: 0)
+                    //println(" i = \(i)")
+                }
+                
+                return messagesToReturn
+            }
+        }
+        return nil
     }
+    
     func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
     {
         

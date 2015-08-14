@@ -122,7 +122,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementLastMessages() -> [Message]?
     {
-        if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: handledElement?.elementId, lastMessageId: nil)
+        if let currentElement = handledElement, messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(currentElement.elementId!)// DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: handledElement?.elementId, lastMessageId: nil)
         {
             return messages
         }
@@ -364,11 +364,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell",
                                                                                 forIndexPath: indexPath) as! SingleElementLastMessagesCell
             chatCell.displayMode = self.displayMode
-            if let messages = DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: self.handledElement?.elementId, lastMessageId: 0)
+            if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.handledElement!.elementId!)
             {
                 chatCell.messages = messages
             }
             chatCell.cellMessageTapDelegate = self
+            chatCell.reloadTable()
             return chatCell
             
         case .Details:
