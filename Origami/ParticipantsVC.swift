@@ -199,35 +199,35 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 case 0:
                     //unchecked contact from participants
                 DataSource.sharedInstance.removeContact(selectedContact.contactId!.integerValue, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
-                    if self != nil
+                    if let weakSelf = self
                     {
                         if success
                         {
-                            self!.checkedContacts.removeAtIndex(indexPath.row)
-                            self!.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                            weakSelf.checkedContacts.removeAtIndex(indexPath.row)
+                            weakSelf.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                             let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
                             dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                                self!.setUpInitialArrays()
+                                weakSelf.setUpInitialArrays()
                             })
                         }
                         else
                         {
-                            self!.showAlertWithTitle("Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
+                            weakSelf.showAlertWithTitle("Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
                         }
                     }
                 })
                 case 1:
                 DataSource.sharedInstance.addContact(selectedContact.contactId!.integerValue, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
-                    if self != nil
+                    if let weakSelf = self
                     {
                         if success
                         {
-                            self!.uncheckedContacts.removeAtIndex(indexPath.row)
-                            self!.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                            weakSelf.uncheckedContacts.removeAtIndex(indexPath.row)
+                            weakSelf.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                             
                             let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
                             dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                                self!.setUpInitialArrays()
+                                weakSelf.setUpInitialArrays()
                             })
                         }
                         else

@@ -37,8 +37,6 @@ class ChatTextInputView: UIView, UITextViewDelegate {
             let attributedText = NSAttributedString(string: "Tap to start typing", attributes:attributes)
             
             textView.attributedText = attributedText
-            
-            
         }
         textView.resignFirstResponder()
     }
@@ -54,11 +52,11 @@ class ChatTextInputView: UIView, UITextViewDelegate {
             {
                 self.delegate?.chatInputView(self, wantsToChangeToNewSize:lvTestSize)
             }
-            
         }
     }
     
     func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        textView.attributedText = nil
         return true
     }
     

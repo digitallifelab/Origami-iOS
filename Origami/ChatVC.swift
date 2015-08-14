@@ -233,9 +233,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 
             },
                 completion: { [weak self]  (finished) -> () in
-                    if self != nil
+                    if let weakSelf = self
                     {
-                        self!.scrollToLastMessage()
+                        weakSelf.scrollToLastMessage()
                     }
             })
         }
@@ -254,9 +254,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             }
             
             chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
-            //let currentOffset = chatTable.contentOffset
-            //let newOffset = CGPointMake(currentOffset.x, CGFloat(Float(messages.count) * 40.0))
-            //scroll to bottom after delay
         }
     }
     //MARK: Alert
