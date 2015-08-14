@@ -660,6 +660,7 @@ import ImageIO
             if let dbElements = elementsContainerDict as? [String:[DBElement]]
             {
                 completion(elements: dbElements, error: nil)
+                return
             }
 //            else
 //            {
@@ -723,7 +724,7 @@ import ImageIO
                             DataSource.sharedInstance.loadAttachesForElement(anElement, completion: { (attaches) -> () in
                                 if let existAttaches = attaches
                                 {
-                                    println("\n --> has attaches - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
+                                    //println("\n --> has attaches - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
                                 }
                             })
                         }
@@ -1263,7 +1264,7 @@ import ImageIO
                     fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
                         if path != nil
                         {
-                            println("\n -> Saved a file\n")
+                            println("\n -> Saved a file")
                         }
                         
                         if saveError != nil

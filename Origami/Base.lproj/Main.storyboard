@@ -560,6 +560,7 @@
                                         <color key="backgroundColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="textContainerLabel" destination="oSB-E8-sg0" id="1wp-62-HHb"/>
+                                            <outlet property="textViewToBotttomConstraint" destination="Th4-0Y-3qs" id="N47-Je-07B"/>
                                             <outlet property="titleLabel" destination="NBB-QC-zTD" id="6o5-TK-r4T"/>
                                         </connections>
                                     </tableViewCell>
@@ -676,7 +677,7 @@
                                 </items>
                             </toolbar>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="SyS-fN-aGH" firstAttribute="leading" secondItem="maz-2L-1zE" secondAttribute="leading" id="8L9-UA-J4u"/>
                             <constraint firstItem="3Uq-It-Hrl" firstAttribute="top" secondItem="iKN-UF-Q7F" secondAttribute="bottom" id="JFn-B9-Wnq"/>

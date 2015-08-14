@@ -101,7 +101,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewDidDisappear(animated)
         if self.currentElement != nil
         {
-            collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
+           // collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
+            collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: true, scrollPosition: .Top)
         }
     }
     
@@ -407,9 +408,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             //editingVC.newElement =  copyElement
             editingVC.composingDelegate = self
             
-            self.presentViewController(editingVC, animated: true, completion: { () -> Void in
+            self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
+            self.presentViewController(editingVC, animated: true, completion: {[weak self] () -> Void in
                 editingVC.editingStyle = ElementEditingStyle.EditCurrent
                 editingVC.newElement =  copyElement
+//                if let weakSelf = self
+//                {
+//                    weakSelf.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
+//                }
             })
         }
     }
@@ -760,9 +766,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 if edited
                 {
+                    aSelf.collectionView.collectionViewLayout.invalidateLayout()
                     aSelf.currentElement?.title = editingElement.title
                     aSelf.currentElement?.details = editingElement.details
                     aSelf.collectionDataSource?.handledElement = aSelf.currentElement
+                   
+                  
                     aSelf.collectionView.reloadData()
                 }
                 else

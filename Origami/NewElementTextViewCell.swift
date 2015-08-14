@@ -16,7 +16,10 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
     var attributedText:NSAttributedString? = nil {
         didSet{
             textView.attributedText = (attributedText != nil) ? attributedText : defaultAttributedText
-            textView.sizeToFit()
+            if count(textView.attributedText.string) > 0
+            {
+                textView.sizeToFit()
+            }
         }
     }
     
@@ -28,11 +31,13 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
             {
                 self.backgroundColor = kDayCellBackgroundColor
                 titleLabel.text = "Title"
+                defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
             }
             else
             {
                 self.backgroundColor = UIColor.whiteColor()
                 titleLabel.text = "Description"
+                defaultAttributedText = NSAttributedString(string:"add description", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
             }
         }
     }
@@ -60,5 +65,10 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
         {
             NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object: nil)
         }
+    }
+    
+    func textViewShouldBeginEditing(textView: UITextView) -> Bool {
+        textView.textColor = UIColor.blackColor()
+        return true
     }
 }

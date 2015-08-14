@@ -17,11 +17,15 @@ class NewElementTextLabelCell: UITableViewCell {
                 {
                     self.backgroundColor = kDayCellBackgroundColor
                     titleLabel.text = "Title"
+                    textViewToBotttomConstraint?.constant = 10.0
+                    defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
                 }
                 else
                 {
                     self.backgroundColor = UIColor.whiteColor()
-                    titleLabel.text = "Details"
+                    titleLabel.text = "Description"
+                    textViewToBotttomConstraint?.constant = 50.0
+                    defaultAttributedText = NSAttributedString(string:"add description", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
                 }
         }
     }
@@ -29,12 +33,15 @@ class NewElementTextLabelCell: UITableViewCell {
     var attributedText:NSAttributedString? = nil {
         didSet{
             textContainerLabel.attributedText = (attributedText != nil) ? attributedText : defaultAttributedText
-             textContainerLabel.sizeToFit()
+            if count(textContainerLabel.attributedText.string) > 0
+            {
+                textContainerLabel.sizeToFit()
+            }
         }
     }
     
     var defaultAttributedText:NSAttributedString = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
-    
+    @IBOutlet weak var textViewToBotttomConstraint:NSLayoutConstraint?
     
     @IBOutlet var textContainerLabel:UILabel!
     @IBOutlet var titleLabel:UILabel!

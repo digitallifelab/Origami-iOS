@@ -74,6 +74,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         table.reloadData()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates", name: "UpdateTextiewCell", object: nil)
+        addObserversForKeyboard()
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -103,6 +104,76 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
+    func addObserversForKeyboard()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardAppearance:", name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardAppearance:", name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func handleKeyboardAppearance(notification:NSNotification)
+    {
+        if let notifInfo = notification.userInfo
+        {
+            //prepare needed values
+            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
+            let keyboardHeight = keyboardFrame.size.height
+            let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
+            let options = UIViewAnimationOptions(UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            var keyboardIsToShow = false
+            if notification.name == UIKeyboardWillShowNotification
+            {
+                keyboardIsToShow = true
+            }
+        
+            if keyboardIsToShow
+            {
+                if let viewToTap = self.view.viewWithTag(0xAD)
+                {
+                    viewToTap.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - keyboardHeight)
+                }
+                else
+                {
+                    let viewToTap = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - keyboardHeight))
+                    viewToTap.tag = 0xAD
+                    viewToTap.userInteractionEnabled =  true
+                    let tapRecognizer = UITapGestureRecognizer(target: self, action: "stopTyping:")
+                    tapRecognizer.numberOfTapsRequired = 1
+                    tapRecognizer.numberOfTouchesRequired = 1
+                    viewToTap.addGestureRecognizer(tapRecognizer)
+                    //viewToTap.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
+                    self.view.addSubview(viewToTap)
+                }
+            }
+            else
+            {
+                if let viewToTap = self.view.viewWithTag(0xAD)
+                {
+                    viewToTap.removeFromSuperview()
+                }
+            }
+        }
+    }
+    
+    func stopTyping(tapRecognizer:UITapGestureRecognizer)
+    {
+        if let cellTitle = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? NewElementTextViewCell
+        {
+            cellTitle.endEditing(true)
+            if count(cellTitle.textView.text) > 0 && cellTitle.textView.text != newElement!.title as? String
+            {
+                newElement?.title = cellTitle.textView.text
+            }
+        }
+        else if let descriptionCell = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as? NewElementTextViewCell
+        {
+            descriptionCell.endEditing(true)
+            if count(descriptionCell.textView.text) > 0 && descriptionCell.textView.text != newElement!.title as? String
+            {
+                newElement?.details = descriptionCell.textView.text
+            }
+        }
+    }
     //MARK:UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
@@ -185,8 +256,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             
             if let title = newElement?.title as? String
             {
-                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
                 cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
+            }
+            else
+            {
+                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
+                cell.attributedText = NSAttributedString(string: "add title", attributes: titleAttributes)
             }
         }
         else
@@ -196,7 +272,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 if description != ""
                 {
-                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
                     cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
                 }
                 else
@@ -225,6 +301,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.blackColor()]
                 cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
             }
+            else
+            {
+                cell.attributedText = nil
+            }
         }
         else
         {
@@ -240,14 +320,14 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 else
                 {
                     let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-                    cell.textView.text = ""// NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                    cell.textView.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
                 }
                 
             }
             else
             {
                 let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
-                cell.textView.text = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                cell.textView.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
             }
         }
     }
@@ -320,70 +400,49 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        if self.newElement == nil // we ara for
+        if self.newElement == nil // we are creating new element
         {
-            
+            return
         }
+        
+        let titlePath = NSIndexPath(forRow: 0, inSection: 0)
+        let detailsPath = NSIndexPath(forRow: 0, inSection: 1)
+        
         if indexPath.section < 2//3
         {
-            if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextLabelCell
+            if indexPath.section == detailsPath.section //tapped on details cell
             {
-                if cell.isTitleCell
+                switch editingConfuguration
                 {
-                    editingConfuguration = .Title
-                }
-                else
-                {
+                case .None: //start editing details
+                    fallthrough
+                case .Title: //start editing details
                     editingConfuguration = .Details
-                }
-            }
-            else if let cell = self.table.cellForRowAtIndexPath(indexPath) as? NewElementTextViewCell
-            {
-                if cell.isTitleCell
-                {
-                    if let titText = cell.textView.text
-                    {
-                        self.newElement?.title = titText
-                    }
-                    //self.newElement?.title = cell.textView.text //when we switch off editing in the title section - assign current value to our editing element
+                case .Details: // stop editing details
                     editingConfuguration = .None
                 }
-                else
+            }
+            else if indexPath.section == titlePath.section //tapped on title cell
+            {
+                switch editingConfuguration
                 {
-                    self.newElement?.details = cell.textView.text //when we switch off editing in the details section - assign current value to our editing element
+                case .None: //start editing title
+                    fallthrough
+                case .Details: //start editing title
+                    editingConfuguration = .Title
+                case .Title: // stop editing title
                     editingConfuguration = .None
                 }
             }
         }
         else
         {
-           
             editingConfuguration = .None
             contactTappedAtIndexPath(indexPath)
         }
         
-        let indexpathForDetailsCell = NSIndexPath(forRow: 0, inSection: 1)
-        if let detailsCell = table.cellForRowAtIndexPath(indexpathForDetailsCell) as? NewElementTextViewCell
-        {
-            if let detText = detailsCell.textView.text
-            {
-                self.newElement?.details = detText
-            }
-            //detailsCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
-        }
-        let indexpathForTitleCell = NSIndexPath(forRow: 0, inSection: 0)
-        if let titleCell = table.cellForRowAtIndexPath(indexpathForTitleCell) as? NewElementTextViewCell
-        {
-            self.newElement?.title = titleCell.textView.text //when we switch off editing in the details section - assign current value to our editing element
-        }
         
-        
-        
-        let titlePath = NSIndexPath(forRow: 0, inSection: 0)
-        let detailsPath = NSIndexPath(forRow: 0, inSection: 1)
         tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
-        
-        //tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
     
@@ -408,6 +467,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         if let anElement = self.newElement, let currentTitle = newElement?.title as? String
         {
+            if count(currentTitle) < 1
+            {
+                cancelButtonTap(sender)
+                return
+            }
+            
             if anElement.details == nil
             {
                 anElement.details = ""

@@ -336,7 +336,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 titleCell.displayMode = self.displayMode
                 
                 titleCell.labelTitle.text = getElementTitle()
-                
+                titleCell.labelDate.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateStringShortStyle() as? String
                 if let isFavourite = self.handledElement?.isFavourite.boolValue
                 {
                     titleCell.favourite = isFavourite
