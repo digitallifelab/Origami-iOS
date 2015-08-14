@@ -294,7 +294,7 @@ import ImageIO
                 }
                 else
                 {
-                    let reversedArray = existingMessagesForElementId.reverse()
+                    let reversedArray = existingMessagesForElementId//.reverse()
                     for var i = 0; i < validQuantity; i++
                     {
                         let lvMessageToCheck = reversedArray[i]
@@ -314,7 +314,7 @@ import ImageIO
                 }
                 else
                 {
-                    let reversedArray = existingMessagesForElementId.reverse()
+                    let reversedArray = existingMessagesForElementId//.reverse()
                     for var i = 0; i < validQuantity; i++
                     {
                         messagesToReturn.insert(reversedArray[i], atIndex: 0)
@@ -331,7 +331,10 @@ import ImageIO
             return nil //[Message]()//empty array
         }
     }
-    
+    func getLastMessagesQuantity()
+    {
+        
+    }
     func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
     {
         

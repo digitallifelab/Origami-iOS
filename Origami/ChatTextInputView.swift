@@ -40,6 +40,7 @@ class ChatTextInputView: UIView, UITextViewDelegate {
         }
         textView.resignFirstResponder()
     }
+    
     //MARK: UITextViewDelegate
     func textViewDidChange(textView: UITextView)
     {
@@ -57,6 +58,7 @@ class ChatTextInputView: UIView, UITextViewDelegate {
     
     func textViewShouldBeginEditing(textView: UITextView) -> Bool {
         textView.attributedText = nil
+        textView.textColor = UIColor.blackColor()
         return true
     }
     

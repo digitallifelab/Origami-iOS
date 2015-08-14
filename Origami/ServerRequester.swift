@@ -423,8 +423,8 @@ class ServerRequester: NSObject
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
-            let postUrlString =  "\(serverURL)" + "\(sendMessageUrlPart)" + "?token=" + "\(tokenString)" + "&elementId=" + "\(elementId.integerValue)"//[NSString stringWithFormat:@"%@SendElementMessage?token=%@&elementId=%@", BasicURL, _currentUser.token, elementId];
-            //    NSDictionary *messageDict = [message toDictionary];
+            let postUrlString =  "\(serverURL)" + "\(sendMessageUrlPart)" + "?token=" + "\(tokenString)" + "&elementId=" + "\(elementId.integerValue)"
+            println("sending message to element: \(elementId)")
             var messageToSend = message.textBody!
             
             let params = NSDictionary(dictionary: ["msg":messageToSend])
