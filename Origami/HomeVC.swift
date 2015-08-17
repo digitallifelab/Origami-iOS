@@ -114,6 +114,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
+        
         if DataSource.sharedInstance.isMessagesEmpty()
         {
             DataSource.sharedInstance.loadAllMessagesFromServer()
@@ -133,6 +136,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Switch_Night_Mode_Changed, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
     }
     
     //MARK: -- --
@@ -321,57 +325,53 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
-//        let rootId = element.rootElementId
-//        if rootId.boolValue
-//        {
-            presentNewSingleElementVC(element)
-//        }
+        presentNewSingleElementVC(element)
     }
     
     func presentNewSingleElementVC(element:Element)
     {
         let rootId = element.rootElementId.integerValue
         
-        if rootId == 0
-        {
+//        if rootId == 0
+//        {
             if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
             {
                 newVC.currentElement = element
                 self.navigationController?.pushViewController(newVC, animated: true)
             }
-        }
-        else
-        {
-            //calculate all the subordinates tree
-            if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
-            {
-                var viewControllers = [UIViewController]()
-                
-                //create viewControllers for all elements
-                
-                for lvElement in elementsTree.reverse()
-                {
-                    if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-                    {
-                        dashboardVC.currentElement = lvElement
-                        viewControllers.append(dashboardVC)
-                    }
-                }
-                //append last view controller on top of the navigation controller`s stack
-                if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-                {
-                    targetVC.currentElement = element
-                    viewControllers.append(targetVC)
-                }
-                //show last
-                if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
-                {
-                    var vcS = currentVCs
-                    vcS += viewControllers
-                    self.navigationController?.setViewControllers(vcS, animated: true)
-                }
-            }
-        }
+//        }
+//        else
+//        {
+//            //calculate all the subordinates tree
+//            if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
+//            {
+//                var viewControllers = [UIViewController]()
+//                
+//                //create viewControllers for all elements
+//                
+//                for lvElement in elementsTree.reverse()
+//                {
+//                    if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+//                    {
+//                        dashboardVC.currentElement = lvElement
+//                        viewControllers.append(dashboardVC)
+//                    }
+//                }
+//                //append last view controller on top of the navigation controller`s stack
+//                if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+//                {
+//                    targetVC.currentElement = element
+//                    viewControllers.append(targetVC)
+//                }
+//                //show last
+//                if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
+//                {
+//                    var vcS = currentVCs
+//                    vcS += viewControllers
+//                    self.navigationController?.setViewControllers(vcS, animated: true)
+//                }
+//            }
+//        }
     }
     
     //MARK: ElementComposingDelegate
@@ -584,6 +584,36 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         
     }
     
+    func didTapOnChatMessage(notification:NSNotification?)
+    {
+        // 1 - instantiate SinglElementDashboardVC
+        // 2 - instantiate ChatVC
+        // 3 - set viewControllers for self.navigationController
+        if let tappedMessage = notification?.object as? Message
+        {
+            if let targetElement = DataSource.sharedInstance.getElementById(tappedMessage.elementId!.integerValue)
+            {
+                if let
+                    singleElementVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC,
+                    chatVC = self.storyboard?.instantiateViewControllerWithIdentifier("ChatVC") as? ChatVC
+                {
+                    singleElementVC.currentElement = targetElement
+                    chatVC.currentElement = targetElement
+                    
+                    var toShowVCs = [UIViewController]()
+                    if let viewControllers = self.navigationController?.viewControllers as? [UIViewController]
+                    {
+                        toShowVCs += viewControllers
+                    }
+                    
+                    toShowVCs.append(singleElementVC)
+                    toShowVCs.append(chatVC)
+                    
+                    self.navigationController?.setViewControllers(toShowVCs, animated: true)
+                }
+            }
+        }
+    }
     
     //MARK: ------ menu displaying
     func handleDisplayingMenuAnimated(animated:Bool, completion completionBlock:(()->())? = nil)

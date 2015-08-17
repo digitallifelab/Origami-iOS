@@ -62,7 +62,7 @@ class ObjectsConverter {
         if elements.count > 1
         {
             elements.sort({ (element1, element2) -> Bool in
-                if element1.createDate != nil && element2.createDate != nil
+                if element1.changeDate != nil && element2.changeDate != nil
                 {
                     
                     let  date1 = element1.createDate!.dateFromServerDateString()
@@ -70,7 +70,7 @@ class ObjectsConverter {
                     if date1 != nil && date2 != nil
                     {
                         let result = date1!.compare(date2!)
-                        if result == NSComparisonResult.OrderedAscending
+                        if result == NSComparisonResult.OrderedDescending
                         {
                             return true
                         }

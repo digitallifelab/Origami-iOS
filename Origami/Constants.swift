@@ -89,5 +89,6 @@ let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"
 let kAddNewAttachFileTapped = "AddNewAttachFile"
 let kElementWasDeletedNotification = "ElementWasDeletedNotification"
 let kElementMoreDetailsNotification = "MoreButtonPressed"
+let kHomeScreenMessageTappedNotification = "HomeScreenMessageTapped"
 
 

@@ -125,6 +125,12 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         return messageObjects[indexPath.row] ?? nil
     }
     
+//    //MARK: UITableViewDelegate
+//    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//        
+//    }
+    
+    
     //MARK: ---
     
     func appendMessages(messages:[Message])

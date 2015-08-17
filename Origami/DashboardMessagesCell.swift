@@ -41,7 +41,10 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        
+        if let messageTapped = self.messagesDatasource?.messageForIndexPath(indexPath)
+        {
+            NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:messageTapped, userInfo: nil)
+        }
     }
     
     
