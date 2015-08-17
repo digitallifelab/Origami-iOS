@@ -40,7 +40,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     }
     var optionsConverter = ElementOptionsConverter()
     
-    var handledElement:Element?
+    weak var handledElement:Element?
     var buttonTrueColor = UIColor.whiteColor()
     var buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
     

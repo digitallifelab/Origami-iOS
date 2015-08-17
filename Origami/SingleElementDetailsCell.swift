@@ -33,7 +33,6 @@ class SingleElementDetailsCell: UICollectionViewCell {
     
     @IBOutlet var textLabel:UILabel!
     @IBOutlet var moreLessButton:UIButton!
-    
     @IBAction func moreLessButtonTap(sender:UIButton)
     {
         // send event to upper views - need to recalculate self`s dimensions in collectionViewLayout subclass

@@ -92,7 +92,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
     @IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
     var menuTable:UITableView?
-    var menuItemsTitles = ["Home", "Profile", "DisplayMode"]
+    var menuItemsTitles = ["Home", "Profile", "Contacts", "DisplayMode"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -209,13 +209,15 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
             {
             case 0: //home button
                 self.dismissViewControllerAnimated(true, completion: nil)
-            case 1: // profile
+            case 1: // profile,contacts
+                fallthrough
+            case 2:
                 NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self, userInfo: ["tapped":indexPath.row] as [NSObject:AnyObject])
             default: break
             }
         case 1: //logout tapped
             
-            let logoutNotification = NSNotification(name: "LogOutPressed", object: nil)
+            let logoutNotification = NSNotification(name: kLogoutNotificationName, object: nil)
             NSNotificationCenter.defaultCenter().postNotification(logoutNotification)
         default: break
         }

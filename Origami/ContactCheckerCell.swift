@@ -13,6 +13,20 @@ class ContactCheckerCell: UITableViewCell {
     @IBOutlet var checkBox:UIImageView!
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var avatar:UIImageView!
+    
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            if displayMode == .Day
+            {
+                nameLabel.textColor = UIColor.blackColor()
+            }
+            else
+            {
+                nameLabel.textColor = UIColor.lightGrayColor()
+            }
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

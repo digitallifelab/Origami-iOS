@@ -29,7 +29,7 @@ class Contact:NSObject
     var regDate:NSString?
     var photo:NSData?
     
-    var isFavourite:NSNumber?
+    var isFavourite:NSNumber = NSNumber(bool: false)
     var elementId:NSNumber?
     var isOnline:NSNumber?
     

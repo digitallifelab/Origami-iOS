@@ -14,6 +14,7 @@ class RootViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleLogoutNotification:", name: kLogoutNotificationName, object: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,4 +37,13 @@ class RootViewController: UIViewController {
     }
     
   
+    func handleLogoutNotification(notification:NSNotification?)
+    {
+        DataSource.sharedInstance.performLogout {[weak self] () -> () in
+            if let weakSelf = self
+            {
+                weakSelf.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
+    }
 }

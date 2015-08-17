@@ -937,42 +937,42 @@ class ServerRequester: NSObject
         - Parameter completion: A caller may specify wether it wants or not to recieve data on completion - an optional var for contacts array and optional var for error handling
         - Returns: Void
     */
-    func downloadAllContacts(completion completionClosure:((contacts:[Contact]?, error:NSError?) -> () )? = nil )
+    func downloadMyContacts(completion completionClosure:((contacts:[Contact]?, error:NSError?) -> () )? = nil )
     {
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
-            let requestString = serverURL + allContactsURLPart + "?token=" + userToken
+            let requestString = serverURL + myContactsURLPart + "?token=" + userToken
             
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
                 success: { [unowned self] (operation, result) -> Void in
                 NSOperationQueue().addOperationWithBlock({ () -> Void in
-                    if completionClosure != nil
+                    if let completion = completionClosure
                     {
                         if let lvContactsArray = result["GetContactsResult"] as? [[String:AnyObject]]
                         {
                             let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)
-                            completionClosure!(contacts:convertedContacts, error: nil)
+                            completion(contacts:convertedContacts, error: nil)
                         }
                         else
                         {
                             let error = NSError(domain: "Contacts Reading Error.", code: -501, userInfo: [NSLocalizedDescriptionKey:"Could not read contacts raw info from response."])
-                            completionClosure!(contacts:nil, error:error)
+                            completion(contacts:nil, error:error)
                         }
                     }
                 })
                     
             }, failure: { (operation, requestError) -> Void in
-                if completionClosure != nil
+                if let completion = completionClosure
                 {
                     if let responseString = operation.responseString
                     {
                         let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
-                        completionClosure!(contacts: nil, error: lvError)
+                        completion(contacts: nil, error: lvError)
                     }
                     else
                     {
-                        completionClosure!(contacts:nil, error:requestError)
+                        completion(contacts:nil, error:requestError)
                     }
                 }
             })
@@ -1113,5 +1113,158 @@ class ServerRequester: NSObject
     func unPassElement(elementId :Int, fromSeveralContacts contactIDs:Set<Int>, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())?)
     {
         self.passElement((elementId * -1), toSeveratContacts: contactIDs, completion: completionClosure)
+    }
+    
+    func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)
+    {
+        if let userToken = DataSource.sharedInstance.user?.token as? String
+        {
+            let requestString = serverURL + allContactsURLPart + "?token=" + userToken
+            
+            let contactsRequestOp = httpManager.GET(requestString,
+                parameters: nil,
+                success: { [unowned self] (operation, result) -> Void in
+                    NSOperationQueue().addOperationWithBlock({ () -> Void in
+                        if let completionBlock = completion
+                        {
+                            if let lvContactsArray = result["GetAllContactsResult"] as? [[String:AnyObject]]
+                            {
+                                let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)
+                                
+                                //println("Loaded all contacts:\(convertedContacts)")
+                                
+                                completionBlock(contacts:convertedContacts, error: nil)
+                            }
+                            else
+                            {
+                                let error = NSError(domain: "Contacts Reading Error.", code: -501, userInfo: [NSLocalizedDescriptionKey:"Could not read contacts raw info from response."])
+                                completionBlock(contacts:nil, error:error)
+                            }
+                        }
+                    })
+                    
+                }, failure: { (operation, requestError) -> Void in
+                    if let completionBlock = completion
+                    {
+                        if let responseString = operation.responseString
+                        {
+                            let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
+                            completionBlock(contacts: nil, error: lvError)
+                        }
+                        else
+                        {
+                            completionBlock(contacts:nil, error:requestError)
+                        }
+                    }
+            })
+            
+            contactsRequestOp.start()
+            
+//            let queue = NSOperationQueue()
+//            var request = NSMutableURLRequest(URL: NSURL(string: requestString)!)
+//            request.HTTPMethod = "GET"
+//            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { (urlResponse, responseData, responseError) -> Void in
+//                if let data = responseData
+//                {
+//                    var jsonError:NSError?
+//                    if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &jsonError) as? [NSObject:AnyObject]
+//                    {
+//                        println("---> Raw response: \(json)")
+//                    }
+//                    else if let string = NSString(data: data, encoding: NSUTF8StringEncoding)
+//                    {
+//                        println("---> RawString response: \(string)")
+//                    }
+//                }
+//            })
+            
+            
+            
+            return
+        }
+        
+        if let completionBlock = completion
+        {
+            completionBlock(contacts: nil, error: noUserTokenError)
+        }
+
+    }
+    
+    func toggleContactFavourite(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
+    {
+        /*
+        
+        //SetFavoriteContact?contactId={contactId}&token={token}
+        
+        
+        NSString *requestUrlString = [NSString stringWithFormat:@"%@SetFavoriteContact", BasicURL];
+        
+        NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:_currentUser.token, @"token", idNumber, @"contactId", nil];//@{@"contactId":idNumber, @"token":_currentUser.token};
+        
+        if (parameters.allKeys.count < 2)
+        {
+        if (completionBlock)
+        {
+        completionBlock(nil,[NSError errorWithDomain:@"Data consistency failure" code:NSKeyValueValidationError userInfo:@{NSLocalizedDescriptionKey:@"No User Token or ContactId"} ]);
+        }
+        return;
+        }
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        [manager.requestSerializer setTimeoutInterval:15];
+        
+        AFHTTPRequestOperation *requestOp = [manager GET:requestUrlString
+        parameters:parameters
+        success:^(AFHTTPRequestOperation *operation, id responseObject)
+        {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        
+        NSDictionary *response = (NSDictionary *)responseObject;
+        
+        //NSLog(@"\n --changeIsFavouriteContactWithId-- Success response:\n- %@",response);
+        if (completionBlock)
+        {
+        completionBlock(response, nil);
+        }
+        
+        
+        
+        }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error)
+        {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        NSLog(@"\n changeIsFavouriteContactWithId Error: \n-%@", error);
+        if (completionBlock)
+        {
+        completionBlock(nil, error);
+        }
+        }];
+        
+        [requestOp start];
+
+        
+        */
+        if let userToken = DataSource.sharedInstance.user?.token as? String
+        {
+            let favUrlString = serverURL + favContactURLPart + "?token=" + userToken + "&contactId=" + "\(contactId)"
+            
+            let favOperation = httpManager.GET(favUrlString, parameters: nil, success: { (operation, response) -> Void in
+                if let aResponse = response as? [NSObject:AnyObject]
+                {
+                    if let completionBlock = completion
+                    {
+                        completionBlock(success: true, error: nil)
+                    }
+                }
+            }, failure: { (operation, error) -> Void in
+                if let completionBlock = completion
+                {
+                    completionBlock(success: false, error: error)
+                }
+            })
+            
+            favOperation.start()
+            
+        }
     }
 }

@@ -25,7 +25,9 @@ let registerUserUrlPart = "RegisterUser"
 let editUserUrlPart = "EditUser"
 let loginUserUrlPart = "Login"
 //Contacts
-let allContactsURLPart = "GetContacts"
+let myContactsURLPart = "GetContacts"
+let allContactsURLPart = "GetAllContacts"
+let favContactURLPart = "SetFavoriteContact"
 //Messages
 let getAllMessagesPart = "GetMessages"
 let sendMessageUrlPart = "SendElementMessage"
@@ -51,12 +53,12 @@ let attachToElementUrlPart = "AttachFileToElement"
 
 let noUserTokenError = NSError(domain: "User Token", code: -55, userInfo: [NSLocalizedDescriptionKey:"NoUserToken".localizedWithComment("")])
 //MARK:App-Wide colors
-let kDaySignalColor = UIColor(red: 255.0/255.0, green: 64.0/255.0, blue: 129.0 / 255.0, alpha: 1.0)
+let kDaySignalColor = UIColor(red: 213.0/255.0, green: 47.0/255.0, blue: 47.0/255.0, alpha: 1.0)//UIColor(red: 255.0/255.0, green: 64.0/255.0, blue: 129.0 / 255.0, alpha: 1.0)
 let kNightSignalColor = UIColor(red: 244.0/255.0, green: 71.0/255.0, blue: 71.0/255.0, alpha: 1.0)
 let kDayViewBackgroundColor = UIColor.whiteColor()//UIColor(red: 227.0/255.0, green: 242.0/255.0, blue: 253.0/255.0, alpha: 1.0)
-let kDayNavigationBarBackgroundColor = UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+let kDayNavigationBarBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)//UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
 
-let kDayCellBackgroundColor = UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+let kDayCellBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)//UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
 let kWhiteColor = UIColor.whiteColor()
 let kBlackColor = UIColor.blackColor()
 
@@ -90,5 +92,8 @@ let kAddNewAttachFileTapped = "AddNewAttachFile"
 let kElementWasDeletedNotification = "ElementWasDeletedNotification"
 let kElementMoreDetailsNotification = "MoreButtonPressed"
 let kHomeScreenMessageTappedNotification = "HomeScreenMessageTapped"
+let kLogoutNotificationName = "LogOutPressed"
+let kContactFavouriteButtonTappedNotification = "ContactFavouriteTapped"
+
 
 

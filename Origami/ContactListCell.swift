@@ -14,25 +14,15 @@ class ContactListCell: UITableViewCell {
     @IBOutlet var avatar:UIImageView!
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var favouriteButton:UIButton!
+    @IBOutlet var emailLabel:UILabel?
+    @IBOutlet var phoneLabel:UILabel?
     
-    var delegate:ButtonTapDelegate?
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     @IBAction func favouriteButtonNapped(sender:UIButton?)
     {
-        if sender != nil
+        if let userName = emailLabel?.text
         {
-            delegate?.didTapOnButton(sender!)
+            NSNotificationCenter.defaultCenter().postNotificationName(kContactFavouriteButtonTappedNotification, object: nil, userInfo: ["userName":userName])
         }
     }
 

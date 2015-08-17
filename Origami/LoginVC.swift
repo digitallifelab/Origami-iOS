@@ -35,8 +35,17 @@ class LoginVC: UIViewController , UITextFieldDelegate
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if !nameField.text.isEmpty && !passwordField.text.isEmpty
+        {
+            loginButtonPress(self.loginButton)
+        }
+    }
+    
     @IBAction func loginButtonPress(sender:UIButton)
     {
+        loginButton.enabled = false
         DataSource.sharedInstance.tryToGetUser {[weak self] (user, error) -> () in
             if let weakSelf = self
             {
@@ -48,12 +57,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
                 {
                     weakSelf.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:localizedDescription, cancelButtonTitle:"Close".localizedWithComment(""))
                 }
+                weakSelf.loginButton.enabled = true
             }
-            
-            
         }// User(info: dict)
-        
-        
     }
     
     func userDidLogin(user:User)
@@ -65,7 +71,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
         
         self.dismissViewControllerAnimated(true, completion: nil)
         NSOperationQueue().addOperationWithBlock { () -> Void in
-            DataSource.sharedInstance.getAllContacts()
+            DataSource.sharedInstance.getMyContacts()
         }
     }
 

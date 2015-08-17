@@ -410,8 +410,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
             self.presentViewController(editingVC, animated: true, completion: {[weak self] () -> Void in
-                editingVC.editingStyle = ElementEditingStyle.EditCurrent
                 editingVC.newElement =  copyElement
+                editingVC.editingStyle = ElementEditingStyle.EditCurrent
+                
 //                if let weakSelf = self
 //                {
 //                    weakSelf.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
@@ -772,7 +773,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     aSelf.collectionDataSource?.handledElement = aSelf.currentElement
                    
                   
-                    aSelf.collectionView.reloadData()
+                    aSelf.collectionView.performBatchUpdates({ () -> Void in
+                        aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
+                    }, completion: { ( _ ) -> Void in
+                        if let layout = aSelf.prepareCollectionLayoutForElement(aSelf.currentElement)
+                        {
+                            aSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                        }
+                    })
+                    
+                    
                 }
                 else
                 {

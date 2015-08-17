@@ -30,12 +30,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
                 //contactIDsToPass = Set(passIDs)
             }
-            //println("Will pass to contact ids: \n \(contactIDsToPass)")
+            println("Will pass to contact ids: \n \(contactIDsToPass)")
             table.reloadData()
         }
     }
     //var transitionAnimator:FadeOpaqueAnimator?
-    var allContacts = DataSource.sharedInstance.getAllContacts()
+    var allContacts = DataSource.sharedInstance.getMyContacts()
     
     var editingConfuguration:CurrentEditingConfiguration = .None
     
@@ -48,6 +48,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 self.newElement?.passWhomIDs = Array(self.contactIDsToPass)
             }
             configureBottomToolbar()
+            table.reloadData()
         }
     }
     
@@ -61,6 +62,18 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         //transitionAnimator = FadeOpaqueAnimator()
         table.estimatedRowHeight = 80.0
         table.rowHeight = UITableViewAutomaticDimension
+        let isNightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        if isNightMode
+        {
+            self.toolbar.tintColor = UIColor.whiteColor()
+            self.view.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            self.toolbar.tintColor = kDayNavigationBarBackgroundColor
+            self.view.backgroundColor = UIColor.clearColor()
+        }
+   
         
     }
 
@@ -162,7 +175,16 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             cellTitle.endEditing(true)
             if count(cellTitle.textView.text) > 0 && cellTitle.textView.text != newElement!.title as? String
             {
-                newElement?.title = cellTitle.textView.text
+                var currentTextViewCellTitle = cellTitle.textView.text
+                if currentTextViewCellTitle != cellTitle.defaultAttributedText.string
+                {
+                    newElement?.title = cellTitle.textView.text
+                }
+                else
+                {
+                    
+                }
+                
             }
         }
         else if let descriptionCell = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as? NewElementTextViewCell
@@ -304,6 +326,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             else
             {
                 cell.attributedText = nil
+                cell.textView.attributedText = nil
             }
         }
         else
@@ -352,7 +375,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             
             cell.nameLabel.text = nameLabelText
-            
+            cell.avatar.maskToCircle()
             //set proper checkbox image
             if contactIDsToPass.contains(lvContact.contactId!.integerValue)
             {
@@ -379,7 +402,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func contactTappedAtIndexPath(indexPath: NSIndexPath)
     {
-        if let lvContact = self.allContacts?[indexPath.row], lvContactIDInt = lvContact.contactId?.integerValue
+        if let lvContact = allContacts?[indexPath.row], lvContactIDInt = lvContact.contactId?.integerValue
         {            
             if self.contactIDsToPass.contains(lvContactIDInt)
             {
@@ -392,7 +415,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
-            self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
+            //self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
+            self.table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
         }
     }
     
@@ -439,6 +463,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             editingConfuguration = .None
             contactTappedAtIndexPath(indexPath)
+            return
         }
         
         
@@ -468,6 +493,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         if let anElement = self.newElement, let currentTitle = newElement?.title as? String
         {
             if count(currentTitle) < 1
+            {
+                cancelButtonTap(sender)
+                return
+            }
+            else if currentTitle == "add title"
             {
                 cancelButtonTap(sender)
                 return
@@ -536,11 +566,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         
     }
-    
-    
-    
-    
-    
     
 }// class end
 

@@ -11,12 +11,14 @@ import UIKit
 class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var contactsTable:UITableView!
-    
+    @IBOutlet var topNavBarBackgroundView:UIView!
     var currentElement:Element?
     var contacts:[Contact]?
     var checkedContacts:[Contact] = [Contact]()
     var uncheckedContacts:[Contact] = [Contact]()
     var selectionEnabled = false
+    var displayMode:DisplayMode = .Day
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if currentElement!.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
@@ -25,19 +27,25 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
 
         setUpInitialArrays()
+       
     }
-
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        setAppearanceForNightModeToggled(nightModeOn)
+    }
+    
     //MARK: ---
     func setUpInitialArrays()
     {
-        if let lvContacts = DataSource.sharedInstance.getAllContacts()
+        if let lvContacts = DataSource.sharedInstance.getMyContacts()
         {
             contacts = lvContacts
             
@@ -167,7 +175,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
         contactCell.nameLabel.text = nameLabelText
-        
+        contactCell.displayMode = self.displayMode
         switch indexPath.section
         {
         case 0:
@@ -252,5 +260,40 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         alertController.addAction(closeAction)
         
         self.presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    //MARK: Appearance
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        if nightModeOn
+        {
+            self.view.backgroundColor = UIColor.blackColor()
+            self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
+            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
+            self.displayMode = .Night
+        }
+        else
+        {
+            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            self.displayMode = .Day
+        }
+        
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        
+        
+        //TODO: switch message cells night-day modes
+        // self.collectionSource?.turnNightModeOn(nightModeOn)
+        // self.collectionDashboard.reloadData()
+        
     }
 }

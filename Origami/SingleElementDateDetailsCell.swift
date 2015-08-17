@@ -22,9 +22,9 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
             }
         }
     }
-    var handledElement:Element?
+    weak var handledElement:Element?
     @IBOutlet var datesTable:UITableView!
-    
+    @IBOutlet var ownerNameLabel:UILabel!
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -43,6 +43,55 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
+        
+        if let creatorId = self.handledElement?.creatorId
+        {
+            var ownerNameToDisplay = String()
+            
+            if creatorId == DataSource.sharedInstance.user?.userId
+            {
+                if let name = DataSource.sharedInstance.user?.firstName as? String
+                {
+                    ownerNameToDisplay += name
+                }
+                if let lastName = DataSource.sharedInstance.user?.lastName as? String
+                {
+                    if ownerNameToDisplay.isEmpty
+                    {
+                        ownerNameToDisplay += lastName
+                    }
+                    else
+                    {
+                        ownerNameToDisplay += (" " + lastName)
+                    }
+                }
+            }
+            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId.integerValue]))
+            {
+                let owner = contacts.first
+                
+                if let name = owner?.firstName as? String
+                {
+                    ownerNameToDisplay += name
+                }
+                if let lastName = owner?.lastName as? String
+                {
+                    if ownerNameToDisplay.isEmpty
+                    {
+                        ownerNameToDisplay += lastName
+                    }
+                    else
+                    {
+                        ownerNameToDisplay += (" " + lastName)
+                    }
+                }
+            }
+            
+            if !ownerNameToDisplay.isEmpty
+            {
+                ownerNameLabel.text = ownerNameToDisplay
+            }
+        }
     }
     
     //MARK: UITableViewDataSource

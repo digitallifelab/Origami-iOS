@@ -353,7 +353,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 datesCell.displayMode = self.displayMode
                 datesCell.handledElement = self.handledElement
                 
-                
                 datesCell.setupActionButtons(elementIsOwned())
                
                 

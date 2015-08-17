@@ -417,10 +417,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         DataSource.sharedInstance.submitNewElementToServer(element, completion: {[weak self] (newElementID, submitingError) -> () in
             if let lvElementId = newElementID
             {
-                if let passWhomIDsArray = passWhomIDs
+                if let passWhomIDsSet = passWhomIDs
                 {
                     
-                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsArray, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
+                    DataSource.sharedInstance.addSeveralContacts(passWhomIDsSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
                             println(" added to \(succeededIDs)")
@@ -525,6 +525,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     {
                     case 1:
                         aSelf.showUserProfileVC()
+                    case 2:
+                        aSelf.showContactsVC()
                     default:
                         break
                     }
@@ -673,6 +675,21 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             customTransitionAnimator = FadeOpaqueAnimator()
             
             self.presentViewController(userProfileVC, animated: true, completion: nil)
+        }
+    }
+    
+    func showContactsVC()
+    {
+        if let contactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("ContactsListVC") as? ContactsListVC
+        {
+            let contactsNavHolderVC = UINavigationController(rootViewController: contactsVC)
+            
+            contactsNavHolderVC.modalPresentationStyle = .Custom
+            contactsNavHolderVC.transitioningDelegate = self
+            
+            customTransitionAnimator = FadeOpaqueAnimator()
+            
+            self.presentViewController(contactsNavHolderVC, animated: true, completion: nil)
         }
     }
     

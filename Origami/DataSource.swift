@@ -91,8 +91,12 @@ import ImageIO
             DataSource.sharedInstance.cleanDataCache()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
             DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
+            DataSource.sharedInstance.attaches.removeAll(keepCapacity: false)
             DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
             DataSource.sharedInstance.removeAllObserversForNewMessages()
+            
+            NSUserDefaults.standardUserDefaults().removeObjectForKey(passwordKey)
+            NSUserDefaults.standardUserDefaults().synchronize()
             if  completion != nil
             {
                 //return into main queue
@@ -1298,7 +1302,7 @@ import ImageIO
     
     //MARK: Contact
     func addNewContacts(contacts:[Contact], completion:voidClosure?)
-    {
+    {        
         DataSource.sharedInstance.contacts += contacts
         if completion != nil
         {
@@ -1306,11 +1310,11 @@ import ImageIO
         }
     }
     
-    func getAllContacts() -> [Contact]?
+    func getMyContacts() -> [Contact]?
     {
         if DataSource.sharedInstance.contacts.isEmpty
         {
-            serverRequester.downloadAllContacts(completion: { (contacts, error) -> () in
+            DataSource.sharedInstance.serverRequester.downloadMyContacts(completion: { (contacts, error) -> () in
                 if error != nil
                 {
                     println("Contacts loading failed: \n \(error!.localizedDescription)")
@@ -1331,6 +1335,40 @@ import ImageIO
             return nil
         }
         return DataSource.sharedInstance.contacts
+    }
+    
+    func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)
+    {
+        
+        DataSource.sharedInstance.serverRequester.loadAllContacts { (contacts, error) -> () in
+            if error != nil
+            {
+                println(" ALL Contacts loading failed: \n \(error!.localizedDescription)")
+                if let completionBlock = completion
+                {
+                    completionBlock(contacts: nil, error: error)
+                }
+            }
+            else
+            {
+                if contacts!.isEmpty
+                {
+                    println("WARNING!: Loaded empty contacts!!!!!")
+                    if let completionBlock = completion
+                    {
+                        completionBlock(contacts: nil, error: error)
+                    }
+                }
+                else
+                {
+                    println(" -> Loaded ALL contacts: \(contacts!.count)")
+                    if let completionBlock = completion
+                    {
+                        completionBlock(contacts: contacts, error: nil)
+                    }
+                }
+            }
+        }
     }
     
     func getContactsByIds(contactIDs:Set<Int>) -> [Contact]?
@@ -1552,6 +1590,28 @@ import ImageIO
             }
         }
         
+    }
+    
+    
+    func updateContactIsFavourite(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.toggleContactFavourite(contactId, completion: { (success, error) -> () in
+           
+            if let errorForRequest = error
+            {
+                if let completionBlock = completion
+                {
+                    completionBlock(success: false, error: errorForRequest)
+                }
+            }
+            else
+            {
+                if let completionBlock = completion
+                {
+                    completionBlock(success: true, error: nil)
+                }
+            }
+        })
     }
     //MARK: Avatars
     func addAvatarData(avatarBytes:NSData, forContactUserName userName:String) -> ResponseType

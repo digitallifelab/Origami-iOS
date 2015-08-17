@@ -79,7 +79,7 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
         let currentDeviceIdiom = currentTraitCollection.userInterfaceIdiom
         
-        var menuWidth:CGFloat = 150.0
+        var menuWidth:CGFloat = 210.0
         
         if currentDeviceIdiom == .Pad
         {
