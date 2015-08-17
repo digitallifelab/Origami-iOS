@@ -124,7 +124,8 @@ class ServerRequester: NSObject
                         var elements = [Element]()
                         for lvElementDict in elementsArray
                         {
-                            //println("\n -> element dict: \(lvElementDict) \n")
+                            let type = lvElementDict["TypeId"] as? Int
+                            //println(" -> element type: \(type) \n")
                             let lvElement = Element(info: lvElementDict)
                             //println("\(lvElement.toDictionary())")
                             elements.append(lvElement)

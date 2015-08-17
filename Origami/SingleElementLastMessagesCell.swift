@@ -97,6 +97,12 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             messageCell.messageLabel.text = message.textBody
             messageCell.avatarView.image = UIImage(named: "icon-No-Avatar")
             
+            if let messageDate = message.dateCreated
+            {
+                var messageDateString = messageDate.timeDateStringShortStyle()
+                messageCell.dateLabel.text = messageDateString as String
+            }
+            
             if message.creatorId != nil
             {
                 if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue

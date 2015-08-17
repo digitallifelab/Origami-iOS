@@ -11,11 +11,11 @@
 typedef NS_OPTIONS(NSInteger, ElementOptions) // this enum type is currently uses all values but "ReservedValue"s. in future app implementations, theese reserved values are subjects to change to some vales that make sense.
 {
     ElementOptionsNone = 0,
-    ElementOptionsIdea = (1 << 1),
-    ElementOptionsDone = (1 << 2),
-    ElementOptionsDecision = (1 << 3),
-    ElementOptionsReservedValue1 = (1 << 4),
-    ElementOptionsReservedValue2 = (1 << 5)
+    ElementOptionsIdea = (1 << 2),
+    ElementOptionsDone = (1 << 3),
+    ElementOptionsDecision = (1 << 4),
+    ElementOptionsReservedValue1 = (1 << 5),
+    ElementOptionsReservedValue2 = (1 << 6)
 };
 
 

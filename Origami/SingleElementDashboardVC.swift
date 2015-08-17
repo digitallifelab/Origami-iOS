@@ -562,7 +562,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
         var editingElement = Element(info: self.currentElement!.toDictionary())
         editingElement.typeId = NSNumber(integer: newOptions)
-        
+        println("new element type id: \(editingElement.typeId)")
         self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
         
     }
@@ -574,7 +574,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
         var editingElement = Element(info: self.currentElement!.toDictionary())
         editingElement.typeId = NSNumber(integer: newOptions)
-        
+        println("new element type id: \(editingElement.typeId)")
         self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     
@@ -585,7 +585,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 3)
         var editingElement = Element(info: self.currentElement!.toDictionary())
         editingElement.typeId = NSNumber(integer: newOptions)
-        
+        println("new element type id: \(editingElement.typeId)")
         self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     func toggleMoreDetails(notification:NSNotification?)

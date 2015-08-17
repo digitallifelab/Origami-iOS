@@ -13,6 +13,7 @@ class ChatPreviewCell: UITableViewCell {
     @IBOutlet var avatarView:UIImageView!
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var messageLabel:UILabel!
+    @IBOutlet var dateLabel:UILabel!
     
     var displayMode:DisplayMode = .Day{
         didSet{

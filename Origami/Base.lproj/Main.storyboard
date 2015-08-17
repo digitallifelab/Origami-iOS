@@ -387,6 +387,7 @@
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <connections>
                                                                 <outlet property="avatarView" destination="X5D-WD-wvU" id="aQC-rc-f9F"/>
+                                                                <outlet property="dateLabel" destination="vXc-34-FCp" id="O5R-EP-h35"/>
                                                                 <outlet property="messageLabel" destination="D09-U6-0Jc" id="j0F-or-tw8"/>
                                                                 <outlet property="nameLabel" destination="iGB-EG-ehF" id="3St-Z8-E2G"/>
                                                             </connections>
@@ -1025,6 +1026,7 @@
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <connections>
                                                                 <outlet property="avatarView" destination="dql-80-M9T" id="Sr7-2g-wNs"/>
+                                                                <outlet property="dateLabel" destination="dad-7V-46K" id="5Tp-z5-we8"/>
                                                                 <outlet property="messageLabel" destination="M6g-49-OvE" id="np9-y7-6C0"/>
                                                                 <outlet property="nameLabel" destination="lJe-M9-mYy" id="8Zd-HP-E0U"/>
                                                             </connections>

@@ -84,7 +84,12 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         //chatCell.avatarView.image = ImageFilter().filterImageBlackAndWhite(UIImage(named: "testImageToFilter")!)
         
         //chatCell.avatarView.image = UIImage(named: "testImageToFilter")
-        let message = self.messageObjects[indexPath.row]
+        let message = messageObjects[indexPath.row]
+        if let messageDate = message.dateCreated
+        {
+            var messageDateString = messageDate.timeDateStringShortStyle()
+            chatCell.dateLabel.text = messageDateString as String
+        }
         if message.creatorId != nil
         {
             if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
