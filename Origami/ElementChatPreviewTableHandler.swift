@@ -14,7 +14,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     var displayMode:DisplayMode = .Day
     
     lazy var messageObjects:[Message] = [Message]()
-    let noAvatarImage = UIImage(named: "icon-No-Avatar")
+    let noAvatarImage = UIImage(named: "icon-contacts")
     //var imageFilterer:ImageFilter? = ImageFilter()
     var contactsForLastMessages:[Contact]?
     

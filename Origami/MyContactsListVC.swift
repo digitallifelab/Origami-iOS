@@ -27,6 +27,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         configureNavigationItems()
         
+        //myContactsTable.editing = true
+        
         DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
             
             if let weakSelf = self
@@ -41,18 +43,19 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 }
             }
         }
-        
-        myContacts = DataSource.sharedInstance.getMyContacts()
-        if myContacts != nil
-        {
-            myContactsTable.reloadData()
-        }
-        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        myContacts = DataSource.sharedInstance.getMyContacts()
+        if myContacts != nil
+        {
+            myContactsTable.reloadData()
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -88,7 +91,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func showAllContactsVC()
     {
-        
+        if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
+        {
+            allContactsVC.allContacts = allContacts
+            self.navigationController?.pushViewController(allContactsVC, animated: true)
+        }
     }
     
     //MARK: UITableViewDelegate
@@ -96,6 +103,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
     }
 
+//    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+//        return true
+//    }
+    
     //MARK: UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -111,6 +122,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var contactCell = tableView.dequeueReusableCellWithIdentifier("MyContactCell", forIndexPath: indexPath) as! MyContactListCell
+        contactCell.selectionStyle = .None
+        
         configureCell(contactCell, forIndexPath:indexPath)
         return contactCell
     }
@@ -167,7 +180,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     private func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
     {
         let row = indexPath.row
-        if myContacts!.count >= row
+        if myContacts!.count > row
         {
             let lvContact = myContacts![row]
             return lvContact

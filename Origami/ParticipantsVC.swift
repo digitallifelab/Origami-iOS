@@ -252,15 +252,15 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
-    //MARK: Alert
-    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-    {
-        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-        alertController.addAction(closeAction)
-        
-        self.presentViewController(alertController, animated: true, completion: nil)
-    }
+//    //MARK: Alert
+//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
+//    {
+//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
+//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
+//        alertController.addAction(closeAction)
+//        
+//        self.presentViewController(alertController, animated: true, completion: nil)
+//    }
     
     //MARK: Appearance
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
@@ -270,7 +270,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             self.view.backgroundColor = UIColor.blackColor()
             self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            
             self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
             self.displayMode = .Night
         }
@@ -279,7 +279,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            self.tabBarController?.tabBar.tintColor = kWhiteColor
+
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
             self.displayMode = .Day
         }

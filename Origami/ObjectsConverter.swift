@@ -48,6 +48,11 @@ class ObjectsConverter {
         for lvDictionary in dictionaries
         {
             let lvNewMessage = Message(info: lvDictionary)
+            //println(lvDictionary)
+            if lvNewMessage.textBody == "User invited you!"
+            {
+                continue
+            }
             toReturn.append(lvNewMessage)
         }
         

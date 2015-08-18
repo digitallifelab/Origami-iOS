@@ -378,3 +378,15 @@ extension UIImage{
         return self;
     }
 }
+
+extension UIViewController
+{
+    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
+    {
+        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
+        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
+        alertController.addAction(closeAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
+}

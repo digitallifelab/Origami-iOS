@@ -95,7 +95,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         {
             let message = lvMessages[indexPath.row]
             messageCell.messageLabel.text = message.textBody
-            messageCell.avatarView.image = UIImage(named: "icon-No-Avatar")
+            messageCell.avatarView.image = UIImage(named: "icon-contacts")
             
             if let messageDate = message.dateCreated
             {

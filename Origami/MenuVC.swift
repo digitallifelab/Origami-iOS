@@ -90,7 +90,7 @@ class SideMenuCell: UITableViewCell
 
 class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, SwitchDelegate {
 
-    @IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
+    //@IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
     var menuTable:UITableView?
     var menuItemsTitles = ["Home", "Profile", "Contacts", "DisplayMode"]
     
@@ -99,7 +99,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
         // Do any additional setup after loading the view.
         
-        for aView in self.visialEffectBackgroundView.contentView.subviews
+        for aView in self.view.subviews
         {
             if let table = aView as? UITableView
             {

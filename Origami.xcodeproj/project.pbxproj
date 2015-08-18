@@ -29,6 +29,9 @@
 		F855BBCD1B74ED1500EC114C /* DBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCC1B74ED1500EC114C /* DBMessage.m */; };
 		F855BBD01B74ED9B00EC114C /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */; };
 		F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
+		F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */; };
+		F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */; };
+		F85CF1041B833D940048B3DE /* MessagesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1031B833D940048B3DE /* MessagesLoader.swift */; };
 		F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F864AB191B7252F600686EB1 /* ImageFilter.swift */; };
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
@@ -165,6 +168,9 @@
 		F855BBCE1B74ED9B00EC114C /* DatabaseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseHandler.h; sourceTree = "<group>"; };
 		F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseHandler.m; sourceTree = "<group>"; };
 		F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDateDetailsCell.swift; sourceTree = "<group>"; };
+		F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVC.swift; sourceTree = "<group>"; };
+		F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVCCell.swift; sourceTree = "<group>"; };
+		F85CF1031B833D940048B3DE /* MessagesLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesLoader.swift; sourceTree = "<group>"; };
 		F864AB191B7252F600686EB1 /* ImageFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFilter.swift; sourceTree = "<group>"; };
 		F86F237A1B208AEE00234EFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -437,9 +443,19 @@
 			name = MyContacts;
 			sourceTree = "<group>";
 		};
+		F85CF0FE1B830D440048B3DE /* AllContacts */ = {
+			isa = PBXGroup;
+			children = (
+				F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */,
+				F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */,
+			);
+			name = AllContacts;
+			sourceTree = "<group>";
+		};
 		F86F74251B56834E00E48E13 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
+				F85CF0FE1B830D440048B3DE /* AllContacts */,
 				F85CF0FD1B830D150048B3DE /* MyContacts */,
 				F86F74271B56836B00E48E13 /* ContactProfile */,
 			);
@@ -507,6 +523,7 @@
 			children = (
 				F8D456C21B1DEFFC00172667 /* DataSource.swift */,
 				F880D1801B25B22900E702D3 /* ServerRequester.swift */,
+				F85CF1031B833D940048B3DE /* MessagesLoader.swift */,
 				F8A1DFC61B7B727000A66692 /* Element.swift */,
 				F8A1DFC81B7B72D900A66692 /* Contact.swift */,
 				F8A1DFCA1B7B732B00A66692 /* Message.swift */,
@@ -967,6 +984,7 @@
 				F891BBE81B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
 				F87FE6C51B6126BC004CA576 /* ElementActionButtonsDataSource.swift in Sources */,
+				F85CF1041B833D940048B3DE /* MessagesLoader.swift in Sources */,
 				F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
 				F8A1DFCD1B7B735B00A66692 /* AttachFile.swift in Sources */,
@@ -977,6 +995,7 @@
 				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,
 				F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */,
 				F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */,
+				F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */,
 				F8885A911B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift in Sources */,
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
 				F8A1DFD31B7B74BE00A66692 /* Language.swift in Sources */,
@@ -1026,6 +1045,7 @@
 				F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */,
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F880D1971B25BB4000E702D3 /* AFHTTPRequestOperationManager.m in Sources */,
+				F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */,
 				F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */,
 				F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */,
 				F880D19D1B25BB4000E702D3 /* AFURLResponseSerialization.m in Sources */,

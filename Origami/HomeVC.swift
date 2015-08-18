@@ -54,6 +54,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
 
+        
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
         self.collectionSource = HomeCollectionHandler()
         self.collectionDashboard.dataSource = self.collectionSource
@@ -91,7 +92,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
         
         configureRightBarButtonItem()
-        configureLeftBarButtonItem()        
+        configureLeftBarButtonItem()
+        
+        DataSource.sharedInstance.startRefreshingNewMessages()
     }
 
     override func didReceiveMemoryWarning()
@@ -500,15 +503,15 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         return nil
     }
     
-    //MARK: Alert
-    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-    {
-        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-        alertController.addAction(closeAction)
-        
-        self.presentViewController(alertController, animated: true, completion: nil)
-    }
+//    //MARK: Alert
+//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
+//    {
+//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
+//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
+//        alertController.addAction(closeAction)
+//        
+//        self.presentViewController(alertController, animated: true, completion: nil)
+//    }
     
     
     
@@ -560,7 +563,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        self.tabBarController?.tabBar.tintColor = kWhiteColor
+      
         
         if nightModeOn
         {
@@ -568,7 +571,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
 
-            
+            //self.tabBarController?.tabBar.tintColor = kWhiteColor
             self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
         }
         else
@@ -579,6 +582,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
 
+            //self.tabBarController?.tabBar.tintColor = kDayCellBackgroundColor
         }
         
         self.collectionSource?.turnNightModeOn(nightModeOn)

@@ -50,12 +50,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         if let ourElement = self.currentElement
         {
+            println("pass Whom IDs old: \(ourElement.passWhomIDs)")
             DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
                 if let aSelf = self
                 {
                     if finished
                     {
                         aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElement.elementId!.integerValue)
+                        println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
                     }
                     else
                     {
@@ -865,6 +867,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 })
             }
             
+         
+            
             if !newIDsSet.isEmpty && newIDsSet.isDisjointWith(existingIDsSet)
             {
                 // add contacts to element
@@ -887,6 +891,35 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     }
                 })
             }
+            else
+            {
+                let contactIDsToAdd = newIDsSet.subtract(existingIDsSet)
+                if !contactIDsToAdd.isEmpty
+                {
+                    
+                    // add contacts to element
+                    DataSource.sharedInstance.addSeveralContacts(contactIDsToAdd,
+                        toElement: editingElement.elementId!.integerValue,
+                        completion: {[weak self] (succeededIDs, failedIDs) -> () in
+                            
+                            println("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
+                            
+                            if let aSelf = self
+                            {
+                                var numbersSet = Set<NSNumber>()
+                                for anInt in newIDsSet
+                                {
+                                    numbersSet.insert(NSNumber(integer: anInt))
+                                }
+                                let newSet = Set(existingPassWhonIDs).union(numbersSet)
+                                
+                                aSelf.currentElement?.passWhomIDs = Array(newSet)
+                            }
+                        })
+
+                }
+            }
+            
         }
         
     }
@@ -1048,13 +1081,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         showChatForCurrentElement()
     }
     
-    //MARK: Alert
-    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-    {
-        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-        alertController.addAction(closeAction)
-        
-        self.presentViewController(alertController, animated: true, completion: nil)
-    }
+//    //MARK: Alert
+//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
+//    {
+//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
+//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
+//        alertController.addAction(closeAction)
+//        
+//        self.presentViewController(alertController, animated: true, completion: nil)
+//    }
 }

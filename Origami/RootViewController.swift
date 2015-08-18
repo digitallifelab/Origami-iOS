@@ -10,6 +10,8 @@ import UIKit
 
 class RootViewController: UIViewController {
     
+    //var messagesLoader = MessagesLoader()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,10 +28,10 @@ class RootViewController: UIViewController {
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        
         if let user = DataSource.sharedInstance.user
         {
             self.performSegueWithIdentifier("ShowMainTabbar", sender: nil)
+            DataSource.sharedInstance.messagesLoader = MessagesLoader()//self.messagesLoader
             return
         }
         

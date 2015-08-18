@@ -16,7 +16,7 @@ class AttachFile :NSObject
     var fileName:String?
     var createDate:String?
     
-    convenience init(info:Dictionary<String,AnyObject>)
+    convenience init(info:[String:AnyObject])
     {
         self.init()
         

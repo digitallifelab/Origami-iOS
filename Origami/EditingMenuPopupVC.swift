@@ -51,16 +51,19 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
     {
         if indexPath.row >= 0 && indexPath.row < menuItems.count
         {
+            cell.leftIcon.tintColor = kDayCellBackgroundColor
             cell.menuItemlabel.text = menuItems[indexPath.row]
-            cell.leftIcon.image = UIImage(named: "icon-gear")
             switch indexPath.row
             {
             case 0:
-                cell.leftIcon.tintColor = kDayCellBackgroundColor
+                cell.leftIcon.image = UIImage(named: "icon-newElement")
+                
             case 1:
-                cell.leftIcon.tintColor = kNightSignalColor
+                cell.leftIcon.image = UIImage(named: "button-attach")
+                //cell.leftIcon.tintColor = kNightSignalColor
             case 2:
-                cell.leftIcon.tintColor = kDaySignalColor
+                cell.leftIcon.image = UIImage(named: "icon-chat")
+                //cell.leftIcon.tintColor = kDaySignalColor
             default:
                 cell.leftIcon.tintColor = UIColor.blackColor()
             }

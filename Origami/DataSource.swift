@@ -8,10 +8,13 @@
 
 import UIKit
 import ImageIO
+
+typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
+
 @objc class DataSource: NSObject
 {
     typealias voidClosure = () -> ()
-    typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
+    
     typealias messagesArrayClosure = ([Message]?) -> ()
     typealias elementsArrayClosure = ([Element]?) -> ()
     typealias contactsArrayClosure = ([Contact]?) -> ()
@@ -57,6 +60,8 @@ import ImageIO
     
     private var databaseHandler:DatabaseHandler?
     
+    var messagesLoader:MessagesLoader?
+    
     private lazy var dataCache:NSCache = NSCache()
     lazy var pendingAttachFileDataDownloads = [NSNumber:Bool]()
     //private stuff
@@ -93,7 +98,13 @@ import ImageIO
             DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
             DataSource.sharedInstance.attaches.removeAll(keepCapacity: false)
             DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
+           
+            DataSource.sharedInstance.stopRefreshingNewMessages()
+            DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
+            
             DataSource.sharedInstance.removeAllObserversForNewMessages()
+            
+            DataSource.sharedInstance.messagesLoader = nil
             
             NSUserDefaults.standardUserDefaults().removeObjectForKey(passwordKey)
             NSUserDefaults.standardUserDefaults().synchronize()
@@ -172,22 +183,8 @@ import ImageIO
                     {
                         for (keyElementId, messages) in lvMessagesHolder
                         {
-//                            if var existingMessages = DataSource.sharedInstance.messages[keyElementId]
-//                            {
-                                DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
-//                                existingMessages += messages
-//                                DataSource.sharedInstance.messages[keyElementId] = existingMessages
-//                            }
-//                            else
-//                            {
-//                                DataSource.sharedInstance.messages[keyElementId] = messages
-//                            }
+                            DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
                         }
-                        let messagesSet = Set(messagesArray)
-                        DataSource.sharedInstance.databaseHandler?.insertMessagesToLocalDatabase(messagesSet,
-                            completion: { (responseInfo, insertionError) in
-                            
-                        })
                         
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
                         
@@ -298,7 +295,7 @@ import ImageIO
                 }
                 else
                 {
-                    let reversedArray = existingMessagesForElementId.reverse()
+                    let reversedArray = existingMessagesForElementId//.reverse()
                     for var i = 0; i < validQuantity; i++
                     {
                         let lvMessageToCheck = reversedArray[i]
@@ -444,6 +441,80 @@ import ImageIO
         return response
     }
     
+    func startRefreshingNewMessages()
+    {
+        DataSource.sharedInstance.stopRefreshingNewMessages()
+        if let loader = DataSource.sharedInstance.messagesLoader
+        {
+            loader.startRefreshingLastMessages()
+        }
+    }
+    
+    func stopRefreshingNewMessages()
+    {
+        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
+    }
+    
+    func loadLastMessages(completion:successErrorClosure?)
+    {
+        DataSource.sharedInstance.serverRequester.loadNewMessages { (messages, error) -> () in
+            if let anError = error
+            {
+                if let completionBlock = completion
+                {
+                    completionBlock(success: false, error: anError)
+                }
+            }
+            else
+            {
+                if let messagesArray = messages
+                {
+                    var lvMessagesHolder = [NSNumber:[Message]]()
+                    for lvMessage in messagesArray
+                    {
+                        //println(">>> ElementId:\(lvMessage.elementId) , Message: \(lvMessage.textBody)")
+                        if lvMessagesHolder[lvMessage.elementId!] != nil
+                        {
+                            lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
+                        }
+                        else
+                        {
+                            lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
+                        }
+                    }
+                    
+                    if !lvMessagesHolder.isEmpty
+                    {
+                        for (keyElementId, messages) in lvMessagesHolder
+                        {
+                            DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
+                        }
+                        
+                        //NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
+                        
+                        if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
+                        {
+                            DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: { (lastMessages) -> () in
+                                
+                                if let lastMessagesReal = lastMessages
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        observerForHomeScreen.newMessagesAdded(lastMessagesReal)
+                                    })
+                                }
+                            })
+                        }
+                        
+                    }
+                }
+                
+                if let completionBlock = completion
+                {
+                    completionBlock(success: true, error: nil)
+                }
+            }
+        }
+    }
     //MARK: Element
     /**
         submitNewElementToServer completion : Sends POST request to server to create new Element.
@@ -1614,6 +1685,76 @@ import ImageIO
             }
         })
     }
+    
+    func deleteMyContact(contact:Contact, completion:((success:Bool, error:NSError?)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.removeMyContact(contact.contactId!.integerValue, completion: { (success, error) -> () in
+            if success
+            {
+                var currentContacts = Set(DataSource.sharedInstance.contacts)
+                let countBefore = currentContacts.count
+                currentContacts.remove(contact)
+                let countAfter = currentContacts.count
+                if countAfter == countBefore
+                {
+                    println("\n Warning!! DataSource did NOT REMOVE contact from mycontacts\n")
+                }
+                
+                var sorted = Array(currentContacts).sorted({ (contact1, contact2) -> Bool in
+                    if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
+                    {
+                        return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
+                    }
+                    
+                    return true
+                })
+                
+                DataSource.sharedInstance.contacts = sorted
+            }
+            
+            //return from function
+            if let completionBlock = completion
+            {
+                completionBlock(success: success, error: error)
+            }
+        })
+    }
+    
+    func addNewContactToMyContacts(contact:Contact, completion:((success:Bool, error:NSError?)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.addToMyContacts(contact.contactId!.integerValue, completion: { (success, error) -> () in
+            if success
+            {
+                var currentContacts = Set(DataSource.sharedInstance.contacts)
+                let countBefore = currentContacts.count
+                currentContacts.insert(contact)
+                let countAfter = currentContacts.count
+                if countAfter == countBefore
+                {
+                    println("\n Warning!! DataSource did NOT ADD contact from myContacts\n")
+                }
+                
+                var sorted = Array(currentContacts).sorted({ (contact1, contact2) -> Bool in
+                    if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
+                    {
+                        return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
+                    }
+                    
+                    return true
+                })
+                
+                DataSource.sharedInstance.contacts = sorted
+            }
+            
+            //return from function
+            if let completionBlock = completion
+            {
+                completionBlock(success: success, error: error)
+            }
+        })
+    }
+    
+    
     //MARK: Avatars
     func addAvatarData(avatarBytes:NSData, forContactUserName userName:String) -> ResponseType
     {

@@ -15,7 +15,9 @@ class HomeScreenTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let isNightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
-        self.tabBar.tintColor = (isNightModeOn) ? kWhiteColor : kDayNavigationBarBackgroundColor
+       // self.tabBar.tintColor = (isNightModeOn) ? kWhiteColor : kDayCellBackgroundColor
+        //UITabBar.appearance().tintColor = (isNightModeOn) ? kWhiteColor : kDayCellBackgroundColor
+        self.tabBar.tintColor = kWhiteColor //: kDayCellBackgroundColor
     }
 //    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator)
 //    {

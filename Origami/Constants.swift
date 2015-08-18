@@ -31,6 +31,7 @@ let favContactURLPart = "SetFavoriteContact"
 //Messages
 let getAllMessagesPart = "GetMessages"
 let sendMessageUrlPart = "SendElementMessage"
+let getNewMessagesUrlPart = "GetNewMessages"
 //Elements
 let elementIdKey = "elementId"
 let elementKey = "element"

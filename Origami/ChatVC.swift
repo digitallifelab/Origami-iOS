@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableViewDataSource {
+class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableViewDataSource, UITableViewDelegate {
 
     var currentElement:Element?
     
@@ -21,6 +21,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     var currentChatMessages = [Message](){
         didSet{
             println("Chat Messages Count: \(currentChatMessages.count)")
+        }
+    }
+    
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            
         }
     }
     override func viewDidLoad() {
@@ -81,7 +87,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             self.view.backgroundColor = UIColor.blackColor()
             self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            bottomControlsContainerView.attachButton.tintColor = kWhiteColor
             self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
         }
         else
@@ -89,7 +95,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            self.tabBarController?.tabBar.tintColor = kWhiteColor
+            bottomControlsContainerView.attachButton.tintColor = kDayNavigationBarBackgroundColor
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
             
         }
@@ -102,11 +108,24 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         
         //TODO: switch message cells night-day modes
-       // self.collectionSource?.turnNightModeOn(nightModeOn)
-       // self.collectionDashboard.reloadData()
+        self.turnNightModeOn(nightModeOn)
+        self.chatTable.reloadData()
+       
         
     }
     
+    //MARK: DayMode
+    func turnNightModeOn(nightMode:Bool)
+    {
+        if nightMode
+        {
+            self.displayMode = .Night
+        }
+        else
+        {
+            self.displayMode = .Day
+        }
+    }
     
     //MARK: ChatInputViewDelegate
     func chatInputView(inputView: ChatTextInputView, wantsToChangeToNewSize desiredSize:CGSize) {
@@ -252,19 +271,26 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 indexPaths.append(lvIndexPath)
                 self.currentChatMessages.append(message)
             }
+            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.reloadChatTable()
+                    //weakSelf.scrollToLastMessage()
+                }
+           
+            })
             
-            chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
         }
     }
-    //MARK: Alert
-    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-    {
-        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-        alertController.addAction(closeAction)
-        
-        self.presentViewController(alertController, animated: true, completion: nil)
-    }
+//    //MARK: Alert
+//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
+//    {
+//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
+//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
+//        alertController.addAction(closeAction)
+//        
+//        self.presentViewController(alertController, animated: true, completion: nil)
+//    }
     //MARK: MISCELANEOUS
     
     func setupNavigationBar()
@@ -322,7 +348,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         chatTable.rowHeight = UITableViewAutomaticDimension
         chatTable.estimatedRowHeight = 100.0
         chatTable.dataSource = self
-       
+        chatTable.delegate = self
         //chatTable.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.None)
         
         chatTable.reloadData()
@@ -338,10 +364,18 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         let contentHeight = chatTable.contentSize.height
         if contentHeight > chatTable.bounds.size.height
         {
-            if let lvIndexPath = chatTable.indexPathForRowAtPoint(CGPointMake(0.0, contentHeight - 150))
+            if let lvIndexPath = chatTable.indexPathForRowAtPoint(CGPointMake(0.0, contentHeight + 50.0))
             {
+                println("target indexpath: \(lvIndexPath)")
                 chatTable.scrollToRowAtIndexPath(lvIndexPath, atScrollPosition: .Bottom, animated: true)
             }
+            else
+            {
+                let targetRect = CGRectMake(0, contentHeight, chatTable.bounds.size.width, 50)
+                println("target rect to scroll: \(targetRect)")
+                chatTable.scrollRectToVisible( targetRect, animated: true)
+            }
+            
         }
     }
     
@@ -365,15 +399,17 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             {
                 var sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
                 sentCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
-                sentCell.messageLabel.text = existingMessage.textBody
-                
+                sentCell.message = existingMessage.textBody
+                sentCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
                 return sentCell
             }
             else
             {
                 var recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
-                recievedCell.messageLabel.text = existingMessage.textBody
+                recievedCell.message = existingMessage.textBody
+                recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
                 recievedCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
+                recievedCell.avatar.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
                 return recievedCell
             }
         }
@@ -382,6 +418,24 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             let tableViewDefaultCell = UITableViewCell(style: .Default, reuseIdentifier: "EmptyCell")
             return tableViewDefaultCell
         }
+    }
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        if let aCell = cell as? ChatMessageRecievedCell
+        {
+            aCell.roundCorners()
+        }
+        if let aCell = cell as? ChatMessageSentCell
+        {
+            aCell.roundCorners()
+        }
+    }
+    
+    //MARK: UITableViewDelegate
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        bottomControlsContainerView.endEditing(true)
     }
     
     //MARK: Segue

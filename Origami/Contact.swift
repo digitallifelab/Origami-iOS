@@ -39,15 +39,20 @@ class Contact:NSObject
         
         if let name = info["FirstName"] as? NSString
         {
-            self.firstName = name
+            var fixedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            self.firstName = fixedName
+            //println("\(self.firstName)")
         }
         if let last = info["LastName"] as? NSString
         {
-            self.lastName = last
+            var fixedSurname = last.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            self.lastName = fixedSurname
+            //println("\(self.lastName)")
         }
         if let uName = info["LoginName"] as? NSString
         {
-            self.userName = uName
+            var fixedUserName = uName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            self.userName = fixedUserName
         }
         if let element = info["ElementId"] as? NSNumber
         {
@@ -64,6 +69,7 @@ class Contact:NSObject
         if let lvState = info["State"] as? NSNumber
         {
             self.state = lvState
+            //println("contact state:\(self.state)")
         }
         if let reg = info["RegDate"] as? NSString
         {
