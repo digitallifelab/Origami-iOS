@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContactListCell: UITableViewCell {
+class MyContactListCell: UITableViewCell {
 
     
     @IBOutlet var avatar:UIImageView!

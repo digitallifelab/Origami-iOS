@@ -527,8 +527,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 anElement.passWhomIDs.removeAll(keepCapacity: false)
             }
-           
-            
             
             anElement.rootElementId = NSNumber(integer:  self.rootElementID)
             

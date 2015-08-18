@@ -33,10 +33,10 @@
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
-		F86F74291B56838B00E48E13 /* ContactsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74281B56838B00E48E13 /* ContactsListVC.swift */; };
+		F86F74291B56838B00E48E13 /* MyContactsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74281B56838B00E48E13 /* MyContactsListVC.swift */; };
 		F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742A1B56839D00E48E13 /* ContactProfileVC.swift */; };
 		F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */; };
-		F86F742F1B5684A500E48E13 /* ContactListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742E1B5684A500E48E13 /* ContactListCell.swift */; };
+		F86F742F1B5684A500E48E13 /* MyContactListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742E1B5684A500E48E13 /* MyContactListCell.swift */; };
 		F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */; };
 		F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */; };
 		F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */; };
@@ -171,10 +171,10 @@
 		F86F237D1B208C7D00234EFD /* FileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandler.h; sourceTree = "<group>"; };
 		F86F237E1B208C7D00234EFD /* FileHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileHandler.m; sourceTree = "<group>"; };
 		F86F23801B20A29600234EFD /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
-		F86F74281B56838B00E48E13 /* ContactsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsListVC.swift; sourceTree = "<group>"; };
+		F86F74281B56838B00E48E13 /* MyContactsListVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyContactsListVC.swift; sourceTree = "<group>"; };
 		F86F742A1B56839D00E48E13 /* ContactProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileVC.swift; sourceTree = "<group>"; };
 		F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
-		F86F742E1B5684A500E48E13 /* ContactListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactListCell.swift; sourceTree = "<group>"; };
+		F86F742E1B5684A500E48E13 /* MyContactListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyContactListCell.swift; sourceTree = "<group>"; };
 		F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileAvatarCollectionCell.swift; sourceTree = "<group>"; };
 		F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileTextContainerCell.swift; sourceTree = "<group>"; };
 		F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileFlowLayout.swift; sourceTree = "<group>"; };
@@ -428,11 +428,19 @@
 			name = DatabaseObjects;
 			sourceTree = "<group>";
 		};
+		F85CF0FD1B830D150048B3DE /* MyContacts */ = {
+			isa = PBXGroup;
+			children = (
+				F86F74281B56838B00E48E13 /* MyContactsListVC.swift */,
+				F86F742E1B5684A500E48E13 /* MyContactListCell.swift */,
+			);
+			name = MyContacts;
+			sourceTree = "<group>";
+		};
 		F86F74251B56834E00E48E13 /* Contacts */ = {
 			isa = PBXGroup;
 			children = (
-				F86F74281B56838B00E48E13 /* ContactsListVC.swift */,
-				F86F742E1B5684A500E48E13 /* ContactListCell.swift */,
+				F85CF0FD1B830D150048B3DE /* MyContacts */,
 				F86F74271B56836B00E48E13 /* ContactProfile */,
 			);
 			name = Contacts;
@@ -928,7 +936,7 @@
 				F8A1DFCB1B7B732B00A66692 /* Message.swift in Sources */,
 				F8D0A3481B5FCE7F0033FD43 /* MenuVC.swift in Sources */,
 				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
-				F86F742F1B5684A500E48E13 /* ContactListCell.swift in Sources */,
+				F86F742F1B5684A500E48E13 /* MyContactListCell.swift in Sources */,
 				F8A1DFD11B7B74AB00A66692 /* Country.swift in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
 				F8521FEB1B78906500B418A3 /* HomeVCCollectionHandler.swift in Sources */,
@@ -986,7 +994,7 @@
 				F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */,
 				F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */,
 				F8C62DC51B3AC2A500324C0B /* AttachesCollectionViewLayout.swift in Sources */,
-				F86F74291B56838B00E48E13 /* ContactsListVC.swift in Sources */,
+				F86F74291B56838B00E48E13 /* MyContactsListVC.swift in Sources */,
 				F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */,
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,

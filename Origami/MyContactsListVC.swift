@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource {
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet var myContactsTable:UITableView!
     
@@ -110,12 +110,12 @@ class ContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSou
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var contactCell = tableView.dequeueReusableCellWithIdentifier("MyContactCell", forIndexPath: indexPath) as! ContactListCell
+        var contactCell = tableView.dequeueReusableCellWithIdentifier("MyContactCell", forIndexPath: indexPath) as! MyContactListCell
         configureCell(contactCell, forIndexPath:indexPath)
         return contactCell
     }
     
-    private func configureCell(cell: ContactListCell, forIndexPath indexPath:NSIndexPath)
+    private func configureCell(cell: MyContactListCell, forIndexPath indexPath:NSIndexPath)
     {
         if let contact = contactForIndexPath(indexPath)
         {

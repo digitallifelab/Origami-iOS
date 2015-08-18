@@ -680,7 +680,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func showContactsVC()
     {
-        if let contactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("ContactsListVC") as? ContactsListVC
+        if let contactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("MyContactsListVC") as? MyContactsListVC
         {
             let contactsNavHolderVC = UINavigationController(rootViewController: contactsVC)
             
