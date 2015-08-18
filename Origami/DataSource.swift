@@ -1215,6 +1215,7 @@ import ImageIO
     {
         return DataSource.sharedInstance.dataCache.objectForKey(file.fileName!) as? NSData
     }
+    
     private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage
     {
         //let reduceTagretSize = CGSizeMake(180, 140) // 90x70 cell size x 2

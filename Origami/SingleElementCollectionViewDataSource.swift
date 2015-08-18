@@ -541,6 +541,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return true
         }
+        else if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(handledElement!)
+        {
+            for anElement in elementsTree
+            {
+                if anElement.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+                {
+                    return true
+                }
+            }
+        }
         
         return false
     }
