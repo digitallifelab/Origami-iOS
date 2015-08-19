@@ -19,10 +19,12 @@ class ContactCheckerCell: UITableViewCell {
             if displayMode == .Day
             {
                 nameLabel.textColor = UIColor.blackColor()
+                checkBox.tintColor = kDayCellBackgroundColor
             }
             else
             {
                 nameLabel.textColor = UIColor.lightGrayColor()
+                checkBox.tintColor = kWhiteColor
             }
         }
     }

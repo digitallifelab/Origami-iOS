@@ -194,7 +194,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-      
         var currentContact = contactForIndexPath(indexPath)
         var nameLabelText = ""
         
@@ -217,13 +216,15 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
         contactCell.nameLabel.text = nameLabelText
         contactCell.displayMode = self.displayMode
+        contactCell.selectionStyle = UITableViewCellSelectionStyle.None
+        
         switch indexPath.section
         {
         case 0:
-            contactCell.checkBox.image = checkedCheckboxImage
+            contactCell.checkBox.image = checkedCheckboxImage//?.imageWithRenderingMode(.AlwaysTemplate)
             return contactCell
         case 1:
-            contactCell.checkBox.image = unCheckedCheckboxImage
+            contactCell.checkBox.image = unCheckedCheckboxImage//?.imageWithRenderingMode(.AlwaysTemplate)
             return contactCell
         default:
             let defaultCell = UITableViewCell(style: .Default, reuseIdentifier: "DummyCell") as UITableViewCell

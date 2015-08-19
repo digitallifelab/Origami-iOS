@@ -1849,14 +1849,48 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 if let error = errorSaving
                                 {
                                     println(" Did not save currently loaded avatar for user name: \(loginName)")
+                                    
+                                    if let completionClosure = completionBlock
+                                    {
+                                        completionClosure(image: nil)
+                                    }
                                 }
+                                
+                                //again
+                                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(loginName, completion: { (image, error) -> () in
+                                    if let toReturnImage = image
+                                    {
+                                        if let completionClosure = completionBlock
+                                        {
+                                            completionClosure(image: toReturnImage)
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if let completionClosure = completionBlock
+                                        {
+                                            completionClosure(image: nil)
+                                        }
+                                    }
+                                })
                             })
+                        }
+                        else
+                        {
+                            
                         }
                         return
                     }
                     if let anError = error
                     {
                         println(" Error while downloading avatar for userName: \(loginName): \n \(anError.description) ")
+                    }
+                    else
+                    {
+                        if let completionClosure = completionBlock
+                        {
+                            completionClosure(image: nil)
+                        }
                     }
                     
                 })

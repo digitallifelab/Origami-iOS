@@ -43,6 +43,9 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 }
             }
         }
+        
+        myContactsTable.estimatedRowHeight = 60
+        myContactsTable.rowHeight = UITableViewAutomaticDimension
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,6 +75,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func configureNavigationItems()
     {
+        self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
+        
         let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Reply, target: self, action: "dismissSelf:")
         self.navigationItem.leftBarButtonItem = closeButton
         
@@ -79,7 +84,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         contactsSearchButton?.enabled = false
         self.navigationItem.rightBarButtonItem = contactsSearchButton
         
-        let segmentedControl = UISegmentedControl(items: ["All", "Favourite"])
+        let segmentedControl = UISegmentedControl(items: ["All".localizedWithComment(""), "Favourite".localizedWithComment("")])
         segmentedControl.selectedSegmentIndex = 0
         self.navigationItem.titleView = segmentedControl
     }
@@ -151,23 +156,30 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             }
             cell.nameLabel.text = nameString
             
+            
+            cell.moodLabel?.text = "status" //contact.mood as? String //
+            
             //favourite
             if contact.isFavourite.boolValue
             {
-                cell.favouriteButton.tintColor = UIColor.yellowColor()
+                cell.favouriteButton.tintColor = kDaySignalColor
             }
             else
             {
-                cell.favouriteButton.tintColor = UIColor.blackColor()
+                cell.favouriteButton.tintColor = UIColor.grayColor()
             }
+            cell.favouriteButton.tag = indexPath.row
+            
             
             //email field
-            cell.emailLabel?.text = contact.userName as? String
+            //cell.emailLabel?.text = contact.userName as? String
             
             //phone field
-            cell.phoneLabel?.text = contact.phone as? String
+            //cell.phoneLabel?.text = contact.phone as? String
+          
             
             //avatar
+            cell.avatar.tintColor = kDayCellBackgroundColor
             DataSource.sharedInstance.loadAvatarForLoginName(contact.userName as! String, completion: {[weak cell] (image) -> () in
                 if let weakCell = cell, avatarImage = image
                 {
@@ -232,11 +244,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func contactFavouriteToggledNotification(notification:NSNotification?)
     {
         if let
-            userName = notification?.userInfo?["userName"] as? String,
-            contact = self .contactByUserName(userName),
+            userIndex = notification?.userInfo?["index"] as? Int,
+            contact = self.contactForIndexPath(NSIndexPath(forRow: userIndex, inSection: 0)),
             contactIdInt = contact.contactId?.integerValue
         {
-            
             DataSource.sharedInstance.updateContactIsFavourite(contactIdInt, completion: {[weak self] (success, error) -> () in
                 if success
                 {

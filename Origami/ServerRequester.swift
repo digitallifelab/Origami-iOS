@@ -977,8 +977,20 @@ class ServerRequester: NSObject
                             {
                                 toReturnCompletion(avatarData: aData, error: nil)
                             }
+                            else
+                            {
+                                toReturnCompletion(avatarData: nil, error: nil)
+                            }
+                        }
+                        else
+                        {
+                            toReturnCompletion(avatarData: nil, error: nil)
                         }
                         return
+                    }
+                    if let anError = responseError
+                    {
+                        println("\(anError)")
                     }
                     toReturnCompletion(avatarData: nil, error: responseError)
                 }
@@ -1252,6 +1264,7 @@ class ServerRequester: NSObject
     
     func toggleContactFavourite(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
             let favUrlString = serverURL + favContactURLPart + "?token=" + userToken + "&contactId=" + "\(contactId)"
@@ -1264,17 +1277,20 @@ class ServerRequester: NSObject
                         completionBlock(success: true, error: nil)
                     }
                 }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }, failure: { (operation, error) -> Void in
                 if let completionBlock = completion
                 {
                     completionBlock(success: false, error: error)
                 }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
             favOperation.start()
             return
         }
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         if let completionBlock = completion
         {
             completionBlock(success: false, error: noUserTokenError)
@@ -1283,59 +1299,21 @@ class ServerRequester: NSObject
     
     func removeMyContact(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
-        /*
-        //RemoveContact?contactId={contactId}&token={token}
-        NSString *requestUrlString = [NSString stringWithFormat:@"%@RemoveContact", BasicURL];
-        
-        NSDictionary *parameters = @{@"contactId":idNumber, @"token":_currentUser.token};
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setTimeoutInterval:15];
-        
-        AFHTTPRequestOperation *requestOp = [manager GET:requestUrlString
-        parameters:parameters
-        success:^(AFHTTPRequestOperation *operation, id responseObject)
-        {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        
-        NSDictionary *response = (NSDictionary *)responseObject;
-        
-        NSLog(@"\n--removeContactWithId-- Success response:\n- %@",response);
-        if (completionBlock)
-        {
-        completionBlock(response,nil);
-        }
-        
-        
-        
-        }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error)
-        {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        NSLog(@"\n removeContactWithId Error: \n-%@", error);
-        if (completionBlock)
-        {
-        completionBlock(nil, error);
-        }
-        }];
-        
-        [requestOp start];
-        
-        */
-        
-        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
             let removeUrlString = serverURL + "RemoveContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
             let removeContactOperation = httpManager.GET(removeUrlString, parameters: nil, success: { (operation, response) -> Void in
                 if let aResponse = response as? [NSObject:AnyObject]
                 {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     if let completionBlock = completion
                     {
                         completionBlock(success: true, error: nil)
                     }
                 }
                 }, failure: { (operation, error) -> Void in
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     if let completionBlock = completion
                     {
                         completionBlock(success: false, error: error)
@@ -1346,6 +1324,7 @@ class ServerRequester: NSObject
             return
         }
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         if let completionBlock = completion
         {
             completionBlock(success: false, error: noUserTokenError)
@@ -1354,47 +1333,7 @@ class ServerRequester: NSObject
     
     func addToMyContacts(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
-        /*
-        NSString *requestUrlString = [NSString stringWithFormat:@"%@AddContact", BasicURL];
-        
-        NSDictionary *parameters = @{@"contactId":idNumber, @"token":_currentUser.token}; //we send UserID, not ContactID  here, because server returns USER object on search querry
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        [manager.requestSerializer setTimeoutInterval:15];
-        
-        AFHTTPRequestOperation *requestOp = [manager GET:requestUrlString
-        parameters:parameters
-        success:^(AFHTTPRequestOperation *operation, id responseObject)
-        {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        
-        NSDictionary *response = (NSDictionary *)responseObject;
-        
-        //[[DataSource sharedInstance].contacts removeAllObjects];
-        
-        [[ServerRequester sharedRequester] loadContactsWithCompletion:^(NSDictionary *successResponse, NSError *error)
-        {
-        if (completionBlock)
-        {
-        completionBlock(response,nil);
-        }
-        } progressView:nil];
-        
-        }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error)
-        {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-        NSLog(@"\n addContactWithId: Error: \n-%@", error);
-        if (completionBlock)
-        {
-        completionBlock(nil,error);
-        }
-        }];
-        
-        [requestOp start];
-        
-        */
-        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
             let addUrlString = serverURL + "AddContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
@@ -1406,17 +1345,19 @@ class ServerRequester: NSObject
                         completionBlock(success: true, error: nil)
                     }
                 }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 }, failure: { (operation, error) -> Void in
                     if let completionBlock = completion
                     {
                         completionBlock(success: false, error: error)
                     }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
             addContactOperation.start()
             return
         }
-        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         if let completionBlock = completion
         {
             completionBlock(success: false, error: noUserTokenError)

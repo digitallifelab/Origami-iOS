@@ -20,7 +20,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
 
         // Do any additional setup after loading the view.
         
-        contactsTable?.estimatedRowHeight = 94.0
+        contactsTable?.estimatedRowHeight = 60
         contactsTable?.rowHeight = UITableViewAutomaticDimension
         
         if let existContacts = allContacts
@@ -34,6 +34,8 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 return false
             })
         }
+        
+       
     }
 
     override func didReceiveMemoryWarning() {
@@ -67,14 +69,14 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         {
             cell.contactIsMine = contactIsMine(contact)
             
-            
             var firstName = contact.firstName as? String
             var lastName = contact.lastName as? String
             var userName = contact.userName as? String
             var phoneNumber = contact.phone as? String
-            cell.phoneNumber?.text = phoneNumber
-            cell.emailLabel?.text = userName
-            
+            var userMood = contact.mood as? String
+            //cell.phoneNumber?.text = phoneNumber ?? "phone no."
+            //cell.emailLabel?.text = userName
+             cell.moodLabel?.text = /*userMood ??*/ "status"
             var contactName = ""
             
             if firstName != nil
@@ -95,12 +97,18 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             //println(contactName)
             cell.nameLabel?.text = (contactName.isEmpty) ? nil : contactName
             
+           
+            
+            cell.avatarImageView?.tintColor = kDayNavigationBarBackgroundColor
             //avatar
             DataSource.sharedInstance.loadAvatarForLoginName(contact.userName as! String, completion: {[weak cell] (image) -> () in
-                if let weakCell = cell, avatarImage = image
-                {
-                    weakCell.avatarImageView?.image = avatarImage
-                }
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    if let weakCell = cell, avatarImage = image
+                    {
+                        weakCell.avatarImageView?.image = avatarImage
+                    }
+                })
+                
             })
         }
     }

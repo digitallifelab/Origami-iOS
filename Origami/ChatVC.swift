@@ -185,6 +185,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     })
                 }
             }
+            else
+            {
+                inputView.endTyping(clearText: true) //to set default attributed text
+            }
         }
     }
     

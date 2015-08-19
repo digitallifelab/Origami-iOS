@@ -64,8 +64,8 @@ let kWhiteColor = UIColor.whiteColor()
 let kBlackColor = UIColor.blackColor()
 
 //MARK:App-Wide colors end
-let checkedCheckboxImage = UIImage(named: "icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
-let unCheckedCheckboxImage = UIImage(named: "icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
+let checkedCheckboxImage = UIImage(named: "icon-checked")//?.imageWithRenderingMode(.AlwaysTemplate)
+let unCheckedCheckboxImage = UIImage(named: "icon-unchecked")//?.imageWithRenderingMode(.AlwaysTemplate)
 
 let noImageIcon = UIImage(named: "icon-No-Image")
 

@@ -16,7 +16,7 @@ class ChatTextInputView: UIView, UITextViewDelegate {
     @IBOutlet var attachButton:UIButton!
     var delegate:ChatInputViewDelegate?
     
-    
+    let emptyAttributedText = NSAttributedString(string: "TapToType".localizedWithComment(""), attributes:[NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] as [NSObject:AnyObject])
     
     //MARK: Actions
     @IBAction func sendButtonTapped(sender:UIButton)
@@ -33,10 +33,11 @@ class ChatTextInputView: UIView, UITextViewDelegate {
     {
         if clear
         {
-            let attributes = [NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] as [NSObject:AnyObject]
-            let attributedText = NSAttributedString(string: "Tap to start typing", attributes:attributes)
+//            let attributes = [NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] as [NSObject:AnyObject]
+//            let attributedText = NSAttributedString(string: "TapToType".localizedWithComment(""), attributes:attributes)
             
-            textView.attributedText = attributedText
+            textView.attributedText = emptyAttributedText
+            sendButton.enabled = false
         }
         textView.resignFirstResponder()
     }
@@ -46,6 +47,14 @@ class ChatTextInputView: UIView, UITextViewDelegate {
     {
         if let text = textView.text
         {
+            if text.isEmpty
+            {
+                sendButton.enabled = false
+            }
+            else
+            {
+                sendButton.enabled = true
+            }
             //let lvDesiredFrame = FrameCounter.calculateFrameForTextView(textView, text: text, targetWidth: textView.bounds.size.width)
             let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
             
@@ -53,6 +62,10 @@ class ChatTextInputView: UIView, UITextViewDelegate {
             {
                 self.delegate?.chatInputView(self, wantsToChangeToNewSize:lvTestSize)
             }
+        }
+        else
+        {
+            sendButton.enabled = false
         }
     }
     

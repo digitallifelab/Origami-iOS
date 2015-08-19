@@ -34,8 +34,11 @@ class ChatPreviewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        avatarView.backgroundColor = UIColor.clearColor()
+        avatarView.image = UIImage(named: "icon-contacts")
         avatarView.maskToCircle()
         self.backgroundColor = UIColor.clearColor() //needed for ipad - ignores this setting in I.B.
+        
     }
 
     
