@@ -35,7 +35,13 @@ class ChatMessageRecievedCell: UITableViewCell {
     }
     
     
-
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        messageLabel.preferredMaxLayoutWidth = 200.0
+        super.layoutSubviews()
+        //setMaskTo(self.textContainerView, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight | UIRectCorner.TopRight, withColor: UIColor.lightGrayColor())
+    }
+    
     func roundCorners()
     {
         self.layoutIfNeeded()
@@ -46,23 +52,25 @@ class ChatMessageRecievedCell: UITableViewCell {
     func setMaskTo(view:UIView, byRoundingCorners corners:UIRectCorner, withColor color:UIColor)
     {
         let rect = view.bounds
-        println("layout bounds: \(rect)")
+        //println("layout bounds: \(rect)")
         //rounded mask
         var rounded =  UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
         var shape = CAShapeLayer()
         shape.path = rounded.CGPath;
         self.maskLayer = shape;
         view.layer.mask = shape;
+      
+//        //rounded border
+//        var roundedSubPath = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
+//        
+//        var borderLayer = CAShapeLayer()
+//        borderLayer.path = roundedSubPath.CGPath
+//        borderLayer.lineWidth = 1.0;
+//        borderLayer.strokeColor = color.CGColor;
+//        borderLayer.fillColor = nil;
+//        self.borderLayer = borderLayer;
+//        view.layer.insertSublayer(borderLayer, above:shape);
         
-        //rounded border
-        var roundedSubPath = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
-        
-        var borderLayer = CAShapeLayer()
-        borderLayer.path = roundedSubPath.CGPath
-        borderLayer.lineWidth = 1.0;
-        borderLayer.strokeColor = color.CGColor;
-        borderLayer.fillColor = nil;
-        self.borderLayer = borderLayer;
-        view.layer.insertSublayer(borderLayer, above:shape);
+        super.layoutSubviews()
     }
 }

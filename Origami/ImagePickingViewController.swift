@@ -126,7 +126,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             //reduce image size for networking
             if fixedImage.size.width >= 1000.0 || fixedImage.size.height >= 1000.0
             {
-                let ratio = min(600.0 / fixedImage.size.width , 600.0 / fixedImage.size.height)
+                let ratio = min(1000.0 / fixedImage.size.width , 1000.0 / fixedImage.size.height)
                 let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
                 let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
                 fixedImage = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))

@@ -20,7 +20,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     var defaultTextInputViewHeight:CGFloat?
     var currentChatMessages = [Message](){
         didSet{
-            println("Chat Messages Count: \(currentChatMessages.count)")
+            println("\n -> Chat Messages Count: \(currentChatMessages.count)")
         }
     }
     
@@ -60,8 +60,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         reloadChatTable()
         
-        bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
-        
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -69,6 +67,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightModeOn)
+        
+        bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -76,6 +76,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         DataSource.sharedInstance.removeAllObserversForNewMessages()
         
         removeObserversForKeyboard()
+        
+         bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
     }
     
     
@@ -96,7 +98,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
             bottomControlsContainerView.attachButton.tintColor = kDayNavigationBarBackgroundColor
-            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
             
         }
         
@@ -109,9 +111,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         //TODO: switch message cells night-day modes
         self.turnNightModeOn(nightModeOn)
-        self.chatTable.reloadData()
+        self.chatTable.reloadSections(NSIndexSet(index:0), withRowAnimation: .Fade)
        
-        
     }
     
     //MARK: DayMode
@@ -136,15 +137,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             return
         }
         
-//        var toShrink = false
-//        if oldSize.height > desiredSize.height
-//        {
-//            toShrink = true
-//        }
-        
         var difference = ceil(desiredSize.height - oldSize.height)
         textHolderHeightConstraint.constant += difference
-        //textHolderBottomConstaint.constant += difference
+
         self.view.layoutIfNeeded()
         
     }
@@ -164,22 +159,28 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 if let messageInfo = nsDict as? [String : AnyObject]
                 {
                     var newMessage = Message(info: messageInfo)
-                    scrollToLastMessage()
                    
+                    NSOperationQueue.mainQueue().addOperationWithBlock({[weak self] () -> Void in
+                        if let aSelf = self
+                        {
+                            aSelf.bottomControlsContainerView.endTyping(clearText:true)
+                            aSelf.textHolderHeightConstraint.constant = aSelf.defaultTextInputViewHeight!
+                        }
+                    })
+                    
                     let bgQueue = NSOperationQueue()
                     bgQueue.addOperationWithBlock({ () -> Void in
                         DataSource.sharedInstance.sendNewMessage(newMessage, completion: { [weak self](error) -> () in
-                            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                                if let aSelf = self
-                                {
-                                    aSelf.bottomControlsContainerView.endTyping(clearText:true)
-                                    aSelf.textHolderHeightConstraint.constant = aSelf.defaultTextInputViewHeight!
-                                    if error != nil
+                            if error != nil
+                            {
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    if let aSelf = self
                                     {
                                         aSelf.showAlertWithTitle("Message Send Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
                                     }
-                                }
-                            })
+                                })
+                                
+                            }
                         })
                     })
                 }
@@ -243,19 +244,19 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             }
             
             
-            
             UIView.animateWithDuration(animationTime,
                 delay: 0.0,
                 options: options,
                 animations: {  [weak self]  in
-                self!.view.layoutIfNeeded()
+                    if let weakSelf = self
+                    {
+                        weakSelf.view.layoutIfNeeded()
+                    }
+             
                 
             },
                 completion: { [weak self]  (finished) -> () in
-                    if let weakSelf = self
-                    {
-                        weakSelf.scrollToLastMessage()
-                    }
+
             })
         }
     }
@@ -271,26 +272,22 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 indexPaths.append(lvIndexPath)
                 self.currentChatMessages.append(message)
             }
+            
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    weakSelf.reloadChatTable()
-                    //weakSelf.scrollToLastMessage()
+                    weakSelf.chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+                    
+                    weakSelf.chatTable.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+                    
+                    weakSelf.scrollToLastMessage()
                 }
            
             })
             
         }
     }
-//    //MARK: Alert
-//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-//    {
-//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-//        alertController.addAction(closeAction)
-//        
-//        self.presentViewController(alertController, animated: true, completion: nil)
-//    }
+
     //MARK: MISCELANEOUS
     
     func setupNavigationBar()
@@ -328,8 +325,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             lvTitleLabel.font = titleFont!
             lvTitleLabel.text = "\(participantsCount)" + " " + "participants".localizedWithComment("")
             lvTitleLabel.textAlignment = NSTextAlignment.Center
-            lvTitleLabel.textColor = UIColor.grayColor()
-            
+            lvTitleLabel.textColor = kWhiteColor
             self.navigationItem.titleView = lvTitleLabel
         }
     }
@@ -349,10 +345,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         chatTable.estimatedRowHeight = 100.0
         chatTable.dataSource = self
         chatTable.delegate = self
-        //chatTable.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.None)
+        chatTable.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.None)
         
-        chatTable.reloadData()
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue(), { [unowned self]() -> Void in
+        //chatTable.reloadData()
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [unowned self]() -> Void in
             self.scrollToLastMessage()
         })
        
@@ -364,18 +360,21 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         let contentHeight = chatTable.contentSize.height
         if contentHeight > chatTable.bounds.size.height
         {
-            if let lvIndexPath = chatTable.indexPathForRowAtPoint(CGPointMake(0.0, contentHeight + 50.0))
-            {
-                println("target indexpath: \(lvIndexPath)")
-                chatTable.scrollToRowAtIndexPath(lvIndexPath, atScrollPosition: .Bottom, animated: true)
-            }
-            else
-            {
-                let targetRect = CGRectMake(0, contentHeight, chatTable.bounds.size.width, 50)
-                println("target rect to scroll: \(targetRect)")
-                chatTable.scrollRectToVisible( targetRect, animated: true)
-            }
             
+            if self.currentChatMessages.count > 1
+            {
+                let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
+                println("\n -> LastIndexPathRow: \(lastMessagePath.row)")
+                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: true)
+                
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3)), dispatch_get_main_queue(), { [weak self]() -> Void in
+                    if let weakSelf = self
+                    {
+                        let newLastPath = NSIndexPath(forRow: weakSelf.currentChatMessages.count - 1, inSection: 0)
+                        weakSelf.chatTable.reloadRowsAtIndexPaths([newLastPath], withRowAnimation: .None)
+                    }
+                })
+            }
         }
     }
     
@@ -400,7 +399,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 var sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
                 sentCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
                 sentCell.message = existingMessage.textBody
-                sentCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
+                sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
                 return sentCell
             }
             else

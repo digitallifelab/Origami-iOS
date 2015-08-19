@@ -580,7 +580,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
             
-            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
 
             //self.tabBarController?.tabBar.tintColor = kDayCellBackgroundColor
         }

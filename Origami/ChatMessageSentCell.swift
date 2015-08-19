@@ -30,13 +30,22 @@ class ChatMessageSentCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        messageLabel.preferredMaxLayoutWidth = 200
+        super.layoutSubviews()
+     
+    }
+    
     func roundCorners()
     {
         self.layoutIfNeeded();
         
-        setMaskTo(self.textContainerView, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight | UIRectCorner.TopRight, withColor: UIColor.lightGrayColor())
+        setMaskTo(self.textContainerView, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight | UIRectCorner.TopLeft, withColor: UIColor.lightGrayColor())
     }
     
     func setMaskTo(view:UIView, byRoundingCorners corners:UIRectCorner, withColor color:UIColor)
@@ -50,15 +59,17 @@ class ChatMessageSentCell: UITableViewCell {
         view.layer.mask = shape;
         
         //rounded border
-        var roundedSubPath = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
+//        var roundedSubPath = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
        
-        var borderLayer = CAShapeLayer()
-        borderLayer.path = roundedSubPath.CGPath
-        borderLayer.lineWidth = 1.0;
-        borderLayer.strokeColor = color.CGColor;
-        borderLayer.fillColor = nil;
-        self.borderLayer = borderLayer;
-        view.layer.insertSublayer(borderLayer, above:shape);
+//        var borderLayer = CAShapeLayer()
+//        borderLayer.path = roundedSubPath.CGPath
+//        borderLayer.lineWidth = 1.0;
+//        borderLayer.strokeColor = color.CGColor;
+//        borderLayer.fillColor = nil;
+//        self.borderLayer = borderLayer;
+//        view.layer.insertSublayer(borderLayer, above:shape);
+        
+        super.layoutSubviews()
     }
 
 }

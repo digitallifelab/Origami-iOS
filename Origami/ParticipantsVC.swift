@@ -144,12 +144,52 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         switch section
         {
         case 0:
-            return "participating".localizedWithComment("")
+            return "Team".localizedWithComment("")
         case 1:
-            return "add participants".localizedWithComment("")
+            return "AddMember".localizedWithComment("")
             
         default : return nil
         }
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50.0
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section > 1
+        {
+            return nil
+        }
+        
+        //prepare view
+        var view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
+        view.backgroundColor = kWhiteColor
+        view.opaque = true
+        
+        //prepare label
+        let label = UILabel()
+        label.textAlignment = NSTextAlignment.Center
+        label.textColor = kDayCellBackgroundColor
+//        var testFontNames = UIFont.fontNamesForFamilyName("Segoe UI")
+//        println("\(testFontNames)")
+        if let font = UIFont(name: "SegoeUI-Semibold", size: 18.0)
+        {
+            label.font = font
+        }
+        label.text = self.tableView(tableView, titleForHeaderInSection:section)
+        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(label)
+        
+        //create constraints for label
+        let centerXConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0.0)
+        
+        let centerYConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0.0)
+        
+        view.addConstraints([centerXConstraint, centerYConstraint])
+        
+        return view
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -173,6 +213,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 nameLabelText += lastName
             }
         }
+        
         var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
         contactCell.nameLabel.text = nameLabelText
         contactCell.displayMode = self.displayMode
@@ -280,7 +321,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
 
-            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
             self.displayMode = .Day
         }
         

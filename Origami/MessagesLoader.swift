@@ -44,7 +44,7 @@ class MessagesLoader:NSObject
             dispatch_source_set_event_handler(source, {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    println("Fired a timer.")
+                    //println("Fired a timer.")
                     if let source = weakSelf.dispatchSource
                     {
                         dispatch_suspend(source)

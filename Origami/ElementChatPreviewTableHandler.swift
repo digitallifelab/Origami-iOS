@@ -84,6 +84,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         //chatCell.avatarView.image = ImageFilter().filterImageBlackAndWhite(UIImage(named: "testImageToFilter")!)
         
         //chatCell.avatarView.image = UIImage(named: "testImageToFilter")
+        chatCell.avatarView.tintColor = kDayCellBackgroundColor
         let message = messageObjects[indexPath.row]
         if let messageDate = message.dateCreated
         {

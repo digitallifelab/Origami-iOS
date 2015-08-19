@@ -21,7 +21,7 @@ class AllContactsVCCell: UITableViewCell {
         didSet{
             switch contactIsMine
             {   case true:
-                    selectionIndicator?.image = UIImage(named:"icon-round-checked")
+                    selectionIndicator?.image = UIImage(named:"icon-checked")
                 case false:
                     selectionIndicator?.image = UIImage(named:"icon-unchecked")
                 default:break

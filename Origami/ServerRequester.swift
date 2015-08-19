@@ -501,13 +501,13 @@ class ServerRequester: NSObject
                             {
                                 if let messagesArray = ObjectsConverter.convertToMessages(newMessageInfos)
                                 {
-                                    println("loaded newMessages")
+                                    println("loaded new Messages")
                                     
                                     completionBlock(messages: messagesArray, error: nil)
                                 }
                                 else
                                 {
-                                    println("loaded empty messages")
+                                    //println("loaded empty messages")
                                     completionBlock(messages: nil, error: nil)
                                 }
                                 
