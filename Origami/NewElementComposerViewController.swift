@@ -34,10 +34,27 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             table.reloadData()
         }
     }
+    
+    var contactImages = [String:UIImage]()
     //var transitionAnimator:FadeOpaqueAnimator?
     var allContacts = DataSource.sharedInstance.getMyContacts()
     
     var editingConfuguration:CurrentEditingConfiguration = .None
+    
+    var displayMode:DisplayMode = .Day {
+        didSet{
+            switch displayMode{
+                case .Night:
+                    self.toolbar.tintColor = UIColor.whiteColor()
+                    self.toolbar.barTintColor = UIColor.blackColor()
+                    self.view.backgroundColor = UIColor.blackColor()
+                case .Day:
+                    self.toolbar.tintColor = kDayNavigationBarBackgroundColor
+                    self.toolbar.barTintColor = kWhiteColor
+                    self.view.backgroundColor = UIColor.whiteColor()
+            }
+        }
+    }
     
     var editingStyle:ElementEditingStyle = .EditCurrent{
         didSet{
@@ -65,16 +82,37 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         let isNightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         if isNightMode
         {
-            self.toolbar.tintColor = UIColor.whiteColor()
-            self.view.backgroundColor = UIColor.blackColor()
+            self.displayMode = .Night
         }
         else
         {
-            self.toolbar.tintColor = kDayNavigationBarBackgroundColor
-            self.view.backgroundColor = UIColor.clearColor()
+            self.displayMode = .Day
         }
    
-        
+        if self.allContacts != nil
+        {
+            for lvContact in allContacts!
+            {
+                //set avatar image
+                if let userName = lvContact.userName as? String
+                {
+                    DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+                        if let weakSelf = self
+                        {
+                            if let avatar = image
+                            {
+                                weakSelf.contactImages[userName] = avatar
+                            }
+                            else
+                            {
+                                weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
+                            }
+                        }
+                        })
+                }
+            }
+
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -233,21 +271,21 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 2
-        {
-            if contactIDsToPass.isEmpty
-            {
-                return "Add Contacts"
-            }
-            else
-            {
-                return "\(contactIDsToPass.count)" +  ((contactIDsToPass.count > 1) ? " conatcts" : " contact")
-            }
-        }
-        
-        return nil
-    }
+//    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if section == 2
+//        {
+//            if contactIDsToPass.isEmpty
+//            {
+//                return "Add Contacts"
+//            }
+//            else
+//            {
+//                return "\(contactIDsToPass.count)" +  ((contactIDsToPass.count > 1) ? " conatcts" : " contact")
+//            }
+//        }
+//        
+//        return nil
+//    }
     
     //MARK:  Tools
 //    func configureTextLabelCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
@@ -339,6 +377,15 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         if let lvContact = allContacts?[indexPath.row]
         {
+            
+            if let avatarImage = contactImages[lvContact.userName! as String]
+            {
+                cell.avatar.image = avatarImage
+            }
+            else
+            {
+                cell.avatar.image = UIImage(named: "icon-contacts")
+            }
             //set name text
             var nameLabelText = ""
             if let firstName = lvContact.firstName as? String
@@ -355,7 +402,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             
             cell.nameLabel.text = nameLabelText
-            cell.avatar.maskToCircle()
+            
             //set proper checkbox image
             if contactIDsToPass.contains(lvContact.contactId!.integerValue)
             {
@@ -366,17 +413,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 cell.checkBox.image = unCheckedCheckboxImage
             }
             
-            //set avatar image
-            if let userName = lvContact.userName as? String
-            {
-                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: { (image) -> () in
-                    if let avatar = image
-                    {
-                        cell.avatar.image = avatar
-                    }
-                })
-            }
-
+            cell.displayMode = self.displayMode
         }
     }
     
@@ -464,6 +501,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         table.beginUpdates()
         table.endUpdates()
+        
+        //TODO: scroll up if cursor is lower, than keyboard top side
     }
     
     func cancelButtonTap(sender:AnyObject?)

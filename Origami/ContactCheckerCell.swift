@@ -10,9 +10,9 @@ import UIKit
 
 class ContactCheckerCell: UITableViewCell {
 
-    @IBOutlet var checkBox:UIImageView!
-    @IBOutlet var nameLabel:UILabel!
-    @IBOutlet var avatar:UIImageView!
+    @IBOutlet weak var checkBox:UIImageView!
+    @IBOutlet weak var nameLabel:UILabel!
+    @IBOutlet weak var avatar:UIImageView!
     
     var displayMode:DisplayMode = .Day{
         didSet{
@@ -20,11 +20,13 @@ class ContactCheckerCell: UITableViewCell {
             {
                 nameLabel.textColor = UIColor.blackColor()
                 checkBox.tintColor = kDayCellBackgroundColor
+                avatar.tintColor = kDayCellBackgroundColor
             }
             else
             {
                 nameLabel.textColor = UIColor.lightGrayColor()
                 checkBox.tintColor = kWhiteColor
+                avatar.tintColor = kWhiteColor
             }
         }
     }
@@ -32,6 +34,7 @@ class ContactCheckerCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.avatar?.maskToCircle()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
