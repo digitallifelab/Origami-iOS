@@ -30,7 +30,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
                 //contactIDsToPass = Set(passIDs)
             }
-            println("Will pass to contact ids: \n \(contactIDsToPass)")
+            //println("Will pass to contact ids: \n \(contactIDsToPass)")
             table.reloadData()
         }
     }
@@ -138,37 +138,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 keyboardIsToShow = true
             }
-        
-            if keyboardIsToShow
-            {
-                if let viewToTap = self.view.viewWithTag(0xAD)
-                {
-                    viewToTap.frame = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - keyboardHeight)
-                }
-                else
-                {
-                    let viewToTap = UIView(frame: CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - keyboardHeight))
-                    viewToTap.tag = 0xAD
-                    viewToTap.userInteractionEnabled =  true
-                    let tapRecognizer = UITapGestureRecognizer(target: self, action: "stopTyping:")
-                    tapRecognizer.numberOfTapsRequired = 1
-                    tapRecognizer.numberOfTouchesRequired = 1
-                    viewToTap.addGestureRecognizer(tapRecognizer)
-                    //viewToTap.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.3)
-                    self.view.addSubview(viewToTap)
-                }
-            }
-            else
-            {
-                if let viewToTap = self.view.viewWithTag(0xAD)
-                {
-                    viewToTap.removeFromSuperview()
-                }
-            }
         }
     }
     
-    func stopTyping(tapRecognizer:UITapGestureRecognizer)
+    func stopTyping(tapRecognizer:UITapGestureRecognizer?)
     {
         if let cellTitle = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? NewElementTextViewCell
         {
@@ -179,23 +152,30 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 if currentTextViewCellTitle != cellTitle.defaultAttributedText.string
                 {
                     newElement?.title = cellTitle.textView.text
+                    println("Element title did change")
                 }
                 else
                 {
-                    
+                   println("Element title did not change")
                 }
-                
             }
         }
-        else if let descriptionCell = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as? NewElementTextViewCell
+        
+        if let descriptionCell = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as? NewElementTextViewCell
         {
             descriptionCell.endEditing(true)
             if count(descriptionCell.textView.text) > 0 && descriptionCell.textView.text != newElement!.title as? String
             {
                 newElement?.details = descriptionCell.textView.text
+                println("Element Description did change")
+            }
+            else
+            {
+                println("Element Description did not change")
             }
         }
     }
+    
     //MARK:UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
@@ -217,32 +197,32 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         switch indexPath.section
         {
             case 0:
-                if editingConfuguration == .Title
-                {
+//                if editingConfuguration == .Title || editingConfuguration == .None
+//                {
                     var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
                     configureTextViewCell(textViewCell, forIndexPath: indexPath)
                     return textViewCell
-                }
-                else
-                {
-                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-                    configureTextLabelCell(textCell, forIndexPath:indexPath)
-                    return textCell
-                }
+//                }
+//                else
+//                {
+//                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
+//                    configureTextLabelCell(textCell, forIndexPath:indexPath)
+//                    return textCell
+//                }
             
             case 1:
-                if editingConfuguration == .Details
-                {
+//                if editingConfuguration == .Details || editingConfuguration == .None
+//                {
                     var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
                     configureTextViewCell(textViewCell, forIndexPath: indexPath)
                     return textViewCell
-                }
-                else
-                {
-                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-                    configureTextLabelCell(textCell, forIndexPath:indexPath)
-                    return textCell
-                }
+//                }
+//                else
+//                {
+//                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
+//                    configureTextLabelCell(textCell, forIndexPath:indexPath)
+//                    return textCell
+//                }
             
             case 2:
                 var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
@@ -270,47 +250,47 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     //MARK:  Tools
-    func configureTextLabelCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
-    {
-        if indexPath.section == 0
-        {
-            cell.isTitleCell = true
-            
-            if let title = newElement?.title as? String
-            {
-                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
-                cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
-            }
-            else
-            {
-                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
-                cell.attributedText = NSAttributedString(string: "add title", attributes: titleAttributes)
-            }
-        }
-        else
-        {
-            cell.isTitleCell = false
-            if let description = newElement?.details as? String
-            {
-                if description != ""
-                {
-                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
-                    cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
-                }
-                else
-                {
-                    let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-                    cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
-                }
-                
-            }
-            else
-            {
-                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-                cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
-            }
-        }
-    }
+//    func configureTextLabelCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
+//    {
+//        if indexPath.section == 0
+//        {
+//            cell.isTitleCell = true
+//            
+//            if let title = newElement?.title as? String
+//            {
+//                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
+//                cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
+//            }
+//            else
+//            {
+//                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
+//                cell.attributedText = NSAttributedString(string: "add title", attributes: titleAttributes)
+//            }
+//        }
+//        else
+//        {
+//            cell.isTitleCell = false
+//            if let description = newElement?.details as? String
+//            {
+//                if description != ""
+//                {
+//                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
+//                    cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
+//                }
+//                else
+//                {
+//                    let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
+//                    cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+//                }
+//                
+//            }
+//            else
+//            {
+//                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
+//                cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
+//            }
+//        }
+//    }
 
     func configureTextViewCell(cell:NewElementTextViewCell, forIndexPath indexPath:NSIndexPath)
     {
@@ -434,19 +414,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
         if indexPath.section < 2//3
         {
-            if indexPath.section == detailsPath.section //tapped on details cell
-            {
-                switch editingConfuguration
-                {
-                case .None: //start editing details
-                    fallthrough
-                case .Title: //start editing details
-                    editingConfuguration = .Details
-                case .Details: // stop editing details
-                    editingConfuguration = .None
-                }
-            }
-            else if indexPath.section == titlePath.section //tapped on title cell
+            if indexPath.section == titlePath.section //tapped on title cell
             {
                 switch editingConfuguration
                 {
@@ -455,6 +423,18 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 case .Details: //start editing title
                     editingConfuguration = .Title
                 case .Title: // stop editing title
+                    editingConfuguration = .None
+                }
+            }
+            else if indexPath.section == detailsPath.section //tapped on details cell
+            {
+                switch editingConfuguration
+                {
+                case .None: //start editing details
+                    fallthrough
+                case .Title: //start editing details
+                    editingConfuguration = .Details
+                case .Details: // stop editing details
                     editingConfuguration = .None
                 }
             }
@@ -470,6 +450,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
     }
     
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        self.stopTyping(nil)
+    }
     
     //MARK: ButtonTapDelegate
     func didTapOnButton(button: UIButton) {

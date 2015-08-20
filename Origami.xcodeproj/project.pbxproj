@@ -44,7 +44,6 @@
 		F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */; };
 		F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */; };
 		F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
-		F872A4441B469DED000A6AA3 /* NewElementTextLabelCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4431B469DED000A6AA3 /* NewElementTextLabelCell.swift */; };
 		F874D90F1B27049000B867BF /* ElementDashboardTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D90E1B27049000B867BF /* ElementDashboardTextViewCell.swift */; };
 		F874D9111B2704D200B867BF /* ElementDashboardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9101B2704D200B867BF /* ElementDashboardCollectionViewCell.swift */; };
 		F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
@@ -185,7 +184,6 @@
 		F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileTextContainerCell.swift; sourceTree = "<group>"; };
 		F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileFlowLayout.swift; sourceTree = "<group>"; };
 		F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementComposerViewController.swift; sourceTree = "<group>"; };
-		F872A4431B469DED000A6AA3 /* NewElementTextLabelCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementTextLabelCell.swift; sourceTree = "<group>"; };
 		F874D90E1B27049000B867BF /* ElementDashboardTextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardTextViewCell.swift; sourceTree = "<group>"; };
 		F874D9101B2704D200B867BF /* ElementDashboardCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardCollectionViewCell.swift; sourceTree = "<group>"; };
 		F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
@@ -485,7 +483,6 @@
 			isa = PBXGroup;
 			children = (
 				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
-				F872A4431B469DED000A6AA3 /* NewElementTextLabelCell.swift */,
 				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
 			);
 			name = EditingAndCreation;
@@ -966,7 +963,6 @@
 				F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */,
 				F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */,
 				F88564021B31CBD1005D223E /* ChatMessageRecievedCell.swift in Sources */,
-				F872A4441B469DED000A6AA3 /* NewElementTextLabelCell.swift in Sources */,
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
 				F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */,
 				F8D456C31B1DEFFC00172667 /* DataSource.swift in Sources */,

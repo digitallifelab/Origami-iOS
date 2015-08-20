@@ -296,16 +296,16 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func setupNavigationBar()
     {
-        var backButton = UIButton.buttonWithType(.Custom) as! UIButton
-        backButton.frame = CGRectMake(0, 0, 40.0, 40.0)
-        backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 20)
-        backButton.setImage( UIImage(named: "icon-back")?.imageWithRenderingMode(.AlwaysTemplate), forState: UIControlState.Normal)
-        backButton.tintColor = UIColor.whiteColor()
-        backButton.addTarget(self, action: "dismissSelf", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton) //UIBarButtonItem(image: UIImage(named: "icon-back"), style: UIBarButtonItemStyle.Plain, target: self, action: "dismissSelf")
+//        var backButton = UIButton.buttonWithType(.Custom) as! UIButton
+//        backButton.frame = CGRectMake(0, 0, 40.0, 40.0)
+//        backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 20)
+//        backButton.setImage( UIImage(named: "icon-back")?.imageWithRenderingMode(.AlwaysTemplate), forState: UIControlState.Normal)
+//        backButton.tintColor = UIColor.whiteColor()
+//        backButton.addTarget(self, action: "dismissSelf", forControlEvents: UIControlEvents.TouchUpInside)
+//        
+//        
+//        
+//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
         
         
         var contactsButton = UIButton.buttonWithType(.Custom) as! UIButton

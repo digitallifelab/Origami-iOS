@@ -29,7 +29,7 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
         didSet{
             if isTitleCell
             {
-                self.backgroundColor = kDayCellBackgroundColor
+                self.backgroundColor = UIColor.whiteColor()//kDayCellBackgroundColor
                 titleLabel.text = "Title"
                 defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
             }
@@ -45,6 +45,8 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
         super.awakeFromNib()
         // Initialization code
         textView.layer.cornerRadius = 5.0
+        textView.layer.borderWidth = 1.0
+        textView.layer.borderColor = UIColor.lightGrayColor().CGColor
     }
 
     

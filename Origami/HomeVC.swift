@@ -176,8 +176,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func configureNavigationTitleView()
     {
         let blankLabel = UILabel()
-        blankLabel.font = UIFont(name: "SegoeUI-Semibold", size: 25.0)
-        blankLabel.text = "Origami"
+        blankLabel.numberOfLines = 1
+        blankLabel.textAlignment = NSTextAlignment.Center
+        blankLabel.font = UIFont(name: "SegoeUI", size: 20)
+        blankLabel.text = "Shevchenko network"
         blankLabel.sizeToFit()
         blankLabel.textColor = UIColor.whiteColor()
         self.navigationItem.titleView = blankLabel

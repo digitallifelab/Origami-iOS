@@ -76,7 +76,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             var userMood = contact.mood as? String
             //cell.phoneNumber?.text = phoneNumber ?? "phone no."
             //cell.emailLabel?.text = userName
-             cell.moodLabel?.text = /*userMood ??*/ "status"
+             cell.moodLabel?.text = userMood /* "Warning once only: Detected a case where constraints ambiguous" */
             var contactName = ""
             
             if firstName != nil
@@ -97,9 +97,8 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             //println(contactName)
             cell.nameLabel?.text = (contactName.isEmpty) ? nil : contactName
             
-           
-            
             cell.avatarImageView?.tintColor = kDayNavigationBarBackgroundColor
+            cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             //avatar
             DataSource.sharedInstance.loadAvatarForLoginName(contact.userName as! String, completion: {[weak cell] (image) -> () in
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in

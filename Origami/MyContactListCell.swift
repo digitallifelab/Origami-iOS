@@ -11,15 +11,16 @@ import UIKit
 class MyContactListCell: UITableViewCell {
 
     
-    @IBOutlet var avatar:UIImageView!
-    @IBOutlet var nameLabel:UILabel!
-    @IBOutlet var favouriteButton:UIButton!
-    @IBOutlet var moodLabel:UILabel?
+    @IBOutlet weak var avatar:UIImageView!
+    @IBOutlet weak var nameLabel:UILabel!
+    @IBOutlet weak var favouriteButton:UIButton!
+    @IBOutlet weak var moodLabel:UILabel?
     //@IBOutlet var emailLabel:UILabel?
     //@IBOutlet var phoneLabel:UILabel?
     
     override func awakeFromNib() {
         avatar.image = UIImage(named: "icon-contacts")
+        avatar.maskToCircle()
     }
     @IBAction func favouriteButtonNapped(sender:UIButton?)
     {

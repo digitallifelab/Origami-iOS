@@ -14,7 +14,7 @@ class AllContactsVCCell: UITableViewCell {
     @IBOutlet weak var nameLabel:UILabel?
     //@IBOutlet weak var emailLabel:UILabel?
     //@IBOutlet weak var phoneNumber:UILabel?
-    @IBOutlet var moodLabel:UILabel?
+    @IBOutlet weak var moodLabel:UILabel?
     @IBOutlet weak var selectionIndicator:UIImageView?
     @IBOutlet weak var avatarImageView:UIImageView?
     
@@ -27,6 +27,17 @@ class AllContactsVCCell: UITableViewCell {
                     selectionIndicator?.image = UIImage(named:"icon-unchecked")
                 default:break
             }
+        }
+    }
+    
+    override func prepareForReuse() {
+        avatarImageView?.image = nil
+    }
+    
+    override func awakeFromNib() {
+        if let imageView = self.avatarImageView
+        {
+            imageView.maskToCircle()
         }
     }
 }

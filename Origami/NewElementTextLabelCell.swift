@@ -15,7 +15,7 @@ class NewElementTextLabelCell: UITableViewCell {
                 //textContainerLabel.numberOfLines = (isTitleCell) ? 0 : 0
                 if isTitleCell
                 {
-                    self.backgroundColor = kDayCellBackgroundColor
+                    self.backgroundColor = UIColor.whiteColor()//kDayCellBackgroundColor
                     titleLabel.text = "Title"
                     textViewToBotttomConstraint?.constant = 10.0
                     defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])

@@ -83,8 +83,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     {
         self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
         
-        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Reply, target: self, action: "dismissSelf:")
-        self.navigationItem.leftBarButtonItem = closeButton
+//        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Reply, target: self, action: "dismissSelf:")
+//        self.navigationItem.leftBarButtonItem = closeButton
         
         contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "showAllContactsVC")
         contactsSearchButton?.enabled = false
@@ -173,10 +173,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
     }
 
-//    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-//        return true
-//    }
-    
     //MARK: UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -231,7 +227,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             cell.nameLabel.text = nameString
             
             
-            cell.moodLabel?.text = "status" //contact.mood as? String //
+            cell.moodLabel?.text = "Warning once only: Detected a case where constraints ambiguous" //contact.mood as? String //
             
             //favourite
             if contact.isFavourite.boolValue
@@ -243,14 +239,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 cell.favouriteButton.tintColor = UIColor.grayColor()
             }
             cell.favouriteButton.tag = indexPath.row
-            println("favourite.tag = \(cell.favouriteButton.tag)")
-            
-            //email field
-            //cell.emailLabel?.text = contact.userName as? String
-            
-            //phone field
-            //cell.phoneLabel?.text = contact.phone as? String
-          
             
             //avatar
             cell.avatar.tintColor = kDayCellBackgroundColor
