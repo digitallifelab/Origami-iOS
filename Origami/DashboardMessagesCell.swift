@@ -53,7 +53,7 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     func getLastMessages()
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
-        println(" _ NSNotificationCenter   Removed Cell from observing messages...")
+        //println(" _ NSNotificationCenter   Removed Cell from observing messages...")
         DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: {[weak self] (messages) -> () in
             if let aSelf = self
             {
@@ -62,18 +62,18 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                     aSelf.reloadChatTableWithNewMessages(messages)
                     let resultAddingObserver = DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
                     
-                    switch resultAddingObserver
-                    {
-                    case .Added:
-                        println(" _Started observing DATASOURCE inserting new messages..._ Added ")
-                    case .Replaced:
-                        println(" _Started observing DATASOURCE inserting new messages..._ Replaced ")
-                    }
+//                    switch resultAddingObserver
+//                    {
+//                    case .Added:
+//                       // println(" _Started observing DATASOURCE inserting new messages..._ Added ")
+//                    case .Replaced:
+//                       // println(" _Started observing DATASOURCE inserting new messages..._ Replaced ")
+//                    }
                 }
                 else
                 {
                     NSNotificationCenter.defaultCenter().addObserver(aSelf, selector: "refreshHomeMessages:", name: FinishedLoadingMessages, object: DataSource.sharedInstance)
-                    println(" __  NSNotificationCenter   Added__ Cell for observing messages")
+                    //println(" __  NSNotificationCenter   Added__ Cell for observing messages")
                 }
             }
             })

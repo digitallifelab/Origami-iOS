@@ -101,6 +101,8 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
                         cell.avatarView.image = avatarImage
                     }
                 })
+                
+                chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
             }
             else
             {

@@ -13,7 +13,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     @IBOutlet weak var contactsTable:UITableView?
     
     var allContacts:[Contact]?
-    
+    var contactImages = [String:UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,9 +33,32 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
                 return false
             })
+            
+            
+            
+        for lvContact in allContacts!
+        {
+            //set avatar image
+            if let userName = lvContact.userName as? String
+            {
+                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+                    if let weakSelf = self
+                    {
+                        if let avatar = image
+                        {
+                            weakSelf.contactImages[userName] = avatar
+                        }
+                        else
+                        {
+                            weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
+                        }
+                    }
+                })
+            }
         }
         
-       
+    }
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -97,18 +120,15 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             //println(contactName)
             cell.nameLabel?.text = (contactName.isEmpty) ? nil : contactName
             
-            cell.avatarImageView?.tintColor = kDayNavigationBarBackgroundColor
-            cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
-            //avatar
-            DataSource.sharedInstance.loadAvatarForLoginName(contact.userName as! String, completion: {[weak cell] (image) -> () in
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if let weakCell = cell, avatarImage = image
-                    {
-                        weakCell.avatarImageView?.image = avatarImage
-                    }
-                })
-                
-            })
+            if let avatarImage = contactImages[contact.userName! as String]
+            {
+                cell.avatarImageView?.image = avatarImage
+            }
+            else
+            {
+                cell.avatarImageView?.image = UIImage(named: "icon-contacts")
+            }
+
         }
     }
     

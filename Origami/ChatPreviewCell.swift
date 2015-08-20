@@ -15,7 +15,7 @@ class ChatPreviewCell: UITableViewCell {
     @IBOutlet var messageLabel:UILabel!
     @IBOutlet var dateLabel:UILabel!
     
-    var displayMode:DisplayMode = .Day{
+    var displayMode:DisplayMode = .Day {
         didSet{
             if displayMode == .Night
             {
@@ -35,17 +35,17 @@ class ChatPreviewCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         avatarView.backgroundColor = UIColor.clearColor()
-        avatarView.image = UIImage(named: "icon-contacts")
+        //avatarView.image = UIImage(named: "icon-contacts")
         avatarView.maskToCircle()
         self.backgroundColor = UIColor.clearColor() //needed for ipad - ignores this setting in I.B.
         
     }
 
     
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
+//    override func setSelected(selected: Bool, animated: Bool) {
+//        super.setSelected(selected, animated: animated)
+//
+//        // Configure the view for the selected state
+//    }
 
 }

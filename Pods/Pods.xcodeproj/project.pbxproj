@@ -7,191 +7,139 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04DD69FC83FD84398AD425F79FCF1E2D /* LGSideMenuController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 993A9DA6F2C6A82C9E21C18E37FA6225 /* LGSideMenuController-dummy.m */; };
-		103E8811CD5345715EBDE2D1B5039982 /* Pods-OrigamiTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 23B5B6936A593AD0D541DFEDC2B5E083 /* Pods-OrigamiTests-dummy.m */; };
-		10A399459DE0E19BA8A60AF27B14F6EF /* LGSideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 94DBF0A77CFE1752F1643F956AAD513B /* LGSideMenuController.h */; };
-		1996C9E1258014BE2363AB7675810A9A /* Pods-Origami-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = B2C1EE0C08A41868967CDC10FC50E95E /* Pods-Origami-dummy.m */; };
-		1DBA467AF24CD25F4FE0EFE8D85F12F9 /* Vertigo-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AD90FAB86328130FFBC4ED90B5E1805 /* Vertigo-dummy.m */; };
-		2580022606176DA8E9E0A436303ACF92 /* TGRImageViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = AFFE6AE64F64BA127DED219A6221DAB8 /* TGRImageViewController.h */; };
-		424740DD93AF0CF123AB0FA8307B25A9 /* TGRImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9345B667AB0110AB191C0B0738AB5027 /* TGRImageViewController.m */; };
-		52AD743C5B08263FBE2226E66713A9E2 /* UIImage+AspectFit.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F92C745AEE4593D34259684D1773FEC /* UIImage+AspectFit.h */; };
-		570244D796A4023D3313A08672B1F968 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */; };
-		57EDF6A9475AA81B33B8CAE17A742F33 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */; };
-		9EDB1144FDFF8F9FE4D58FE67A023212 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D510DC7091756450C06AC9CADD913CF9 /* UIKit.framework */; };
-		CB4DC100601780DDDB79A34476C4ADA7 /* TGRImageZoomAnimationController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BE1C3FBFFF228436CC7D734C36AEEA0 /* TGRImageZoomAnimationController.h */; };
-		CC259012EA56090CB6F0C07A112014A5 /* LGSideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = AE5C202DD9FFDBD7FF1725B24934C2FA /* LGSideMenuController.m */; };
-		CCBB07561B02CA2E56A501568C232DAF /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 8510105CCDFB4BB3114CA03DB2C3BA0F /* Pods-dummy.m */; };
-		DEFF6774BF94A35D29BBC7DB0BC74D73 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */; };
-		F00D0629B5B53DB696D1CAA6CF013EDD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */; };
-		F0B538064B6900485CF3E24853EAF22A /* TGRImageZoomAnimationController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD84C57C8DB40C6D0731BE3B751095B3 /* TGRImageZoomAnimationController.m */; };
-		F3F29DA3F846413821D27DCCFEBF90FC /* UIImage+AspectFit.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AAC35E57F0B398E11F7BBF1DBC6C933 /* UIImage+AspectFit.m */; };
-		F8D83CA55F17F72CE420EC31F6AF3B00 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */; };
+		12D9E54D6C355EB379D717E3BBFD6F1E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95D283E11177487E4AA7EA86AFFF9E32 /* Foundation.framework */; };
+		237BCBA282BF3D00E873599DD6E9CE78 /* Pods-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5167E6D5BC3A6EE1BD1D280EFD779467 /* Pods-dummy.m */; };
+		2B6C7DEC09864C720DCA54D23D7FF6DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95D283E11177487E4AA7EA86AFFF9E32 /* Foundation.framework */; };
+		2BBE90596C0E1599CA489703C7A4265B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95D283E11177487E4AA7EA86AFFF9E32 /* Foundation.framework */; };
+		4DE59EEB640C756EEB02C0244DF97974 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95D283E11177487E4AA7EA86AFFF9E32 /* Foundation.framework */; };
+		69D050EEEE5D94FB7F3F28670A267667 /* Pods-OrigamiTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 606C7943F77C574A753CBCF48BAE5A9F /* Pods-OrigamiTests-dummy.m */; };
+		8155853563D232A8B18BAEB0F424F291 /* LGSideMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7690848CDD034D033F253A2C2BEF029B /* LGSideMenuController.m */; };
+		CB674E79F0C11CC2A13FEB0C57F66374 /* LGSideMenuController-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 91E0ED957012AD29D499EEF50A9915C3 /* LGSideMenuController-dummy.m */; };
+		D91AC27D4D709ADAEC2C283A623DD948 /* LGSideMenuController.h in Headers */ = {isa = PBXBuildFile; fileRef = 176B307A2FF5F7EC62815979E5AAAA38 /* LGSideMenuController.h */; };
+		EE33FC51A7EBB81A84B8A1084C26D594 /* Pods-Origami-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 153760DAD88BB3A1E55BACFEFF31B5B6 /* Pods-Origami-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		335DCAA55A077F0382BD2BC6E0889099 /* PBXContainerItemProxy */ = {
+		2E3BA65BACA70F6E7C1DF70EBB7B9620 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C68A43C9BC59A1B98757195A1008DCE9;
-			remoteInfo = Vertigo;
-		};
-		38174A1CE2A63B798D19D50307DDCC1E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BA54F31640B52B6D1ED8CE0A81B510D7;
+			remoteGlobalIDString = F65018C470C107E14FDE2FAD427EF976;
 			remoteInfo = LGSideMenuController;
 		};
-		55AE775F0AA365D66AF785392934A209 /* PBXContainerItemProxy */ = {
+		529CF24CF65A1719E26DB056748075F1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BA54F31640B52B6D1ED8CE0A81B510D7;
+			remoteGlobalIDString = F65018C470C107E14FDE2FAD427EF976;
 			remoteInfo = LGSideMenuController;
 		};
-		66FC831960567C3053A536F0FF1C6D25 /* PBXContainerItemProxy */ = {
+		7CD5F8B0500F7956561A40202396E476 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C68A43C9BC59A1B98757195A1008DCE9;
-			remoteInfo = Vertigo;
-		};
-		99A0C03120DA0A1DE470E66A13EC10B6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BA54F31640B52B6D1ED8CE0A81B510D7;
+			remoteGlobalIDString = F65018C470C107E14FDE2FAD427EF976;
 			remoteInfo = LGSideMenuController;
-		};
-		DB5A34E6D9E29A430B74A04E80972393 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = D41D8CD98F00B204E9800998ECF8427E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C68A43C9BC59A1B98757195A1008DCE9;
-			remoteInfo = Vertigo;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0F0C0ECBF0233A0F547AA73575D7F38D /* libVertigo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libVertigo.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		13AB91652BDD54A7AE9B9308605EFB06 /* Pods-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-acknowledgements.markdown"; sourceTree = "<group>"; };
-		1B99BB350527E9605ECAA17C10282299 /* Vertigo.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Vertigo.xcconfig; sourceTree = "<group>"; };
-		1BE1C3FBFFF228436CC7D734C36AEEA0 /* TGRImageZoomAnimationController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = TGRImageZoomAnimationController.h; path = Vertigo/TGRImageZoomAnimationController.h; sourceTree = "<group>"; };
-		1E68D49F5B7834A4345EA1540D1B9380 /* Vertigo-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Vertigo-Private.xcconfig"; sourceTree = "<group>"; };
-		23B5B6936A593AD0D541DFEDC2B5E083 /* Pods-OrigamiTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-OrigamiTests-dummy.m"; sourceTree = "<group>"; };
+		153760DAD88BB3A1E55BACFEFF31B5B6 /* Pods-Origami-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Origami-dummy.m"; sourceTree = "<group>"; };
+		176B307A2FF5F7EC62815979E5AAAA38 /* LGSideMenuController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = LGSideMenuController.h; path = LGSideMenuController/LGSideMenuController.h; sourceTree = "<group>"; };
+		1F5CA0530853DA3A8EDCBC3B020CFD3D /* LGSideMenuController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LGSideMenuController-prefix.pch"; sourceTree = "<group>"; };
+		2F590F7440D2C88939634E055D69A7EF /* Pods-OrigamiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-OrigamiTests.release.xcconfig"; sourceTree = "<group>"; };
 		31A95FBDC6828AF63FAEEF42042344AD /* Pods-Origami-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-Origami-acknowledgements.plist"; sourceTree = "<group>"; };
-		37B0C3A84A985B26D6563CAAFF4F1DEF /* Vertigo-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Vertigo-prefix.pch"; sourceTree = "<group>"; };
-		53B0150C55EA808CD64DE5285047CBCC /* Pods-OrigamiTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-OrigamiTests.release.xcconfig"; sourceTree = "<group>"; };
-		56522C56EF21FF38A4B95904DF8258D7 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
+		5167E6D5BC3A6EE1BD1D280EFD779467 /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
+		51BFE378F31F869503CB8D37AC124904 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		55B50716536938B9A10D01BC871807EC /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.debug.xcconfig; sourceTree = "<group>"; };
+		5C807FD4F67F9BA40789DEA4E5E85708 /* Pods-Origami.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Origami.release.xcconfig"; sourceTree = "<group>"; };
+		602A7E08CCD28EA777DB6A2E56230B3C /* LGSideMenuController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LGSideMenuController.xcconfig; sourceTree = "<group>"; };
+		606C7943F77C574A753CBCF48BAE5A9F /* Pods-OrigamiTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-OrigamiTests-dummy.m"; sourceTree = "<group>"; };
 		60899BEB6C5603C006AD1FD07CBB0EDC /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
 		627F24DF280372B68F29D2915343A167 /* Pods-OrigamiTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-OrigamiTests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		6AD90FAB86328130FFBC4ED90B5E1805 /* Vertigo-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Vertigo-dummy.m"; sourceTree = "<group>"; };
-		6BBC23B657E2316244BB273205194A58 /* Pods-Origami.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Origami.release.xcconfig"; sourceTree = "<group>"; };
-		6E1555A5AD8D5AE3E0D8729901082052 /* libPods-OrigamiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OrigamiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		703A4B759A9809069A0DABE5CDA975BC /* LGSideMenuController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "LGSideMenuController-Private.xcconfig"; sourceTree = "<group>"; };
-		7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		7AAC35E57F0B398E11F7BBF1DBC6C933 /* UIImage+AspectFit.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIImage+AspectFit.m"; path = "Vertigo/UIImage+AspectFit.m"; sourceTree = "<group>"; };
-		804EB3B800B4E5F6F653CDBCF42B2023 /* Pods-OrigamiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-OrigamiTests.debug.xcconfig"; sourceTree = "<group>"; };
-		8510105CCDFB4BB3114CA03DB2C3BA0F /* Pods-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-dummy.m"; sourceTree = "<group>"; };
-		871B2B34A07017BF676707CAF45ACB9C /* LGSideMenuController.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = LGSideMenuController.xcconfig; sourceTree = "<group>"; };
-		9345B667AB0110AB191C0B0738AB5027 /* TGRImageViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = TGRImageViewController.m; path = Vertigo/TGRImageViewController.m; sourceTree = "<group>"; };
+		674C9819CA5C1D0AEF32EE03510CD826 /* Pods-Origami.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Origami.debug.xcconfig"; sourceTree = "<group>"; };
+		7690848CDD034D033F253A2C2BEF029B /* LGSideMenuController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LGSideMenuController.m; path = LGSideMenuController/LGSideMenuController.m; sourceTree = "<group>"; };
+		91E0ED957012AD29D499EEF50A9915C3 /* LGSideMenuController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "LGSideMenuController-dummy.m"; sourceTree = "<group>"; };
 		93DAA105D65F10E399CA4577EAEBBA25 /* Pods-Origami-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-Origami-acknowledgements.markdown"; sourceTree = "<group>"; };
-		94DBF0A77CFE1752F1643F956AAD513B /* LGSideMenuController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = LGSideMenuController.h; path = LGSideMenuController/LGSideMenuController.h; sourceTree = "<group>"; };
-		97E4A4C810E6F7C69DB3844E0016B3CC /* TGRImageViewController.xib */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.xib; name = TGRImageViewController.xib; path = Vertigo/TGRImageViewController.xib; sourceTree = "<group>"; };
-		993A9DA6F2C6A82C9E21C18E37FA6225 /* LGSideMenuController-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "LGSideMenuController-dummy.m"; sourceTree = "<group>"; };
+		95D283E11177487E4AA7EA86AFFF9E32 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		9C3BB268E6CFA10921408860E7F8A87D /* libPods-Origami.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Origami.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F3B27E708440C6988DAF4EC28F1545D /* Pods-OrigamiTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-OrigamiTests-acknowledgements.plist"; sourceTree = "<group>"; };
-		9F92C745AEE4593D34259684D1773FEC /* UIImage+AspectFit.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIImage+AspectFit.h"; path = "Vertigo/UIImage+AspectFit.h"; sourceTree = "<group>"; };
-		9FA7E14218CD5CDD4237BAA43C12044F /* libPods-Origami.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Origami.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A66E6C32DB230D21A14659AE38F4512A /* Pods-Origami.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-Origami.debug.xcconfig"; sourceTree = "<group>"; };
 		AB8DFB02F1CA69226FD6E121C777B1EA /* Pods-OrigamiTests-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-OrigamiTests-resources.sh"; sourceTree = "<group>"; };
-		AE5C202DD9FFDBD7FF1725B24934C2FA /* LGSideMenuController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = LGSideMenuController.m; path = LGSideMenuController/LGSideMenuController.m; sourceTree = "<group>"; };
-		AFFE6AE64F64BA127DED219A6221DAB8 /* TGRImageViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = TGRImageViewController.h; path = Vertigo/TGRImageViewController.h; sourceTree = "<group>"; };
-		B2C1EE0C08A41868967CDC10FC50E95E /* Pods-Origami-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-Origami-dummy.m"; sourceTree = "<group>"; };
-		B5EF922C8A69A08037B2CFE02E176004 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
 		BA6428E9F66FD5A23C0A2E06ED26CD2F /* Podfile */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		CD84C57C8DB40C6D0731BE3B751095B3 /* TGRImageZoomAnimationController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = TGRImageZoomAnimationController.m; path = Vertigo/TGRImageZoomAnimationController.m; sourceTree = "<group>"; };
-		D510DC7091756450C06AC9CADD913CF9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS8.3.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		D248F0BDCF76A327528620DE636A96E6 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Pods.release.xcconfig; sourceTree = "<group>"; };
+		D4DF82C9D0B639ED928C90788B38CE6B /* LGSideMenuController-Private.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "LGSideMenuController-Private.xcconfig"; sourceTree = "<group>"; };
+		D88B0EF4EA2B8B94A8FBF627E5870751 /* libLGSideMenuController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLGSideMenuController.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD63E0D0F7B8528EBDF6F5230D14EAC4 /* Pods-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-acknowledgements.plist"; sourceTree = "<group>"; };
-		E416679888A62DD15307FA4838EDF8D3 /* libLGSideMenuController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLGSideMenuController.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E49E7F60F8D8C8ECFBC6F24841117299 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		EE7CF03978F29CB6754F3815D974C5B6 /* LGSideMenuController-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "LGSideMenuController-prefix.pch"; sourceTree = "<group>"; };
+		DE86C6DA1F24FF11171304DB73DD30BF /* libPods-OrigamiTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OrigamiTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE9CDEF5508E1D36ED7299FC3815FA53 /* Pods-OrigamiTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-OrigamiTests.debug.xcconfig"; sourceTree = "<group>"; };
 		FFAC0F22CDD4EBEB283EAA0E1C790C62 /* Pods-Origami-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-Origami-resources.sh"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		25A943107686E66A4F7092B01D8735B1 /* Frameworks */ = {
+		0E4B73A17557CB6489CB95F4F30CB6B9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F00D0629B5B53DB696D1CAA6CF013EDD /* Foundation.framework in Frameworks */,
+				12D9E54D6C355EB379D717E3BBFD6F1E /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2FB2D5566C814E3F5C8181B0F39571E8 /* Frameworks */ = {
+		506C19DF4292C19A45155A307E011D24 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEFF6774BF94A35D29BBC7DB0BC74D73 /* Foundation.framework in Frameworks */,
+				2B6C7DEC09864C720DCA54D23D7FF6DA /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E5BD18AB14EC56458CE7DBCFCF07D7D0 /* Frameworks */ = {
+		6154CC9B0B910D139DACA2425A3CDD6E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8D83CA55F17F72CE420EC31F6AF3B00 /* Foundation.framework in Frameworks */,
+				2BBE90596C0E1599CA489703C7A4265B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E7D73BF5964D8336950F07A865685C81 /* Frameworks */ = {
+		A8521ADDDFB0182B01ECF8F4F5057E10 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				570244D796A4023D3313A08672B1F968 /* Foundation.framework in Frameworks */,
-				9EDB1144FDFF8F9FE4D58FE67A023212 /* UIKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F3E06BB2C528784A474525AF40FB7B4D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				57EDF6A9475AA81B33B8CAE17A742F33 /* Foundation.framework in Frameworks */,
+				4DE59EEB640C756EEB02C0244DF97974 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0ED821763D6B7EA63CE87270FE7FDB9E /* LGSideMenuController */ = {
+		2C9B6DF617E1143320CE488F8E5A14E4 /* LGSideMenuController */ = {
 			isa = PBXGroup;
 			children = (
-				94DBF0A77CFE1752F1643F956AAD513B /* LGSideMenuController.h */,
-				AE5C202DD9FFDBD7FF1725B24934C2FA /* LGSideMenuController.m */,
-				8E8E09CAAC38385C0461A7DD4DF8D8C2 /* Support Files */,
+				176B307A2FF5F7EC62815979E5AAAA38 /* LGSideMenuController.h */,
+				7690848CDD034D033F253A2C2BEF029B /* LGSideMenuController.m */,
+				5871E55F5D2DD6697B0FB1078AFDB618 /* Support Files */,
 			);
 			path = LGSideMenuController;
 			sourceTree = "<group>";
 		};
-		433CD3331B6C3787F473C941B61FC68F /* Frameworks */ = {
+		53F661C0CA7190D2CF05023FB33D61E4 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				D0FB9306D21AF23A056944AE037CBFFF /* iOS */,
+				95D283E11177487E4AA7EA86AFFF9E32 /* Foundation.framework */,
 			);
-			name = Frameworks;
+			name = iOS;
 			sourceTree = "<group>";
 		};
-		48AF5DD992AC7746FAE32B3E80C7865D /* Support Files */ = {
+		5871E55F5D2DD6697B0FB1078AFDB618 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				1B99BB350527E9605ECAA17C10282299 /* Vertigo.xcconfig */,
-				1E68D49F5B7834A4345EA1540D1B9380 /* Vertigo-Private.xcconfig */,
-				6AD90FAB86328130FFBC4ED90B5E1805 /* Vertigo-dummy.m */,
-				37B0C3A84A985B26D6563CAAFF4F1DEF /* Vertigo-prefix.pch */,
+				602A7E08CCD28EA777DB6A2E56230B3C /* LGSideMenuController.xcconfig */,
+				D4DF82C9D0B639ED928C90788B38CE6B /* LGSideMenuController-Private.xcconfig */,
+				91E0ED957012AD29D499EEF50A9915C3 /* LGSideMenuController-dummy.m */,
+				1F5CA0530853DA3A8EDCBC3B020CFD3D /* LGSideMenuController-prefix.pch */,
 			);
 			name = "Support Files";
-			path = "../Target Support Files/Vertigo";
+			path = "../Target Support Files/LGSideMenuController";
 			sourceTree = "<group>";
 		};
 		5E40A8553F5FE607E5EB1100BD65AD97 /* Pods-Origami */ = {
@@ -199,10 +147,10 @@
 			children = (
 				93DAA105D65F10E399CA4577EAEBBA25 /* Pods-Origami-acknowledgements.markdown */,
 				31A95FBDC6828AF63FAEEF42042344AD /* Pods-Origami-acknowledgements.plist */,
-				B2C1EE0C08A41868967CDC10FC50E95E /* Pods-Origami-dummy.m */,
+				153760DAD88BB3A1E55BACFEFF31B5B6 /* Pods-Origami-dummy.m */,
 				FFAC0F22CDD4EBEB283EAA0E1C790C62 /* Pods-Origami-resources.sh */,
-				A66E6C32DB230D21A14659AE38F4512A /* Pods-Origami.debug.xcconfig */,
-				6BBC23B657E2316244BB273205194A58 /* Pods-Origami.release.xcconfig */,
+				674C9819CA5C1D0AEF32EE03510CD826 /* Pods-Origami.debug.xcconfig */,
+				5C807FD4F67F9BA40789DEA4E5E85708 /* Pods-Origami.release.xcconfig */,
 			);
 			name = "Pods-Origami";
 			path = "Target Support Files/Pods-Origami";
@@ -212,67 +160,38 @@
 			isa = PBXGroup;
 			children = (
 				BA6428E9F66FD5A23C0A2E06ED26CD2F /* Podfile */,
-				433CD3331B6C3787F473C941B61FC68F /* Frameworks */,
-				FE76A0CEDD7D2DAE03790ECAC2CB74D4 /* Pods */,
+				BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */,
+				92383656760703498B788E0A80A59E97 /* Pods */,
 				CCA510CFBEA2D207524CDA0D73C3B561 /* Products */,
 				EE49EA769D1AF69F218E8CA693F37E8C /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
-		8E8E09CAAC38385C0461A7DD4DF8D8C2 /* Support Files */ = {
+		92383656760703498B788E0A80A59E97 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				871B2B34A07017BF676707CAF45ACB9C /* LGSideMenuController.xcconfig */,
-				703A4B759A9809069A0DABE5CDA975BC /* LGSideMenuController-Private.xcconfig */,
-				993A9DA6F2C6A82C9E21C18E37FA6225 /* LGSideMenuController-dummy.m */,
-				EE7CF03978F29CB6754F3815D974C5B6 /* LGSideMenuController-prefix.pch */,
+				2C9B6DF617E1143320CE488F8E5A14E4 /* LGSideMenuController */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/LGSideMenuController";
+			name = Pods;
 			sourceTree = "<group>";
 		};
-		92C68D7575C9E8DAFA2457F80BFD48C8 /* Resources */ = {
+		BC3CA7F9E30CC8F7E2DD044DD34432FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				97E4A4C810E6F7C69DB3844E0016B3CC /* TGRImageViewController.xib */,
+				53F661C0CA7190D2CF05023FB33D61E4 /* iOS */,
 			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
-		9C9CB7F4A3A6DB106BFB156DB32FA36A /* Vertigo */ = {
-			isa = PBXGroup;
-			children = (
-				AFFE6AE64F64BA127DED219A6221DAB8 /* TGRImageViewController.h */,
-				9345B667AB0110AB191C0B0738AB5027 /* TGRImageViewController.m */,
-				1BE1C3FBFFF228436CC7D734C36AEEA0 /* TGRImageZoomAnimationController.h */,
-				CD84C57C8DB40C6D0731BE3B751095B3 /* TGRImageZoomAnimationController.m */,
-				9F92C745AEE4593D34259684D1773FEC /* UIImage+AspectFit.h */,
-				7AAC35E57F0B398E11F7BBF1DBC6C933 /* UIImage+AspectFit.m */,
-				92C68D7575C9E8DAFA2457F80BFD48C8 /* Resources */,
-				48AF5DD992AC7746FAE32B3E80C7865D /* Support Files */,
-			);
-			path = Vertigo;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CCA510CFBEA2D207524CDA0D73C3B561 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E416679888A62DD15307FA4838EDF8D3 /* libLGSideMenuController.a */,
-				E49E7F60F8D8C8ECFBC6F24841117299 /* libPods.a */,
-				9FA7E14218CD5CDD4237BAA43C12044F /* libPods-Origami.a */,
-				6E1555A5AD8D5AE3E0D8729901082052 /* libPods-OrigamiTests.a */,
-				0F0C0ECBF0233A0F547AA73575D7F38D /* libVertigo.a */,
+				D88B0EF4EA2B8B94A8FBF627E5870751 /* libLGSideMenuController.a */,
+				51BFE378F31F869503CB8D37AC124904 /* libPods.a */,
+				9C3BB268E6CFA10921408860E7F8A87D /* libPods-Origami.a */,
+				DE86C6DA1F24FF11171304DB73DD30BF /* libPods-OrigamiTests.a */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		D0FB9306D21AF23A056944AE037CBFFF /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				7A57E37EDEE57112380C6CEF39D69349 /* Foundation.framework */,
-				D510DC7091756450C06AC9CADD913CF9 /* UIKit.framework */,
-			);
-			name = iOS;
 			sourceTree = "<group>";
 		};
 		EE49EA769D1AF69F218E8CA693F37E8C /* Targets Support Files */ = {
@@ -290,22 +209,13 @@
 			children = (
 				627F24DF280372B68F29D2915343A167 /* Pods-OrigamiTests-acknowledgements.markdown */,
 				9F3B27E708440C6988DAF4EC28F1545D /* Pods-OrigamiTests-acknowledgements.plist */,
-				23B5B6936A593AD0D541DFEDC2B5E083 /* Pods-OrigamiTests-dummy.m */,
+				606C7943F77C574A753CBCF48BAE5A9F /* Pods-OrigamiTests-dummy.m */,
 				AB8DFB02F1CA69226FD6E121C777B1EA /* Pods-OrigamiTests-resources.sh */,
-				804EB3B800B4E5F6F653CDBCF42B2023 /* Pods-OrigamiTests.debug.xcconfig */,
-				53B0150C55EA808CD64DE5285047CBCC /* Pods-OrigamiTests.release.xcconfig */,
+				DE9CDEF5508E1D36ED7299FC3815FA53 /* Pods-OrigamiTests.debug.xcconfig */,
+				2F590F7440D2C88939634E055D69A7EF /* Pods-OrigamiTests.release.xcconfig */,
 			);
 			name = "Pods-OrigamiTests";
 			path = "Target Support Files/Pods-OrigamiTests";
-			sourceTree = "<group>";
-		};
-		FE76A0CEDD7D2DAE03790ECAC2CB74D4 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				0ED821763D6B7EA63CE87270FE7FDB9E /* LGSideMenuController */,
-				9C9CB7F4A3A6DB106BFB156DB32FA36A /* Vertigo */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 		FFE8FE2707798C1BB482472B3017D9CE /* Pods */ = {
@@ -313,10 +223,10 @@
 			children = (
 				13AB91652BDD54A7AE9B9308605EFB06 /* Pods-acknowledgements.markdown */,
 				DD63E0D0F7B8528EBDF6F5230D14EAC4 /* Pods-acknowledgements.plist */,
-				8510105CCDFB4BB3114CA03DB2C3BA0F /* Pods-dummy.m */,
+				5167E6D5BC3A6EE1BD1D280EFD779467 /* Pods-dummy.m */,
 				60899BEB6C5603C006AD1FD07CBB0EDC /* Pods-resources.sh */,
-				56522C56EF21FF38A4B95904DF8258D7 /* Pods.debug.xcconfig */,
-				B5EF922C8A69A08037B2CFE02E176004 /* Pods.release.xcconfig */,
+				55B50716536938B9A10D01BC871807EC /* Pods.debug.xcconfig */,
+				D248F0BDCF76A327528620DE636A96E6 /* Pods.release.xcconfig */,
 			);
 			name = Pods;
 			path = "Target Support Files/Pods";
@@ -325,88 +235,58 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		5BA59A36BD21DF66ADAED83CE5729B0A /* Headers */ = {
+		6DCEB217C48AE0D271AD3A79E3CF1CEE /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2580022606176DA8E9E0A436303ACF92 /* TGRImageViewController.h in Headers */,
-				CB4DC100601780DDDB79A34476C4ADA7 /* TGRImageZoomAnimationController.h in Headers */,
-				52AD743C5B08263FBE2226E66713A9E2 /* UIImage+AspectFit.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		6CE513A9B24ED61996C7BDF363432FCC /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				10A399459DE0E19BA8A60AF27B14F6EF /* LGSideMenuController.h in Headers */,
+				D91AC27D4D709ADAEC2C283A623DD948 /* LGSideMenuController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		03988B16389C28CB17CE184C2D43A0ED /* Pods-Origami */ = {
+		7CBEBAA250EC291FF8627C2632A65F6A /* Pods-Origami */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5ECC74DA50192E4AD260FB40BD14771 /* Build configuration list for PBXNativeTarget "Pods-Origami" */;
+			buildConfigurationList = 4891554FE3C832D55133CE1A2D521B50 /* Build configuration list for PBXNativeTarget "Pods-Origami" */;
 			buildPhases = (
-				8B477ADBE1CF199F4AD1945055F79F12 /* Sources */,
-				F3E06BB2C528784A474525AF40FB7B4D /* Frameworks */,
+				E36C1B57EF2A9179AA032EAED0D36296 /* Sources */,
+				A8521ADDDFB0182B01ECF8F4F5057E10 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				2EE495A79C3F52A1345901F9B7266065 /* PBXTargetDependency */,
-				AFD35A311C909752C93044602665B2EE /* PBXTargetDependency */,
+				1C09BE978BDBF67DECE5152BD55BEDEA /* PBXTargetDependency */,
 			);
 			name = "Pods-Origami";
 			productName = "Pods-Origami";
-			productReference = 9FA7E14218CD5CDD4237BAA43C12044F /* libPods-Origami.a */;
+			productReference = 9C3BB268E6CFA10921408860E7F8A87D /* libPods-Origami.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		268D9D324B8A95F29CF6EFA35ACD46B7 /* Pods */ = {
+		93B37855BA298E2BCCE9D88A11D62B9D /* Pods-OrigamiTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E9BD8C174D83D7F8F95A1E9EF2BFC62A /* Build configuration list for PBXNativeTarget "Pods" */;
+			buildConfigurationList = 8B4F673C2E8D9860EB0055F238050FE7 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests" */;
 			buildPhases = (
-				89C5109AB42590E4F028615081D1E65D /* Sources */,
-				E5BD18AB14EC56458CE7DBCFCF07D7D0 /* Frameworks */,
+				667B69465E4506E24B6954849995D998 /* Sources */,
+				6154CC9B0B910D139DACA2425A3CDD6E /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				5719BACA3B326D3377CFBBEF5B2CF28C /* PBXTargetDependency */,
-				463C36B011B31DEA4C0F2A2A7D68C71D /* PBXTargetDependency */,
-			);
-			name = Pods;
-			productName = Pods;
-			productReference = E49E7F60F8D8C8ECFBC6F24841117299 /* libPods.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		A5FC73CF69B46E0AF140A68B6E921D44 /* Pods-OrigamiTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = BAEFD6A6BA972EF0BEE5F286464EB735 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests" */;
-			buildPhases = (
-				3B93A040CFB5988FE459A274884C9FD5 /* Sources */,
-				25A943107686E66A4F7092B01D8735B1 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				9C187C9B75632ECA18179740CA2C3005 /* PBXTargetDependency */,
-				5FB1D544DBA158D3FB0CDC45B25EA6A9 /* PBXTargetDependency */,
+				8F4728EA05D6065493B400C07D9462F9 /* PBXTargetDependency */,
 			);
 			name = "Pods-OrigamiTests";
 			productName = "Pods-OrigamiTests";
-			productReference = 6E1555A5AD8D5AE3E0D8729901082052 /* libPods-OrigamiTests.a */;
+			productReference = DE86C6DA1F24FF11171304DB73DD30BF /* libPods-OrigamiTests.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		BA54F31640B52B6D1ED8CE0A81B510D7 /* LGSideMenuController */ = {
+		F65018C470C107E14FDE2FAD427EF976 /* LGSideMenuController */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DD28734A24E7C1C12E5883FAFE11E87 /* Build configuration list for PBXNativeTarget "LGSideMenuController" */;
+			buildConfigurationList = 5F1B605356F3560B96F84D057709A7B7 /* Build configuration list for PBXNativeTarget "LGSideMenuController" */;
 			buildPhases = (
-				A168BD9D4B9C09C3FB32B8BC9DD60006 /* Sources */,
-				2FB2D5566C814E3F5C8181B0F39571E8 /* Frameworks */,
-				6CE513A9B24ED61996C7BDF363432FCC /* Headers */,
+				1F04FB8C2A48328FCD48E4E9F40C385F /* Sources */,
+				0E4B73A17557CB6489CB95F4F30CB6B9 /* Frameworks */,
+				6DCEB217C48AE0D271AD3A79E3CF1CEE /* Headers */,
 			);
 			buildRules = (
 			);
@@ -414,24 +294,24 @@
 			);
 			name = LGSideMenuController;
 			productName = LGSideMenuController;
-			productReference = E416679888A62DD15307FA4838EDF8D3 /* libLGSideMenuController.a */;
+			productReference = D88B0EF4EA2B8B94A8FBF627E5870751 /* libLGSideMenuController.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		C68A43C9BC59A1B98757195A1008DCE9 /* Vertigo */ = {
+		F824FD35A5A81A4C4CFAFF74FDB83884 /* Pods */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3738C5A3DECC4877B782987605EE99F5 /* Build configuration list for PBXNativeTarget "Vertigo" */;
+			buildConfigurationList = F0B45909B88FC64997726E999EBBD9F6 /* Build configuration list for PBXNativeTarget "Pods" */;
 			buildPhases = (
-				75EDA73F1AFF23730FA39D4400511E80 /* Sources */,
-				E7D73BF5964D8336950F07A865685C81 /* Frameworks */,
-				5BA59A36BD21DF66ADAED83CE5729B0A /* Headers */,
+				E43F047E55A6FE94FBBE0D5D7EED7E10 /* Sources */,
+				506C19DF4292C19A45155A307E011D24 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E218E071FEFCF61ACD3EFD822CAF0F95 /* PBXTargetDependency */,
 			);
-			name = Vertigo;
-			productName = Vertigo;
-			productReference = 0F0C0ECBF0233A0F547AA73575D7F38D /* libVertigo.a */;
+			name = Pods;
+			productName = Pods;
+			productReference = 51BFE378F31F869503CB8D37AC124904 /* libPods.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -455,201 +335,91 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BA54F31640B52B6D1ED8CE0A81B510D7 /* LGSideMenuController */,
-				268D9D324B8A95F29CF6EFA35ACD46B7 /* Pods */,
-				03988B16389C28CB17CE184C2D43A0ED /* Pods-Origami */,
-				A5FC73CF69B46E0AF140A68B6E921D44 /* Pods-OrigamiTests */,
-				C68A43C9BC59A1B98757195A1008DCE9 /* Vertigo */,
+				F65018C470C107E14FDE2FAD427EF976 /* LGSideMenuController */,
+				F824FD35A5A81A4C4CFAFF74FDB83884 /* Pods */,
+				7CBEBAA250EC291FF8627C2632A65F6A /* Pods-Origami */,
+				93B37855BA298E2BCCE9D88A11D62B9D /* Pods-OrigamiTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
-		3B93A040CFB5988FE459A274884C9FD5 /* Sources */ = {
+		1F04FB8C2A48328FCD48E4E9F40C385F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				103E8811CD5345715EBDE2D1B5039982 /* Pods-OrigamiTests-dummy.m in Sources */,
+				CB674E79F0C11CC2A13FEB0C57F66374 /* LGSideMenuController-dummy.m in Sources */,
+				8155853563D232A8B18BAEB0F424F291 /* LGSideMenuController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		75EDA73F1AFF23730FA39D4400511E80 /* Sources */ = {
+		667B69465E4506E24B6954849995D998 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				424740DD93AF0CF123AB0FA8307B25A9 /* TGRImageViewController.m in Sources */,
-				F0B538064B6900485CF3E24853EAF22A /* TGRImageZoomAnimationController.m in Sources */,
-				F3F29DA3F846413821D27DCCFEBF90FC /* UIImage+AspectFit.m in Sources */,
-				1DBA467AF24CD25F4FE0EFE8D85F12F9 /* Vertigo-dummy.m in Sources */,
+				69D050EEEE5D94FB7F3F28670A267667 /* Pods-OrigamiTests-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		89C5109AB42590E4F028615081D1E65D /* Sources */ = {
+		E36C1B57EF2A9179AA032EAED0D36296 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CCBB07561B02CA2E56A501568C232DAF /* Pods-dummy.m in Sources */,
+				EE33FC51A7EBB81A84B8A1084C26D594 /* Pods-Origami-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8B477ADBE1CF199F4AD1945055F79F12 /* Sources */ = {
+		E43F047E55A6FE94FBBE0D5D7EED7E10 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1996C9E1258014BE2363AB7675810A9A /* Pods-Origami-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		A168BD9D4B9C09C3FB32B8BC9DD60006 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				04DD69FC83FD84398AD425F79FCF1E2D /* LGSideMenuController-dummy.m in Sources */,
-				CC259012EA56090CB6F0C07A112014A5 /* LGSideMenuController.m in Sources */,
+				237BCBA282BF3D00E873599DD6E9CE78 /* Pods-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		2EE495A79C3F52A1345901F9B7266065 /* PBXTargetDependency */ = {
+		1C09BE978BDBF67DECE5152BD55BEDEA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LGSideMenuController;
-			target = BA54F31640B52B6D1ED8CE0A81B510D7 /* LGSideMenuController */;
-			targetProxy = 55AE775F0AA365D66AF785392934A209 /* PBXContainerItemProxy */;
+			target = F65018C470C107E14FDE2FAD427EF976 /* LGSideMenuController */;
+			targetProxy = 529CF24CF65A1719E26DB056748075F1 /* PBXContainerItemProxy */;
 		};
-		463C36B011B31DEA4C0F2A2A7D68C71D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Vertigo;
-			target = C68A43C9BC59A1B98757195A1008DCE9 /* Vertigo */;
-			targetProxy = 335DCAA55A077F0382BD2BC6E0889099 /* PBXContainerItemProxy */;
-		};
-		5719BACA3B326D3377CFBBEF5B2CF28C /* PBXTargetDependency */ = {
+		8F4728EA05D6065493B400C07D9462F9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LGSideMenuController;
-			target = BA54F31640B52B6D1ED8CE0A81B510D7 /* LGSideMenuController */;
-			targetProxy = 38174A1CE2A63B798D19D50307DDCC1E /* PBXContainerItemProxy */;
+			target = F65018C470C107E14FDE2FAD427EF976 /* LGSideMenuController */;
+			targetProxy = 2E3BA65BACA70F6E7C1DF70EBB7B9620 /* PBXContainerItemProxy */;
 		};
-		5FB1D544DBA158D3FB0CDC45B25EA6A9 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Vertigo;
-			target = C68A43C9BC59A1B98757195A1008DCE9 /* Vertigo */;
-			targetProxy = DB5A34E6D9E29A430B74A04E80972393 /* PBXContainerItemProxy */;
-		};
-		9C187C9B75632ECA18179740CA2C3005 /* PBXTargetDependency */ = {
+		E218E071FEFCF61ACD3EFD822CAF0F95 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LGSideMenuController;
-			target = BA54F31640B52B6D1ED8CE0A81B510D7 /* LGSideMenuController */;
-			targetProxy = 99A0C03120DA0A1DE470E66A13EC10B6 /* PBXContainerItemProxy */;
-		};
-		AFD35A311C909752C93044602665B2EE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Vertigo;
-			target = C68A43C9BC59A1B98757195A1008DCE9 /* Vertigo */;
-			targetProxy = 66FC831960567C3053A536F0FF1C6D25 /* PBXContainerItemProxy */;
+			target = F65018C470C107E14FDE2FAD427EF976 /* LGSideMenuController */;
+			targetProxy = 7CD5F8B0500F7956561A40202396E476 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		3392C291F215F41DE2DAA1F95D0D7BC6 /* Release */ = {
+		2AE2287482BC96CD5E07368FEA34FE27 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 703A4B759A9809069A0DABE5CDA975BC /* LGSideMenuController-Private.xcconfig */;
+			baseConfigurationReference = 5C807FD4F67F9BA40789DEA4E5E85708 /* Pods-Origami.release.xcconfig */;
 			buildSettings = {
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/LGSideMenuController/LGSideMenuController-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
-		465B1F84BB0C240716FA1F577029CA9E /* Debug */ = {
+		538E56570CD856E3427CF8FB90813B22 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 56522C56EF21FF38A4B95904DF8258D7 /* Pods.debug.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		46B433563F971FD28C120260E80942E3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A66E6C32DB230D21A14659AE38F4512A /* Pods-Origami.debug.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		4A12BDFAE954B6168F05E93740C04579 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 804EB3B800B4E5F6F653CDBCF42B2023 /* Pods-OrigamiTests.debug.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		5D3DF3BC428AF9976FC27A1250C3FA9A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 703A4B759A9809069A0DABE5CDA975BC /* LGSideMenuController-Private.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/LGSideMenuController/LGSideMenuController-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		641D33F5D5A343A9E41EFBC4B31C31E7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E68D49F5B7834A4345EA1540D1B9380 /* Vertigo-Private.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Vertigo/Vertigo-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		9777511506EE48C3E4AF6C13B2546E2F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6BBC23B657E2316244BB273205194A58 /* Pods-Origami.release.xcconfig */;
+			baseConfigurationReference = D248F0BDCF76A327528620DE636A96E6 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -657,6 +427,38 @@
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		5B24215FEB7E7816A5122531467DBDE0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE9CDEF5508E1D36ED7299FC3815FA53 /* Pods-OrigamiTests.debug.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		649E76B0A8E2F745D020C9B5CFA3BB26 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D4DF82C9D0B639ED928C90788B38CE6B /* LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/LGSideMenuController/LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -702,9 +504,25 @@
 			};
 			name = Debug;
 		};
-		B769E33E63F75DDB531EBD93ABA3C5DA /* Release */ = {
+		C0B21FD9C43F4BA0970026ACE290610B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53B0150C55EA808CD64DE5285047CBCC /* Pods-OrigamiTests.release.xcconfig */;
+			baseConfigurationReference = D4DF82C9D0B639ED928C90788B38CE6B /* LGSideMenuController-Private.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_PREFIX_HEADER = "Target Support Files/LGSideMenuController/LGSideMenuController-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		CAADCE2853BCFC3693C107F7AF388178 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2F590F7440D2C88939634E055D69A7EF /* Pods-OrigamiTests.release.xcconfig */;
 			buildSettings = {
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -718,21 +536,37 @@
 			};
 			name = Release;
 		};
-		D8AA89B54E6624F0636F3EEA559FBA95 /* Release */ = {
+		DD8C664159D8749A723EB0DAE153B429 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1E68D49F5B7834A4345EA1540D1B9380 /* Vertigo-Private.xcconfig */;
+			baseConfigurationReference = 55B50716536938B9A10D01BC871807EC /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_PREFIX_HEADER = "Target Support Files/Vertigo/Vertigo-prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_ENABLE_DEBUG_INFO = YES;
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 			};
-			name = Release;
+			name = Debug;
+		};
+		F787CCB49A91946F13784D45C1F87BCF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 674C9819CA5C1D0AEF32EE03510CD826 /* Pods-Origami.debug.xcconfig */;
+			buildSettings = {
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
 		};
 		FB45FFD90572718D82AB9092B750F0CA /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -768,22 +602,6 @@
 			};
 			name = Release;
 		};
-		FE089C100CE3301122BECBC77339FC9D /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = B5EF922C8A69A08037B2CFE02E176004 /* Pods.release.xcconfig */;
-			buildSettings = {
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -796,47 +614,38 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3738C5A3DECC4877B782987605EE99F5 /* Build configuration list for PBXNativeTarget "Vertigo" */ = {
+		4891554FE3C832D55133CE1A2D521B50 /* Build configuration list for PBXNativeTarget "Pods-Origami" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				641D33F5D5A343A9E41EFBC4B31C31E7 /* Debug */,
-				D8AA89B54E6624F0636F3EEA559FBA95 /* Release */,
+				F787CCB49A91946F13784D45C1F87BCF /* Debug */,
+				2AE2287482BC96CD5E07368FEA34FE27 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DD28734A24E7C1C12E5883FAFE11E87 /* Build configuration list for PBXNativeTarget "LGSideMenuController" */ = {
+		5F1B605356F3560B96F84D057709A7B7 /* Build configuration list for PBXNativeTarget "LGSideMenuController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5D3DF3BC428AF9976FC27A1250C3FA9A /* Debug */,
-				3392C291F215F41DE2DAA1F95D0D7BC6 /* Release */,
+				C0B21FD9C43F4BA0970026ACE290610B /* Debug */,
+				649E76B0A8E2F745D020C9B5CFA3BB26 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BAEFD6A6BA972EF0BEE5F286464EB735 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests" */ = {
+		8B4F673C2E8D9860EB0055F238050FE7 /* Build configuration list for PBXNativeTarget "Pods-OrigamiTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4A12BDFAE954B6168F05E93740C04579 /* Debug */,
-				B769E33E63F75DDB531EBD93ABA3C5DA /* Release */,
+				5B24215FEB7E7816A5122531467DBDE0 /* Debug */,
+				CAADCE2853BCFC3693C107F7AF388178 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5ECC74DA50192E4AD260FB40BD14771 /* Build configuration list for PBXNativeTarget "Pods-Origami" */ = {
+		F0B45909B88FC64997726E999EBBD9F6 /* Build configuration list for PBXNativeTarget "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				46B433563F971FD28C120260E80942E3 /* Debug */,
-				9777511506EE48C3E4AF6C13B2546E2F /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E9BD8C174D83D7F8F95A1E9EF2BFC62A /* Build configuration list for PBXNativeTarget "Pods" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				465B1F84BB0C240716FA1F577029CA9E /* Debug */,
-				FE089C100CE3301122BECBC77339FC9D /* Release */,
+				DD8C664159D8749A723EB0DAE153B429 /* Debug */,
+				538E56570CD856E3427CF8FB90813B22 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

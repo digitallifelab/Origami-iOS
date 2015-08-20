@@ -57,8 +57,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     private lazy var avatarsHolder = [String:NSData]()
     
     private let serverRequester = ServerRequester()
-    
-    private var databaseHandler:DatabaseHandler?
+    #if SHEVCHENKO
+    #else
+       private var databaseHandler:DatabaseHandler?
+    #endif
+ 
     
     var messagesLoader:MessagesLoader?
     
@@ -74,11 +77,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
+    #if SHEVCHENKO
+    #else
     func saveDB()
     {
         DataSource.sharedInstance.databaseHandler?.save()
     }
-    
+    #endif
     func removeAllObserversForNewMessages()
     {
         if !DataSource.sharedInstance.messagesObservers.isEmpty // self.messageObservers.count > 0
@@ -727,7 +732,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             })
         })
     }
-   
+    #if SHEVCHENKO
+    #else
     func loadExistingDashboardElementsFromLocalDatabaseCompletion( completion:((elements:[String:[DBElement]]?, error:NSError?)->()) )
     {
         DataSource.sharedInstance.databaseHandler?.queryDashboardElementsCompletion({ (elementsContainerDict) -> Void in
@@ -752,7 +758,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
 //            }
         })
     }
-    
+    #endif
     func loadAllElementsInfo(completion:(success:Bool, failure:NSError?) ->())
     {
         DataSource.sharedInstance.serverRequester.loadAllElements {(result, error) -> () in

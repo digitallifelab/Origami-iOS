@@ -19,6 +19,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     private var loadingAllElementsInProgress = false
  
+    var shouldReloadCollection = false
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -72,6 +73,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     {
                         //println(" \(wSelf) Loaded elements")
                         wSelf.loadingAllElementsInProgress = false
+                        wSelf.shouldReloadCollection = true
                         wSelf.reloadDashboardView()
                     }
                 }
@@ -175,14 +177,20 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func configureNavigationTitleView()
     {
-        let blankLabel = UILabel()
-        blankLabel.numberOfLines = 1
-        blankLabel.textAlignment = NSTextAlignment.Center
-        blankLabel.font = UIFont(name: "SegoeUI", size: 20)
-        blankLabel.text = "Shevchenko network"
-        blankLabel.sizeToFit()
-        blankLabel.textColor = UIColor.whiteColor()
-        self.navigationItem.titleView = blankLabel
+//        let blankLabel = UILabel()
+//        blankLabel.numberOfLines = 1
+//        blankLabel.textAlignment = NSTextAlignment.Center
+//        blankLabel.font = UIFont(name: "SegoeUI", size: 20)
+//        blankLabel.text = "Shevchenko network"
+//        blankLabel.sizeToFit()
+//        blankLabel.textColor = UIColor.whiteColor()
+//        self.navigationItem.titleView = blankLabel
+        
+        let titleImageView = UIImageView(image:UIImage(named: "title-home"))
+        titleImageView.contentMode = .ScaleAspectFit
+        titleImageView.frame = CGRectMake(0, 0, 200, 50)
+        
+        self.navigationItem.titleView = titleImageView
     }
     
     //MARK:-----
@@ -197,25 +205,28 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 NSOperationQueue.mainQueue().addOperationWithBlock({[weak self] () -> Void in
                     if let aSelf = self
                     {
-                        var shouldReloadCollection = false
+                        
                         if let currentCollectionDataSource = aSelf.collectionSource
                         {
                             if dashboardElements[1]!.count != currentCollectionDataSource.countSignals()
                             {
-                                shouldReloadCollection = true
+                                aSelf.shouldReloadCollection = true
                             }
-                            else if dashboardElements[2]!.count != currentCollectionDataSource.favourites!.count
+                            else if let dashFavourites = dashboardElements[2] , dataSourceFavourites = currentCollectionDataSource.favourites
                             {
-                                shouldReloadCollection = true
+                                dashFavourites.count != dataSourceFavourites.count
+                                aSelf.shouldReloadCollection = true
                             }
-                            else if dashboardElements[3]!.count != currentCollectionDataSource.other!.count
+                            else if let dashElements = dashboardElements[3], dataSourceOther = currentCollectionDataSource.other
                             {
-                                shouldReloadCollection = true
+                                dashElements.count != dataSourceOther.count
+                                aSelf.shouldReloadCollection = true
                             }
                         }
+                        
                         if let customLayout = aSelf.collectionDashboard!.collectionViewLayout as? HomeSignalsHiddenFlowLayout
                         {
-                            if shouldReloadCollection
+                            if aSelf.shouldReloadCollection
                             {
                                 aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
                                 aSelf.collectionSource!.elementSelectionDelegate = aSelf
@@ -236,7 +247,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         }
                         else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
                         {
-                            if shouldReloadCollection
+                            if aSelf.shouldReloadCollection
                             {
                                 aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
                                 
@@ -253,7 +264,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
 //                                }, completion: { (finished) -> Void in
-                                    if shouldReloadCollection
+                                    if aSelf.shouldReloadCollection
                                     {
                                         aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
                                     }
@@ -284,6 +295,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         }
                         
                         aSelf.loadingAllElementsInProgress = false
+                        aSelf.shouldReloadCollection = false
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
                 })
@@ -422,6 +434,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         DataSource.sharedInstance.submitNewElementToServer(element, completion: {[weak self] (newElementID, submitingError) -> () in
             if let lvElementId = newElementID
             {
+                
                 if let passWhomIDsSet = passWhomIDs
                 {
                     
@@ -438,6 +451,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     })
                     if let weakSelf = self
                     {
+                        weakSelf.shouldReloadCollection = true
                         weakSelf.reloadDashboardView()
                     }
                 }
@@ -445,6 +459,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 {
                     if let weakSelf = self
                     {
+                        weakSelf.shouldReloadCollection = true
                         weakSelf.reloadDashboardView()
                     }
                 }

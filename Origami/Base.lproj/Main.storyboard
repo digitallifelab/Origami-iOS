@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="t8C-T4-RMy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="t8C-T4-RMy">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
@@ -540,7 +540,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" text=" " translatesAutoresizingMaskIntoConstraints="NO" id="luj-sS-CsY">
-                                                    <rect key="frame" x="8" y="42" width="304" height="30"/>
+                                                    <rect key="frame" x="8" y="42" width="304" height="33"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="15"/>
                                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -553,21 +553,16 @@
                                             <constraints>
                                                 <constraint firstItem="luj-sS-CsY" firstAttribute="trailing" secondItem="fJZ-KN-toX" secondAttribute="trailingMargin" id="4hJ-YB-2jq"/>
                                                 <constraint firstItem="LG9-gz-wTP" firstAttribute="leading" secondItem="fJZ-KN-toX" secondAttribute="leading" constant="8" id="JjM-VI-wqe"/>
-                                                <constraint firstItem="luj-sS-CsY" firstAttribute="bottom" secondItem="fJZ-KN-toX" secondAttribute="bottomMargin" id="PBg-H2-Fna"/>
+                                                <constraint firstAttribute="bottom" secondItem="luj-sS-CsY" secondAttribute="bottom" constant="5" id="PBg-H2-Fna"/>
                                                 <constraint firstItem="LG9-gz-wTP" firstAttribute="top" secondItem="fJZ-KN-toX" secondAttribute="topMargin" constant="9" id="Wk6-ig-gC2"/>
                                                 <constraint firstItem="luj-sS-CsY" firstAttribute="top" secondItem="LG9-gz-wTP" secondAttribute="bottom" constant="8" id="e5b-Pf-DmN"/>
                                                 <constraint firstItem="luj-sS-CsY" firstAttribute="leading" secondItem="fJZ-KN-toX" secondAttribute="leadingMargin" id="hF0-O4-WKB"/>
-                                                <constraint firstItem="luj-sS-CsY" firstAttribute="bottom" secondItem="fJZ-KN-toX" secondAttribute="bottomMargin" id="xvP-2v-20f"/>
                                             </constraints>
-                                            <variation key="default">
-                                                <mask key="constraints">
-                                                    <exclude reference="xvP-2v-20f"/>
-                                                </mask>
-                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <connections>
                                             <outlet property="textView" destination="luj-sS-CsY" id="IIX-oS-NJc"/>
+                                            <outlet property="textViewToBottomConstraint" destination="PBg-H2-Fna" id="RJd-4d-omm"/>
                                             <outlet property="titleLabel" destination="LG9-gz-wTP" id="ZBg-y9-Onh"/>
                                         </connections>
                                     </tableViewCell>
@@ -1455,18 +1450,18 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" horizontalCompressionResistancePriority="800" verticalCompressionResistancePriority="800" tableViewCell="he7-Fl-UF5" id="bIi-x6-M5z">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-contacts" translatesAutoresizingMaskIntoConstraints="NO" id="5Fl-2E-fsr" userLabel="avatarIcon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5Fl-2E-fsr" userLabel="avatarIcon">
                                                     <rect key="frame" x="46" y="30" width="40" height="40"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="P3b-c7-Gax"/>
                                                         <constraint firstAttribute="width" constant="40" id="ghS-1K-PSl"/>
                                                     </constraints>
                                                 </imageView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-checked" translatesAutoresizingMaskIntoConstraints="NO" id="faH-1Q-g4X" userLabel="checkboxIcon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="faH-1Q-g4X" userLabel="checkboxIcon">
                                                     <rect key="frame" x="8" y="35" width="30" height="30"/>
-                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.3294117647" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="cMc-Wd-VSj"/>
                                                         <constraint firstAttribute="width" constant="30" id="njV-PD-xtM"/>
@@ -2508,9 +2503,9 @@
                                                         <rect key="frame" x="8" y="53" width="78" height="22"/>
                                                     </variation>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-contacts" translatesAutoresizingMaskIntoConstraints="NO" id="ywS-5g-qLl" userLabel="avatar">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ywS-5g-qLl" userLabel="avatar">
                                                     <rect key="frame" x="8" y="29" width="35" height="35"/>
-                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="35" id="26X-LM-x8B"/>
                                                         <constraint firstAttribute="height" constant="35" id="9dc-WU-BFC"/>
@@ -2627,7 +2622,6 @@
     </scenes>
     <resources>
         <image name="button-attach" width="50" height="50"/>
-        <image name="icon-checked" width="50" height="50"/>
         <image name="icon-contacts" width="50" height="50"/>
         <image name="icon-edit" width="50" height="50"/>
         <image name="icon-favourite" width="50" height="50"/>

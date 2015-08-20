@@ -36,14 +36,6 @@ protocol ChatInputViewDelegate
     func chatInputView(inputView:ChatTextInputView, attachButtonTapped button:UIButton)
 }
 
-@objc protocol ElementTextEditingDelegate
-{
-    func titleCellEditTitleTapped(cell:ElementDashboardTextViewCell)
-    func descriptionCellEditDescriptionTapped(cell:ElementDashboardTextViewCell)
-    optional
-        func titleCellwantsToChangeElementIsFavourite(cell:ElementDashboardTextViewCell)
-}
-
 protocol AttachPickingDelegate {
     func mediaPicker(picker:AnyObject, didPickMediaToAttach mediaFile:MediaFile)
     func mediaPickerDidCancel(picker:AnyObject)
@@ -55,11 +47,7 @@ protocol ElementComposingDelegate
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
 }
 
-protocol TextEditingDelegate
-{
-    func textEditorDidCancel(editor:AnyObject)
-    func textEditor(editor: AnyObject, wantsToSubmitNewText newText:String)
-}
+
 
 protocol MessageTapDelegate
 {

@@ -13,6 +13,7 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
     @IBOutlet var textView:UITextView!
     @IBOutlet var titleLabel:UILabel!
     
+    @IBOutlet weak var textViewToBottomConstraint: NSLayoutConstraint!
     var attributedText:NSAttributedString? = nil {
         didSet{
             textView.attributedText = (attributedText != nil) ? attributedText : defaultAttributedText
@@ -30,14 +31,18 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
             if isTitleCell
             {
                 self.backgroundColor = UIColor.whiteColor()//kDayCellBackgroundColor
-                titleLabel.text = "Title"
+                titleLabel.text = "Title".localizedWithComment("")
                 defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+                
+                textViewToBottomConstraint.constant = 5.0
             }
             else
             {
                 self.backgroundColor = UIColor.whiteColor()
-                titleLabel.text = "Description"
+                titleLabel.text = "Description".localizedWithComment("")
                 defaultAttributedText = NSAttributedString(string:"add description", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+                
+                textViewToBottomConstraint.constant = 24.0
             }
         }
     }

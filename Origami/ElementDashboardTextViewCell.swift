@@ -77,7 +77,7 @@ class ElementDashboardTextViewCell: UITableViewCell , UITextViewDelegate {
 //        self.lessTextLabel.layer.borderWidth = 2.0
        // self.textView.layer.borderWidth = 2.0
         self.backgroundColor = UIColor.clearColor()
-        moreButton.tintColor = kDaySignalColor
+        moreButton.tintColor = kDayCellBackgroundColor
     }
 
     override func prepareForReuse() {

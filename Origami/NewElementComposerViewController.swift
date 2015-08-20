@@ -15,7 +15,7 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate/*, TextEditingDelegate*/ {
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate {
 
     var rootElementID:Int = 0
     var composingDelegate:ElementComposingDelegate?
@@ -72,6 +72,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     @IBOutlet var table: UITableView!
     @IBOutlet var toolbar:UIToolbar!
     
+    //MARK: methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -271,21 +272,62 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-//    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        if section == 2
-//        {
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section < 2 { return 0.0 }
+        return 50.0
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section < 2
+        {
+            return nil
+        }
+        
+        //prepare view
+        var view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
+        view.backgroundColor = kWhiteColor
+        view.opaque = true
+        
+        //prepare label
+        let label = UILabel()
+        label.textAlignment = NSTextAlignment.Center
+        label.textColor = kDayCellBackgroundColor
+        //        var testFontNames = UIFont.fontNamesForFamilyName("Segoe UI")
+        //        println("\(testFontNames)")
+        if let font = UIFont(name: "SegoeUI-Semibold", size: 18.0)
+        {
+            label.font = font
+        }
+        label.text = self.tableView(tableView, titleForHeaderInSection:section)
+        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(label)
+        
+        //create constraints for label
+        let centerXConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0.0)
+        
+        let centerYConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0.0)
+        
+        view.addConstraints([centerXConstraint, centerYConstraint])
+        
+        return view
+    }
+    
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 2
+        {
 //            if contactIDsToPass.isEmpty
 //            {
-//                return "Add Contacts"
+                return "Team".localizedWithComment("")
 //            }
 //            else
 //            {
 //                return "\(contactIDsToPass.count)" +  ((contactIDsToPass.count > 1) ? " conatcts" : " contact")
 //            }
-//        }
-//        
-//        return nil
-//    }
+        }
+        
+        return nil
+    }
     
     //MARK:  Tools
 //    func configureTextLabelCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
@@ -431,10 +473,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
         }
         
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
-            //self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
-            self.table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-        }
+        self.table.reloadData()
+        
+//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
+//            //self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
+//            
+//            //self.table.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: false)
+//        }
     }
     
     //MARK: UITableVIewDelegate
@@ -475,6 +520,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     editingConfuguration = .None
                 }
             }
+            
+            stopTyping(nil)
         }
         else
         {

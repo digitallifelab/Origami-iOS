@@ -11,9 +11,9 @@ import UIKit
 class HomeVCCollectionHandler: NSObject, UICollectionViewDataSource {
    
     
-    var signals:[DBElement]?
-    var favorites:[DBElement]?
-    var other:[DBElement]?
+    var signals:[Element]?
+    var favorites:[Element]?
+    var other:[Element]?
     var nightModeEnabled = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
     
     
@@ -93,7 +93,7 @@ class HomeVCCollectionHandler: NSObject, UICollectionViewDataSource {
                     {
                         dashCell.titleLabel.text = title.uppercaseString
                     }
-                    if let lvDescription = existingElement.details
+                    if let lvDescription = existingElement.details as? String
                     {
                         dashCell.descriptionLabel.text = lvDescription
                     }
@@ -153,7 +153,7 @@ class HomeVCCollectionHandler: NSObject, UICollectionViewDataSource {
         }
     }
     
-    func elementForIndexPath(indexPath:NSIndexPath) -> DBElement?
+    func elementForIndexPath(indexPath:NSIndexPath) -> Element?
     {
         let lvRow = indexPath.row
         switch indexPath.section {

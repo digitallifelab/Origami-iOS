@@ -39,5 +39,7 @@ class AllContactsVCCell: UITableViewCell {
         {
             imageView.maskToCircle()
         }
+        avatarImageView?.tintColor = kDayCellBackgroundColor
+        selectionIndicator?.tintColor = kDayCellBackgroundColor
     }
 }

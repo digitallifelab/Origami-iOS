@@ -95,8 +95,8 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         {
             let message = lvMessages[indexPath.row]
             messageCell.messageLabel.text = message.textBody
-            messageCell.avatarView.image = UIImage(named: "icon-contacts")
             messageCell.avatarView.tintColor = kDayCellBackgroundColor
+            messageCell.avatarView.image = UIImage(named: "icon-contacts")
             
             if let messageDate = message.dateCreated
             {
@@ -114,25 +114,16 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                             cell.avatarView.image = avatarImage
                         }
                     })
+                    
+                    messageCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
                 }
                 else
                 {
-                    //TODO: refactor to setup single object for Chat Preview Cell both for own messages preview and contacts` messages preview
-//                    if let contacts = self.contactsForLastMessages
-//                    {
-//                        for aContact in contacts
-//                        {
-//                            if let userName = aContact.userName as? String
-//                            {
-//                                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak chatCell] (image) -> () in
-//                                    if let cell = chatCell, avatarImage = image
-//                                    {
-//                                        cell.avatarView.image = avatarImage
-//                                    }
-//                                })
-//                            }
-//                        }
-//                    }
+                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([message.creatorId!.integerValue]))
+                    {
+                        var contact = contacts.first
+                        messageCell.nameLabel.text = contact?.firstName as? String ?? contact?.lastName as? String
+                    }
                 }
             }
         }

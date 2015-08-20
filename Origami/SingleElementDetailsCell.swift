@@ -12,20 +12,15 @@ class SingleElementDetailsCell: UICollectionViewCell {
     
     var displayMode:DisplayMode = .Day{
         didSet{
-            let old = oldValue
-            if displayMode == old
-            {
-                return
-            }
             switch self.displayMode
             {
             case .Day:
                 self.textLabel.textColor = UIColor.blackColor()
-                self.moreLessButton.tintColor = kDaySignalColor
+                self.moreLessButton.tintColor = kDayCellBackgroundColor
                 self.backgroundColor = UIColor.whiteColor()
             case .Night:
                 self.textLabel.textColor = UIColor.grayColor()
-                self.moreLessButton.tintColor = kNightSignalColor
+                self.moreLessButton.tintColor = kWhiteColor
                 self.backgroundColor = UIColor.blackColor()
             }
         }

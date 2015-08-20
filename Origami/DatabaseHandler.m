@@ -8,8 +8,11 @@
 
 #import "DatabaseHandler.h"
 
-
-#import "Origami-Swift.h"
+#ifdef SHEVCHENKO
+#import "Shevchenko_network-Swift.h"
+#else
+#import "Origami_task_manager-Swift.h"  
+#endif
 
 @interface DatabaseHandler()
 

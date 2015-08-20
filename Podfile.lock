@@ -1,13 +1,10 @@
 PODS:
   - LGSideMenuController (1.0.3)
-  - Vertigo (0.1)
 
 DEPENDENCIES:
   - LGSideMenuController (~> 1.0.0)
-  - Vertigo
 
 SPEC CHECKSUMS:
   LGSideMenuController: 565ca94043437552cda5a88384e0a481169c3f32
-  Vertigo: b971aa21e904512cfe387196ccba37df3f9a792e
 
 COCOAPODS: 0.38.2
