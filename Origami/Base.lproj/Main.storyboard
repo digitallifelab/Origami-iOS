@@ -1972,8 +1972,8 @@
                                                         <action selector="editButtonTapped:" destination="hgz-Hx-Jgh" eventType="touchUpInside" id="Dob-bf-7CH"/>
                                                     </connections>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name or email or phone" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWk-AJ-c68">
-                                                    <rect key="frame" x="8" y="49" width="142" height="43"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="name or email or phone" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWk-AJ-c68">
+                                                    <rect key="frame" x="8" y="54" width="142" height="38"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -2144,7 +2144,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="600" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="73" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="D6b-aP-BCJ">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MyContactCell" rowHeight="73" id="WUu-eI-ikg" customClass="MyContactListCell" customModule="Origami" customModuleProvider="target">
@@ -2153,8 +2153,8 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WUu-eI-ikg" id="Hxv-jt-pYS">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="500" horizontalCompressionResistancePriority="600" verticalCompressionResistancePriority="755" text="Name Lastname" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E7I-zk-h2q" userLabel="name label">
-                                                    <rect key="frame" x="56" y="8" width="224" height="23"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="500" horizontalCompressionResistancePriority="600" verticalCompressionResistancePriority="755" misplaced="YES" text="Name Lastname" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E7I-zk-h2q" userLabel="name label">
+                                                    <rect key="frame" x="56" y="8" width="224" height="20"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -2180,8 +2180,8 @@
                                                         <action selector="favouriteButtonNapped:" destination="WUu-eI-ikg" eventType="touchUpInside" id="dgY-uX-Yzb"/>
                                                     </connections>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="600" verticalHuggingPriority="500" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="753" text="what a nice day is it today, let`s make a picnick" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rW0-kk-o1P">
-                                                    <rect key="frame" x="56" y="32" width="218" height="25"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="600" verticalHuggingPriority="500" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="753" misplaced="YES" text="what a nice day is it today, let`s make a picnick" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rW0-kk-o1P">
+                                                    <rect key="frame" x="56" y="29" width="218" height="28"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -2214,18 +2214,33 @@
                                     <outlet property="delegate" destination="aNZ-FD-v6J" id="d48-3h-R9B"/>
                                 </connections>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ibe-1d-wgf">
+                                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Xah-Rt-JNY"/>
+                                    <barButtonItem image="icon-home-SH" id="gIn-Fd-QRp">
+                                        <inset key="imageInsets" minX="0.0" minY="-5" maxX="0.0" maxY="2"/>
+                                        <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="WyO-R0-RGu"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="D6b-aP-BCJ" firstAttribute="bottom" secondItem="RA0-3u-jjw" secondAttribute="top" id="RRx-ZL-J4X"/>
+                            <constraint firstAttribute="trailing" secondItem="ibe-1d-wgf" secondAttribute="trailing" id="HOb-tS-ZRv"/>
+                            <constraint firstItem="ibe-1d-wgf" firstAttribute="leading" secondItem="gPx-uG-wVu" secondAttribute="leading" id="ON3-2E-N2l"/>
                             <constraint firstItem="D6b-aP-BCJ" firstAttribute="top" secondItem="gPx-uG-wVu" secondAttribute="top" id="dVd-qt-jd5"/>
                             <constraint firstItem="D6b-aP-BCJ" firstAttribute="leading" secondItem="gPx-uG-wVu" secondAttribute="leading" id="jL1-eb-FjN"/>
+                            <constraint firstItem="RA0-3u-jjw" firstAttribute="top" secondItem="ibe-1d-wgf" secondAttribute="bottom" id="ob9-se-KCP"/>
                             <constraint firstAttribute="trailing" secondItem="D6b-aP-BCJ" secondAttribute="trailing" id="xJi-LW-emm"/>
+                            <constraint firstItem="ibe-1d-wgf" firstAttribute="top" secondItem="D6b-aP-BCJ" secondAttribute="bottom" id="zzC-Ew-VAz"/>
                         </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="480"/>
                     <connections>
+                        <outlet property="homeButtonItem" destination="gIn-Fd-QRp" id="3sQ-HR-IaN"/>
                         <outlet property="myContactsTable" destination="D6b-aP-BCJ" id="lDg-0E-pua"/>
                     </connections>
                 </viewController>
@@ -2652,7 +2667,7 @@
         <image name="icon-flag" width="50" height="50"/>
         <image name="icon-gear" width="30" height="30"/>
         <image name="icon-home-SH" width="50" height="60"/>
-        <image name="icon-home-SH-square" width="50" height="50"/>
+        <image name="icon-home-SH-square" width="50" height="70"/>
         <image name="icon-idea" width="50" height="50"/>
         <image name="icon-okey" width="50" height="50"/>
         <image name="icon-send" width="50" height="50"/>

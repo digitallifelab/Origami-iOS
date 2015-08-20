@@ -62,9 +62,10 @@ class Contact:NSObject
         {
             self.contactId = lvContactId
         }
-        if let fav = info["IsFavourite"] as? NSNumber
+        if let fav = info["IsFavorite"] as? NSNumber
         {
             self.isFavourite = fav
+            //println("-> isFavourite = \(self.isFavourite)")
         }
         if let lvState = info["State"] as? NSNumber
         {
@@ -140,7 +141,7 @@ class Contact:NSObject
         toReturn["Language"]    = self.language
         toReturn["LanguageId"]  = self.languageId
         
-        toReturn["IsFavourite"] = self.isFavourite
+        toReturn["IsFavorite"] = self.isFavourite
         toReturn["isOnline"]    = self.isOnline
         
         
