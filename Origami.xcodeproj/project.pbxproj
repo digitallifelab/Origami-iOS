@@ -71,6 +71,8 @@
 		F880D19C1B25BB4000E702D3 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F880D1911B25BB4000E702D3 /* AFURLRequestSerialization.m */; };
 		F880D19D1B25BB4000E702D3 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F880D1931B25BB4000E702D3 /* AFURLResponseSerialization.m */; };
 		F880D19E1B25BB4000E702D3 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F880D1951B25BB4000E702D3 /* AFURLSessionManager.m */; };
+		F880F5571B87051F00B0DCF1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
+		F880F5581B87067A00B0DCF1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
 		F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F882328C1B6B706400990A4E /* EditingMenuPopupVC.swift */; };
 		F882328F1B6B71AD00990A4E /* PopupMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F882328E1B6B71AD00990A4E /* PopupMenuCell.swift */; };
 		F88563FB1B31C102005D223E /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88563FA1B31C102005D223E /* ChatVC.swift */; };
@@ -206,13 +208,11 @@
 		F8C93B2A1B861B94009D890E /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
 		F8C93B2C1B861B94009D890E /* MoreButtonHolderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8C7A3D51B298CED00EA2F4F /* MoreButtonHolderView.xib */; };
-		F8C93B371B861ECA009D890E /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F8C93B361B861ECA009D890E /* Default-568h@2x.png */; };
 		F8C93B391B86285F009D890E /* DBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCC1B74ED1500EC114C /* DBMessage.m */; };
 		F8C93B3A1B862862009D890E /* DBAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC91B74ED1500EC114C /* DBAttachment.m */; };
 		F8C93B3B1B862865009D890E /* DBContact.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC61B74ED1500EC114C /* DBContact.m */; };
 		F8C93B3C1B862868009D890E /* DBElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC31B74ED1400EC114C /* DBElement.m */; };
 		F8C93B3D1B862873009D890E /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */; };
-		F8C93B411B862E41009D890E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
 		F8D0A3481B5FCE7F0033FD43 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D0A3471B5FCE7F0033FD43 /* MenuVC.swift */; };
 		F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2B1B283DE900584B8D /* Enumerations.swift */; };
 		F8D2FF2E1B28488800584B8D /* MoreButtonHolderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2D1B28488800584B8D /* MoreButtonHolderView.swift */; };
@@ -351,7 +351,6 @@
 		F8C7A3D51B298CED00EA2F4F /* MoreButtonHolderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MoreButtonHolderView.xib; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B331B861B94009D890E /* ShevchenkoNetwork.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = ShevchenkoNetwork.plist; path = "/Users/korshunov/Projects/Git/Origami/Origami-iOS/ShevchenkoNetwork.plist"; sourceTree = "<absolute>"; };
-		F8C93B361B861ECA009D890E /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8D0A3471B5FCE7F0033FD43 /* MenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		F8D2FF2B1B283DE900584B8D /* Enumerations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enumerations.swift; sourceTree = "<group>"; };
@@ -837,7 +836,6 @@
 		F8D456941B1DEFA100172667 = {
 			isa = PBXGroup;
 			children = (
-				F8C93B361B861ECA009D890E /* Default-568h@2x.png */,
 				F8D4569F1B1DEFA100172667 /* Origami */,
 				F8D456B51B1DEFA100172667 /* OrigamiTests */,
 				F8D4569E1B1DEFA100172667 /* Products */,
@@ -988,7 +986,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C93B251B861B94009D890E /* Main.storyboard in Resources */,
-				F8C93B411B862E41009D890E /* Images.xcassets in Resources */,
+				F880F5571B87051F00B0DCF1 /* Images.xcassets in Resources */,
 				F8C93B261B861B94009D890E /* seguisb.ttf in Resources */,
 				F8C93B271B861B94009D890E /* LaunchScreen.xib in Resources */,
 				F8C93B281B861B94009D890E /* segoeui.ttf in Resources */,
@@ -1003,8 +1001,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8C93B371B861ECA009D890E /* Default-568h@2x.png in Resources */,
 				F8D456A81B1DEFA100172667 /* Main.storyboard in Resources */,
+				F880F5581B87067A00B0DCF1 /* Images.xcassets in Resources */,
 				F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */,
 				F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */,
 				F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */,
@@ -1334,7 +1332,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0257A095E11D0348281CE104 /* Pods.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1357,7 +1355,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8527803264EEEEC1C3733198 /* Pods.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1462,9 +1460,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0257A095E11D0348281CE104 /* Pods.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Origami/Origami.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1480,7 +1478,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8527803264EEEEC1C3733198 /* Pods.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";

@@ -20,7 +20,7 @@ import UIKit
     var isSignalsToggled = false
     private var nightModeEnabled = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
   
-    convenience init(signals:[Element], favourites:[Element], other:[Element])
+    convenience init(signals:[Element]?, favourites:[Element]?, other:[Element]?)
     {
         self.init()
         self.favourites = favourites
@@ -382,6 +382,24 @@ import UIKit
         if let array = self.signals
         {
             return array.count
+        }
+        return 0
+    }
+    
+    func countFavourites() -> Int
+    {
+        if let favs = self.favourites
+        {
+            return favs.count
+        }
+        return 0
+    }
+    
+    func countOther() -> Int
+    {
+        if let other = self.other
+        {
+            return other.count
         }
         return 0
     }

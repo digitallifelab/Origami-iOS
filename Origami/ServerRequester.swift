@@ -127,9 +127,10 @@ class ServerRequester: NSObject
                             let type = lvElementDict["TypeId"] as? Int
                             //println(" -> element type: \(type) \n")
                             let lvElement = Element(info: lvElementDict)
-                            //println("\(lvElement.toDictionary())")
+                            
                             elements.append(lvElement)
                         }
+                        println("loaded \(elements.count) elements.. ")
                         completion(elements,nil)
                     }
                     else

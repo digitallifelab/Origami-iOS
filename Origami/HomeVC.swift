@@ -155,21 +155,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func configureLeftBarButtonItem()
     {
-//        let menuButton = UIButton.buttonWithType(.Custom) as! UIButton
-//        menuButton.frame = CGRectMake(0, 0, 35 , 35)
-//        menuButton.tintColor = UIColor.whiteColor()
-//        menuButton.setImage(UIImage(named: "icon-menu"), forState: UIControlState.Normal)
-//        menuButton.imageEdgeInsets = UIEdgeInsetsMake(2, 2, 2, 2)
-//        menuButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+        var leftButton = UIButton.buttonWithType(.Custom) as! UIButton
+        leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
+        leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        leftButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
+        leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+        leftButton.tintColor = UIColor.whiteColor()
         
-        var rightButton = UIButton.buttonWithType(.Custom) as! UIButton
-        rightButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
-        rightButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
-        rightButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
-        rightButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
-        rightButton.tintColor = UIColor.whiteColor()
-        
-        var leftBarButton = UIBarButtonItem(customView: rightButton)
+        var leftBarButton = UIBarButtonItem(customView: leftButton)
         
         //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
         self.navigationItem.leftBarButtonItem = leftBarButton
@@ -177,18 +170,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func configureNavigationTitleView()
     {
-//        let blankLabel = UILabel()
-//        blankLabel.numberOfLines = 1
-//        blankLabel.textAlignment = NSTextAlignment.Center
-//        blankLabel.font = UIFont(name: "SegoeUI", size: 20)
-//        blankLabel.text = "Shevchenko network"
-//        blankLabel.sizeToFit()
-//        blankLabel.textColor = UIColor.whiteColor()
-//        self.navigationItem.titleView = blankLabel
-        
         let titleImageView = UIImageView(image:UIImage(named: "title-home"))
         titleImageView.contentMode = .ScaleAspectFit
-        titleImageView.frame = CGRectMake(0, 0, 200, 50)
+        titleImageView.frame = CGRectMake(0, 0, 200, 40)
         
         self.navigationItem.titleView = titleImageView
     }
@@ -197,65 +181,97 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func reloadDashboardView()
     {
         loadingAllElementsInProgress = true
-        
-        NSOperationQueue().addOperationWithBlock({ [weak self] () -> Void in
             
-            DataSource.sharedInstance.getDashboardElements({(dashboardElements) -> () in
-                
-                NSOperationQueue.mainQueue().addOperationWithBlock({[weak self] () -> Void in
-                    if let aSelf = self
+        DataSource.sharedInstance.getDashboardElements({[weak self](dashboardElements) -> () in
+            
+                if let aSelf = self
+                {
+                    if let currentCollectionDataSource = aSelf.collectionSource
                     {
+                        let countCurrentSignals = currentCollectionDataSource.countSignals()
+                        let countCurrentFavs = currentCollectionDataSource.countFavourites()
+                        let countCurrentOther = currentCollectionDataSource.countOther()
                         
-                        if let currentCollectionDataSource = aSelf.collectionSource
+                        if let recievedElements = dashboardElements
                         {
-                            if dashboardElements[1]!.count != currentCollectionDataSource.countSignals()
+                            var newSignalsCount = 0
+                            var newSignals:[Element]?
+                            if let lvNewSignals = recievedElements[1]
                             {
-                                aSelf.shouldReloadCollection = true
-                            }
-                            else if let dashFavourites = dashboardElements[2] , dataSourceFavourites = currentCollectionDataSource.favourites
-                            {
-                                dashFavourites.count != dataSourceFavourites.count
-                                aSelf.shouldReloadCollection = true
-                            }
-                            else if let dashElements = dashboardElements[3], dataSourceOther = currentCollectionDataSource.other
-                            {
-                                dashElements.count != dataSourceOther.count
-                                aSelf.shouldReloadCollection = true
-                            }
-                        }
-                        
-                        if let customLayout = aSelf.collectionDashboard!.collectionViewLayout as? HomeSignalsHiddenFlowLayout
-                        {
-                            if aSelf.shouldReloadCollection
-                            {
-                                aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
-                                aSelf.collectionSource!.elementSelectionDelegate = aSelf
-                                
-                                aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
-                                aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-                                aSelf.collectionDashboard.reloadData()
-                                aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
-                                aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
-                                
+                                newSignals = lvNewSignals
+                                newSignalsCount = lvNewSignals.count
                             }
                             
-                            customLayout.privSignals = dashboardElements[1]!.count
-                            customLayout.privFavourites = dashboardElements[2]!
-                            customLayout.privOther = dashboardElements[3]!
-                            
-                            //customLayout.invalidateLayout() // to recalculate position of home elements
-                        }
-                        else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
-                        {
-                            if aSelf.shouldReloadCollection
+                            var newFavouritesCount = 0
+                            var newFavs:[Element]?
+                            if let lvNewFavs = recievedElements[2]
                             {
-                                aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                newFavs = lvNewFavs
+                                newFavouritesCount = lvNewFavs.count
+                            }
+                            
+                            var newOtherCount = 0
+                            var newOther:[Element]?
+                            if let lvNewOther = recievedElements[3]
+                            {
+                                newOther = lvNewOther
+                                newOtherCount = lvNewOther.count
+                            }
+                            
+                            if newSignalsCount == 0 && newFavouritesCount == 0 && newOtherCount == 0
+                            {
+                                aSelf.showAddTheVeryFirstElementPlus()
+                                return
+                            }
+                            
+                            if newSignalsCount != countCurrentSignals || newFavouritesCount != countCurrentFavs || newOtherCount != countCurrentOther
+                            {
+                                aSelf.shouldReloadCollection = true
+                            }
+                            
+                            if let hiddenLayout = aSelf.collectionDashboard!.collectionViewLayout as? HomeSignalsHiddenFlowLayout
+                            {
                                 
-                                let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
+                                if aSelf.shouldReloadCollection
+                                {
+                                    hiddenLayout.privSignals = newSignalsCount
+                                    
+                                    hiddenLayout.privFavourites = newFavs
+                                    
+                                    hiddenLayout.privOther = newOther
+                                    
+                                    
+                                    aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
+                                   
+                                    aSelf.collectionSource!.elementSelectionDelegate = aSelf
+                                    
+                                    aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
+                                    aSelf.collectionDashboard!.delegate = aSelf.collectionSource
+                                    aSelf.collectionDashboard.reloadData()
+                                    aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                    aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                    aSelf.shouldReloadCollection = false
+                                }
+                                else
+                                {
+                                    println(" ->  hiddenLayout. Will not reload Home CollectionView.")
+                                }
+                            
                                 
-//                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
                                 
-                                    aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
+                                //customLayout.invalidateLayout() // to recalculate position of home elements
+                            }
+                            else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
+                            {
+                                if aSelf.shouldReloadCollection
+                                {
+                                    aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                    
+                                    let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount , favourites: newFavs, other: newOther)
+                                    
+                                    //                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
+                                    
+                                    aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
                                     aSelf.collectionSource!.elementSelectionDelegate = aSelf
                                     
                                     aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
@@ -263,43 +279,52 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard.reloadData()
                                     aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
-//                                }, completion: { (finished) -> Void in
+                                    //                                }, completion: { (finished) -> Void in
                                     if aSelf.shouldReloadCollection
                                     {
                                         aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
                                     }
-//                                })
+                                    //                                })
+                                    
+                                    aSelf.shouldReloadCollection = false
+                                }
+                                else
+                                {
+                                    println(" -> visibleLayout. Will not reload Home CollectionView.")
+                                }
                             }
-                        }
-                        else
-                        {
-                            let newLayout = HomeSignalsHiddenFlowLayout(signals: dashboardElements[1]!.count , favourites: dashboardElements[2]!, other: dashboardElements[3]!)
-                            
-                            aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
+                            else
+                            {
+                                println(" -> Hone VC. New Layout.")
+                                let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount , favourites: newFavs, other: newOther)
                                 
-                                aSelf.collectionSource = HomeCollectionHandler(signals: dashboardElements[1]!, favourites: dashboardElements[2]!, other: dashboardElements[3]!)
-                                aSelf.collectionSource!.elementSelectionDelegate = aSelf
-                                
-                                aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
-                                aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-                                //aSelf.collectionDashboard.reloadData()
-                                aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
-                                
-                                }, completion: { (finished) -> Void in
-//                                    if shouldReloadCollection
-//                                    {
+                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
+                                    
+                                    aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
+                                    println(" -> did assign collection datasource")
+                                    aSelf.collectionSource!.elementSelectionDelegate = aSelf
+                                    
+                                    aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
+                                    aSelf.collectionDashboard!.delegate = aSelf.collectionSource
+                                    //aSelf.collectionDashboard.reloadData()
+                                    aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                    
+                                    }, completion: { (finished) -> Void in
+                                        //                                    if shouldReloadCollection
+                                        //                                    {
                                         aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: false)
-//                                    }
-                            })
-
+                                        //                                    }
+                                })
+                                
+                            }
+                            
+                            aSelf.loadingAllElementsInProgress = false
+                            aSelf.shouldReloadCollection = false
+                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         }
-                        
-                        aSelf.loadingAllElementsInProgress = false
-                        aSelf.shouldReloadCollection = false
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
-                })
-            })
+                }
+            
         })
     }
     
@@ -315,10 +340,46 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             newElementCreator.modalPresentationStyle = .Custom
             newElementCreator.transitioningDelegate = self
             
+            
             self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
                 newElementCreator.editingStyle = .AddNew
+                
+                if let tapView = self.view.viewWithTag(0xAD12)
+                {
+                    tapView.removeFromSuperview()
+                }
             })
         }
+    }
+    
+    func showAddTheVeryFirstElementPlus()
+    {
+        var tapView = UIView(frame: CGRectMake(0, 0, 200.0, 200.0))
+        tapView.userInteractionEnabled = true
+        tapView.backgroundColor = UIColor.whiteColor()
+        tapView.opaque = true
+        tapView.tag = 0xAD12
+        
+        var imageView = UIImageView(frame: tapView.bounds)
+        imageView.contentMode = .ScaleAspectFit
+        imageView.image = UIImage(named: "icon-add")
+        imageView.tintColor = kDayNavigationBarBackgroundColor
+        imageView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+        tapView.addSubview(imageView)
+        
+        var tapButton = UIButton.buttonWithType(.Custom) as! UIButton
+        tapButton.frame = tapView.bounds
+        tapButton.addTarget(self, action: "showElementCreationVC:", forControlEvents: UIControlEvents.TouchUpInside)
+        tapButton.backgroundColor = UIColor.clearColor()
+        tapButton.opaque = true
+        tapButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+        //tapButton.layer.borderWidth = 1.0
+        
+        tapView.addSubview(tapButton)
+        
+        tapView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds))
+        
+        self.view.addSubview(tapView)
     }
     
     // MARK: - Navigation
@@ -348,47 +409,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func presentNewSingleElementVC(element:Element)
     {
         let rootId = element.rootElementId.integerValue
-        
-//        if rootId == 0
-//        {
-            if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-            {
-                newVC.currentElement = element
-                self.navigationController?.pushViewController(newVC, animated: true)
-            }
-//        }
-//        else
-//        {
-//            //calculate all the subordinates tree
-//            if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
-//            {
-//                var viewControllers = [UIViewController]()
-//                
-//                //create viewControllers for all elements
-//                
-//                for lvElement in elementsTree.reverse()
-//                {
-//                    if let dashboardVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-//                    {
-//                        dashboardVC.currentElement = lvElement
-//                        viewControllers.append(dashboardVC)
-//                    }
-//                }
-//                //append last view controller on top of the navigation controller`s stack
-//                if let targetVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-//                {
-//                    targetVC.currentElement = element
-//                    viewControllers.append(targetVC)
-//                }
-//                //show last
-//                if let currentVCs = self.navigationController?.viewControllers as? [UIViewController]
-//                {
-//                    var vcS = currentVCs
-//                    vcS += viewControllers
-//                    self.navigationController?.setViewControllers(vcS, animated: true)
-//                }
-//            }
-//        }
+
+        if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+        {
+            newVC.currentElement = element
+            self.navigationController?.pushViewController(newVC, animated: true)
+        }
+
     }
     
     //MARK: ElementComposingDelegate

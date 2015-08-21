@@ -675,7 +675,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
        
     }
     
-    func getDashboardElements( completion:([Int:[Element]])->() )
+    func getDashboardElements( completion:([Int:[Element]]?)->() )
     {
         //println("\r _________ Started gathering elements for Dashboard.....")
         let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
@@ -769,8 +769,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 //{
                     DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
                 //}
-                DataSource.sharedInstance.elements += allElements
-                println("Count Elements = \(allElements.count)")
+                
+                var elementsSet = Set(allElements)
+                var elementsArrayFromSet = Array(elementsSet)
+                ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
+                
+                DataSource.sharedInstance.elements += elementsArrayFromSet
+                println("Count Elements = \(elementsArrayFromSet.count)")
                 completion(success: true, failure: nil)
                 
                 //test stuff

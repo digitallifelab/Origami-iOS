@@ -58,8 +58,8 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     }
     
     var privSignals:Int = 0
-    var privFavourites:[Element]? = [Element]()
-    var privOther:[Element]? = [Element]()
+    var privFavourites:[Element]?// = [Element]()
+    var privOther:[Element]? //= [Element]()
     
     init(signals:Int, favourites:[Element]?, other:[Element]?)
     {
@@ -134,13 +134,19 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         {
             countOfSections += 1
         }
-        if privFavourites!.count > 0
+        if let favs = privFavourites
         {
-            countOfSections += 1
+            if favs.count > 0
+            {
+                countOfSections += 1
+            }
         }
-        if privOther!.count > 0
+        if let other = privOther
         {
-            countOfSections += 1
+            if other.count > 0
+            {
+                countOfSections += 1
+            }
         }
         
         for var section = 0; section < countOfSections; section++
