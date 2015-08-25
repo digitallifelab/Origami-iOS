@@ -124,7 +124,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 println("Loaded \(countAttaches) attaches for current element.")
                 
                 println(" Starting to load attaches previewImages...")
-                let bgQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
+                let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
                 
                 dispatch_async(bgQueue, {[weak self] () -> Void in
                     if let previewImageDatas = DataSource.sharedInstance.getSnapshotsArrayForAttaches(attaches)
@@ -769,12 +769,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 if edited
                 {
-                    aSelf.collectionView.collectionViewLayout.invalidateLayout()
+                    
                     aSelf.currentElement?.title = editingElement.title
                     aSelf.currentElement?.details = editingElement.details
                     aSelf.collectionDataSource?.handledElement = aSelf.currentElement
                    
-                  
+                    aSelf.collectionView.collectionViewLayout.invalidateLayout()
                     aSelf.collectionView.performBatchUpdates({ () -> Void in
                         aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
                     }, completion: { ( _ ) -> Void in

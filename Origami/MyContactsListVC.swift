@@ -17,7 +17,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     var allContacts:[Contact]?
     
     var contactsSearchButton:UIBarButtonItem?
-    
+    var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
     
     override func viewDidLoad() {
@@ -39,7 +39,47 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                         weakSelf.allContacts = allContacts
                         weakSelf.contactsSearchButton?.enabled = true
                     })
-               
+                    
+                    
+                    //download avatars for contacts
+                    for lvContact in allContacts
+                    {
+                        //set avatar image
+                        if let userName = lvContact.userName as? String
+                        {
+                            DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+                                if let weakSelf = self
+                                {
+                                    if let avatar = image
+                                    {
+                                        weakSelf.contactImages[userName] = avatar
+                                    }
+                                    else
+                                    {
+                                        weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
+                                    }
+                                    if let visibleCells = weakSelf.myContactsTable?.visibleCells() as? [AllContactsVCCell]
+                                    {
+                                        var indexPathsToReload = [NSIndexPath]()
+                                        for aCell in visibleCells
+                                        {
+                                            if let indexPath = weakSelf.myContactsTable?.indexPathForCell(aCell)
+                                            {
+                                                indexPathsToReload.append(indexPath)
+                                            }
+                                        }
+                                        if !indexPathsToReload.isEmpty
+                                        {
+                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                                weakSelf.myContactsTable.reloadRowsAtIndexPaths(indexPathsToReload, withRowAnimation: .None)
+                                            })
+                                            
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    }
                 }
             }
         }
@@ -170,7 +210,41 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+        if let contactProfileVC = self.storyboard?.instantiateViewControllerWithIdentifier("ContactProfileVC") as? ContactProfileVC
+        {
+            contactProfileVC.contact = self.contactForIndexPath(indexPath)
+            self.navigationController?.pushViewController(contactProfileVC, animated: true)
+        }
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 67.0
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if let contact = contactForIndexPath(indexPath)
+        {
+            let contactName = contactNameStringFromContact(contact)
+            
+            var mainFrameWidth = UIScreen.mainScreen().bounds.size.width
+            let nameFrame = contactName.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 17.0)!], context: nil)
+            
+            var moodFrame = CGRectZero
+            if let contactMood = contact.mood
+            {
+                 moodFrame = contactMood.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX)), options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!], context: nil)
+            }
+            
+            let verticalConstraints:CGFloat = 8 + 1 + 16
+            let labelFrameHeights = nameFrame.size.height + moodFrame.size.height
+            
+            let toReturnHeight = ceil( labelFrameHeights + verticalConstraints )
+            if toReturnHeight > 67.0
+            {
+                return toReturnHeight
+            }
+        }
+        return 67.0
     }
 
     //MARK: UITableViewDataSource
@@ -207,27 +281,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     {
         if let contact = contactForIndexPath(indexPath)
         {
+            cell.contentView.layer.borderWidth = 1.0
+            cell.nameLabel.layer.borderWidth = 1.0
+            cell.moodLabel?.layer.borderWidth = 1.0
+            cell.favouriteButton.layer.borderWidth = 1.0
             //name field
-            var nameString = ""
-            if let firstName = contact.firstName as? String
-            {
-                nameString += firstName
-            }
-            if let lastName = contact.lastName as? String
-            {
-                if nameString.isEmpty
-                {
-                    nameString = lastName
-                }
-                else
-                {
-                    nameString += (" " + lastName)
-                }
-            }
-            cell.nameLabel.text = nameString
+            cell.nameLabel.text = contactNameStringFromContact(contact)
             
-            
-            cell.moodLabel?.text = "Warning once only: Detected a case where constraints ambiguous" //contact.mood as? String //
+            // mood field
+            cell.moodLabel?.text = contact.mood as? String
             
             //favourite
             if contact.isFavourite.boolValue
@@ -242,12 +304,16 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             
             //avatar
             cell.avatar.tintColor = kDayCellBackgroundColor
-            DataSource.sharedInstance.loadAvatarForLoginName(contact.userName as! String, completion: {[weak cell] (image) -> () in
-                if let weakCell = cell, avatarImage = image
-                {
-                    weakCell.avatar.image = avatarImage
-                }
-            })
+           
+            if let avatarImage = contactImages[contact.userName! as String]
+            {
+                cell.avatar?.image = avatarImage
+            }
+            else
+            {
+                cell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            }
+
         }
     }
     
@@ -320,6 +386,28 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
        
       
         return nil
+    }
+    
+    private func contactNameStringFromContact(contact:Contact) -> String
+    {
+        var nameString = ""
+        if let firstName = contact.firstName as? String
+        {
+            nameString += firstName
+        }
+        if let lastName = contact.lastName as? String
+        {
+            if nameString.isEmpty
+            {
+                nameString = lastName
+            }
+            else
+            {
+                nameString += (" " + lastName)
+            }
+        }
+        
+        return nameString
     }
     
     //MARK: Notifications

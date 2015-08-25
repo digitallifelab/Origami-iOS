@@ -135,6 +135,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         return messageCell
     }
     
+   
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
@@ -150,6 +151,12 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         }
     }
     
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 44.0
+    }
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 44.0
+    }
     //MARK: external calls
     func reloadTable()
     {

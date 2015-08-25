@@ -83,7 +83,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
         self.layer.shadowPath = offsetPath.CGPath
         
-        //self.layer.shouldRasterize = true
+        //self.labelTitle.layer.borderWidth = 2.0
     }
     
 //    deinit

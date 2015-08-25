@@ -10,6 +10,8 @@ import UIKit
 
 class ContactProfileVC: UIViewController {
 
+    var contact:Contact?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +24,13 @@ class ContactProfileVC: UIViewController {
     }
     
 
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if let existContact = self.contact
+        {
+            println("\(self.contact!.toDictionary().description)")
+        }
+    }
     /*
     // MARK: - Navigation
 

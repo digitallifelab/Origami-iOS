@@ -34,31 +34,62 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 return false
             })
             
+            let bgQueue = dispatch_queue_create("avatars-loader-queue", DISPATCH_QUEUE_CONCURRENT)
             
+            let bgGroup = dispatch_group_create()
             
-        for lvContact in allContacts!
-        {
-            //set avatar image
-            if let userName = lvContact.userName as? String
+            for lvContact in allContacts!
             {
-                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
-                    if let weakSelf = self
+                dispatch_async(bgQueue, { () -> Void in
+                    if let userName = lvContact.userName as? String
                     {
-                        if let avatar = image
-                        {
-                            weakSelf.contactImages[userName] = avatar
-                        }
-                        else
-                        {
-                            weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
-                        }
+                        dispatch_group_enter(bgGroup)
+                        DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+                            if let weakSelf = self
+                            {
+                                if let avatar = image
+                                {
+                                    weakSelf.contactImages[userName] = avatar
+                                }
+                                else
+                                {
+                                    weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
+                                }
+                                
+                            }
+                            dispatch_group_leave(bgGroup)
+                        })
                     }
                 })
             }
+            
+            dispatch_group_wait(bgGroup, DISPATCH_TIME_FOREVER)
+            dispatch_group_notify(bgGroup, bgQueue, {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    if let visibleCells = weakSelf.contactsTable?.visibleCells() as? [AllContactsVCCell]
+                    {
+                        var indexPathsToReload = [NSIndexPath]()
+                        for aCell in visibleCells
+                        {
+                            if let indexPath = weakSelf.contactsTable?.indexPathForCell(aCell)
+                            {
+                                indexPathsToReload.append(indexPath)
+                            }
+                        }
+                        if !indexPathsToReload.isEmpty
+                        {
+                            dispatch_async(dispatch_get_main_queue(), {() -> Void in
+                                if let weakSelf = self
+                                {
+                                    weakSelf.contactsTable?.reloadRowsAtIndexPaths(indexPathsToReload, withRowAnimation: .None)
+                                }
+                            })
+                        }
+                    }
+                }
+            })
         }
-        
-    }
-
     }
 
     override func didReceiveMemoryWarning() {
@@ -126,7 +157,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             }
             else
             {
-                cell.avatarImageView?.image = UIImage(named: "icon-contacts")
+                cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
 
         }
@@ -167,6 +198,58 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         {
             didSelectContact(selectedContact, atIndexPath: indexPath)
         }
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 67.0
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if let contact = contactForIndexPath(indexPath)
+        {
+            let contactName = contactNameStringFromContact(contact)
+            
+            var mainFrameWidth = UIScreen.mainScreen().bounds.size.width
+            let nameFrame = contactName.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 17.0)!], context: nil)
+            
+            var moodFrame = CGRectZero
+            if let contactMood = contact.mood
+            {
+                moodFrame = contactMood.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX)), options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!], context: nil)
+            }
+            
+            let verticalConstraints:CGFloat = 8 + 1 + 16
+            let labelFrameHeights = nameFrame.size.height + moodFrame.size.height
+            
+            let toReturnHeight = ceil( labelFrameHeights + verticalConstraints )
+            if toReturnHeight > 67.0
+            {
+                return toReturnHeight
+            }
+        }
+        return 67.0
+    }
+    
+    private func contactNameStringFromContact(contact:Contact) -> String
+    {
+        var nameString = ""
+        if let firstName = contact.firstName as? String
+        {
+            nameString += firstName
+        }
+        if let lastName = contact.lastName as? String
+        {
+            if nameString.isEmpty
+            {
+                nameString = lastName
+            }
+            else
+            {
+                nameString += (" " + lastName)
+            }
+        }
+        
+        return nameString
     }
     
     //MARK: Selection of Contacts

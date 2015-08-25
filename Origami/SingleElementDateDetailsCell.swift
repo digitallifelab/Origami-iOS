@@ -23,9 +23,9 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         }
     }
     weak var handledElement:Element?
-    @IBOutlet var datesTable:UITableView!
-    @IBOutlet var ownerNameLabel:UILabel!
-    
+    @IBOutlet weak var datesTable:UITableView!
+    @IBOutlet weak var ownerNameLabel:UILabel!
+    @IBOutlet weak var editButton:UIButton?
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -43,6 +43,8 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
+        
+        self.editButton?.tintColor = kWhiteColor
         
         if let creatorId = self.handledElement?.creatorId
         {

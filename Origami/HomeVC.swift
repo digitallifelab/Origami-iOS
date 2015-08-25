@@ -360,7 +360,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         tapView.opaque = true
         tapView.tag = 0xAD12
         
-        var imageView = UIImageView(frame: tapView.bounds)
+        var imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
         imageView.contentMode = .ScaleAspectFit
         imageView.image = UIImage(named: "icon-add")
         imageView.tintColor = kDayNavigationBarBackgroundColor

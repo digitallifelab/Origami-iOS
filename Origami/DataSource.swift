@@ -167,7 +167,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         serverRequester.loadAllMessages {
             (resultArray, serverError) -> () in
-            dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { () -> Void in
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
                 if let messagesArray = resultArray as? [Message]
                 {
                     var lvMessagesHolder = [NSNumber:[Message]]()
@@ -370,7 +370,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
     {
         
-        let bgQueue:dispatch_queue_t = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
+        let bgQueue:dispatch_queue_t = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         
         dispatch_async(bgQueue, { () -> Void in
             if DataSource.sharedInstance.messages.isEmpty
@@ -385,7 +385,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return
             }
             
-            println(" Starting sorting for last 3 messages in background")
+            //println(" Starting sorting for last 3 messages in background")
             
             var allMessagesSet = Set<Message>()
             for (_,lvMessages) in DataSource.sharedInstance.messages
@@ -1351,7 +1351,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
                         if path != nil
                         {
-                            println("\n -> Saved a file")
+                            //println("\n -> Saved a file")
                         }
                         
                         if saveError != nil

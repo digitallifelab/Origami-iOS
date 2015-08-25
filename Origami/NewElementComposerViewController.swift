@@ -277,6 +277,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         return 50.0
     }
     
+    
+    
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         if section < 2

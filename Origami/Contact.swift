@@ -118,9 +118,9 @@ class Contact:NSObject
         }
     }
     
-    func toDictionary() -> NSDictionary
+    func toDictionary() -> [NSObject:AnyObject]
     {
-        var toReturn = NSMutableDictionary(capacity: 10)
+        var toReturn = [NSObject:AnyObject]()
         
         toReturn["LoginName"]   = self.userName //?? NSNull()
         
@@ -131,9 +131,20 @@ class Contact:NSObject
         toReturn["Mood"]        = self.mood //?? NSNull()
         toReturn["State"]       = self.state //?? NSNull()
         toReturn["Sex"]         = self.sex  //?? NSNull()
-        toReturn["PhoneNumber"] = self.phone  //?? NSNull()
-        toReturn["BirthDay"]    = self.birthDay // ?? NSNull()
-        toReturn["RegDate"]     = self.regDate //?? NSNull()
+        if let phoneNumber = self.phone as? String
+        {
+            toReturn["PhoneNumber"] = phoneNumber
+        }
+        if let birthDate = self.birthDay as? String
+        {
+            toReturn["BirthDay"]  = birthDate
+        }
+      
+        if let regDate = self.regDate
+        {
+            toReturn["RegDate"] = regDate
+        }
+
         toReturn["LastSync"]    = self.lastSync// ?? NSNull()
         
         toReturn["Country"]     = self.country

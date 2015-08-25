@@ -76,8 +76,19 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
         
         let wholeFrame = containerView.bounds
-        let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
-        let currentDeviceIdiom = currentTraitCollection.userInterfaceIdiom
+        
+        var currentDeviceIdiom:UIUserInterfaceIdiom = .Phone
+        
+    
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            currentDeviceIdiom = UIDevice.currentDevice().userInterfaceIdiom
+        }
+        else
+        {
+            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
+            currentDeviceIdiom  = currentTraitCollection.userInterfaceIdiom
+        }
         
         var menuWidth:CGFloat = 210.0
         
@@ -87,9 +98,6 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         }
         else
         {
-            let traitWidth = currentTraitCollection.horizontalSizeClass
-            //let traitHeight = currentTraitCollection.verticalSizeClass
-            
             menuWidth = max(wholeFrame.size.width / 3.0, 200)
         }
         

@@ -111,13 +111,26 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         var offsetY:CGFloat = self.minimumLineSpacing
         
         /* - fix top offset in iPhone 6,5,4- */
-        let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
-        let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
-        let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
-        if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
+        
+        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
+        
+        switch comparisonResult
         {
-            offsetY += 40.0
+        case .OrderedSame, .OrderedDescending:
+            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
+            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
+            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
+            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
+            {
+                offsetY += 40.0
+            }
+        case .OrderedAscending:
+            offsetY += 0.0
         }
+        
+        
+     
+       
         /*---------*/
         
         if cellAttributes == nil

@@ -388,7 +388,7 @@ class ServerRequester: NSObject
                 success:
                 { [unowned self] (operation, result) -> Void in
                     
-                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), { () -> Void in
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
                         if let
                             lvResultDict = result as? [NSObject:AnyObject],
                             messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
@@ -495,7 +495,7 @@ class ServerRequester: NSObject
                 newMessagesURLString,
                 parameters: nil,
                 success: { (operation, response) -> Void in
-                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), { () -> Void in
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                         if let aResponse = response as? [NSObject:AnyObject], newMessageInfos = aResponse["GetNewMessagesResult"] as? [[String:AnyObject]]
                         {
                             if let completionBlock = completion
