@@ -30,7 +30,7 @@ class ChatMessageSentCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        
+        textContainerView.layer.cornerRadius = 5.0
     }
 
     override func layoutSubviews() {

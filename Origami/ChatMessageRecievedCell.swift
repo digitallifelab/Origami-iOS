@@ -33,6 +33,7 @@ class ChatMessageRecievedCell: UITableViewCell {
         self.avatar.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         self.avatar.maskToCircle()
         // Initialization code
+        textContainerView.layer.cornerRadius = 5.0
     }
     
     

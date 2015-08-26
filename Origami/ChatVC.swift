@@ -89,7 +89,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             self.view.backgroundColor = UIColor.blackColor()
             self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            bottomControlsContainerView.attachButton.tintColor = kWhiteColor
             self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
         }
         else
@@ -97,9 +96,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            bottomControlsContainerView.attachButton.tintColor = kDayNavigationBarBackgroundColor
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
-            
         }
         
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
@@ -126,6 +123,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         {
             self.displayMode = .Day
         }
+        bottomControlsContainerView.displayMode = self.displayMode
     }
     
     //MARK: ChatInputViewDelegate
@@ -410,23 +408,36 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             return tableViewDefaultCell
         }
     }
-    
-    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        if let aCell = cell as? ChatMessageRecievedCell
-        {
-            aCell.roundCorners()
-        }
-        if let aCell = cell as? ChatMessageSentCell
-        {
-            aCell.roundCorners()
-        }
-    }
+//    
+//    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+//        if let aCell = cell as? ChatMessageRecievedCell
+//        {
+//            aCell.roundCorners()
+//        }
+//        if let aCell = cell as? ChatMessageSentCell
+//        {
+//            aCell.roundCorners()
+//        }
+//    }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 70.0
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        if let nsString:NSString = messageForIndexPath(indexPath)?.textBody
+        {
+            let size = CGSizeMake(160.0, CGFloat(FLT_MAX))
+            let options = [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!]
+            let targetStringFrame = nsString.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: options, context: nil)
+            let height = targetStringFrame.size.height + 8 * 2 + 22 + 5 + 5 + 8 * 2
+            if height > 70.0
+            {
+                return height
+            }
+        }
+        
         return 70.0
     }
     

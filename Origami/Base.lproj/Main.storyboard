@@ -2515,7 +2515,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="18.06.2015 12:27" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OZB-6b-hhu" userLabel="dateLabel">
-                                                    <rect key="frame" x="123" y="8" width="74" height="14"/>
+                                                    <rect key="frame" x="123" y="8" width="74" height="22"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="22" id="OpR-RS-96P"/>
                                                     </constraints>
@@ -2532,7 +2532,7 @@
                                                     </variation>
                                                 </label>
                                                 <view contentMode="scaleToFill" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="FBR-Np-f6m">
-                                                    <rect key="frame" x="177" y="28" width="135" height="33"/>
+                                                    <rect key="frame" x="177" y="36" width="135" height="33"/>
                                                     <subviews>
                                                         <label contentMode="right" horizontalHuggingPriority="600" verticalHuggingPriority="600" text="message from me" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8H9-w2-HGL" userLabel="messageLabel">
                                                             <rect key="frame" x="8" y="5" width="119" height="20"/>
@@ -2562,7 +2562,7 @@
                                                 <constraint firstItem="FBR-Np-f6m" firstAttribute="top" secondItem="fNq-tc-lL5" secondAttribute="top" constant="5" id="633-zq-Ruk"/>
                                                 <constraint firstItem="OZB-6b-hhu" firstAttribute="top" secondItem="fNq-tc-lL5" secondAttribute="topMargin" constant="28" id="8eZ-7w-qOE"/>
                                                 <constraint firstItem="FBR-Np-f6m" firstAttribute="top" secondItem="OZB-6b-hhu" secondAttribute="bottom" constant="6" id="8tI-UD-CWn"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="FBR-Np-f6m" secondAttribute="bottom" constant="5" id="FNr-g5-dFN"/>
+                                                <constraint firstAttribute="bottom" secondItem="FBR-Np-f6m" secondAttribute="bottom" constant="5" id="FNr-g5-dFN"/>
                                                 <constraint firstAttribute="centerX" secondItem="OZB-6b-hhu" secondAttribute="centerX" id="HDr-Kp-9sj"/>
                                                 <constraint firstItem="OZB-6b-hhu" firstAttribute="top" secondItem="fNq-tc-lL5" secondAttribute="top" constant="8" id="Nna-NC-X6E"/>
                                                 <constraint firstAttribute="bottom" secondItem="OZB-6b-hhu" secondAttribute="bottom" constant="8" id="buN-S0-VaE"/>
