@@ -1402,16 +1402,30 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     println("Contacts loading failed: \n \(error!.localizedDescription)")
                 }
-                else
+                else if let aContacts = contacts
                 {
-                    if contacts!.isEmpty
+                    if aContacts.isEmpty
                     {
                         println("WARNING!: Loaded empty contacts!!!!!")
                     }
                     else
                     {
-                        println(" -> Loaded contacts: \(contacts!.count)")
-                        DataSource.sharedInstance.contacts = contacts!
+                        println(" -> Loaded contacts: \(aContacts.count)")
+                        DataSource.sharedInstance.contacts = aContacts
+                        
+                        println(" -> Started loading contact avatars in background")
+                        let group = dispatch_group_create()
+                        for aContact in aContacts
+                        {
+                            dispatch_group_enter(group)
+                            DataSource.sharedInstance.loadAvatarForLoginName(aContact.userName as! String, completion: { (image) -> () in
+                                println(" finishd loading avatar for contact \(aContact.userName)")
+                                dispatch_group_leave(group)
+                            })
+                        }
+                        dispatch_group_notify(group, dispatch_queue_create("bg-queue", DISPATCH_QUEUE_CONCURRENT), { () -> Void in
+                            println(" finishd loading avatars for contacts")
+                        })
                     }
                 }
             })
@@ -1832,7 +1846,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if let existingAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), avatarImage = UIImage(data: existingAvatarData)
             {
                 complete(image: avatarImage)
-                //println(" got avatar from RAM")
+                println(" got avatar from RAM..")
                 return
             }
             
@@ -1842,6 +1856,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 if let avatarImage = image
                 {
                     complete(image: avatarImage)
+                    println(" got avatar from Disc..")
                     return
                 }
                 //step 3 try to load from server
@@ -1850,7 +1865,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         if let avatar = UIImage(data: avatarBytes)
                         {
-                            complete(image: avatar) //return
+                            //complete(image: avatar) //return
+                            println(" got avatar from Server..")
                             DataSource.sharedInstance.avatarsHolder[loginName] = avatarBytes //save to RAM also
                             
                             //save to disc

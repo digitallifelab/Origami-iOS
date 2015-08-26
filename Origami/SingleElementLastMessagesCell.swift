@@ -96,7 +96,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             let message = lvMessages[indexPath.row]
             messageCell.messageLabel.text = message.textBody
             messageCell.avatarView.tintColor = kDayCellBackgroundColor
-            messageCell.avatarView.image = UIImage(named: "icon-contacts")
+            messageCell.avatarView.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             
             if let messageDate = message.dateCreated
             {

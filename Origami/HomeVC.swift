@@ -23,38 +23,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     override func viewDidLoad()
     {
         super.viewDidLoad()
-    
-//        DataSource.sharedInstance.loadExistingDashboardElementsFromLocalDatabaseCompletion { (elements, error) -> () in
-//            
-//            if let elementsDict = elements
-//            {
-//                if let signals = elementsDict["signals"]
-//                {
-//                    for aSignalElement in signals
-//                    {
-//                        println("Signal: \(aSignalElement.title)")
-//                    }
-//                }
-//                if let favourites = elementsDict["favor"]
-//                {
-//                    for aFavorite in favourites
-//                    {
-//                        println("Favourite: \(aFavorite.title)")
-//                    }
-//                }
-//                if let other = elementsDict["usual"]
-//                {
-//                    for anUsual in other
-//                    {
-//                        println("Usual: \(anUsual.title)")
-//                    }
-//                }
-//            }
-//        }
         
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
-
         
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
         self.collectionSource = HomeCollectionHandler()
@@ -158,7 +129,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         var leftButton = UIButton.buttonWithType(.Custom) as! UIButton
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
-        leftButton.setImage(UIImage(named: "icon-options"), forState: .Normal)
+        leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         leftButton.tintColor = UIColor.whiteColor()
         

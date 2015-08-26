@@ -296,23 +296,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func setupNavigationBar()
     {
-//        var backButton = UIButton.buttonWithType(.Custom) as! UIButton
-//        backButton.frame = CGRectMake(0, 0, 40.0, 40.0)
-//        backButton.imageEdgeInsets = UIEdgeInsetsMake(0, -20, 0, 20)
-//        backButton.setImage( UIImage(named: "icon-back")?.imageWithRenderingMode(.AlwaysTemplate), forState: UIControlState.Normal)
-//        backButton.tintColor = UIColor.whiteColor()
-//        backButton.addTarget(self, action: "dismissSelf", forControlEvents: UIControlEvents.TouchUpInside)
-//        
-//        
-//        
-//        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
-        
-        
         var contactsButton = UIButton.buttonWithType(.Custom) as! UIButton
         contactsButton.frame = CGRectMake(0, 0, 35.0, 35.0)
         contactsButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         contactsButton.imageEdgeInsets = UIEdgeInsetsMake(5, 10.0, 5, -10.0)
-        contactsButton.setImage(UIImage(named: "icon-contacts"), forState: .Normal)
+        contactsButton.setImage(UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         contactsButton.tintColor = UIColor.whiteColor()
         contactsButton.addTarget(self, action: "showContactsChecker", forControlEvents: .TouchUpInside)
         

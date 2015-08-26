@@ -54,27 +54,14 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                                     {
                                         weakSelf.contactImages[userName] = avatar
                                     }
-                                    else
+                                  
+                                    
+                                    if !weakSelf.contactImages.isEmpty
                                     {
-                                        weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
-                                    }
-                                    if let visibleCells = weakSelf.myContactsTable?.visibleCells() as? [AllContactsVCCell]
-                                    {
-                                        var indexPathsToReload = [NSIndexPath]()
-                                        for aCell in visibleCells
-                                        {
-                                            if let indexPath = weakSelf.myContactsTable?.indexPathForCell(aCell)
-                                            {
-                                                indexPathsToReload.append(indexPath)
-                                            }
-                                        }
-                                        if !indexPathsToReload.isEmpty
-                                        {
-                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                                weakSelf.myContactsTable.reloadRowsAtIndexPaths(indexPathsToReload, withRowAnimation: .None)
-                                            })
-                                            
-                                        }
+                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                            weakSelf.myContactsTable.reloadData()
+                                        })
+                                        
                                     }
                                 }
                             })
@@ -95,9 +82,35 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     override func viewWillAppear(animated: Bool) {
         myContacts = DataSource.sharedInstance.getMyContacts()
+        
         if myContacts != nil
         {
-            myContactsTable.reloadData()
+            for lvContact in myContacts!
+            {
+                //set avatar image
+                if let userName = lvContact.userName as? String
+                {
+                    DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+                        if let weakSelf = self
+                        {
+                            if let avatar = image
+                            {
+                                weakSelf.contactImages[userName] = avatar
+                            }
+                            
+                            
+                            if !weakSelf.contactImages.isEmpty
+                            {
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    weakSelf.myContactsTable.reloadData()
+                                })
+                                
+                            }
+                        }
+                        })
+                }
+            }
+            //myContactsTable.reloadData()
         }
         self.calculateFavouriteContacts { (favouriteContacts) -> () in
             if let fav = favouriteContacts

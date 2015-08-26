@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		92C21C0875C584A9F84EC59B /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 809E0FB95FBFCB86AE3ED3BA /* libPods.a */; };
 		F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8016FF01B304614002A1620 /* FrameCounter.swift */; };
+		F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
+		F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
+		F80597491B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597481B8DB13200D2A611 /* ContactProfileTextInfoCell.swift */; };
+		F805974A1B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597481B8DB13200D2A611 /* ContactProfileTextInfoCell.swift */; };
 		F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
@@ -236,6 +240,8 @@
 		809E0FB95FBFCB86AE3ED3BA /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		8527803264EEEEC1C3733198 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		F8016FF01B304614002A1620 /* FrameCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCounter.swift; sourceTree = "<group>"; };
+		F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileAvatarCell.swift; sourceTree = "<group>"; };
+		F80597481B8DB13200D2A611 /* ContactProfileTextInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileTextInfoCell.swift; sourceTree = "<group>"; };
 		F811100F1B2AC2FF00115DF6 /* segoeui.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeui.ttf; sourceTree = "<group>"; };
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
@@ -575,6 +581,8 @@
 			isa = PBXGroup;
 			children = (
 				F86F742A1B56839D00E48E13 /* ContactProfileVC.swift */,
+				F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */,
+				F80597481B8DB13200D2A611 /* ContactProfileTextInfoCell.swift */,
 			);
 			name = ContactProfile;
 			sourceTree = "<group>";
@@ -1167,6 +1175,7 @@
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F8C93B131B861B94009D890E /* ChatVC.swift in Sources */,
+				F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F8C93B141B861B94009D890E /* MoreButtonHolderView.swift in Sources */,
 				F8C93B151B861B94009D890E /* AFSecurityPolicy.m in Sources */,
 				F8C93B161B861B94009D890E /* Contact.swift in Sources */,
@@ -1174,6 +1183,7 @@
 				F8C93B181B861B94009D890E /* ChatMessageSentCell.swift in Sources */,
 				F8C93B191B861B94009D890E /* ObjectsConverter.swift in Sources */,
 				F8C93B1A1B861B94009D890E /* SingleElementDateDetailsCell.swift in Sources */,
+				F805974A1B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
 				F8C93B3B1B862865009D890E /* DBContact.m in Sources */,
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F8C93B1C1B861B94009D890E /* AFHTTPRequestOperationManager.m in Sources */,
@@ -1258,6 +1268,7 @@
 				F86F74291B56838B00E48E13 /* MyContactsListVC.swift in Sources */,
 				F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */,
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
+				F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,
 				F8C62DC91B3AF93200324C0B /* ElementDashboardAttachmentCell.swift in Sources */,
 				F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */,
@@ -1287,6 +1298,7 @@
 				F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */,
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F880D1971B25BB4000E702D3 /* AFHTTPRequestOperationManager.m in Sources */,
+				F80597491B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
 				F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */,
 				F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */,
 				F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */,

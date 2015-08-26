@@ -35,12 +35,13 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             })
             
             let bgQueue = dispatch_queue_create("avatars-loader-queue", DISPATCH_QUEUE_CONCURRENT)
+            dispatch_async(bgQueue, { [weak self]() -> Void in
+                let bgGroup = dispatch_group_create()
             
-            let bgGroup = dispatch_group_create()
-            
-            for lvContact in allContacts!
-            {
-                dispatch_async(bgQueue, { () -> Void in
+                var shouldReloadAfterRealAvatarLoaded = false
+                
+                for lvContact in existContacts
+                {
                     if let userName = lvContact.userName as? String
                     {
                         dispatch_group_enter(bgGroup)
@@ -50,43 +51,51 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                                 if let avatar = image
                                 {
                                     weakSelf.contactImages[userName] = avatar
+                                    shouldReloadAfterRealAvatarLoaded = true
                                 }
-                                else
-                                {
-                                    weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
-                                }
+//                                else
+//                                {
+//                                    weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
+//                                }
                                 
                             }
                             dispatch_group_leave(bgGroup)
                         })
                     }
-                })
-            }
+                }
             
-            dispatch_group_wait(bgGroup, DISPATCH_TIME_FOREVER)
-            dispatch_group_notify(bgGroup, bgQueue, {[weak self] () -> Void in
-                if let weakSelf = self
+            
+                dispatch_group_wait(bgGroup, DISPATCH_TIME_FOREVER)
+           
+                if shouldReloadAfterRealAvatarLoaded
                 {
-                    if let visibleCells = weakSelf.contactsTable?.visibleCells() as? [AllContactsVCCell]
+                    if let weakSelf = self
                     {
-                        var indexPathsToReload = [NSIndexPath]()
-                        for aCell in visibleCells
+                        if let visibleCells = weakSelf.contactsTable?.visibleCells() as? [AllContactsVCCell]
                         {
-                            if let indexPath = weakSelf.contactsTable?.indexPathForCell(aCell)
+                            var indexPathsToReload = [NSIndexPath]()
+                            for aCell in visibleCells
                             {
-                                indexPathsToReload.append(indexPath)
+                                if let indexPath = weakSelf.contactsTable?.indexPathForCell(aCell)
+                                {
+                                    indexPathsToReload.append(indexPath)
+                                }
+                            }
+                            if !indexPathsToReload.isEmpty
+                            {
+                                dispatch_async(dispatch_get_main_queue(), {() -> Void in
+                                    if let weakSelf = self
+                                    {
+                                        weakSelf.contactsTable?.reloadRowsAtIndexPaths(indexPathsToReload, withRowAnimation: .None)
+                                    }
+                                })
                             }
                         }
-                        if !indexPathsToReload.isEmpty
-                        {
-                            dispatch_async(dispatch_get_main_queue(), {() -> Void in
-                                if let weakSelf = self
-                                {
-                                    weakSelf.contactsTable?.reloadRowsAtIndexPaths(indexPathsToReload, withRowAnimation: .None)
-                                }
-                            })
-                        }
                     }
+                }
+                else
+                {
+                    println(" No Avatar loaded. Will not reload visible rows.")
                 }
             })
         }

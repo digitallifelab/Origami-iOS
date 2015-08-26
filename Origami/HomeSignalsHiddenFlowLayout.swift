@@ -99,7 +99,38 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
     func configureAttributes()
     {
-        let viewWidth = UIScreen.mainScreen().bounds.size.width - 10.0
+        var viewWidth = UIScreen.mainScreen().bounds.size.width - 10.0
+        
+        
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
+            if currentIdiom == .Phone
+            {
+                var currentWidth = UIScreen.mainScreen().bounds.size.width
+                var currentHeight = UIScreen.mainScreen().bounds.size.height
+                
+                let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
+                switch currentDeviceOrentation
+                {
+                case UIInterfaceOrientation.Unknown:
+                    break
+                case UIInterfaceOrientation.Portrait:
+                    fallthrough
+                case UIInterfaceOrientation.PortraitUpsideDown:
+                    break
+                case UIInterfaceOrientation.LandscapeLeft:
+                    fallthrough
+                case UIInterfaceOrientation.LandscapeRight:
+                    currentWidth = currentHeight
+                    currentHeight = UIScreen.mainScreen().bounds.size.width - 10
+                    viewWidth = currentWidth
+                }
+            }
+        }
+
+        
+        
         
         var headerSize = self.headerReferenceSize
         if headerSize.height < 30.0
@@ -294,17 +325,28 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         self.sizeOfContent = contentSizeLocal
         
     }
+//    
+//    override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
+//        if let oldBounds = self.collectionView?.bounds
+//        {
+//            if oldBounds.size != newBounds.size
+//            {
+////                cellAttributes?.removeAll(keepCapacity: false)
+////                headerAttributes?.removeAll(keepCapacity: false)
+////                cellAttributes = nil
+////                headerAttributes = nil
+//                
+//                return true
+//            }
+//        }
+//        return false
+//    }
     
-    override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
+    override  func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
         if let oldBounds = self.collectionView?.bounds
         {
-            if oldBounds.size != newBounds.size
+            if oldBounds.size.width != newBounds.size.width //when device is rotated
             {
-//                cellAttributes?.removeAll(keepCapacity: false)
-//                headerAttributes?.removeAll(keepCapacity: false)
-//                cellAttributes = nil
-//                headerAttributes = nil
-                
                 return true
             }
         }

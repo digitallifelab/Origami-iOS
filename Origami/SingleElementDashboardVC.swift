@@ -14,6 +14,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     var collectionDataSource:SingleElementCollectionViewDataSource?
     var fadeViewControllerAnimator:FadeOpaqueAnimator?
     
+    var iOS7PopoverController:UIPopoverController?
+    
     var displayMode:DisplayMode = .Day {
         didSet{
             let old = oldValue
@@ -86,7 +88,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
-
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
        
     }
@@ -95,7 +96,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         super.viewWillDisappear(animated)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementFavouriteButtonTapped, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementActionButtonPressedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementEditTextNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementMoreDetailsNotification, object: nil)
     }
     
     override func viewDidDisappear(animated: Bool)
@@ -605,21 +609,43 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         if let leftTopMenuPopupVC = self.storyboard?.instantiateViewControllerWithIdentifier("EditingMenuPopupVC") as? EditingMenuPopupVC
         {
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "popoverItemTapped:", name: "PopupMenuItemPressed", object: leftTopMenuPopupVC)
-            leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
-            leftTopMenuPopupVC.modalInPopover = false//true // true disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
-            //leftTopMenuPopupVC.view.frame = CGRectMake(0, 0, 200.0, 150.0)
             
-            //var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
-            var popoverObject = leftTopMenuPopupVC.popoverPresentationController
-            popoverObject?.permittedArrowDirections = .Any
-            popoverObject?.barButtonItem = self.navigationItem.rightBarButtonItem
-            popoverObject?.delegate = self
-            
-            //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
-            leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 150.0)
-            self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
+            if FrameCounter.isLowerThanIOSVersion("8.0")
+            {
+                if FrameCounter.getCurrentInterfaceIdiom() == .Pad
+                {
+                    if let barItem = sender as? UIBarButtonItem
+                    {
+                        var popoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
+                        popoverController.popoverContentSize = CGSizeMake(200, 150.0)
+                        self.iOS7PopoverController = popoverController
+                        
+                        popoverController.presentPopoverFromBarButtonItem(barItem, permittedArrowDirections: .Any, animated: true)
+                    }
+                }
+                else
+                {
+                    self.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
+                }
+            }
+            else
+            {
+                leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
+                leftTopMenuPopupVC.modalInPopover = false//true // true disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
                 
-            })
+                
+                //var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
+                var popoverObject = leftTopMenuPopupVC.popoverPresentationController
+                popoverObject?.permittedArrowDirections = .Any
+                popoverObject?.barButtonItem = self.navigationItem.rightBarButtonItem
+                popoverObject?.delegate = self
+                
+                //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
+                leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 150.0)
+                self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
+                    
+                })
+            }
         }
     }
     //MARK: top left menu popover action
@@ -635,13 +661,34 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     target = destinationTitle
                 }
-                self.dismissViewControllerAnimated(true, completion: { [weak self]() -> Void in
-                    if let weakSelf = self
+                if let popover = iOS7PopoverController
+                {
+                    popover.dismissPopoverAnimated(true)
+                    self.iOS7PopoverController = nil
+                    if target != nil
                     {
-                        if target != nil
+                        switch target!
                         {
-                            switch target!
+                        case "Add Element":
+                            self.elementAddNewSubordinatePressed()
+                        case "Add Attachment":
+                            self.startAddingNewAttachFile(nil)
+                        case "Chat":
+                            self.showChatForCurrentElement()
+                        default:
+                            break
+                        }
+                    }
+                }
+                else
+                {
+                    self.dismissViewControllerAnimated(true, completion: { [weak self]() -> Void in
+                        if let weakSelf = self
+                        {
+                            if target != nil
                             {
+                                switch target!
+                                {
                                 case "Add Element":
                                     weakSelf.elementAddNewSubordinatePressed()
                                 case "Add Attachment":
@@ -650,10 +697,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                     weakSelf.showChatForCurrentElement()
                                 default:
                                     break
+                                }
                             }
                         }
-                    }
-                })
+                    })
+                }
             }
         }
     }

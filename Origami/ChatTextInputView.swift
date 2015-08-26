@@ -33,12 +33,10 @@ class ChatTextInputView: UIView, UITextViewDelegate {
     {
         if clear
         {
-//            let attributes = [NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] as [NSObject:AnyObject]
-//            let attributedText = NSAttributedString(string: "TapToType".localizedWithComment(""), attributes:attributes)
-            
             textView.attributedText = emptyAttributedText
             sendButton.enabled = false
         }
+        
         textView.resignFirstResponder()
     }
     
@@ -55,7 +53,6 @@ class ChatTextInputView: UIView, UITextViewDelegate {
             {
                 sendButton.enabled = true
             }
-            //let lvDesiredFrame = FrameCounter.calculateFrameForTextView(textView, text: text, targetWidth: textView.bounds.size.width)
             let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
             
             if textView.bounds.size.height != lvTestSize.height

@@ -221,10 +221,10 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         switch indexPath.section
         {
         case 0:
-            contactCell.checkBox.image = checkedCheckboxImage//?.imageWithRenderingMode(.AlwaysTemplate)
+            contactCell.checkBox.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             return contactCell
         case 1:
-            contactCell.checkBox.image = unCheckedCheckboxImage//?.imageWithRenderingMode(.AlwaysTemplate)
+            contactCell.checkBox.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             return contactCell
         default:
             let defaultCell = UITableViewCell(style: .Default, reuseIdentifier: "DummyCell") as UITableViewCell

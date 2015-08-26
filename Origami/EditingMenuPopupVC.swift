@@ -36,6 +36,10 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
         
     }
     
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 50.0
+    }
+    
     //MARK: UITableViewDataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return menuItems.count
@@ -72,7 +76,8 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
         {
             return
         }
-      
     }
+    
+    
 
 }

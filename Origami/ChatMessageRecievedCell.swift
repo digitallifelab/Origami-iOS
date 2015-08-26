@@ -30,6 +30,7 @@ class ChatMessageRecievedCell: UITableViewCell {
     }
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.avatar.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         self.avatar.maskToCircle()
         // Initialization code
     }

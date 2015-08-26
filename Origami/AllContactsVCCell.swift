@@ -10,10 +10,7 @@ import UIKit
 
 class AllContactsVCCell: UITableViewCell {
 
-  
     @IBOutlet weak var nameLabel:UILabel?
-    //@IBOutlet weak var emailLabel:UILabel?
-    //@IBOutlet weak var phoneNumber:UILabel?
     @IBOutlet weak var moodLabel:UILabel?
     @IBOutlet weak var selectionIndicator:UIImageView?
     @IBOutlet weak var avatarImageView:UIImageView?
@@ -22,23 +19,25 @@ class AllContactsVCCell: UITableViewCell {
         didSet{
             switch contactIsMine
             {   case true:
-                    selectionIndicator?.image = UIImage(named:"icon-checked")
+                    selectionIndicator?.image = UIImage(named:"icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
                 case false:
-                    selectionIndicator?.image = UIImage(named:"icon-unchecked")
+                    selectionIndicator?.image = UIImage(named:"icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
                 default:break
             }
         }
     }
     
-    override func prepareForReuse() {
-        avatarImageView?.image = nil
-    }
-    
-    override func awakeFromNib() {
+    override func awakeFromNib()
+    {
         if let imageView = self.avatarImageView
         {
             imageView.maskToCircle()
         }
+    }
+    
+    override func layoutSubviews()
+    {
+        super.layoutSubviews()
         avatarImageView?.tintColor = kDayCellBackgroundColor
         selectionIndicator?.tintColor = kDayCellBackgroundColor
     }
