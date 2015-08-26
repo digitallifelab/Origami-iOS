@@ -151,8 +151,6 @@ class SingleElementTitleCell: UICollectionViewCell {
         setupIdeaButton()
         setupCheckMarkButton()
         setupDecisionButton()
-        
-        
     }
     
     private func setupSignalButton()
