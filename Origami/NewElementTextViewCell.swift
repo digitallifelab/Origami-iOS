@@ -17,10 +17,12 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
     var attributedText:NSAttributedString? = nil {
         didSet{
             textView.attributedText = (attributedText != nil) ? attributedText : defaultAttributedText
-            if count(textView.attributedText.string) > 0
-            {
-                textView.sizeToFit()
-            }
+//            if count(textView.attributedText.string) > 0
+//            {
+//                textView.sizeToFit()
+//            }
+            var textViewSize :CGSize = textView.contentSize
+            println("ContenttSize: \(textViewSize)")
         }
     }
     
@@ -67,7 +69,7 @@ class NewElementTextViewCell: UITableViewCell , UITextViewDelegate {
 
     func textViewDidChange(textView: UITextView) {
         let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
-        
+        println("test size: \(lvTestSize)")
         if textView.bounds.size.height != lvTestSize.height
         {
             NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object: nil)

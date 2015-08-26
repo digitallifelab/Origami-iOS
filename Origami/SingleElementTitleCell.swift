@@ -142,8 +142,8 @@ class SingleElementTitleCell: UICollectionViewCell {
                 {
                     buttonSubView.hidden = false
                 }
-                
-                buttonSubView.tintColor = buttonFalseColor
+                buttonSubView.layer.cornerRadius = 20.0
+                buttonSubView.tintColor = kWhiteColor
             }
         }
         
@@ -151,20 +151,32 @@ class SingleElementTitleCell: UICollectionViewCell {
         setupIdeaButton()
         setupCheckMarkButton()
         setupDecisionButton()
+        
+        
     }
     
     private func setupSignalButton()
     {
-        if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue)
+        if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue) as? UIButton
         {
-            signalButton.tintColor = (currentElement.isSignal.boolValue) ? buttonTrueColor : buttonFalseColor
+            signalButton.setImage((UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
+            signalButton.backgroundColor = (currentElement.isSignal.boolValue) ? kDaySignalColor : UIColor.clearColor()
         }
     }
     private func setupIdeaButton()
     {
         if let currentElement = self.handledElement, ideaButton = self.viewWithTag(ActionButtonCellType.Idea.rawValue)
         {
-            ideaButton.tintColor = (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue)) ? buttonTrueColor : buttonFalseColor
+            let enabled = (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
+            if enabled
+            {
+                ideaButton.backgroundColor = kDaySignalColor
+            }
+            else
+            {
+                ideaButton.backgroundColor = UIColor.clearColor()
+            }
+            
         }
     
     }
@@ -172,14 +184,28 @@ class SingleElementTitleCell: UICollectionViewCell {
     {
         if let currentElement = self.handledElement, checkmarkButton = self.viewWithTag(ActionButtonCellType.CheckMark.rawValue)
         {
-            checkmarkButton.tintColor = (optionsConverter.isOptionEnabled(ElementOptions.Done, forCurrentOptions: currentElement.typeId.integerValue)) ? buttonTrueColor : buttonFalseColor
+            if (optionsConverter.isOptionEnabled(ElementOptions.Done, forCurrentOptions: currentElement.typeId.integerValue))
+            {
+                checkmarkButton.backgroundColor = kDaySignalColor
+            }
+            else
+            {
+                checkmarkButton.backgroundColor = UIColor.clearColor()
+            }
         }
     }
     private func setupDecisionButton()
     {
         if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Solution.rawValue)
         {
-            decisionButton.tintColor = (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue)) ? buttonTrueColor : buttonFalseColor
+            if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue))
+            {
+                decisionButton.backgroundColor = kDaySignalColor
+            }
+            else
+            {
+                decisionButton.backgroundColor = UIColor.clearColor()
+            }
         }
     }
     func actionButtonTapped(sender:AnyObject?)

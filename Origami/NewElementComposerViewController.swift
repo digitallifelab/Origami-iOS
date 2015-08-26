@@ -104,10 +104,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                             {
                                 weakSelf.contactImages[userName] = avatar
                             }
-                            else
-                            {
-                                weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
-                            }
                         }
                         })
                 }
@@ -428,7 +424,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             else
             {
-                cell.avatar.image = UIImage(named: "icon-contacts")
+                cell.avatar.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
             //set name text
             var nameLabelText = ""
@@ -450,11 +446,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             //set proper checkbox image
             if contactIDsToPass.contains(lvContact.contactId!.integerValue)
             {
-                cell.checkBox.image = checkedCheckboxImage
+                cell.checkBox.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             }
             else
             {
-                cell.checkBox.image = unCheckedCheckboxImage
+                cell.checkBox.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             }
             
             cell.displayMode = self.displayMode
@@ -536,6 +532,18 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
     }
     
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.section > 1
+        {
+            return 50.0
+        }
+        return 80.0
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 80.0 //TODO: Calculate rows for title and details text cells
+    }
+    //MARK: UIScrollViewDelegate
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.stopTyping(nil)
     }

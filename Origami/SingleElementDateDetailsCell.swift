@@ -38,14 +38,13 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         let offsetShadowFrame = CGRectOffset(selfBounds, 0, shadowOffset.height)
         let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
         
-        
         self.layer.shadowPath = offsetPath.CGPath
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
         
         self.editButton?.tintColor = kWhiteColor
-        
+        self.editButton?.setImage((UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
         if let creatorId = self.handledElement?.creatorId
         {
             var ownerNameToDisplay = String()

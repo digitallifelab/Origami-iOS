@@ -105,11 +105,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     override func viewDidDisappear(animated: Bool)
     {
         super.viewDidDisappear(animated)
-        if self.currentElement != nil
-        {
-           // collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
-            collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: true, scrollPosition: .Top)
-        }
+//        if self.currentElement != nil
+//        {
+//           // collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
+//            collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: true, scrollPosition: .Top)
+//        }
     }
     
     func configureRightBarButtonItem()
