@@ -616,6 +616,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         println("new element type id: \(editingElement.typeId)")
         self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
+    
     func toggleMoreDetails(notification:NSNotification?)
     {
         if let simpleLayout = self.collectionView.collectionViewLayout as? SimpleElementDashboardLayout

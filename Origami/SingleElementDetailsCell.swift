@@ -62,6 +62,7 @@ class SingleElementDetailsCell: UICollectionViewCell {
         }
         else if lround(Double(selfBounds.size.height)) == 120
         {
+            self.moreLessButton.hidden = false
             self.moreLessButton.setTitle("More".localizedWithComment(""), forState: .Normal)
         }
     }

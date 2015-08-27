@@ -570,11 +570,16 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 {
                     if textView == targetTextView
                     {
-                        targetIndexPath = indexPath
+                        if textView.bounds.size.height != textViewTargetHeight
+                        {
+                            targetIndexPath = indexPath
+                        }
+                        break
                     }
                 }
                 table.beginUpdates()
                 table.endUpdates()
+                
                 scrollCursorToVisibleIfNeededFor(targetIndexPath)
             }
         }
@@ -592,7 +597,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 
                 if !rectVisible(cursorRect)
                 {
-                    cursorRect.size.height += 8; // To add some space underneath the cursor
+                    //cursorRect.size.height += 8; // To add some space underneath the cursor
                     table.scrollRectToVisible(cursorRect, animated:true)
                 }
             }
@@ -613,10 +618,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     //MARK: UITextViewDelegate
     func textViewDidChange(textView: UITextView) {
         let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
-        //println("textViewText: \(textView.text), test size: \(lvTestSize)")
-        if textView.bounds.size.height != lvTestSize.height
+        let targetHeight = ceil(lvTestSize.height)
+        if textView.bounds.size.height != targetHeight
         {
-            NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object:textView , userInfo:["height":lvTestSize.height])
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object:textView , userInfo:["height": targetHeight])
         }
     }
     //MARK: ---

@@ -287,7 +287,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 {
                     offsetX = mainFrame.origin.x
                     let detailsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                    var detailsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 120.0) //TODO: calculate details height
+                    var detailsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 120.0)
                     if CGRectGetMaxX(detailsFrame) > mainFrameWidth
                     {
                         offsetY += detailsFrame.size.height
@@ -300,15 +300,13 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                         {
                             var detailsSize = CGSizeMake(mainFrame.width, 200.0)
                             
-                            switch comparisonResult
-                            {
-                            case .OrderedSame, .OrderedDescending:
-                                detailsSize = detailsCellFromDataSource.systemLayoutSizeFittingSize(detailsFrame.size, withHorizontalFittingPriority: 1000, verticalFittingPriority: 50)
-                            case .OrderedAscending:
-                                var textLabelSize = detailsString.boundingRectWithSize(CGSizeMake(mainFrame.width - (60 + 16), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:detailsCellFromDataSource.textLabel.font], context: nil)
-                                detailsSize.height =  ceil(textLabelSize.height) + 2 + 26
-                            }
+                            let label = detailsCellFromDataSource.textLabel
+
+                            var labelSize = label.sizeThatFits(CGSizeMake(mainFrame.width - (28 + 8), CGFloat(FLT_MAX) ))
+
+                            detailsSize.height = labelSize.height + 2 + 2 + 32 //top and bottom constraints
                             println("-> Details Cell Size: \(detailsSize)")
+                            
                             if detailsSize.height < detailsFrame.size.height
                             {
                                 detailsFrame.size.height = detailsSize.height
@@ -320,7 +318,6 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                                     detailsFrame.size = CGSizeMake(mainFrame.size.width, detailsSize.height)
                                 }
                             }
-                            
                         }
                     }
                     
@@ -337,9 +334,8 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 }
                 else
                 {
-                    println("\n -> Will not calculate leyout for empty details collectiobView cell <- ")
+                    println("\n -> Will not calculate layout for empty details collectiobView cell <- ")
                 }
-                
             }
             
             if privateStruct.attachesCell
@@ -348,7 +344,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 offsetX = mainFrame.origin.x
                 offsetY += self.minimumLineSpacing
                 
-                let attachesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 80.0) //TODO: tweak attaches cell frame height properly
+                let attachesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 80.0)
                 let attachesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
                 var attachesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: attachesIndexPath)
                 attachesAttribute.frame = attachesFrame
