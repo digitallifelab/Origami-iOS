@@ -688,12 +688,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         if let userProfileVC = self.storyboard?.instantiateViewControllerWithIdentifier("UserProfileVC") as? UserProfileVC
         {
-            userProfileVC.modalPresentationStyle = .Custom
-            userProfileVC.transitioningDelegate = self
+            let profileNavHolder = UINavigationController(rootViewController: userProfileVC)
+            
+            profileNavHolder.modalPresentationStyle = .Custom
+            profileNavHolder.transitioningDelegate = self
             
             customTransitionAnimator = FadeOpaqueAnimator()
             
-            self.presentViewController(userProfileVC, animated: true, completion: nil)
+            self.presentViewController(profileNavHolder, animated: true, completion: nil)
         }
     }
     

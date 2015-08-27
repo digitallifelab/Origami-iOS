@@ -53,3 +53,11 @@ protocol MessageTapDelegate
 {
     func chatMessageWasTapped(message:Message?)
 }
+
+
+protocol UserProfileAvatarCollectionCellDelegate
+{
+    func showAvatarPressed()
+    func changeAvatarPressed()
+    func changeInfoPressed(cellType:ProfileTextCellType)
+}

@@ -1971,7 +1971,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="3cB-Td-GvF">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="430"/>
+                                <rect key="frame" x="0.0" y="20" width="320" height="410"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nwI-mT-4O6">
                                     <size key="itemSize" width="50" height="50"/>
@@ -2012,7 +2012,7 @@
                                                         <constraint firstAttribute="width" constant="30" id="TW1-ee-Zxq"/>
                                                     </constraints>
                                                     <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" image="icon-gear">
+                                                    <state key="normal" image="icon-edit">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
@@ -2051,7 +2051,7 @@
                                                         <constraint firstAttribute="height" constant="30" id="XGO-OJ-Stc"/>
                                                     </constraints>
                                                     <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" image="icon-gear">
+                                                    <state key="normal" image="icon-edit">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                     <connections>
@@ -2111,11 +2111,11 @@
                         <color key="tintColor" red="0.13645310960000001" green="0.59057903410000001" blue="0.071161886209999997" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="tJm-Hz-mso" firstAttribute="top" secondItem="gcc-Sq-heO" secondAttribute="bottom" constant="8" id="2fH-XN-DUE"/>
-                            <constraint firstItem="3cB-Td-GvF" firstAttribute="top" secondItem="7Im-r4-Nvg" secondAttribute="bottom" constant="-20" id="AZI-nF-kgW"/>
+                            <constraint firstItem="3cB-Td-GvF" firstAttribute="top" secondItem="7Im-r4-Nvg" secondAttribute="bottom" id="AZI-nF-kgW"/>
                             <constraint firstItem="gcc-Sq-heO" firstAttribute="leading" secondItem="eYv-ID-F01" secondAttribute="leadingMargin" constant="522" id="EsY-Xb-GAE"/>
-                            <constraint firstItem="3cB-Td-GvF" firstAttribute="leading" secondItem="eYv-ID-F01" secondAttribute="leadingMargin" constant="-16" id="FwZ-Om-ZFQ"/>
+                            <constraint firstItem="3cB-Td-GvF" firstAttribute="leading" secondItem="eYv-ID-F01" secondAttribute="leading" id="FwZ-Om-ZFQ"/>
                             <constraint firstAttribute="centerX" secondItem="gcc-Sq-heO" secondAttribute="centerX" constant="-0.5" id="Twa-Ph-0f7"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="3cB-Td-GvF" secondAttribute="trailing" constant="-16" id="WQU-zL-AaH"/>
+                            <constraint firstAttribute="trailing" secondItem="3cB-Td-GvF" secondAttribute="trailing" id="WQU-zL-AaH"/>
                             <constraint firstItem="tJm-Hz-mso" firstAttribute="top" secondItem="3cB-Td-GvF" secondAttribute="bottom" constant="50" id="rc5-p1-akW"/>
                             <constraint firstAttribute="trailingMargin" secondItem="gcc-Sq-heO" secondAttribute="trailing" constant="16" id="ufr-aW-6JQ"/>
                         </constraints>
@@ -2753,7 +2753,6 @@
         <image name="icon-edit" width="50" height="50"/>
         <image name="icon-favourite" width="50" height="50"/>
         <image name="icon-flag" width="50" height="50"/>
-        <image name="icon-gear" width="30" height="30"/>
         <image name="icon-home-SH" width="50" height="60"/>
         <image name="icon-idea" width="50" height="50"/>
         <image name="icon-okey" width="50" height="50"/>

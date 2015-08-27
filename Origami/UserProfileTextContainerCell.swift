@@ -13,6 +13,8 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     @IBOutlet var textLabel:UILabel!
     @IBOutlet var editButton:UIButton!
     
+    var delegate:UserProfileAvatarCollectionCellDelegate?
+    
     var cellType:ProfileTextCellType = .Email{
         didSet{
             if cellType == .Email
@@ -28,6 +30,9 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     
     @IBAction func editButtonTapped(sender:UIButton)
     {
-        
+        if cellType == .Email
+        {return}
+            
+        delegate?.changeInfoPressed(cellType)
     }
 }

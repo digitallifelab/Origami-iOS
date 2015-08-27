@@ -142,11 +142,34 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
         if let existCollectionView = self.collectionView
         {
             //prepare start values
-            let contentWidth = existCollectionView.bounds.size.width - minimumInteritemSpacing * 2
-            if contentWidth <= 300
+            var contentWidth = UIScreen.mainScreen().bounds.size.width
+            if FrameCounter.isLowerThanIOSVersion("8.0")
             {
-                cellSize.width = contentWidth * 0.95 //privately change value. if changed via "itemSize" property, recalculating is triggered once again - unneeded repeating of processing
+                let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
+             
+                var currentWidth = UIScreen.mainScreen().bounds.size.width
+                var currentHeight = UIScreen.mainScreen().bounds.size.height
+                
+                let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
+                switch currentDeviceOrentation
+                {
+                case UIInterfaceOrientation.Unknown:
+                    break
+                case UIInterfaceOrientation.Portrait:
+                    fallthrough
+                case UIInterfaceOrientation.PortraitUpsideDown:
+                    break
+                case UIInterfaceOrientation.LandscapeLeft:
+                    fallthrough
+                case UIInterfaceOrientation.LandscapeRight:
+                    currentWidth = currentHeight
+                    currentHeight = UIScreen.mainScreen().bounds.size.width
+                    contentWidth = currentWidth
+                }
             }
+            
+            cellSize.width = contentWidth - minimumInteritemSpacing * 2
+            
             var offsetY = minimumLineSpacing
             var offsetX = minimumInteritemSpacing
             
@@ -165,12 +188,16 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
                     offsetY += self.minimumLineSpacing + self.itemSize.height
                 }
                 
-                let frameForCell = CGRectMake(offsetX, offsetY, cellWidth, self.itemSize.height)
+                let frameForCell = CGRectMake(offsetX, offsetY, cellWidth, (i == 0) ?  self.itemSize.height * 2 : self.itemSize.height)
                 layoutAttribute.frame = frameForCell
                 
                 layoutAttributes[indexPath] = layoutAttribute //store in a dictionary)
                 
                 offsetX += minimumInteritemSpacing + cellWidth
+                if i == 0
+                {
+                    offsetY += self.itemSize.height
+                }
             }
             
             

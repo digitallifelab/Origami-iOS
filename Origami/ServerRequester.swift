@@ -1002,7 +1002,98 @@ class ServerRequester: NSObject
         
     }
     
-    
+    func uploadUserAvatarBytes(data:NSData, completion completionBlock:((response:[NSObject:AnyObject]?, error:NSError?)->())? )
+    {
+        /*
+        NSData *imageData = UIImagePNGRepresentation(photo);
+        NSInteger postLength = imageData.length;
+        NSLog(@"uploadNewAvatar: Sending %ld bytes", (long)postLength);
+        NSString *photoUploadURL = [NSString stringWithFormat:@"%@SetPhoto?token=%@", BasicURL, _currentUser.token];
+        
+        NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:photoUploadURL]];
+        [mutableRequest setHTTPMethod:@"POST"];
+        
+        [mutableRequest setHTTPBody:imageData];
+        
+        [NSURLConnection sendAsynchronousRequest:mutableRequest
+        queue:[NSOperationQueue currentQueue]
+        completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
+        {
+        if (completionBlock)
+        {
+        if (data)
+        {
+        
+        NSDictionary *responseDict = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
+        if (responseDict)
+        {
+        completionBlock(responseDict, nil);
+        }
+        else
+        {
+        NSError *lvError = [NSError errorWithDomain:@"ImageUploading failure" code:NSKeyValueValidationError userInfo:@{NSLocalizedDescriptionKey:@"Wrong request format"} ];
+        completionBlock(nil, lvError);
+        }
+        }
+        else if (connectionError)
+        {
+        NSLog(@"Eror sending photo: %@", connectionError);
+        completionBlock(nil, connectionError);
+        }
+        }
+        }];
+        
+        */
+        
+        if data.length == 0
+        {
+            let error = NSError(domain: "Origami.emptyData.Error", code: -605, userInfo: [NSLocalizedDescriptionKey : "Recieved empty data to upload."])
+            completionBlock?(response: nil, error: error)
+            return
+        }
+        
+        if let userToken = DataSource.sharedInstance.user?.token as? String
+        {
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            let requestString = serverURL + "SetPhoto" + "?token=" + userToken
+            if let url = NSURL(string: requestString)
+            {
+                var mutableRequest = NSMutableURLRequest(URL: url)
+                mutableRequest.HTTPMethod = "POST"
+                mutableRequest.HTTPBody = data
+                
+                let bgQueue = NSOperationQueue()
+                NSURLConnection.sendAsynchronousRequest(mutableRequest, queue: bgQueue, completionHandler: { (response, responseData, responseError) -> Void in
+                    
+                    if let respError = responseError
+                    {
+                        completionBlock?(response: nil,error: respError)
+                    }
+                    else if let respData = responseData
+                    {
+                        var jsonError:NSError?
+                        var dataObject = NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments, error: &jsonError) as? [String:AnyObject]
+                        if let dict = dataObject
+                        {
+                            println("-> user avatar uploading result: \(dict)")
+                            completionBlock?(response: dict, error: nil)
+                        }
+                    }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                })
+            }
+            else
+            {
+                let error = NSError (domain: "Origami.internal", code: -606, userInfo: [NSLocalizedDescriptionKey: "Could not create URL for image uploading request"])
+                completionBlock?(response: nil,error: error)
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            }
+        }
+        else
+        {
+            completionBlock?(response: nil, error: noUserTokenError)
+        }
+    }
     //MARK: Contacts
     
     /** Queries server for contacts and  on completion or timeout returns  array of contacts or error

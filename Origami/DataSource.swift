@@ -1925,4 +1925,34 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             })
         }
     }
+    
+    func uploadAvatarForCurrentUser(data:NSData, completion completionBlock:((success:Bool, error:NSError?)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.uploadUserAvatarBytes(data, completion: { (response, error) -> () in
+            if let responseSending = response
+            {
+                completionBlock?(success: true, error: nil)
+                
+                //save to disc
+                if let userName = DataSource.sharedInstance.user?.userName as? String
+                {
+                    let fileHandler = FileHandler()
+                    fileHandler.saveAvatar(data, forLoginName: userName, completion: { (error) -> Void in
+                        if let saveError = error
+                        {
+                            println("-> Could not update current user avatar on disc.")
+                        }
+                    })
+                }
+            }
+            else if let errorSending = error
+            {
+                completionBlock?(success: false, error: errorSending)
+            }
+            else
+            {
+                completionBlock?(success: false, error: nil)
+            }
+        })
+    }
 }
