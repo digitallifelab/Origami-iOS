@@ -340,7 +340,7 @@ import UIKit
         }
         else
         {
-            println("\(self)  - Toggle Signals Pressed\n")
+            //println("  - Toggle Signals Pressed\n")
             isSignalsToggled = !isSignalsToggled
             var newLayout:UICollectionViewFlowLayout?
             if isSignalsToggled

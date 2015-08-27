@@ -73,7 +73,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         self.privFavourites = favourites
         self.privOther = other
         
-        println(" ------- Hidden Layout initialized with \(self.privSignals) signals")
+        //println(" ------- Hidden Layout initialized with \(self.privSignals) signals")
         
         //self.configureAttributes()
     }
@@ -105,8 +105,8 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-            if currentIdiom == .Phone
-            {
+//            if currentIdiom == .Phone
+//            {
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
                 var currentHeight = UIScreen.mainScreen().bounds.size.height
                 
@@ -126,7 +126,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                     currentHeight = UIScreen.mainScreen().bounds.size.width - 10
                     viewWidth = currentWidth
                 }
-            }
+//            }
         }
 
         
@@ -325,22 +325,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         self.sizeOfContent = contentSizeLocal
         
     }
-//    
-//    override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
-//        if let oldBounds = self.collectionView?.bounds
-//        {
-//            if oldBounds.size != newBounds.size
-//            {
-////                cellAttributes?.removeAll(keepCapacity: false)
-////                headerAttributes?.removeAll(keepCapacity: false)
-////                cellAttributes = nil
-////                headerAttributes = nil
-//                
-//                return true
-//            }
-//        }
-//        return false
-//    }
     
     override  func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
         if let oldBounds = self.collectionView?.bounds

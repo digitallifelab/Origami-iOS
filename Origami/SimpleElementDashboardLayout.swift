@@ -187,8 +187,8 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-            if currentIdiom == .Phone
-            {
+//            if currentIdiom == .Phone
+//            {
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
                 var currentHeight = UIScreen.mainScreen().bounds.size.height
                 
@@ -208,7 +208,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     currentHeight = UIScreen.mainScreen().bounds.size.width
                     currentScreenWidth = currentWidth
                 }
-            }
+//            }
         }
         
         var itemWidth = currentScreenWidth //- itemMargin

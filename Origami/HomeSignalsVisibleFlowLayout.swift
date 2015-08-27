@@ -70,7 +70,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         self.privFavourites = favourites
         self.privOther = other
         
-        println(" ------- Visible Layout initialized with \(self.privSignals) signals")
+        //println(" ------- Visible Layout initialized with \(self.privSignals) signals")
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -217,8 +217,8 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-            if currentIdiom == .Phone
-            {
+//            if currentIdiom == .Phone
+//            {
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
                 var currentHeight = UIScreen.mainScreen().bounds.size.height
                 
@@ -243,7 +243,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 {
                     offsetY += 20.0
                 }
-            }
+//            }
         }
         else
         {
