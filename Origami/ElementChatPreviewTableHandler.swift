@@ -71,7 +71,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     {
         var chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         chatCell.messageLabel.text = messageObjects[indexPath.row].textBody
-        
+        chatCell.backgroundColor = UIColor.clearColor()
         // nest two filtering method calls are test stuff
         //1st
 //        imageFilterer.filterImageBlackAndWhiteInBackGround(UIImage(named: "testImageToFilter")!, completeInMainQueue: true) { [weak chatCell](image) -> () in

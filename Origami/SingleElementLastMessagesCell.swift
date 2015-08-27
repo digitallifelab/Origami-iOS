@@ -88,10 +88,11 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         var messageCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         messageCell.selectionStyle = .None
         messageCell.displayMode = self.displayMode
-        
+        messageCell.backgroundColor = UIColor.clearColor()
         if let lvMessages = self.messages
         {
             let message = lvMessages[indexPath.row]

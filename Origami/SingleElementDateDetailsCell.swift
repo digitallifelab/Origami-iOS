@@ -31,6 +31,8 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         
         self.layer.masksToBounds = false
         
+        datesTable.backgroundColor = UIColor.clearColor()
+        
         let selfBounds = self.bounds
         let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
         let shadowOpacity:Float = 0.5
@@ -118,7 +120,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         
         var datesCell = tableView.dequeueReusableCellWithIdentifier("DatesTableHolderCell", forIndexPath: indexPath) as! ElementDashboardDatesCell
         datesCell.displayMode = self.displayMode
-        
+        datesCell.backgroundColor = UIColor.clearColor()
         configureDateCellForRow(indexPath.row, cell: datesCell)
         
         return datesCell
