@@ -249,33 +249,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         switch indexPath.section
         {
             case 0:
-//                if editingConfuguration == .Title || editingConfuguration == .None
-//                {
-                    var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
-                    configureTextViewCell(textViewCell, forIndexPath: indexPath)
-                    return textViewCell
-//                }
-//                else
-//                {
-//                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-//                    configureTextLabelCell(textCell, forIndexPath:indexPath)
-//                    return textCell
-//                }
-            
+                var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
+                configureTextViewCell(textViewCell, forIndexPath: indexPath)
+                return textViewCell
             case 1:
-//                if editingConfuguration == .Details || editingConfuguration == .None
-//                {
-                    var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
-                    configureTextViewCell(textViewCell, forIndexPath: indexPath)
-                    return textViewCell
-//                }
-//                else
-//                {
-//                    var textCell = tableView.dequeueReusableCellWithIdentifier("newElementTextLabelCell", forIndexPath: indexPath) as! NewElementTextLabelCell
-//                    configureTextLabelCell(textCell, forIndexPath:indexPath)
-//                    return textCell
-//                }
-            
+                var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
+                configureTextViewCell(textViewCell, forIndexPath: indexPath)
+                return textViewCell
             case 2:
                 var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
                 configureContactCell(contactCell, forIndexPath:indexPath)
@@ -285,62 +265,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section < 2 { return 0.0 }
-        return 50.0
-    }
-    
-    
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        if section < 2
-        {
-            return nil
-        }
-        
-        //prepare view
-        var view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
-        view.backgroundColor = kWhiteColor
-        view.opaque = true
-        
-        //prepare label
-        let label = UILabel()
-        label.textAlignment = NSTextAlignment.Center
-        label.textColor = kDayCellBackgroundColor
-        //        var testFontNames = UIFont.fontNamesForFamilyName("Segoe UI")
-        //        println("\(testFontNames)")
-        if let font = UIFont(name: "SegoeUI-Semibold", size: 18.0)
-        {
-            label.font = font
-        }
-        label.text = self.tableView(tableView, titleForHeaderInSection:section)
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
-        view.addSubview(label)
-        
-        //create constraints for label
-        let centerXConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0.0)
-        
-        let centerYConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0.0)
-        
-        view.addConstraints([centerXConstraint, centerYConstraint])
-        
-        return view
-    }
-    
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 2
         {
-//            if contactIDsToPass.isEmpty
-//            {
-                return "Team".localizedWithComment("")
-//            }
-//            else
-//            {
-//                return "\(contactIDsToPass.count)" +  ((contactIDsToPass.count > 1) ? " conatcts" : " contact")
-//            }
+            return "Team".localizedWithComment("")
         }
-        
         return nil
     }
 
@@ -433,30 +362,87 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-    func contactTappedAtIndexPath(indexPath: NSIndexPath)
-    {
-        if let lvContact = allContacts?[indexPath.row], lvContactIDInt = lvContact.contactId?.integerValue
-        {            
-            if self.contactIDsToPass.contains(lvContactIDInt)
-            {
-                self.contactIDsToPass.remove(lvContactIDInt)
-            }
-            else
-            {
-                self.contactIDsToPass.insert(lvContactIDInt)
-            }
-        }
-        
-        self.table.reloadData()
-        
-//        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2)), dispatch_get_main_queue()) { [unowned self]() -> Void in
-//            //self.table.reloadSections(NSIndexSet(index:indexPath.section), withRowAnimation: .None)
-//            
-//            //self.table.scrollToRowAtIndexPath(indexPath, atScrollPosition: .None, animated: false)
-//        }
+    //MARK: UITableViewDelegate
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section < 2 { return 0.0 }
+        return 50.0
     }
     
-    //MARK: UITableViewDelegate
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        if section < 2
+        {
+            return nil
+        }
+        
+        //prepare view
+        var view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
+        view.backgroundColor = kWhiteColor
+        view.opaque = true
+        
+        //prepare label
+        let label = UILabel()
+        label.textAlignment = NSTextAlignment.Center
+        label.textColor = kDayCellBackgroundColor
+        //        var testFontNames = UIFont.fontNamesForFamilyName("Segoe UI")
+        //        println("\(testFontNames)")
+        if let font = UIFont(name: "SegoeUI-Semibold", size: 18.0)
+        {
+            label.font = font
+        }
+        label.text = self.tableView(tableView, titleForHeaderInSection:section)
+        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        view.addSubview(label)
+        
+        //create constraints for label
+        let centerXConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterX, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterX, multiplier: 1.0, constant: 0.0)
+        
+        let centerYConstraint = NSLayoutConstraint(item: label, attribute: NSLayoutAttribute.CenterY, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.CenterY, multiplier: 1.0, constant: 0.0)
+        
+        view.addConstraints([centerXConstraint, centerYConstraint])
+        
+        return view
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+       
+        return 80.0
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        if indexPath.section > 1
+        {
+            return 50.0 //contacts
+        }
+        else
+        {
+            let section = indexPath.section
+            switch section
+            {
+            case 0:
+                
+                if let textView = textViews[indexPath]
+                {
+                    let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
+                    let titleHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 5
+                    return titleHeight
+                }
+                return 130.0
+            case 1:
+                if let textView = textViews[indexPath]
+                {
+                    let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
+                    let detailsHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 24
+                    return detailsHeight
+                }
+                return 150.0
+            default:break
+            }
+            return 100.0
+        }
+        
+    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -508,44 +494,23 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-       
-        return 80.0
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section > 1
+    func contactTappedAtIndexPath(indexPath: NSIndexPath)
+    {
+        if let lvContact = allContacts?[indexPath.row], lvContactIDInt = lvContact.contactId?.integerValue
         {
-            return 50.0 //contacts
-        }
-        else
-        {
-            let section = indexPath.section
-            switch section
+            if self.contactIDsToPass.contains(lvContactIDInt)
             {
-            case 0:
-                
-                if let textView = textViews[indexPath]
-                {
-                    let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
-                    let titleHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 5
-                    return titleHeight
-                }
-                return 130.0
-            case 1:
-                if let textView = textViews[indexPath]
-                {
-                    let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
-                    let detailsHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 24
-                    return detailsHeight
-                }
-                return 150.0
-            default:break
+                self.contactIDsToPass.remove(lvContactIDInt)
             }
-            return 100.0
+            else
+            {
+                self.contactIDsToPass.insert(lvContactIDInt)
+            }
         }
         
+        self.table.reloadData()
     }
+    
     //MARK: UIScrollViewDelegate
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         self.stopTyping(nil)
