@@ -20,8 +20,14 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
         table.rowHeight = UITableViewAutomaticDimension
         table.estimatedRowHeight = 60.0
         // Do any additional setup after loading the view.
+        //table.layer.borderWidth = 1.0
+        
+        if FrameCounter.getCurrentInterfaceIdiom() == .Phone && FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            addTapToDismissGesture()
+        }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -37,7 +43,7 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 50.0
+        return 60.0
     }
     
     //MARK: UITableViewDataSource
@@ -77,7 +83,44 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
             return
         }
     }
+    //MARK: iPhone iOS 7 stuff
+    func addTapToDismissGesture()
+    {
+        var dummyButton = UIButton.buttonWithType(.Custom) as! UIButton
+        dummyButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        dummyButton.opaque = true
+        dummyButton.backgroundColor = UIColor.clearColor()
+        dummyButton.tintColor = kDayCellBackgroundColor
+        dummyButton.setTitle("Cancel", forState: .Normal)
+        if let font = UIFont(name: "SegoeUI", size: 25)
+        {
+            let attributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:kDayCellBackgroundColor]
+            let attributedString = NSAttributedString(string: "Cancel", attributes: attributes)
+            dummyButton.setAttributedTitle(attributedString, forState: .Normal)
+            //dummyButton.setAttributedTitle(attributedString, forState: UIControlState.Highlighted)
+        }
+        
+        dummyButton.addTarget(self, action: "dismissSelfByCancelling:", forControlEvents: .TouchUpInside)
+        //dummyButton.layer.borderWidth = 1.0
+        self.view.insertSubview(dummyButton, aboveSubview: self.table)
+        
+        //add constraints to button
+        let viewsDict = ["button":dummyButton]
+        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[button]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views:viewsDict )
+        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|-(185)-[button]|", options: NSLayoutFormatOptions.DirectionLeadingToTrailing, metrics: nil, views: viewsDict)
+        
+        self.view.addConstraints(horizontalConstraints)
+        self.view.addConstraints(verticalConstraints)
     
+    }
     
+    func dismissSelfByCancelling(sender:UIButton?)
+    {
+        if let button = sender
+        {
+            button.userInteractionEnabled = false
+        }
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
 
 }

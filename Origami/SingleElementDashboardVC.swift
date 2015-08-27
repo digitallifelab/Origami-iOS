@@ -32,6 +32,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
+    var afterViewDidLoad = false
+    
     @IBOutlet var collectionView:UICollectionView!
     @IBOutlet var navigationBackgroundView:UIView!
     
@@ -68,6 +70,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
             })
         }
+        afterViewDidLoad = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,9 +80,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     override func viewWillAppear(animated: Bool)
     {
-        prepareCollectionViewDataAndLayout()
-        //queryAttachesPreviewData()
-     
+        super.viewWillAppear(animated)
+        if afterViewDidLoad
+        {
+            prepareCollectionViewDataAndLayout()
+            afterViewDidLoad = false
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -89,7 +95,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
-       
+        
+        let chatPath = NSIndexPath(forItem: 1, inSection: 0)
+        var chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
+        
+        var currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.currentElement!.elementId!.integerValue)
+        if chatCell == nil && currentLastMessages != nil
+        {
+            prepareCollectionViewDataAndLayout()
+        }
+        else if chatCell != nil && currentLastMessages != nil
+        {
+            if currentLastMessages!.last !== chatCell!.messages?.last
+            {
+                chatCell!.messages = currentLastMessages
+                self.collectionView.reloadItemsAtIndexPaths([chatPath])
+            }
+        }
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -503,7 +525,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     if edited
                     {
                         aSelf.currentElement?.isSignal = isCurrentlySignal
-                        //aSelf.prepareCollectionViewDataAndLayout()
                         aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                     else
@@ -617,7 +638,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     if let barItem = sender as? UIBarButtonItem
                     {
                         var popoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
-                        popoverController.popoverContentSize = CGSizeMake(200, 150.0)
+                        popoverController.popoverContentSize = CGSizeMake(200, 180.0)
                         self.iOS7PopoverController = popoverController
                         
                         popoverController.presentPopoverFromBarButtonItem(barItem, permittedArrowDirections: .Any, animated: true)
@@ -641,7 +662,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 popoverObject?.delegate = self
                 
                 //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
-                leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 150.0)
+                leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 180.0)
                 self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
                     
                 })

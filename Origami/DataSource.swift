@@ -1419,7 +1419,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         {
                             dispatch_group_enter(group)
                             DataSource.sharedInstance.loadAvatarForLoginName(aContact.userName as! String, completion: { (image) -> () in
-                                println(" finishd loading avatar for contact \(aContact.userName)")
+                                //println(" finishd loading avatar for contact \(aContact.userName)")
                                 dispatch_group_leave(group)
                             })
                         }
@@ -1846,7 +1846,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if let existingAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), avatarImage = UIImage(data: existingAvatarData)
             {
                 complete(image: avatarImage)
-                println(" got avatar from RAM..")
+                //println(" got avatar from RAM..")
                 return
             }
             

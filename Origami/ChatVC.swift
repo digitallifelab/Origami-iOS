@@ -20,7 +20,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     var defaultTextInputViewHeight:CGFloat?
     var currentChatMessages = [Message](){
         didSet{
-            println("\n -> Chat Messages Count: \(currentChatMessages.count)")
+            println("\n ->Did set currentChatMessages.\n Chat Messages Count: \(currentChatMessages.count)")
         }
     }
     

@@ -294,10 +294,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     {
         if let contact = contactForIndexPath(indexPath)
         {
-            cell.contentView.layer.borderWidth = 1.0
-            cell.nameLabel.layer.borderWidth = 1.0
-            cell.moodLabel?.layer.borderWidth = 1.0
-            cell.favouriteButton.layer.borderWidth = 1.0
+            //cell.contentView.layer.borderWidth = 1.0
+            //cell.nameLabel.layer.borderWidth = 1.0
+            //cell.moodLabel?.layer.borderWidth = 1.0
+            //cell.favouriteButton.layer.borderWidth = 1.0
             //name field
             cell.nameLabel.text = contactNameStringFromContact(contact)
             

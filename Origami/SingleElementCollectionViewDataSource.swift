@@ -637,4 +637,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func chatMessageWasTapped(message: Message?) {
         self.messageTapDelegate?.chatMessageWasTapped(message)
     }
+    
+    //MARK: External stuff
+    func currentLastMessages() -> [Message]?
+    {
+        if let currentOptionsCellTypes = self.currentCellsOptions?.cellTypes
+        {
+            if currentOptionsCellTypes.contains(.Chat)
+            {
+                
+            }
+        }
+        return nil
+    }
 }

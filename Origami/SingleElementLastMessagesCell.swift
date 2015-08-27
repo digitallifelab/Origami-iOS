@@ -31,10 +31,11 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     override func awakeFromNib() {
         self.backgroundColor = UIColor.clearColor()
+        messagesTable.layer.borderWidth = 1.0
     }
     
     override func prepareForReuse() {
-        messages = nil
+        //messages = nil
         self.backgroundColor = UIColor.clearColor()
     }
     

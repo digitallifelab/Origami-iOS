@@ -57,7 +57,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+         //self.updateConstraints()
         //apply shadow to fav button
         let buttonBounds = favouriteButton.bounds
         
@@ -83,7 +83,10 @@ class SingleElementTitleCell: UICollectionViewCell {
         let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
         self.layer.shadowPath = offsetPath.CGPath
         
-        //self.labelTitle.layer.borderWidth = 2.0
+        //self.labelTitle.layer.borderWidth = 1.0
+        
+       
+        //super.layoutSubviews()
     }
     
 //    deinit

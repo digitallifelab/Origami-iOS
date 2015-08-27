@@ -15,7 +15,7 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate {
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UITextViewDelegate {
 
     var rootElementID:Int = 0
     var composingDelegate:ElementComposingDelegate?
@@ -69,6 +69,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
+    var textViews = [NSIndexPath:UITextView]()
+    
     @IBOutlet var table: UITableView!
     @IBOutlet var toolbar:UIToolbar!
     
@@ -105,7 +107,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                                 weakSelf.contactImages[userName] = avatar
                             }
                         }
-                        })
+                    })
                 }
             }
 
@@ -121,7 +123,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         table.reloadData()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates", name: "UpdateTextiewCell", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates:", name: "UpdateTextiewCell", object: nil)
         addObserversForKeyboard()
     }
     
@@ -172,6 +174,21 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             if notification.name == UIKeyboardWillShowNotification
             {
                 keyboardIsToShow = true
+            }
+            
+            if keyboardIsToShow
+            {
+                let contentInsets = UIEdgeInsetsMake(table.contentInset.top, 0.0, keyboardHeight, 0.0)
+                table.contentInset = contentInsets
+                table.scrollIndicatorInsets = contentInsets
+                table.beginUpdates()
+                table.endUpdates()
+            }
+            else
+            {
+                let contentInsets = UIEdgeInsetsMake(table.contentInset.top, 0.0, 0.0, 0.0)
+                table.contentInset = contentInsets
+                table.scrollIndicatorInsets = contentInsets
             }
         }
     }
@@ -326,56 +343,15 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
         return nil
     }
-    
-    //MARK:  Tools
-//    func configureTextLabelCell(cell:NewElementTextLabelCell, forIndexPath indexPath:NSIndexPath)
-//    {
-//        if indexPath.section == 0
-//        {
-//            cell.isTitleCell = true
-//            
-//            if let title = newElement?.title as? String
-//            {
-//                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
-//                cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
-//            }
-//            else
-//            {
-//                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
-//                cell.attributedText = NSAttributedString(string: "add title", attributes: titleAttributes)
-//            }
-//        }
-//        else
-//        {
-//            cell.isTitleCell = false
-//            if let description = newElement?.details as? String
-//            {
-//                if description != ""
-//                {
-//                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.lightGrayColor()]
-//                    cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
-//                }
-//                else
-//                {
-//                    let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-//                    cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
-//                }
-//                
-//            }
-//            else
-//            {
-//                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-//                cell.attributedText = NSAttributedString(string: "add description", attributes: descriptionAttributes)
-//            }
-//        }
-//    }
 
     func configureTextViewCell(cell:NewElementTextViewCell, forIndexPath indexPath:NSIndexPath)
     {
+        cell.textView.delegate = self
+        textViews[indexPath] = cell.textView
+        
         if indexPath.section == 0
         {
             cell.isTitleCell = true
-            
             if let title = newElement?.title as? String
             {
                 let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.blackColor()]
@@ -480,7 +456,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
 //        }
     }
     
-    //MARK: UITableVIewDelegate
+    //MARK: UITableViewDelegate
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
@@ -533,15 +509,42 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.section > 1
-        {
-            return 50.0
-        }
+       
         return 80.0
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 80.0 //TODO: Calculate rows for title and details text cells
+        if indexPath.section > 1
+        {
+            return 50.0 //contacts
+        }
+        else
+        {
+            let section = indexPath.section
+            switch section
+            {
+            case 0:
+                
+                if let textView = textViews[indexPath]
+                {
+                    let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
+                    let titleHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 5
+                    return titleHeight
+                }
+                return 130.0
+            case 1:
+                if let textView = textViews[indexPath]
+                {
+                    let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
+                    let detailsHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 24
+                    return detailsHeight
+                }
+                return 150.0
+            default:break
+            }
+            return 100.0
+        }
+        
     }
     //MARK: UIScrollViewDelegate
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
@@ -553,15 +556,70 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
     }
     
-    
-    func reloadTableViewUpdates() // this needed to make table view cell grow automatically.
+    //MARK: NSNotificationCenter
+    func reloadTableViewUpdates(notification:NSNotification?) // this needed to make table view cell grow automatically.
     {
-        table.beginUpdates()
-        table.endUpdates()
-        
-        //TODO: scroll up if cursor is lower, than keyboard top side
+        if let notif = notification
+        {
+            var cellIndexPath = notif.object as? NSIndexPath
+            
+            if let info = notif.userInfo, let textViewTargetHeight = info["height"] as? CGFloat, targetTextView = notif.object as? UITextView
+            {
+                var targetIndexPath:NSIndexPath?
+                for (indexPath,textView) in textViews
+                {
+                    if textView == targetTextView
+                    {
+                        targetIndexPath = indexPath
+                    }
+                }
+                table.beginUpdates()
+                table.endUpdates()
+                scrollCursorToVisibleIfNeededFor(targetIndexPath)
+            }
+        }
     }
     
+    func scrollCursorToVisibleIfNeededFor(indexPath:NSIndexPath?)
+    {
+        if let path = indexPath, cell = table.cellForRowAtIndexPath(path) as? NewElementTextViewCell
+        {
+            if let textPosition = cell.textView.selectedTextRange
+            {
+                var cursorRect = cell.textView.caretRectForPosition(textPosition.start)
+                
+                var cursorRectNew = table.convertRect(cursorRect, fromView:cell.textView)
+                
+                if !rectVisible(cursorRect)
+                {
+                    cursorRect.size.height += 8; // To add some space underneath the cursor
+                    table.scrollRectToVisible(cursorRect, animated:true)
+                }
+            }
+        }
+    }
+    
+    func rectVisible(rect:CGRect) -> Bool
+    {
+        var visibleRect:CGRect = CGRectZero
+        visibleRect.origin = table.contentOffset;
+        visibleRect.origin.y += table.contentInset.top;
+        visibleRect.size = table.bounds.size;
+        visibleRect.size.height -= table.contentInset.top + table.contentInset.bottom;
+        
+        return CGRectContainsRect(visibleRect, rect);
+    }
+    
+    //MARK: UITextViewDelegate
+    func textViewDidChange(textView: UITextView) {
+        let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
+        //println("textViewText: \(textView.text), test size: \(lvTestSize)")
+        if textView.bounds.size.height != lvTestSize.height
+        {
+            NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object:textView , userInfo:["height":lvTestSize.height])
+        }
+    }
+    //MARK: ---
     func cancelButtonTap(sender:AnyObject?)
     {
         composingDelegate?.newElementComposerWantsToCancel(self)
@@ -625,7 +683,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             self.dismissViewControllerAnimated(true, completion: {[unowned self] () -> Void in
                 NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: self, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
             })
-            
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (alertAction) -> Void in
