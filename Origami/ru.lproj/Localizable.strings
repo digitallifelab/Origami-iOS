@@ -22,3 +22,13 @@
 
 "Description" = "Описание";
 "Title" = "Заголовок";
+
+"email" = "почта";
+"mood" = "Настроение";
+"firstName" = "Имя";
+"lastName" = "Фамилия";
+"phone" = "Телефон";
+"country" = "Страна";
+"language" = "Язык";
+"age" = "Возраст";
+"changePassword" = "Изменить пароль";

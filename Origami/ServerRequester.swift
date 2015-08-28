@@ -559,8 +559,7 @@ class ServerRequester: NSObject
                     if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
                     {
                         NSOperationQueue().addOperationWithBlock({/* [weak self]*/() -> Void in
-//                            if let weakSelf = self
-//                            {
+
                                 if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
                                 {
                                     NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
@@ -573,7 +572,7 @@ class ServerRequester: NSObject
                                         completion(nil,nil)
                                     })
                             }
-//                            }
+
                         })
                     }
                     else
@@ -585,7 +584,15 @@ class ServerRequester: NSObject
             },
                 failure: { (operation, error) -> Void in
                 
-                    
+                    if let responseString = operation.responseString
+                    {
+                        println("-> Failure while loading attachesList: \(responseString)")
+                    }
+                    if let errorFailure = error
+                    {
+                         println("-> Failure while loading attachesList: \(errorFailure)")
+                    }
+                    completion(nil, error)
             })
             
             
@@ -597,7 +604,7 @@ class ServerRequester: NSObject
 
     }
     
-    func loadDataForAttach(attachId:NSNumber, completion completionClosure:(attachFileData:NSData?, error:NSError?)->() )
+    func loadDataForAttach(attachId:NSNumber, completion completionClosure:((attachFileData:NSData?, error:NSError?)->())? )
     {
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
@@ -669,7 +676,7 @@ class ServerRequester: NSObject
                     
                     if responseError != nil
                     {
-                        completionClosure(attachFileData: nil, error: responseError)
+                        completionClosure?(attachFileData: nil, error: responseError)
                     }
                     else if let synchroData = responseData
                     {
@@ -681,20 +688,20 @@ class ServerRequester: NSObject
                                 if arrayOfIntegers.isEmpty
                                 {
                                     println("Empty response for Attach File id = \(attachId)")
-                                    completionClosure(attachFileData: NSData(), error: nil)
+                                    completionClosure?(attachFileData: NSData(), error: nil)
                                 }
                                 else
                                 {
                                     if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
                                     {
-                                        completionClosure(attachFileData: lvData, error: nil)
+                                        completionClosure?(attachFileData: lvData, error: nil)
                                     }
                                     else
                                     {
                                         //error
                                         println("ERROR: Could not convert response to NSData object")
                                         let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
-                                        completionClosure(attachFileData: nil, error: convertingError)
+                                        completionClosure?(attachFileData: nil, error: convertingError)
                                     }
                                 }
                             }
@@ -703,21 +710,21 @@ class ServerRequester: NSObject
                                 //error
                                 println("ERROR: Could not convert to array of integers object.")
                                 let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
-                                completionClosure(attachFileData: nil, error: arrayConvertingError)
+                                completionClosure?(attachFileData: nil, error: arrayConvertingError)
                             }
                         }
                         else
                         {
                             println(" ERROR: \(jsonReadingError)")
                             let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
-                            completionClosure(attachFileData: nil, error: convertingError)
+                            completionClosure?(attachFileData: nil, error: convertingError)
                         }
                         
                     }
                     else
                     {
                         println("No response data..")
-                        completionClosure(attachFileData: NSData(), error: nil)
+                        completionClosure?(attachFileData: NSData(), error: nil)
                     }
 
                 })
@@ -725,6 +732,10 @@ class ServerRequester: NSObject
                 fileTask.resume()
             }
             
+        }
+        else
+        {
+            completionClosure?(attachFileData: nil, error: noUserTokenError)
         }
     }
         //attach file to element

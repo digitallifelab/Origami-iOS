@@ -1093,9 +1093,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func refreshAttachesForElement(element:Element, completion:attachesArrayClosure)
+    func refreshAttachesForElement(element:Element?, completion:attachesArrayClosure?)
     {
-        if let localElementId = element.elementId
+        if let localElementId = element?.elementId
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
@@ -1107,13 +1107,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if let attachesArray = result as? [AttachFile]
                     {
                         DataSource.sharedInstance.attaches[localElementId] = attachesArray
-                        completion(DataSource.sharedInstance.attaches[localElementId]!)
+                        completion?(DataSource.sharedInstance.attaches[localElementId]!)
                     }
                     else
                     {
-                        completion(nil)
+                        completion?(nil)
                     }
             })
+        }
+        else
+        {
+            completion?(nil)
         }
     }
     

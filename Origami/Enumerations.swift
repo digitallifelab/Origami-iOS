@@ -54,7 +54,8 @@ enum DashCellType:Int
 
 enum ProfileTextCellType:Int
 {
-    case Email = 1
+    case Mood = 1
+    case Email
     case Name
     case LastName
     case Country

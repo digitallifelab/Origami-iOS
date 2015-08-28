@@ -51,7 +51,7 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
     
     
     override func invalidateLayout() {
-        cellSize = CGSizeMake(150.0, 100.0)
+        cellSize = CGSizeMake(320, 70.0)
         layoutAttributes.removeAll(keepCapacity: true)
         super.invalidateLayout()
     }
@@ -168,10 +168,10 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
                 }
             }
             
-            cellSize.width = contentWidth - minimumInteritemSpacing * 2
+            cellSize.width = contentWidth //- minimumInteritemSpacing * 2
             
             var offsetY = minimumLineSpacing
-            var offsetX = minimumInteritemSpacing
+            var offsetX:CGFloat = 0.0
             
             //calculate frames for cells
             
@@ -184,11 +184,11 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
                 
                 if (offsetX + cellWidth) > contentWidth
                 {
-                    offsetX = minimumInteritemSpacing
+                    offsetX = 0.0
                     offsetY += self.minimumLineSpacing + self.itemSize.height
                 }
                 
-                let frameForCell = CGRectMake(offsetX, offsetY, cellWidth, (i == 0) ?  self.itemSize.height * 2 : self.itemSize.height)
+                let frameForCell = CGRectMake(offsetX, offsetY, cellWidth, (i == 0) ?  self.itemSize.height * 3 : self.itemSize.height)
                 layoutAttribute.frame = frameForCell
                 
                 layoutAttributes[indexPath] = layoutAttribute //store in a dictionary)
@@ -196,7 +196,7 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
                 offsetX += minimumInteritemSpacing + cellWidth
                 if i == 0
                 {
-                    offsetY += self.itemSize.height
+                    offsetY += self.itemSize.height * 2
                 }
             }
             

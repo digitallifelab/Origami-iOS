@@ -10,25 +10,44 @@ import UIKit
 
 class UserProfileTextContainerCell: UICollectionViewCell {
     
-    @IBOutlet var textLabel:UILabel!
-    @IBOutlet var editButton:UIButton!
+    @IBOutlet weak var titleLabel:UILabel?
+    @IBOutlet weak var textLabel:UILabel?
+    @IBOutlet weak var editButton:UIButton?
     
     var delegate:UserProfileAvatarCollectionCellDelegate?
     
-    var cellType:ProfileTextCellType = .Email{
-        didSet{
+    var cellType:ProfileTextCellType = .Email
+        {
+        didSet
+        {
             if cellType == .Email
             {
-                editButton.hidden = true
+                editButton?.hidden = true
             }
             else
             {
-                editButton.hidden = false
+                editButton?.hidden = false
             }
         }
     }
     
-    @IBAction func editButtonTapped(sender:UIButton)
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            switch displayMode
+            {
+            case .Day:
+                textLabel?.textColor = kBlackColor
+                editButton?.tintColor = kDayCellBackgroundColor
+                self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.7)
+            case .Night:
+                textLabel?.textColor = kWhiteColor
+                editButton?.tintColor = kWhiteColor
+                self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.7)
+            }
+        }
+    }
+    
+    @IBAction func editButtonTapped(sender:UIButton?)
     {
         if cellType == .Email
         {return}

@@ -41,6 +41,7 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -1972,7 +1973,7 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="3cB-Td-GvF">
                                 <rect key="frame" x="0.0" y="20" width="320" height="410"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nwI-mT-4O6">
                                     <size key="itemSize" width="50" height="50"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -1980,21 +1981,24 @@
                                     <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UserProfileAvatarCell" id="mWG-cw-aRa" customClass="UserProfileAvatarCollectionCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="UserProfileAvatarCell" id="mWG-cw-aRa" customClass="UserProfileAvatarCollectionCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-14-koX" userLabel="imageButton">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-contacts" translatesAutoresizingMaskIntoConstraints="NO" id="inC-rE-oWm" userLabel="avatarImageView">
                                                     <rect key="frame" x="8" y="10" width="80" height="80"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                </imageView>
+                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-14-koX" userLabel="imageButton">
+                                                    <rect key="frame" x="8" y="10" width="80" height="80"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="cm5-14-koX" secondAttribute="height" multiplier="1:1" id="WlF-1g-wOA"/>
                                                     </constraints>
-                                                    <state key="normal" image="icon-contacts">
-                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
+                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
                                                             <integer key="value" value="1"/>
@@ -2023,16 +2027,38 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="centerX" secondItem="cm5-14-koX" secondAttribute="centerX" id="6JI-nu-fdv"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="top" secondItem="mWG-cw-aRa" secondAttribute="topMargin" constant="2" id="GxG-Ua-kEa"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="cm5-14-koX" secondAttribute="bottom" constant="2" id="Nfs-H8-4ZE"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="leading" secondItem="mWG-cw-aRa" secondAttribute="leadingMargin" id="O2l-IF-q88"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="width" secondItem="cm5-14-koX" secondAttribute="width" id="SaF-Tj-7FK"/>
                                             <constraint firstItem="W2m-qv-hbH" firstAttribute="top" secondItem="mWG-cw-aRa" secondAttribute="topMargin" id="Y3E-mt-Kek"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="width" secondItem="cm5-14-koX" secondAttribute="width" id="eAb-3S-iTd"/>
                                             <constraint firstItem="cm5-14-koX" firstAttribute="leading" secondItem="mWG-cw-aRa" secondAttribute="leadingMargin" id="f58-E6-jpl"/>
+                                            <constraint firstAttribute="bottomMargin" secondItem="inC-rE-oWm" secondAttribute="bottom" constant="2" id="gG2-iB-p1N"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="centerY" secondItem="W2m-qv-hbH" secondAttribute="centerY" id="gig-bx-mwZ"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="height" secondItem="cm5-14-koX" secondAttribute="height" id="hF2-EU-eWY"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="centerX" secondItem="cm5-14-koX" secondAttribute="centerX" id="hSu-iu-EPQ"/>
                                             <constraint firstItem="cm5-14-koX" firstAttribute="top" secondItem="mWG-cw-aRa" secondAttribute="topMargin" constant="2" id="kQe-mh-fV9"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="height" secondItem="cm5-14-koX" secondAttribute="height" id="tXR-aV-8FW"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="W2m-qv-hbH" secondAttribute="trailing" constant="-2" id="x7q-ZS-CU7"/>
                                         </constraints>
                                         <size key="customSize" width="150" height="100"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="6JI-nu-fdv"/>
+                                                <exclude reference="eAb-3S-iTd"/>
+                                                <exclude reference="gig-bx-mwZ"/>
+                                                <exclude reference="hF2-EU-eWY"/>
+                                                <exclude reference="hSu-iu-EPQ"/>
+                                                <exclude reference="tXR-aV-8FW"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
-                                            <outlet property="avatar" destination="cm5-14-koX" id="S5e-kz-ghY"/>
+                                            <outlet property="avatarButton" destination="cm5-14-koX" id="WfC-Tc-q7N"/>
+                                            <outlet property="avatarImageView" destination="inC-rE-oWm" id="Ezf-A9-QOA"/>
                                             <outlet property="changeAvatarButton" destination="W2m-qv-hbH" id="JKJ-sD-EOC"/>
                                         </connections>
                                     </collectionViewCell>
@@ -2043,23 +2069,28 @@
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hMi-Wk-bSo" userLabel="editButton">
+                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hMi-Wk-bSo" userLabel="editButton">
                                                     <rect key="frame" x="112" y="8" width="30" height="30"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="30" id="Ekw-sp-VWG"/>
                                                         <constraint firstAttribute="height" constant="30" id="XGO-OJ-Stc"/>
                                                     </constraints>
-                                                    <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" image="icon-edit">
-                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
+                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" image="icon-edit"/>
                                                     <connections>
                                                         <action selector="editButtonTapped:" destination="hgz-Hx-Jgh" eventType="touchUpInside" id="Dob-bf-7CH"/>
                                                     </connections>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name or email or phone" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWk-AJ-c68">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvy-2I-I3N" userLabel="titleLabel">
+                                                    <rect key="frame" x="8" y="8" width="24" height="19"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name or email or phone" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWk-AJ-c68">
                                                     <rect key="frame" x="8" y="49" width="142" height="43"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="16"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -2075,11 +2106,14 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
-                                        <color key="backgroundColor" red="0.0" green="0.6588235294" blue="0.77647058820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
+                                            <constraint firstItem="gvy-2I-I3N" firstAttribute="top" secondItem="hgz-Hx-Jgh" secondAttribute="topMargin" id="0e3-Sx-3nf"/>
                                             <constraint firstItem="PWk-AJ-c68" firstAttribute="bottom" secondItem="hgz-Hx-Jgh" secondAttribute="bottomMargin" id="3TQ-zq-lMU"/>
                                             <constraint firstItem="hMi-Wk-bSo" firstAttribute="top" secondItem="hgz-Hx-Jgh" secondAttribute="topMargin" id="9zD-Er-CtO"/>
                                             <constraint firstItem="hMi-Wk-bSo" firstAttribute="trailing" secondItem="hgz-Hx-Jgh" secondAttribute="trailingMargin" id="Sb5-oQ-g3e"/>
+                                            <constraint firstItem="gvy-2I-I3N" firstAttribute="leading" secondItem="hgz-Hx-Jgh" secondAttribute="leadingMargin" id="TAP-uo-kWT"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="PWk-AJ-c68" secondAttribute="trailing" constant="-8" id="lfc-ov-aeO"/>
                                             <constraint firstItem="PWk-AJ-c68" firstAttribute="leading" secondItem="hgz-Hx-Jgh" secondAttribute="leadingMargin" id="p8J-wa-ZZb"/>
                                         </constraints>
@@ -2087,6 +2121,7 @@
                                         <connections>
                                             <outlet property="editButton" destination="hMi-Wk-bSo" id="zDa-gp-wqy"/>
                                             <outlet property="textLabel" destination="PWk-AJ-c68" id="3jL-qP-WiH"/>
+                                            <outlet property="titleLabel" destination="gvy-2I-I3N" id="P5g-0T-e34"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>

@@ -22,3 +22,13 @@
 
 "Description" = "Description";
 "Title" = "Title";
+
+"email" = "E-mail";
+"mood" = "Mood";
+"firstName" = "Name";
+"lastName" = "Last name";
+"phone" = "Phone";
+"country" = "Country";
+"language" = "Language";
+"age" = "Age";
+"changePassword" = "Change password";

@@ -86,6 +86,38 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             prepareCollectionViewDataAndLayout()
             afterViewDidLoad = false
         }
+        
+        var currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
+        DataSource.sharedInstance.refreshAttachesForElement(self.currentElement, completion: { [weak self] (attachesArray) -> () in
+            if let weakSelf = self
+            {
+                if let recievedAttaches = attachesArray
+                {
+                    if let existAttaches = currentAttachesInDataSource
+                    {
+                        var setOfExisting = Set(existAttaches)
+                        var setOfNew = Set(recievedAttaches)
+                        
+                        let remainderSet = setOfNew.subtract(setOfExisting)
+                        if remainderSet.isEmpty
+                        {
+                            println("-> No new attach files loaded")
+                        }
+                        else
+                        {
+                            println("-> Loaded \(remainderSet.count) new attaches")
+                            weakSelf.prepareCollectionViewDataAndLayout()
+                        }
+                        
+                    }
+                    else
+                    {
+                        weakSelf.prepareCollectionViewDataAndLayout()
+                    }
+                }
+                
+            }
+        })
     }
     
     override func viewDidAppear(animated: Bool) {

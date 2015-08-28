@@ -83,6 +83,17 @@ extension NSDate
         
         return toReturn
     }
+    
+    func dateStringMediumStyle() -> String?
+    {
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .MediumStyle
+        dateFormatter.timeStyle = .NoStyle
+        
+        let toReturn = dateFormatter.stringFromDate(self)
+        
+        return toReturn
+    }
 }
 
 extension NSString
