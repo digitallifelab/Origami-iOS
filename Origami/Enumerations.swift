@@ -55,14 +55,14 @@ enum DashCellType:Int
 enum ProfileTextCellType:Int
 {
     case Mood = 1
-    case Email
-    case Name
-    case LastName
-    case Country
-    case Language
-    case PhoneNumber
-    case Age
-    case Password
+    case Email //2
+    case Name //3
+    case LastName //4
+    case Country //5
+    case Language //6
+    case PhoneNumber //7
+    case Age //8
+    case Password //9
 }
 
 enum DisplayMode:Int

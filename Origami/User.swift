@@ -111,32 +111,82 @@ class User
         }
     }
     
-    func toDictionary() -> [NSObject:AnyObject]
+    func toDictionary() -> [String:AnyObject]
     {
-        var toReturn = [NSObject:AnyObject]()
-        toReturn["LoginName"]   = self.userName //?? NSNull()
-        toReturn["Password"]    = self.password //?? NSNull()
+        var toReturn = [String:AnyObject]()
+        toReturn["LoginName"]   = self.userName
+        toReturn["Password"]    = self.password
+        if let regDate = self.regDate as? String
+        {
+            toReturn["RegDate"] = regDate
+        }
+        if let syncDate = self.lastSync as? String
+        {
+            toReturn["LastSync"]  = syncDate
+        }
         
-        toReturn["FirstName"]   = self.firstName //?? NSNull()
-        toReturn["LastName"]    = self.lastName // ?? NSNull()
+        if let fName = self.firstName as? String
+        {
+            toReturn["FirstName"] = fName
+        }
         
-        toReturn["Token"]       = self.token //?? NSNull()
-        toReturn["UserId"]      = self.userId //?? NSNull()
+        if let lName = self.lastName as? String
+        {
+            toReturn["LastName"] = lName
+        }
         
-        toReturn["Mood"]        = self.mood //?? NSNull()
-        toReturn["State"]       = self.state //?? NSNull()
-        toReturn["Sex"]         = self.sex  //?? NSNull()
-        toReturn["PhoneNumber"] = self.phone  //?? NSNull()
-        toReturn["BirthDay"]    = self.birthDay // ?? NSNull()
-        toReturn["RegDate"]     = self.regDate //?? NSNull()
-        toReturn["LastSync"]    = self.lastSync// ?? NSNull()
+        if let token = self.token as? String
+        {
+            toReturn["Token"] = token
+        }
+        toReturn["UserId"] = self.userId //?? NSNull()
         
-        toReturn["Country"]     = self.country
-        toReturn["CountryId"]   = self.countryId
-        toReturn["Language"]    = self.language
-        toReturn["LanguageId"]  = self.languageId
+        if let mood = self.mood
+        {
+            toReturn["Mood"]  = mood //?? NSNull()
+        }
+        if let state = self.state
+        {
+            toReturn["State"] = state //?? NSNull()
+        }
         
-        // photo we neither store in USer object nor Send it to server as paramater of User
+        if let sex = self.sex
+        {
+            toReturn["Sex"] = sex  //?? NSNull()
+        }
+        
+        if let phoneNumber = self.phone as? String
+        {
+            toReturn["PhoneNumber"] = phoneNumber
+        }
+        
+        if let stringBDay = self.birthDay as? String
+        {
+            toReturn["BirthDay"] = stringBDay
+        }
+        
+        if let aCountry = self.country as? String
+        {
+            toReturn["Country"] = aCountry
+        }
+
+        if let cId = self.countryId //as? NSNumber
+        {
+            toReturn["CountryId"]  = cId
+        }
+        
+        if let lang = self.language as? String
+        {
+            toReturn["Language"] = lang
+        }
+        
+        if let langId = self.languageId
+        {
+            toReturn["LanguageId"] = langId
+        }
+        
+        
+        // photo we neither store in User object nor Send it to server as paramater of User
         
         
         return toReturn

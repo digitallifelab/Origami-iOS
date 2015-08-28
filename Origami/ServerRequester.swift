@@ -37,9 +37,19 @@ class ServerRequester: NSObject
     func editUser(userToEdit:User, completion:(success:Bool, error:NSError?) -> () )
     {
         var requestString:String = "\(serverURL)" + "\(editUserUrlPart)"
-        var params = ["user":userToEdit]
+        let dictUser = userToEdit.toDictionary()
+        //let dictionaryDebug = NSDictionary(dictionary: dictUser)
+        //println(dictionaryDebug)
+        var params = ["user":dictUser]
         
         var jsonSerializer = httpManager.responseSerializer
+        
+        let requestSerializer = AFJSONRequestSerializer()
+        requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
+        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
+        httpManager.requestSerializer = requestSerializer
+        
+        
         let acceptableTypes:NSSet = jsonSerializer.acceptableContentTypes as NSSet
       
         var newSet = NSMutableSet(set: acceptableTypes)
@@ -51,14 +61,81 @@ class ServerRequester: NSObject
             parameters: params,
             success:
             { (operation, resultObject) -> Void in
+                if let result = resultObject as? [String:AnyObject]
+                {
+                    println(" -> Edit user result: \(result)")
+                }
                 completion(success: true, error: nil)
             
         })
             { (operation, responseError) -> Void in
+    
+                if let errorString = operation.responseString
+                {
+                    println("->failure string in edit uer: \n \(errorString) \n")
+                }
+                
+                if let resultError = responseError
+                {
+                    println(" -> Edit user Error: \(resultError)")
+                }
+    
             completion(success: false, error: responseError)
         }
         
         editOperation.start()
+        
+        /*
+        NSString *editUserUrlString = [NSString stringWithFormat:@"%@EditUser", BasicURL];
+        NSDictionary *userToSend = [NSDictionary dictionaryWithObjectsAndKeys:[self.currentUser toDictionary] , @"user",nil];
+        
+        
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
+        
+        [serializer setTimeoutInterval:60];
+        [serializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [serializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+        
+        manager.requestSerializer = serializer;
+        
+        
+        
+        AFJSONResponseSerializer *jsonSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
+        [jsonSerializer.acceptableContentTypes setByAddingObjectsFromArray:@[@"text/html",@"application/json"] ];
+        manager.responseSerializer = jsonSerializer;
+        
+        
+        AFHTTPRequestOperation *postEditOp = [manager POST:editUserUrlString
+        parameters:userToSend
+        success:^(AFHTTPRequestOperation *operation, id responseObject)
+        {
+        if (completionBlock)
+        {
+        completionBlock(responseObject,nil);
+        }
+        }
+        failure:^(AFHTTPRequestOperation *operation, NSError *error)
+        {
+        if (error.description)
+        {
+        NSLog(@"%@", error.description);
+        }
+        NSString *responseString = operation.responseString;
+        if (responseString)
+        {
+        NSLog(@"\r\n updateUserInfoWithCompletion Error response: %@", responseString);
+        }
+        if (completionBlock)
+        {
+        completionBlock(nil,error);
+        }
+        }];
+        
+        [postEditOp start];
+        
+        */
+        
     }
     
     func loginWith(userName:String, password:String, completion:networkResult)

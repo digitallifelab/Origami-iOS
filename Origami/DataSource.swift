@@ -129,7 +129,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         DataSource.sharedInstance.dataCache.removeAllObjects()
     }
-    //User
+    //MARK: User
     func tryToGetUser(completion:(user:User?, error:NSError?)->())
     {
         if DataSource.sharedInstance.user != nil
@@ -153,6 +153,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     completion(user: nil, error: loginError)
                 }
             })
+        }
+    }
+    
+    func editUserInfo(completion: ((success:Bool, error: NSError?)->())?)
+    {
+        if let currentUser = DataSource.sharedInstance.user
+        {
+            let bgQueue = dispatch_queue_create("Origami.UserEdit.Queue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgQueue, { () -> Void in
+                DataSource.sharedInstance.serverRequester.editUser(currentUser, completion: { (success, error) -> () in
+                    completion?(success:success, error: error)
+                })
+            })
+            
         }
     }
     

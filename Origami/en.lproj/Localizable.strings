@@ -32,3 +32,6 @@
 "language" = "Language";
 "age" = "Age";
 "changePassword" = "Change password";
+
+"cancel" = "Cancel";
+"done" = "Done";

@@ -686,10 +686,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func showUserProfileVC()
     {
-        if let userProfileVC = self.storyboard?.instantiateViewControllerWithIdentifier("UserProfileVC") as? UserProfileVC
+        if  let profileNavHolder = self.storyboard?.instantiateViewControllerWithIdentifier("ProfileNavController") as? UINavigationController,
+            userProfileVC = profileNavHolder.viewControllers.first as? UserProfileVC
         {
-            let profileNavHolder = UINavigationController(rootViewController: userProfileVC)
-            
             profileNavHolder.modalPresentationStyle = .Custom
             profileNavHolder.transitioningDelegate = self
             

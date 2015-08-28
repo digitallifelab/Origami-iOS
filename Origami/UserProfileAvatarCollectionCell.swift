@@ -22,9 +22,11 @@ class UserProfileAvatarCollectionCell: UICollectionViewCell {
             case .Day:
                 changeAvatarButton?.tintColor = kDayCellBackgroundColor
                 avatarImageView?.tintColor = kDayCellBackgroundColor
+                self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.7)
             case .Night:
                 changeAvatarButton?.tintColor = kWhiteColor
                 avatarImageView?.tintColor = kWhiteColor
+                self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.5)
             }
         }
     }

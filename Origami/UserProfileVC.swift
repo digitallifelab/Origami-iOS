@@ -8,12 +8,12 @@
 
 import UIKit
 
-class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate {
+class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate {
 
     var user = DataSource.sharedInstance.user
     let avatarCellIdentifier = "UserProfileAvatarCell"
     let textCellIdentifier = "UserProfileTextCell"
-    
+    var defaultEdgeInsets:UIEdgeInsets?
     var currentAvatar:UIImage?
     var displayMode:DisplayMode = .Day{
         didSet{
@@ -61,12 +61,158 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
         })
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        addObserversForKeyboard()
+    }
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        removeObserversForKeyboard()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    //MARK: - UITextViewDelegate and stuff
+    func addObserversForKeyboard()
+    {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardAppearance:", name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleKeyboardAppearance:", name: UIKeyboardWillHideNotification, object: nil)
+    }
     
+    func removeObserversForKeyboard()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+    }
+    
+    func handleKeyboardAppearance(notification:NSNotification)
+    {
+        if let notifInfo = notification.userInfo
+        {
+            //prepare needed values
+            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
+            let keyboardHeight = keyboardFrame.size.height
+            //let animationOptionCurveNumber = notifInfo[UIKeyboardAnimationCurveUserInfoKey]! as! NSNumber
+            //let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions.fromRaw(   animationOptionCurveNumber)
+            let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
+            let options = UIViewAnimationOptions(UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            var keyboardIsToShow = false
+            if notification.name == UIKeyboardWillShowNotification
+            {
+                keyboardIsToShow = true
+                defaultEdgeInsets = profileCollection.contentInset
+                let edgeInsets = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
+                profileCollection.contentInset = edgeInsets
+                
+            }
+            else
+            {
+               //let edgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
+                profileCollection.contentInset = defaultEdgeInsets!
+            }
+            
+            
+            UIView.animateWithDuration(animationTime,
+                delay: 0.0,
+                options: options,
+                animations: {  [weak self]  in
+                    if let weakSelf = self
+                    {
+                        weakSelf.view.layoutIfNeeded()
+                    }
+                    
+                    
+                },
+                completion: { [weak self]  (finished) -> () in
+                    
+                })
+        }
+    }
+    
+    func textViewShouldEndEditing(textView: UITextView) -> Bool {
+        if let type = ProfileTextCellType(rawValue:textView.tag)
+        {
+            switch type{
+            case .PhoneNumber:
+                let nsString:NSString = textView.text
+                var integerString = nsString.longLongValue
+                
+                //store before updating user phone
+                var previousValue = DataSource.sharedInstance.user?.phone
+                
+                if integerString > 0 && integerString < INT64_MAX
+                {
+                    DataSource.sharedInstance.user?.phone = String("\(integerString)")
+                    DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+                        if success
+                        {
+                            println(" -> UserProfileVC succeeded to edit user Phone Number.")
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let weakSelf = self
+                                {
+                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.PhoneNumber.rawValue, inSection: 0)])
+                                }
+                                })
+                        }
+                        else
+                        {
+                            if let anError = error
+                            {
+                                println(" -> UserProfileVC failed to edit user Phone Number.")
+                                DataSource.sharedInstance.user?.phone = previousValue
+                                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                    if let weakSelf = self
+                                    {
+                                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your phone number.", cancelButtonTitle: "Close")
+                                    }
+                                    })
+                            }
+                        }
+                    })
+                }
+                else if textView.text .isEmpty
+                {
+                    DataSource.sharedInstance.user?.phone = ""
+                    DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+                        if success
+                        {
+                            println(" -> UserProfileVC succeeded to edit user Phone Number.")
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let weakSelf = self
+                                {
+                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.PhoneNumber.rawValue, inSection: 0)])
+                                }
+                                })
+                        }
+                        else
+                        {
+                            if let anError = error
+                            {
+                                println(" -> UserProfileVC failed to edit user Phone Number.")
+                                DataSource.sharedInstance.user?.phone = previousValue
+                                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                    if let weakSelf = self
+                                    {
+                                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your phone number.", cancelButtonTitle: "Close")
+                                    }
+                                    })
+                            }
+                        }
+                    })
+                }
+            default: break
+            }
+        }
+        return true
+    }
 
     //MARK: UICollectionViewDataSource
     
@@ -181,7 +327,20 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
 //            }
 //        }
 //    }
-    
+    //MARK: UICollectionViewDelegate
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        if let datePickerHolder = self.view.viewWithTag(0xDA7E)
+        {
+            datePickerCancels(nil)
+        }
+        for aCell in profileCollection.visibleCells()
+        {
+            if let textCell = aCell as? UserProfileTextContainerCell
+            {
+                textCell.stopEditingText()
+            }
+        }
+    }
     @IBAction func homeButtonTapped(sender:UIButton)
     {
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -284,6 +443,9 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func startEditingUserBirthDate()
     {
+        profileCollection.scrollToItemAtIndexPath(NSIndexPath(forItem: 8, inSection: 0), atScrollPosition: .Top, animated: true)
+        
+        showDatePickerView()
         
     }
     
@@ -314,14 +476,164 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func startEditingPhoneNumber()
     {
-        
+        let indexPath = NSIndexPath(forItem: ProfileTextCellType.PhoneNumber.rawValue, inSection: 0)
+      
+        if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
+        {
+            if let currentPhone = DataSource.sharedInstance.user?.phone as? String
+            {
+                if currentPhone.isEmpty || currentPhone ==  " "
+                {
+                    textCell.enableTextView("+")
+                }
+                else
+                {
+                    textCell.enableTextView(nil)
+                }
+            }
+            else
+            {
+                textCell.enableTextView("+")
+            }
+            textCell.textView?.delegate = self
+            textCell.textView?.keyboardType = UIKeyboardType.PhonePad
+            
+            textCell.startEditingText()
+            profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        }
     }
     
     func startEditingUserPassword()
     {
+        let indexPath = NSIndexPath(forItem: ProfileTextCellType.Password.rawValue, inSection: 0)
         
+        if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
+        {
+            if let currentPassword = DataSource.sharedInstance.user?.password as? String
+            {
+                if currentPassword.isEmpty || currentPassword ==  " "
+                {
+                    textCell.enableTextView("")
+                }
+                else
+                {
+                    textCell.enableTextView(currentPassword)
+                }
+            }
+            else
+            {
+                textCell.enableTextView("")
+            }
+            textCell.textView?.delegate = self
+            
+            textCell.startEditingText()
+            profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        }
     }
     
+    //MARK: birthday picking
+    func showDatePickerView()
+    {
+        
+        var datePickerHolderView = UIView(frame: CGRectMake(0.0, CGRectGetMaxY(self.profileCollection.frame) - 280.0, CGRectGetWidth(self.view.bounds), 280.0))
+        datePickerHolderView.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | .FlexibleRightMargin | .FlexibleTopMargin
+        datePickerHolderView.tag = 0xDA7E // :-) DATE
+        datePickerHolderView.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.7)
+        
+        let holderWidth = CGRectGetWidth(datePickerHolderView.bounds)
+        
+        var datePicker = UIDatePicker(frame: CGRectMake(0, 50.0, datePickerHolderView.bounds.size.width, 200))
+        datePicker.backgroundColor = UIColor.whiteColor()
+        if let currentDate = user?.birthDay?.dateFromServerDateString()
+        {
+            datePicker.date = currentDate
+        }
+        else
+        {
+            datePicker.date = NSDate()
+        }
+        datePicker.datePickerMode = UIDatePickerMode.Date
+        datePicker.tag = 2
+        
+        datePickerHolderView.addSubview(datePicker)
+        
+        var button = UIButton.buttonWithType(UIButtonType.System) as? UIButton
+        button?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
+        button?.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
+        button?.frame = CGRectMake(0, 0, 60.0, 44.0)
+        button?.setTitle("done".localizedWithComment(""), forState: .Normal)
+        button?.addTarget(self, action: "datePickerSubmitNewDate:", forControlEvents: .TouchUpInside)
+        if let b = button
+        {
+            datePickerHolderView.addSubview(button!)
+        }
+  
+        var cancelButton = UIButton.buttonWithType(.System) as? UIButton
+        cancelButton?.tintColor = button?.tintColor
+        cancelButton?.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
+        cancelButton?.frame = CGRectMake(holderWidth - 60.0 , 0.0, 60, 44.0)
+        cancelButton?.setTitle("cancel".localizedWithComment(""), forState: .Normal)
+        cancelButton?.addTarget(self, action: "datePickerCancels:", forControlEvents: .TouchUpInside)
+        if let cB = cancelButton
+        {
+            datePickerHolderView.addSubview(cancelButton!)
+        }
+        
+        self.view.insertSubview(datePickerHolderView, aboveSubview: profileCollection)
+    }
     
+    func datePickerCancels(sender:UIButton?)
+    {
+        sender?.enabled = false
+        if let holderView = self.view.viewWithTag(0xDA7E) //datePickerHolderView
+        {
+            UIView.animateWithDuration(0.2, animations: { () -> Void in
+                holderView.alpha = 0.1
+            }, completion: { (finished) -> Void in
+                holderView.removeFromSuperview()
+            })
+        }
+    }
+    
+    func datePickerSubmitNewDate(sender:UIButton?)
+    {
+        sender?.enabled = false
+        if let holderView = self.view.viewWithTag(0xDA7E)
+        {
+            if let datePicker = holderView.viewWithTag(2) as? UIDatePicker
+            {
+                let date = datePicker.date
+                var previousDate = DataSource.sharedInstance.user?.birthDay
+                DataSource.sharedInstance.user?.birthDay = date.dateForServer()
+                DataSource.sharedInstance.editUserInfo { (success, error) -> () in
+                    if success
+                    {
+                        println(" -> UserProfileVC succeeded to edit user birth date.")
+                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                            if let weakSelf = self
+                            {
+                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                            }
+                        })
+                    }
+                    else if let anError = error
+                    {
+                        println(" -> UserProfileVC failed to edit user birth date.")
+                        DataSource.sharedInstance.user?.birthDay = previousDate
+                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                            if let weakSelf = self
+                            {
+                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                                weakSelf.showAlertWithTitle("Error.", message: "Could not update your birthday.", cancelButtonTitle: "Close")
+                            }
+                        })
+                    }
+                }
+                
+            }
+            //dismiss datePickerHolderView
+            datePickerCancels(nil)
+        }
+    }
     
 }
