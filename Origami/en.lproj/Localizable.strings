@@ -35,3 +35,6 @@
 
 "cancel" = "Cancel";
 "done" = "Done";
+"change" = "Change";
+"sureToChangePassword" = "Are you sure to change password?";
+"attention" = "Attention";

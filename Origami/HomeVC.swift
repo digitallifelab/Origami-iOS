@@ -79,33 +79,38 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     override func viewWillAppear(animated: Bool)
     {
         super.viewWillAppear(animated)
-        nightModeDidChange(nil)
+        if let user = DataSource.sharedInstance.user
+        {
+            nightModeDidChange(nil)
+        }
     }
     
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        
-        //register for night-day modes switching
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
-        
-        if DataSource.sharedInstance.isMessagesEmpty()
+        if let user = DataSource.sharedInstance.user
         {
-            DataSource.sharedInstance.loadAllMessagesFromServer()
-        }
-        
-        if !loadingAllElementsInProgress
-        {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            //register for night-day modes switching
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
             
-            reloadDashboardView()
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
+            
+            if DataSource.sharedInstance.isMessagesEmpty()
+            {
+                DataSource.sharedInstance.loadAllMessagesFromServer()
+            }
+            
+            if !loadingAllElementsInProgress
+            {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                
+                reloadDashboardView()
+            }
+            
+            //self.tabBarController?.tabBar.layoutSubviews()
         }
-        
-        self.tabBarController?.tabBar.layoutSubviews()
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -561,6 +566,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             {
                 println(" New Night Mode Value: \(nightModeEnabled)")
                 setAppearanceForNightModeToggled(nightModeEnabled)
+                self.collectionDashboard.reloadData()
             }
         }
         else
@@ -568,6 +574,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             // handle recieving call not from notification centre
             let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
             setAppearanceForNightModeToggled(nightModeOn)
+            self.collectionDashboard.reloadData()
         }
     }
     
@@ -601,7 +608,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
         
         self.collectionSource?.turnNightModeOn(nightModeOn)
-        self.collectionDashboard.reloadData()
         
     }
     
@@ -641,7 +647,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
 
         // hide MenuTableVC
-        if let menuPresentedVC = self.presentedViewController as? MenuVC//MenuTableViewController
+        if let menuPresentedVC = self.presentedViewController as? MenuVC
         {
             let menuAnimator = MenuTransitionAnimator()
             menuAnimator.shouldAnimate = animated
@@ -666,7 +672,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             return
         }
         // present MenuTableVC
-        if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC//MenuTableViewController
+        if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
         {
             let menuAnimator = MenuTransitionAnimator()
             menuAnimator.shouldAnimate = animated

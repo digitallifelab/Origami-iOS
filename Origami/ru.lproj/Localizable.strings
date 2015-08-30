@@ -32,5 +32,9 @@
 "language" = "Язык";
 "age" = "Возраст";
 "changePassword" = "Изменить пароль";
+
 "cancel" = "Отмена";
 "done" = "Готово";
+"change" = "Изменить";
+"sureToChangePassword" = "Подтвердите смену пароля.";
+"attention" = "Внимание";

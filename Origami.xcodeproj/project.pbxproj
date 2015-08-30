@@ -56,7 +56,6 @@
 		F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
 		F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */; };
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
-		F87637781B565D1A00AFE376 /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87637771B565D1A00AFE376 /* MenuTableViewController.swift */; };
 		F87E144E1B554A0C0072BE3A /* HomeScreenTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */; };
 		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
 		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
@@ -181,7 +180,6 @@
 		F8C93B081B861B94009D890E /* ElementDashboardActionButtonsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9141B27051E00B867BF /* ElementDashboardActionButtonsCell.swift */; };
 		F8C93B091B861B94009D890E /* ServerRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D1801B25B22900E702D3 /* ServerRequester.swift */; };
 		F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
-		F8C93B0C1B861B94009D890E /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87637771B565D1A00AFE376 /* MenuTableViewController.swift */; };
 		F8C93B0D1B861B94009D890E /* ElementActionButtonsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */; };
 		F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
 		F8C93B0F1B861B94009D890E /* ContactProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742A1B56839D00E48E13 /* ContactProfileVC.swift */; };
@@ -296,7 +294,6 @@
 		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementAttachedFilesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
-		F87637771B565D1A00AFE376 /* MenuTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
 		F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenTabBarController.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
@@ -616,7 +613,6 @@
 		F87637791B56604100AFE376 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
-				F87637771B565D1A00AFE376 /* MenuTableViewController.swift */,
 				F8D0A3471B5FCE7F0033FD43 /* MenuVC.swift */,
 				F882328B1B6B702E00990A4E /* Right top options popup menu */,
 			);
@@ -1167,7 +1163,6 @@
 				F8C93B081B861B94009D890E /* ElementDashboardActionButtonsCell.swift in Sources */,
 				F8C93B091B861B94009D890E /* ServerRequester.swift in Sources */,
 				F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */,
-				F8C93B0C1B861B94009D890E /* MenuTableViewController.swift in Sources */,
 				F8C93B0D1B861B94009D890E /* ElementActionButtonsLayout.swift in Sources */,
 				F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */,
 				F8C93B0F1B861B94009D890E /* ContactProfileVC.swift in Sources */,
@@ -1281,7 +1276,6 @@
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
 				F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */,
-				F87637781B565D1A00AFE376 /* MenuTableViewController.swift in Sources */,
 				F87FE6C31B611836004CA576 /* ElementActionButtonsLayout.swift in Sources */,
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,

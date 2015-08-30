@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate {
+class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UITextFieldDelegate, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate, UIAlertViewDelegate {
 
     var user = DataSource.sharedInstance.user
     let avatarCellIdentifier = "UserProfileAvatarCell"
@@ -25,6 +25,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
         }
     }
+    
+    var tempPassword:String?
     
     @IBOutlet var profileCollection:UICollectionView!
     
@@ -211,6 +213,20 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             default: break
             }
         }
+        return true
+    }
+    
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        
+        if textField.tag == ProfileTextCellType.Password.rawValue
+        {
+            tempPassword = textField.text
+            showAlertAboutChangePassword()
+        }
+        textField.removeFromSuperview()
         return true
     }
 
@@ -509,22 +525,9 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         
         if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
         {
-            if let currentPassword = DataSource.sharedInstance.user?.password as? String
-            {
-                if currentPassword.isEmpty || currentPassword ==  " "
-                {
-                    textCell.enableTextView("")
-                }
-                else
-                {
-                    textCell.enableTextView(currentPassword)
-                }
-            }
-            else
-            {
-                textCell.enableTextView("")
-            }
-            textCell.textView?.delegate = self
+            textCell.enableTextView(nil)
+          
+            textCell.passwordTextField?.delegate = self
             
             textCell.startEditingText()
             profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
@@ -560,7 +563,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         var button = UIButton.buttonWithType(UIButtonType.System) as? UIButton
         button?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
         button?.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
-        button?.frame = CGRectMake(0, 0, 60.0, 44.0)
+        button?.frame = CGRectMake(holderWidth - 60.0 , 0.0, 60, 44.0)
         button?.setTitle("done".localizedWithComment(""), forState: .Normal)
         button?.addTarget(self, action: "datePickerSubmitNewDate:", forControlEvents: .TouchUpInside)
         if let b = button
@@ -571,7 +574,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         var cancelButton = UIButton.buttonWithType(.System) as? UIButton
         cancelButton?.tintColor = button?.tintColor
         cancelButton?.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
-        cancelButton?.frame = CGRectMake(holderWidth - 60.0 , 0.0, 60, 44.0)
+        cancelButton?.frame = CGRectMake(0, 0, 60.0, 44.0)
         cancelButton?.setTitle("cancel".localizedWithComment(""), forState: .Normal)
         cancelButton?.addTarget(self, action: "datePickerCancels:", forControlEvents: .TouchUpInside)
         if let cB = cancelButton
@@ -633,6 +636,123 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
             //dismiss datePickerHolderView
             datePickerCancels(nil)
+        }
+    }
+    
+    
+    //MARK: Password changing
+    
+    func showAlertAboutChangePassword()
+    {
+        let title =  "attention".localizedWithComment("")
+        let message = "sureToChangePassword".localizedWithComment("")
+        let cancelTitle = "cancel".localizedWithComment("")
+        let proceedTitle = "change".localizedWithComment("")
+        
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            let alertView = UIAlertView(
+                title: title,
+                message: message,
+                delegate: self,
+                cancelButtonTitle: cancelTitle,
+                otherButtonTitles: proceedTitle)
+            alertView.tag = ProfileTextCellType.Password.rawValue
+            alertView.show()
+            
+        }
+        else
+        {
+            let alertController = UIAlertController(
+                title: title,
+                message: message,
+                preferredStyle: .Alert)
+            
+            let alertActionCancel = UIAlertAction(title: cancelTitle, style: .Cancel, handler: {[weak self] (alertAction) -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.tempPassword = nil
+                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
+                }
+            })
+            
+            let alertActionChange = UIAlertAction(title: proceedTitle, style: .Default, handler: {[weak self] (alertAction) -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.userDidConfirmPasswordChange()
+                }
+            })
+            
+            alertController.addAction(alertActionCancel)
+            alertController.addAction(alertActionChange)
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func userDidConfirmPasswordChange()
+    {
+        if let password = tempPassword
+        {
+            let oldPassword = DataSource.sharedInstance.user?.password
+            
+            DataSource.sharedInstance.user?.password = password
+            DataSource.sharedInstance.editUserInfo({[weak self] (success, error) -> () in
+                if let weakSelf = self
+                {
+                    weakSelf.tempPassword = nil
+                }
+                
+                if success
+                {
+                    println(" -> UserProfileVC succeeded to edit user Password: /n->Old Password: \(oldPassword) /n->New Password: \(password)")
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
+                        }
+                        })
+                    
+                    //save new password to later automatic login
+                    let bgQueue = dispatch_queue_create("Origami.passwordSaving.", DISPATCH_QUEUE_SERIAL)
+                    dispatch_async(bgQueue, { () -> Void in
+                        NSUserDefaults.standardUserDefaults().setObject(password, forKey: passwordKey)
+                        NSUserDefaults.standardUserDefaults().synchronize()
+                    })
+                }
+                else
+                {
+                    if let anError = error
+                    {
+                        println(" -> UserProfileVC failed to edit user Password.")
+                        DataSource.sharedInstance.user?.password = oldPassword
+                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                            if let weakSelf = self
+                            {
+                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
+                                weakSelf.showAlertWithTitle("Error.", message: "Could not update your Password.", cancelButtonTitle: "Close")
+                            }
+                        })
+                    }
+                }
+                
+            })
+        }
+    }
+    
+    func alertView(alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int) {
+        if alertView.tag == ProfileTextCellType.Password.rawValue
+        {
+            switch buttonIndex
+            {
+            case 1:
+                userDidConfirmPasswordChange()
+            case alertView.cancelButtonIndex:
+                self.tempPassword = nil
+                self.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
+            default:
+                break
+            }
         }
     }
     

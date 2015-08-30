@@ -17,7 +17,7 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     var delegate:UserProfileAvatarCollectionCellDelegate?
     
     var textView:UITextView?
-    
+    var passwordTextField:UITextField?
     var cellType:ProfileTextCellType = .Email
         {
         didSet
@@ -59,6 +59,12 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     
     func enableTextView(initialText:String?)
     {
+        if self.cellType == .Password
+        {
+            self.enableTextField()
+            return
+        }
+        
         let textViewFrame = CGRectMake(textLabel!.frame.origin.x, textLabel!.frame.origin.y, self.bounds.size.width - 5, ceil(textLabel!.frame.size.height) )
         self.textView = UITextView(frame: textViewFrame)
         
@@ -77,12 +83,7 @@ class UserProfileTextContainerCell: UICollectionViewCell {
         {
             textView?.text = textLabel?.text
         }
-        if self.cellType == .Password
-        {
-            textView?.secureTextEntry = true // make in textVIew. textField does not have any effect with passwords
-            textView?.keyboardType = UIKeyboardType.Default
-            textView?.userInteractionEnabled = false
-        }
+        
         else if cellType == .PhoneNumber
         {
             textView?.keyboardType = .PhonePad
@@ -94,6 +95,15 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     
     func startEditingText()
     {
+        if cellType == .Password
+        {
+            if let textField = self.passwordTextField
+            {
+                textField.becomeFirstResponder()
+            }
+            return
+        }
+        
         if let textView = self.textView
         {
             textView.becomeFirstResponder()
@@ -104,6 +114,30 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     {
         //textView?.resignFirstResponder()
         textView?.removeFromSuperview()
+        passwordTextField?.removeFromSuperview()
         textView = nil
+        passwordTextField = nil
+    }
+    
+    //MARK: UITextField for editing password
+    
+    func enableTextField()
+    {
+        if let passwordFrame = self.textLabel?.frame
+        {
+            passwordTextField = UITextField(frame: passwordFrame)
+        }
+        
+        if let passTextField = passwordTextField
+        {
+            passwordTextField?.tag = cellType.rawValue //.Password
+            passTextField.secureTextEntry = true // make in textVIew. textField does not have any effect with passwords
+            passTextField.keyboardType = UIKeyboardType.Default
+            //passTextField.text = "password"
+            passTextField.userInteractionEnabled = true
+            passTextField.backgroundColor = kWhiteColor
+            self.addSubview(passTextField)
+            self.bringSubviewToFront(passTextField)
+        }
     }
 }
