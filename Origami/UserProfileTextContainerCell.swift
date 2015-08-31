@@ -84,10 +84,11 @@ class UserProfileTextContainerCell: UICollectionViewCell {
             textView?.text = textLabel?.text
         }
         
-        else if cellType == .PhoneNumber
+        if cellType == .PhoneNumber
         {
             textView?.keyboardType = .PhonePad
         }
+        
         self.addSubview(textView!)
         self.bringSubviewToFront(textView!)
         

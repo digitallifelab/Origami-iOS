@@ -1059,15 +1059,24 @@ class ServerRequester: NSObject
                     {
                         var jsonError:NSError?
                         if let
-                            jsonObject = NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? [String:AnyObject],
-                            response = jsonObject["GetPhotoResult"] as? [Int]
+                            jsonObject = NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? [String:AnyObject]
                         {
-                            if let aData = NSData.dataFromIntegersArray(response)
+                            if let response = jsonObject["GetPhotoResult"] as? [Int]
                             {
-                                toReturnCompletion(avatarData: aData, error: nil)
+                                if let aData = NSData.dataFromIntegersArray(response)
+                                {
+                                    toReturnCompletion(avatarData: aData, error: nil)
+                                }
+                                else
+                                {
+                                    toReturnCompletion(avatarData: nil, error: nil)
+                                }
+                                return
                             }
-                            else
+                            
+                            if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
                             {
+                                println("-> downloadAvatar response: \(jsonString)")
                                 toReturnCompletion(avatarData: nil, error: nil)
                             }
                         }

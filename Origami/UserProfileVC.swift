@@ -210,7 +210,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                         }
                     })
                 }
-            default: break
+            case .Name:
+                userDidChangeFirstName(textView.text)
+                
+            case .LastName:
+                userDidChangeLastName(textView.text)
+            default:
+                break
             }
         }
         return true
@@ -482,12 +488,28 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func startEditingUserFirstName()
     {
-        
+        let indexPath = NSIndexPath(forItem: ProfileTextCellType.Name.rawValue, inSection: 0)
+        if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
+        {
+            textCell.enableTextView(nil)
+            textCell.textView?.delegate = self
+            
+            textCell.startEditingText()
+            profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        }
     }
     
     func startEditingUserLastname()
     {
-        
+        let indexPath = NSIndexPath(forItem: ProfileTextCellType.LastName.rawValue, inSection: 0)
+        if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
+        {
+            textCell.enableTextView(nil)
+            textCell.textView?.delegate = self
+            
+            textCell.startEditingText()
+            profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        }
     }
     
     func startEditingPhoneNumber()
@@ -512,7 +534,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 textCell.enableTextView("+")
             }
             textCell.textView?.delegate = self
-            textCell.textView?.keyboardType = UIKeyboardType.PhonePad
             
             textCell.startEditingText()
             profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
@@ -722,18 +743,24 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
+                    println(" -> UserProfileVC failed to edit user Password.")
+                    
                     if let anError = error
                     {
-                        println(" -> UserProfileVC failed to edit user Password.")
-                        DataSource.sharedInstance.user?.password = oldPassword
-                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                            if let weakSelf = self
-                            {
-                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
-                                weakSelf.showAlertWithTitle("Error.", message: "Could not update your Password.", cancelButtonTitle: "Close")
-                            }
-                        })
+                        if let anError = error
+                        {
+                            println("Error: \n ->\(anError)")
+                        }
                     }
+                   
+                    DataSource.sharedInstance.user?.password = oldPassword
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
+                            weakSelf.showAlertWithTitle("Error.", message: "Could not update your Password.", cancelButtonTitle: "Close")
+                        }
+                        })
                 }
                 
             })
@@ -756,4 +783,84 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
     }
     
+    //MARK: Name, LastName, Mood change
+    func userDidChangeFirstName(newFirstName:String?)
+    {
+        if let newname = newFirstName
+        {
+            let oldName = DataSource.sharedInstance.user?.firstName
+            
+            DataSource.sharedInstance.user?.firstName = newname
+            DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+                if success
+                {
+                    println(" -> UserProfileVC succeeded to edit user LastName: /n->Old FirstName: \(oldName) /n->New FirstName: \(DataSource.sharedInstance.user?.lastName)")
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Name.rawValue, inSection: 0)])
+                        }
+                        })
+                }
+                else
+                {
+                    println(" -> UserProfileVC failed to edit user FirstName.")
+                    
+                    if let anError = error
+                    {
+                        println("Error: \n ->\(anError)")
+                    }
+                    
+                    DataSource.sharedInstance.user?.password = oldName
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Name.rawValue, inSection: 0)])
+                            weakSelf.showAlertWithTitle("Error.", message: "Could not update your name.", cancelButtonTitle: "Close")
+                        }
+                        })
+                }
+            })
+        }
+    }
+    
+    func userDidChangeLastName(newLastName:String?)
+    {
+        if let newname = newLastName
+        {
+            let oldLastName = DataSource.sharedInstance.user?.lastName
+            
+            DataSource.sharedInstance.user?.lastName = newname
+            DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+                if success
+                {
+                    println(" -> UserProfileVC succeeded to edit user LastName: /n->Old LastName: \(oldLastName) /n->New LastName: \(DataSource.sharedInstance.user?.lastName)")
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.LastName.rawValue, inSection: 0)])
+                        }
+                    })
+                }
+                else
+                {
+                    println(" -> UserProfileVC failed to edit user LastName.")
+                    
+                    if let anError = error
+                    {
+                        println("Error: \n ->\(anError)")
+                    }
+                    
+                    DataSource.sharedInstance.user?.password = oldLastName
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.LastName.rawValue, inSection: 0)])
+                            weakSelf.showAlertWithTitle("Error.", message: "Could not update your last name.", cancelButtonTitle: "Close")
+                        }
+                    })
+                }
+            })
+        }
+    }
 }
