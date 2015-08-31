@@ -182,6 +182,79 @@ class ServerRequester: NSObject
         
     }
     
+    //MARK: Languages & Countries
+    
+    func loadLanguages(completion:((languages:[Language]?, error:NSError?) -> ())?)
+    {
+        let languagesUrlString = serverURL + getLanguagesUrlPart
+        
+        let langOperation = httpManager.GET(languagesUrlString,
+            parameters: nil,
+            success: { (operation, responseObject) -> Void in
+                
+                let bgQueue = dispatch_queue_create("languages.queue", DISPATCH_QUEUE_SERIAL)
+                dispatch_async(bgQueue, { () -> Void in
+                    
+                    if let languagesDict = responseObject["GetLanguagesResult"] as? [[String:AnyObject]],  languages = ObjectsConverter.convertToLanguages(languagesDict)
+                    {
+                        completion?(languages:languages, error:nil)
+                    }
+                    else
+                    {
+                        let anError = NSError(domain: "LanguagesError", code: -409, userInfo: [NSLocalizedDescriptionKey:"Could not convert data to langages"])
+                        completion?(languages: nil, error:anError)
+                    }
+                })
+                
+                
+                
+            })/*failure*/
+            { (operation, responseError) -> Void in
+                if let error = responseError
+                {
+                    completion?(languages:nil, error: error)
+                }
+        }
+        
+        langOperation.start()
+    }
+    
+    func loadCountries(completion:((countries:[Country]?, error:NSError?) ->())?)
+    {
+        let countriesUrlString = serverURL + getCountriesUrlPart
+        
+        let countriesOp = httpManager.GET(countriesUrlString,
+            parameters: nil,
+            success: { (operation, responseObject) -> Void in
+            
+            let bgQueue = dispatch_queue_create("countries.queue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgQueue, { () -> Void in
+                
+                if let countriesDicts = responseObject["GetCountriesResult"] as? [[String:AnyObject]], countries = ObjectsConverter.convertToCountries(countriesDicts)
+                {
+                    completion?(countries: countries, error: nil)
+                }
+                else
+                {
+                    let anError = NSError(domain: "CountriesError", code: -409, userInfo: [NSLocalizedDescriptionKey:"Could not convert data to countries"])
+                    completion?(countries: nil, error:anError)
+                }
+                
+            })
+        })
+                { (operation, responseError) -> Void in
+            
+            if let error = responseError
+            {
+                completion?(countries:nil, error: error)
+            }
+            
+        }
+            
+        countriesOp.start()
+    }
+ 
+    
     //MARK: Elements
     func loadAllElements(completion:networkResult)
     {

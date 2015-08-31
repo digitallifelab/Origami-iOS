@@ -56,6 +56,8 @@
 		F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
 		F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */; };
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
+		F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
+		F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87E144E1B554A0C0072BE3A /* HomeScreenTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */; };
 		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
 		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
@@ -294,6 +296,7 @@
 		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementAttachedFilesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
+		F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableItemPickerVC.swift; sourceTree = "<group>"; };
 		F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenTabBarController.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
@@ -570,6 +573,7 @@
 				F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */,
 				F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */,
 				F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */,
+				F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */,
 			);
 			name = UserProfile;
 			sourceTree = "<group>";
@@ -1167,6 +1171,7 @@
 				F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */,
 				F8C93B0F1B861B94009D890E /* ContactProfileVC.swift in Sources */,
 				F8C93B101B861B94009D890E /* Structs.swift in Sources */,
+				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F8C93B131B861B94009D890E /* ChatVC.swift in Sources */,
@@ -1205,6 +1210,7 @@
 				F86F742F1B5684A500E48E13 /* MyContactListCell.swift in Sources */,
 				F8A1DFD11B7B74AB00A66692 /* Country.swift in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
+				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8521FEB1B78906500B418A3 /* HomeVCCollectionHandler.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F855BBC41B74ED1400EC114C /* DBElement.m in Sources */,
@@ -1352,7 +1358,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "202ec298-a0a2-4ae1-9f63-dce827f72cc1";
+				PROVISIONING_PROFILE = "a2d3f365-8397-4c31-beef-39712bead656";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1376,7 +1382,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "202ec298-a0a2-4ae1-9f63-dce827f72cc1";
+				PROVISIONING_PROFILE = "a2d3f365-8397-4c31-beef-39712bead656";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 			};
 			name = Release;

@@ -10,6 +10,64 @@ import Foundation
 
 class ObjectsConverter {
     
+    class func convertToLanguages(dictionariesArray:[[String:AnyObject]]) -> [Language]?
+    {
+        var languages = [Language]()
+        for aDict in dictionariesArray
+        {
+            if let aLang = Language(info: aDict)
+            {
+                languages.append(aLang)
+            }
+        }
+        
+        if languages.isEmpty
+        {
+            return nil
+        }
+        
+        return languages
+    }
+    
+    class func convertToCountries(dictionariesArray:[[String:AnyObject]]) -> [Country]?
+    {
+        var countries = [Country]()
+        for aDict in dictionariesArray
+        {
+            if let aCountry = Country(info: aDict)
+            {
+                countries.append(aCountry)
+            }
+        }
+        
+        if countries.isEmpty
+        {
+            return nil
+        }
+        
+        countries.sort { (c1, c2) -> Bool in
+            return c1.countryName > c2.countryName
+        }
+        return countries
+    }
+    
+    class func convertCountriesToPlistArray(countries:[Country]) -> [AnyObject]?
+    {
+        var array = [[String:AnyObject]]()
+        
+        for aCountry in countries
+        {
+            array.append(aCountry.toDictionary())
+        }
+        
+        if array.isEmpty
+        {
+            return nil
+        }
+        return array
+        
+    }
+    
     class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]?
     {
         if dictionaries.isEmpty

@@ -9,21 +9,31 @@
 import Foundation
 class Language
 {
-    var languageId:NSNumber?
-    var languageName:String?
+    var languageId:NSNumber = NSNumber(integer: 0)
+    var languageName:String = ""
     
-    init(info:Dictionary<String,AnyObject>)
+    convenience init?(info:[String:AnyObject]?)
     {
-        if info.count > 0
+        self.init()
+        if info == nil
         {
-            if let lvId = info["Id"] as? NSNumber
+            return nil
+        }
+        
+        if info!.count > 0
+        {
+            if let lvId = info!["Id"] as? NSNumber
             {
                 self.languageId = lvId
             }
-            if let lvName = info["Name"] as? String
+            if let lvName = info!["Name"] as? String
             {
                 self.languageName = lvName
             }
+        }
+        else
+        {
+            return nil
         }
     }
     
@@ -32,7 +42,7 @@ class Language
         var dict = [String:AnyObject]()
         
         dict["Id"] = self.languageId
-        dict["name"] = self.languageName
+        dict["Name"] = self.languageName
         
         return dict
     }

@@ -2178,6 +2178,58 @@
             </objects>
             <point key="canvasLocation" x="5941" y="439"/>
         </scene>
+        <!--Table Item PickerVC-->
+        <scene sceneID="VRa-EI-tqO">
+            <objects>
+                <viewController storyboardIdentifier="ItemPickerVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lbh-0S-ueE" customClass="TableItemPickerVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="fjy-OH-yPp"/>
+                        <viewControllerLayoutGuide type="bottom" id="eon-yQ-J12"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1c8-bA-mL0">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="yTp-TP-Zmc">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="checkmark" indentationWidth="10" reuseIdentifier="SelectionSell" textLabel="BMG-Rp-Mb9" style="IBUITableViewCellStyleDefault" id="iMf-9i-4Zt">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iMf-9i-4Zt" id="CaD-ED-pWw">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BMG-Rp-Mb9">
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="yTp-TP-Zmc" secondAttribute="trailing" id="6lM-9l-PEl"/>
+                            <constraint firstItem="yTp-TP-Zmc" firstAttribute="bottom" secondItem="eon-yQ-J12" secondAttribute="top" id="9KB-Rh-8mH"/>
+                            <constraint firstItem="yTp-TP-Zmc" firstAttribute="leading" secondItem="1c8-bA-mL0" secondAttribute="leading" id="El7-TU-sVf"/>
+                            <constraint firstItem="yTp-TP-Zmc" firstAttribute="top" secondItem="1c8-bA-mL0" secondAttribute="top" id="zwY-xp-SuK"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="480"/>
+                    <connections>
+                        <outlet property="tableView" destination="yTp-TP-Zmc" id="Gdc-7E-agh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hZ5-AS-g0h" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6328" y="407"/>
+        </scene>
         <!--Editing Menu PopupVC-->
         <scene sceneID="02F-wx-24d">
             <objects>

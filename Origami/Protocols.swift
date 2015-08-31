@@ -47,8 +47,6 @@ protocol ElementComposingDelegate
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
 }
 
-
-
 protocol MessageTapDelegate
 {
     func chatMessageWasTapped(message:Message?)
@@ -60,4 +58,10 @@ protocol UserProfileAvatarCollectionCellDelegate
     func showAvatarPressed()
     func changeAvatarPressed()
     func changeInfoPressed(cellType:ProfileTextCellType)
+}
+
+protocol TableItemPickerDelegate
+{
+    func itemPicker(itemPicker:AnyObject, didPickItem item:AnyObject)
+    func itemPickerDidCancel(itemPicker:AnyObject)
 }

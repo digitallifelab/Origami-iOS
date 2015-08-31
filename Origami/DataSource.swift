@@ -1161,7 +1161,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 */
                 
-                
                 let lvFileHandle = FileHandler()
                 lvFileHandle.saveFileToDisc(file.data, fileName: file.name, completion: { (filePath, saveError) -> Void in
                     if filePath != nil
@@ -1972,5 +1971,56 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 completionBlock?(success: false, error: nil)
             }
         })
+    }
+    
+    //MARK: Languages & Countries
+    func getCountries(completion:((countries:[Country]?, error:NSError?)->())?)
+    {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        let bgQueue = dispatch_queue_create("filereader.queue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(bgQueue, { () -> Void in
+            
+            let aFileHandler = FileHandler()
+            if let countriesDictsArray = aFileHandler.getCountriesFromDisk() as? [[String:AnyObject]]
+            {
+                if let aCountries = ObjectsConverter.convertToCountries(countriesDictsArray)
+                {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    completion?(countries:aCountries, error:nil)
+                }
+                else
+                {
+                    DataSource.sharedInstance.serverRequester.loadCountries { (countries, error) -> () in
+                        if let aCountries = countries
+                        {
+                            if let dictionaries = ObjectsConverter.convertCountriesToPlistArray(aCountries)
+                            {
+                                aFileHandler.saveCountriesToDisk(dictionaries)
+                            }
+                            
+                            completion?(countries:aCountries, error:nil)
+                        }
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    }
+                }
+            }
+            else
+            {
+                DataSource.sharedInstance.serverRequester.loadCountries { (countries, error) -> () in
+                    if let aCountries = countries
+                    {
+                        if let dictionaries = ObjectsConverter.convertCountriesToPlistArray(aCountries)
+                        {
+                            aFileHandler.saveCountriesToDisk(dictionaries)
+                        }
+                        
+                        completion?(countries:aCountries, error:nil)
+                    }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+            }
+            
+        })
+        
     }
 }

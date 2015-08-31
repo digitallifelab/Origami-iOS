@@ -109,3 +109,8 @@ enum FileType:String {
     case Document = "document"
 }
 
+enum TableItemPickerType:Int{
+    case Country = 1
+    case Language = 2
+}
+

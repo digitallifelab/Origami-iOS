@@ -8,7 +8,7 @@
 
 import UIKit
 
-class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UITextFieldDelegate, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate, UIAlertViewDelegate {
+class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UITextFieldDelegate, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate, TableItemPickerDelegate, UIAlertViewDelegate {
 
     var user = DataSource.sharedInstance.user
     let avatarCellIdentifier = "UserProfileAvatarCell"
@@ -473,7 +473,21 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func startEditingCountry()
     {
-        
+        DataSource.sharedInstance.getCountries {[weak self] (countries, error) -> () in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                if let weakSelf = self
+                {
+                    if let countriesArray = countries, countriesTableVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("ItemPickerVC") as? TableItemPickerVC
+                    {
+                        countriesTableVC.delegate = self
+                        countriesTableVC.pickerType = .Country
+                        countriesTableVC.startItems = countriesArray
+                        weakSelf.navigationController?.pushViewController(countriesTableVC, animated: true)
+                    }
+                }
+            })
+        }
     }
     
     func startEditingLanguage()
@@ -782,6 +796,35 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
         }
     }
+    
+    //MARK -- Country & Language
+    //MARK: TableItemPickerDelegate
+    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
+        if let itemPickerVC = itemPicker as? TableItemPickerVC
+        {
+            switch itemPickerVC.pickerType
+            {
+            case .Country:
+                if let country = item as? Country
+                {
+                    
+                }
+            case .Language:
+                if let language = item as? Language
+                {
+                    
+                }
+            }
+        }
+    }
+    
+    func itemPickerDidCancel(itemPicker: AnyObject) {
+        if let vc = itemPicker as? UIViewController
+        {
+            vc.dismissViewControllerAnimated(false, completion: nil)
+        }
+    }
+    //MARK: --
     
     //MARK: Name, LastName, Mood change
     func userDidChangeFirstName(newFirstName:String?)

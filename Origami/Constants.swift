@@ -24,6 +24,11 @@ let NightModeKey = "NightModeOn"
 let registerUserUrlPart = "RegisterUser"
 let editUserUrlPart = "EditUser"
 let loginUserUrlPart = "Login"
+
+//Info
+let getLanguagesUrlPart = "GetLanguages"
+let getCountriesUrlPart = "GetCountries"
+
 //Contacts
 let myContactsURLPart = "GetContacts"
 let allContactsURLPart = "GetAllContacts"
