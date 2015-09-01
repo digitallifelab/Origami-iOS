@@ -66,8 +66,44 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             
             firstLettersArray.sort( < )
             
+            var countryNamesByLetter = [[String]]()
+            
+            for aLetter:String in firstLettersArray
+            {
+                
+                let sortedCountries = array.filter { (country) in
+                    
+                    let endIndex = advance(country.countryName.startIndex, 1)
+                    let firstLetterSubstring = country.countryName.substringToIndex(endIndex)
+                    
+                    return (firstLetterSubstring == aLetter)
+                }
+                var countryNames = [String]()
+                for aCountry in sortedCountries
+                {
+                    countryNames.append(aCountry.countryName)
+                }
+                countryNamesByLetter.append(countryNames)
+                println(aLetter)
+                println(countryNames)
+            }
+            
             println("\(firstLettersArray)")
             
+            if countryNamesByLetter.count == firstLettersArray.count
+            {
+                var toReturnCurrentItems = [[String:[String]]]()
+                for var i = 0 ; i < countryNamesByLetter.count; i++
+                {
+                    var arrayItem = [String : [String]]()
+                    let letterKey = firstLettersArray[i]
+                    let countryNamesValue = countryNamesByLetter[i]
+                    arrayItem[letterKey] = countryNamesValue
+                    toReturnCurrentItems.append(arrayItem)
+                }
+                
+                return toReturnCurrentItems
+            }
         }
         return nil
     }
@@ -76,8 +112,65 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
     {
         if let array = languages
         {
+            var languageNamesFirstLettersSet = Set<String>()
+            for aLanguage in array
+            {
+                if count(aLanguage.languageName) > 1
+                {
+                    let endIndex = advance(aLanguage.languageName.startIndex, 1)
+                    let firstLetterSubstring = aLanguage.languageName.substringToIndex(endIndex)
+                    if !languageNamesFirstLettersSet.contains(firstLetterSubstring)
+                    {
+                        languageNamesFirstLettersSet.insert(firstLetterSubstring)
+                    }
+                }
+            }
             
+            var firstLettersArray = Array(languageNamesFirstLettersSet)
+            
+            firstLettersArray.sort( < )
+            
+            var languageNamesByLetter = [[String]]()
+            
+            for aLetter:String in firstLettersArray
+            {
+                
+                let sortedLanguages = array.filter { (language) in
+                    
+                    let endIndex = advance(language.languageName.startIndex, 1)
+                    let firstLetterSubstring = language.languageName.substringToIndex(endIndex)
+                    
+                    return (firstLetterSubstring == aLetter)
+                }
+                var languageNames = [String]()
+                for aLanguage in sortedLanguages
+                {
+                    languageNames.append(aLanguage.languageName)
+                }
+                
+                languageNamesByLetter.append(languageNames)
+                println(aLetter)
+                println(languageNames)
+            }
+            
+            println("\(firstLettersArray)")
+            
+            if languageNamesByLetter.count == firstLettersArray.count
+            {
+                var toReturnCurrentItems = [[String:[String]]]()
+                for var i = 0 ; i < languageNamesByLetter.count; i++
+                {
+                    var arrayItem = [String : [String]]()
+                    let letterKey = firstLettersArray[i]
+                    let languageNamesValue = languageNamesByLetter[i]
+                    arrayItem[letterKey] = languageNamesValue
+                    toReturnCurrentItems.append(arrayItem)
+                }
+                
+                return toReturnCurrentItems
+            }
         }
+        
         return nil
     }
     
@@ -86,6 +179,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if let items = currentItems
         {
+            println("number of sections: \(items.count)")
             return items.count
         }
         return 0
@@ -110,7 +204,8 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
         {
             let item = items[section]
             
-            let key = items.first?.keys.first
+            let key = item.keys.first
+            println("key for section \(section) = \(key)")
             return key
         }
         return nil
@@ -153,6 +248,8 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
         
         return cell
     }
+    
+    
     
     //MARK: UITableVIewDelegate
     func tableView(tableView:UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath)

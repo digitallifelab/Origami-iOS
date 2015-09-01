@@ -26,7 +26,27 @@ class ObjectsConverter {
             return nil
         }
         
+        languages.sort { (lang1, lang2) -> Bool in
+            return lang1.languageName < lang2.languageName
+        }
+        
         return languages
+    }
+    
+    class func convertLanguagesToPlistArray(languages:[Language]) -> [AnyObject]?
+    {
+        var array = [[String:AnyObject]]()
+        
+        for aLanguage in languages
+        {
+            array.append(aLanguage.toDictionary())
+        }
+        
+        if array.isEmpty
+        {
+            return nil
+        }
+        return array
     }
     
     class func convertToCountries(dictionariesArray:[[String:AnyObject]]) -> [Country]?
@@ -46,7 +66,7 @@ class ObjectsConverter {
         }
         
         countries.sort { (c1, c2) -> Bool in
-            return c1.countryName > c2.countryName
+            return c1.countryName < c2.countryName
         }
         return countries
     }
@@ -65,8 +85,8 @@ class ObjectsConverter {
             return nil
         }
         return array
-        
     }
+    
     
     class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]?
     {

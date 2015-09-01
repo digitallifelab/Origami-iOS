@@ -2000,6 +2000,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             
                             completion?(countries:aCountries, error:nil)
                         }
+                        else
+                        {
+                            completion?(countries: nil, error: nil)
+                        }
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     }
                 }
@@ -2021,6 +2025,62 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
             
         })
-        
     }
+    
+    func getLanguages(completion:((languages:[Language]?, error:NSError?)->())?)
+    {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        let bgQueue = dispatch_queue_create("filereader.queue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(bgQueue, { () -> Void in
+            
+            let aFileHandler = FileHandler()
+            if let countriesDictsArray = aFileHandler.getLanguagesFromDisk() as? [[String:AnyObject]]
+            {
+                if let langArray = ObjectsConverter.convertToLanguages(countriesDictsArray)
+                {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    completion?(languages:langArray, error:nil)
+                }
+                else
+                {
+                    DataSource.sharedInstance.serverRequester.loadLanguages({ (languages, error) -> () in
+                        if let  langArray = languages
+                        {
+                            if let dictionaries = ObjectsConverter.convertLanguagesToPlistArray(langArray)
+                            {
+                                aFileHandler.saveLanguagesToDisk(dictionaries)
+                            }
+                            completion?(languages:langArray, error:nil)
+                        }
+                        else
+                        {
+                            completion?(languages:nil, error:nil)
+                        }
+                    })
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+                
+            }
+            else
+            {
+                DataSource.sharedInstance.serverRequester.loadLanguages({ (languages, error) -> () in
+                    if let  langArray = languages
+                    {
+                        if let dictionaries = ObjectsConverter.convertLanguagesToPlistArray(langArray)
+                        {
+                            aFileHandler.saveLanguagesToDisk(dictionaries)
+                        }
+                        completion?(languages:langArray, error:nil)
+                    }
+                    else
+                    {
+                        completion?(languages:nil, error:nil)
+                    }
+                })
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            }
+        }) //end of dispatch queue block
+    }
+
+
 }

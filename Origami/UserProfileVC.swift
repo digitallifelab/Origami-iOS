@@ -492,7 +492,20 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func startEditingLanguage()
     {
-        
+        DataSource.sharedInstance.getLanguages { [weak self](languages, error) -> () in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let weakSelf = self
+                {
+                    if let langArray = languages, langsTableVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("ItemPickerVC") as? TableItemPickerVC
+                    {
+                        langsTableVC.delegate = self
+                        langsTableVC.pickerType = .Language
+                        langsTableVC.startItems = langArray
+                        weakSelf.navigationController?.pushViewController(langsTableVC, animated: true)
+                    }
+                }
+            })
+        }
     }
     
     func startEditingMood()
@@ -807,15 +820,16 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             case .Country:
                 if let country = item as? Country
                 {
-                    
+                    userDidChangeCountry(country)
                 }
             case .Language:
                 if let language = item as? Language
                 {
-                    
+                    userDidChangeLanguage(language)
                 }
             }
         }
+        self.navigationController?.popViewControllerAnimated(false)
     }
     
     func itemPickerDidCancel(itemPicker: AnyObject) {
@@ -824,7 +838,69 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             vc.dismissViewControllerAnimated(false, completion: nil)
         }
     }
-    //MARK: --
+    //MARK: Country & Language
+    
+    func userDidChangeCountry(country:Country)
+    {
+        let oldId = DataSource.sharedInstance.user?.countryId
+        let oldName = DataSource.sharedInstance.user?.country
+        
+        DataSource.sharedInstance.user?.country = country.countryName
+        DataSource.sharedInstance.user?.countryId = country.countryId
+        
+        DataSource.sharedInstance.editUserInfo({ [weak self](success, error) -> () in
+            if let weakSelf = self
+            {
+                if success
+                {
+                    println(" -> UserProfileVC succeeded to edit user Country: /n->Old Country: \(oldName) /n->New Country: \(DataSource.sharedInstance.user?.country)")
+                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: ProfileTextCellType.Country.rawValue, inSection: 0)])
+                }
+                else
+                {
+                    DataSource.sharedInstance.user?.country = oldName
+                    DataSource.sharedInstance.user?.countryId = oldId
+                    println(" -> UserProfileVC failed to edit user Country.")
+                    weakSelf.showAlertWithTitle("Error.", message: "Could not update your Country.", cancelButtonTitle: "Close")
+                    if let anError = error
+                    {
+                        println("Error: \n ->\(anError)")
+                    }
+                }
+            }
+        })
+    }
+    
+    func userDidChangeLanguage(language:Language)
+    {
+        let oldId = DataSource.sharedInstance.user?.languageId
+        let oldName = DataSource.sharedInstance.user?.language
+        
+        DataSource.sharedInstance.user?.language = language.languageName
+        DataSource.sharedInstance.user?.languageId = language.languageId
+        
+        DataSource.sharedInstance.editUserInfo({ [weak self](success, error) -> () in
+            if let weakSelf = self
+            {
+                if success
+                {
+                    println(" -> UserProfileVC succeeded to edit user Language: /n->Old Language: \(oldName) /n->New Language: \(DataSource.sharedInstance.user?.language)")
+                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: ProfileTextCellType.Language.rawValue, inSection: 0)])
+                }
+                else
+                {
+                    DataSource.sharedInstance.user?.language = oldName
+                    DataSource.sharedInstance.user?.languageId = oldId
+                    println(" -> UserProfileVC failed to edit user Language.")
+                    weakSelf.showAlertWithTitle("Error.", message: "Could not update your Language.", cancelButtonTitle: "Close")
+                    if let anError = error
+                    {
+                        println("Error: \n ->\(anError)")
+                    }
+                }
+            }
+            })
+    }
     
     //MARK: Name, LastName, Mood change
     func userDidChangeFirstName(newFirstName:String?)
