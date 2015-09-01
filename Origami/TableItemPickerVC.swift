@@ -84,11 +84,11 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                     countryNames.append(aCountry.countryName)
                 }
                 countryNamesByLetter.append(countryNames)
-                println(aLetter)
-                println(countryNames)
+                //println(aLetter)
+                //println(countryNames)
             }
             
-            println("\(firstLettersArray)")
+            //println("\(firstLettersArray)")
             
             if countryNamesByLetter.count == firstLettersArray.count
             {
@@ -149,11 +149,11 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                 }
                 
                 languageNamesByLetter.append(languageNames)
-                println(aLetter)
-                println(languageNames)
+                //println(aLetter)
+                //println(languageNames)
             }
             
-            println("\(firstLettersArray)")
+            //println("\(firstLettersArray)")
             
             if languageNamesByLetter.count == firstLettersArray.count
             {
@@ -179,7 +179,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if let items = currentItems
         {
-            println("number of sections: \(items.count)")
+            //println("number of sections: \(items.count)")
             return items.count
         }
         return 0
@@ -205,7 +205,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             let item = items[section]
             
             let key = item.keys.first
-            println("key for section \(section) = \(key)")
+            //println("key for section \(section) = \(key)")
             return key
         }
         return nil
@@ -244,7 +244,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
         let cell = tableView.dequeueReusableCellWithIdentifier("SelectionSell", forIndexPath: indexPath) as! UITableViewCell
         
         cell.textLabel?.text = textForCellAtIndexPath(indexPath)
-        cell.selectionStyle = .None
+        cell.selectionStyle = UITableViewCellSelectionStyle.Gray
         
         return cell
     }
@@ -254,6 +254,8 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
     //MARK: UITableVIewDelegate
     func tableView(tableView:UITableView, didSelectRowAtIndexPath indexPath:NSIndexPath)
     {
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        
         let text = textForCellAtIndexPath(indexPath)
         
         if text != "-"
@@ -286,6 +288,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                 }
             }
         }
+        
     }
     //MARK: ---
     func userDidSelectCountry(country:Country)

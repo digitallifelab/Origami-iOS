@@ -71,7 +71,8 @@ class UserProfileTextContainerCell: UICollectionViewCell {
         textView?.font = textLabel?.font ?? UIFont.systemFontOfSize(16.0)
         textView?.scrollEnabled = (self.cellType == .Mood) ? true : false
         textView?.backgroundColor = UIColor.whiteColor()
-        textView?.layer.borderWidth = 2.0
+        textView?.layer.borderWidth = 1.0
+        textView?.layer.cornerRadius = 3.0
         textView?.tintColor = kDayCellBackgroundColor
         textView?.textColor = (self.displayMode == .Day) ? kBlackColor : kWhiteColor
         textView?.tag = self.cellType.rawValue
@@ -79,6 +80,7 @@ class UserProfileTextContainerCell: UICollectionViewCell {
         textView?.textContainerInset = UIEdgeInsetsZero;
         
         textView?.text = initialText
+        
         if textView?.text == nil || textView?.text == ""
         {
             textView?.text = textLabel?.text

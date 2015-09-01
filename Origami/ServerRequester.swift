@@ -63,7 +63,7 @@ class ServerRequester: NSObject
             { (operation, resultObject) -> Void in
                 if let result = resultObject as? [String:AnyObject]
                 {
-                    println(" -> Edit user result: \(result)")
+                    //println(" -> Edit user result: \(result)")
                 }
                 completion(success: true, error: nil)
             

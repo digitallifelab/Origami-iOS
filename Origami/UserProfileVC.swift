@@ -142,79 +142,28 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             switch type{
             case .PhoneNumber:
-                let nsString:NSString = textView.text
-                var integerString = nsString.longLongValue
                 
-                //store before updating user phone
-                var previousValue = DataSource.sharedInstance.user?.phone
+                let nsString:NSString = textView.text
+                
+                var integerString = nsString.longLongValue
                 
                 if integerString > 0 && integerString < INT64_MAX
                 {
-                    DataSource.sharedInstance.user?.phone = String("\(integerString)")
-                    DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
-                        if success
-                        {
-                            println(" -> UserProfileVC succeeded to edit user Phone Number.")
-                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                if let weakSelf = self
-                                {
-                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.PhoneNumber.rawValue, inSection: 0)])
-                                }
-                                })
-                        }
-                        else
-                        {
-                            if let anError = error
-                            {
-                                println(" -> UserProfileVC failed to edit user Phone Number.")
-                                DataSource.sharedInstance.user?.phone = previousValue
-                                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                    if let weakSelf = self
-                                    {
-                                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
-                                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your phone number.", cancelButtonTitle: "Close")
-                                    }
-                                    })
-                            }
-                        }
-                    })
+                    let newPhone = String("\(integerString)")
+                    
+                    userDidChangePhoneNumber(newPhone)
                 }
-                else if textView.text .isEmpty
+                else if textView.text.isEmpty
                 {
-                    DataSource.sharedInstance.user?.phone = ""
-                    DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
-                        if success
-                        {
-                            println(" -> UserProfileVC succeeded to edit user Phone Number.")
-                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                if let weakSelf = self
-                                {
-                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.PhoneNumber.rawValue, inSection: 0)])
-                                }
-                                })
-                        }
-                        else
-                        {
-                            if let anError = error
-                            {
-                                println(" -> UserProfileVC failed to edit user Phone Number.")
-                                DataSource.sharedInstance.user?.phone = previousValue
-                                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                    if let weakSelf = self
-                                    {
-                                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
-                                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your phone number.", cancelButtonTitle: "Close")
-                                    }
-                                    })
-                            }
-                        }
-                    })
+                    userDidChangePhoneNumber("")
                 }
             case .Name:
                 userDidChangeFirstName(textView.text)
                 
             case .LastName:
                 userDidChangeLastName(textView.text)
+            case .Mood:
+                userDidchangeMood(textView.text)
             default:
                 break
             }
@@ -265,6 +214,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             
         case ProfileTextCellType.Mood.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
+            textCell?.cellType = .Mood
             textCell?.titleLabel?.text = "mood".localizedWithComment("")
             textCell?.textLabel?.text = user?.mood as? String
             
@@ -340,15 +290,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         return UserProfileTextContainerCell()
     }
     
-//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-//        if indexPath.item == 0
-//        {
-//            if let avatarCell = cell as? UserProfileAvatarCollectionCell
-//            {
-//                avatarCell.avatar.setImage(self.currentAvatar, forState: .Normal)
-//            }
-//        }
-//    }
     //MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         if let datePickerHolder = self.view.viewWithTag(0xDA7E)
@@ -362,7 +303,10 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 textCell.stopEditingText()
             }
         }
+        
+        collectionView.deselectItemAtIndexPath(indexPath, animated: false)
     }
+    
     @IBAction func homeButtonTapped(sender:UIButton)
     {
         self.dismissViewControllerAnimated(true, completion: nil)
@@ -384,7 +328,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     
     func changeInfoPressed(cellType: ProfileTextCellType) {
-        println("pressed edit \(cellType.rawValue)")
         
         switch cellType
         {
@@ -510,7 +453,15 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func startEditingMood()
     {
-        
+        let indexPath = NSIndexPath(forItem: ProfileTextCellType.Mood.rawValue, inSection: 0)
+        if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
+        {
+            textCell.enableTextView(DataSource.sharedInstance.user?.mood as? String)
+            textCell.textView?.delegate = self
+            
+            textCell.startEditingText()
+            profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        }
     }
     
     func startEditingUserFirstName()
@@ -582,7 +533,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
     }
     
-    //MARK: birthday picking
+    //MARK: -- Birthday picking
     func showDatePickerView()
     {
         
@@ -659,7 +610,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 DataSource.sharedInstance.editUserInfo { (success, error) -> () in
                     if success
                     {
-                        println(" -> UserProfileVC succeeded to edit user birth date.")
+                        //println(" -> UserProfileVC succeeded to edit user birth date.")
                         dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                             if let weakSelf = self
                             {
@@ -669,7 +620,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                     }
                     else if let anError = error
                     {
-                        println(" -> UserProfileVC failed to edit user birth date.")
+                        //println(" -> UserProfileVC failed to edit user birth date.")
                         DataSource.sharedInstance.user?.birthDay = previousDate
                         dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                             if let weakSelf = self
@@ -688,7 +639,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     }
     
     
-    //MARK: Password changing
+    //MARK: -- Password changing
     
     func showAlertAboutChangePassword()
     {
@@ -742,7 +693,12 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     {
         if let password = tempPassword
         {
-            let oldPassword = DataSource.sharedInstance.user?.password
+            let oldPassword = DataSource.sharedInstance.user?.password as? String
+            
+            if password == oldPassword
+            {
+                return
+            }            
             
             DataSource.sharedInstance.user?.password = password
             DataSource.sharedInstance.editUserInfo({[weak self] (success, error) -> () in
@@ -753,7 +709,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 
                 if success
                 {
-                    println(" -> UserProfileVC succeeded to edit user Password: /n->Old Password: \(oldPassword) /n->New Password: \(password)")
+                    //println(" -> UserProfileVC succeeded to edit user Password: /n->Old Password: \(oldPassword) /n->New Password: \(password)")
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -770,7 +726,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
-                    println(" -> UserProfileVC failed to edit user Password.")
+                    //println(" -> UserProfileVC failed to edit user Password.")
                     
                     if let anError = error
                     {
@@ -810,7 +766,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
     }
     
-    //MARK -- Country & Language
+    //MARK: -- Country & Language
     //MARK: TableItemPickerDelegate
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
         if let itemPickerVC = itemPicker as? TableItemPickerVC
@@ -843,7 +799,12 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func userDidChangeCountry(country:Country)
     {
         let oldId = DataSource.sharedInstance.user?.countryId
-        let oldName = DataSource.sharedInstance.user?.country
+        let oldName = DataSource.sharedInstance.user?.country as? String
+        
+        if country.countryName == oldName
+        {
+            return
+        }
         
         DataSource.sharedInstance.user?.country = country.countryName
         DataSource.sharedInstance.user?.countryId = country.countryId
@@ -853,14 +814,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 if success
                 {
-                    println(" -> UserProfileVC succeeded to edit user Country: /n->Old Country: \(oldName) /n->New Country: \(DataSource.sharedInstance.user?.country)")
+                    //println(" -> UserProfileVC succeeded to edit user Country: /n->Old Country: \(oldName) /n->New Country: \(DataSource.sharedInstance.user?.country)")
                     weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: ProfileTextCellType.Country.rawValue, inSection: 0)])
                 }
                 else
                 {
                     DataSource.sharedInstance.user?.country = oldName
                     DataSource.sharedInstance.user?.countryId = oldId
-                    println(" -> UserProfileVC failed to edit user Country.")
+                    //println(" -> UserProfileVC failed to edit user Country.")
                     weakSelf.showAlertWithTitle("Error.", message: "Could not update your Country.", cancelButtonTitle: "Close")
                     if let anError = error
                     {
@@ -874,7 +835,12 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func userDidChangeLanguage(language:Language)
     {
         let oldId = DataSource.sharedInstance.user?.languageId
-        let oldName = DataSource.sharedInstance.user?.language
+        let oldName = DataSource.sharedInstance.user?.language as? String
+        
+        if language.languageName == oldName
+        {
+            return
+        }
         
         DataSource.sharedInstance.user?.language = language.languageName
         DataSource.sharedInstance.user?.languageId = language.languageId
@@ -884,14 +850,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 if success
                 {
-                    println(" -> UserProfileVC succeeded to edit user Language: /n->Old Language: \(oldName) /n->New Language: \(DataSource.sharedInstance.user?.language)")
+                    //println(" -> UserProfileVC succeeded to edit user Language: /n->Old Language: \(oldName) /n->New Language: \(DataSource.sharedInstance.user?.language)")
                     weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: ProfileTextCellType.Language.rawValue, inSection: 0)])
                 }
                 else
                 {
                     DataSource.sharedInstance.user?.language = oldName
                     DataSource.sharedInstance.user?.languageId = oldId
-                    println(" -> UserProfileVC failed to edit user Language.")
+                    //println(" -> UserProfileVC failed to edit user Language.")
                     weakSelf.showAlertWithTitle("Error.", message: "Could not update your Language.", cancelButtonTitle: "Close")
                     if let anError = error
                     {
@@ -902,18 +868,62 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             })
     }
     
-    //MARK: Name, LastName, Mood change
+    //MARK: -- Phone number
+    
+    func userDidChangePhoneNumber(newString:String)
+    {
+        //store before updating user phone
+        var previousValue = DataSource.sharedInstance.user?.phone as? String
+        if newString == previousValue
+        {
+            return
+        }
+        
+        DataSource.sharedInstance.user?.phone = newString
+        DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+        if success
+        {
+            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.PhoneNumber.rawValue, inSection: 0)])
+                }
+            })
+        }
+        else
+        {
+            if let anError = error
+            {
+                DataSource.sharedInstance.user?.phone = previousValue
+                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                    if let weakSelf = self
+                    {
+                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your phone number.", cancelButtonTitle: "Close")
+                    }
+                })
+            }
+            }
+        })
+
+    }
+    
+    //MARK: -- Name, LastName, Mood change
     func userDidChangeFirstName(newFirstName:String?)
     {
         if let newname = newFirstName
         {
-            let oldName = DataSource.sharedInstance.user?.firstName
+            let oldName = DataSource.sharedInstance.user?.firstName as? String
+            if oldName == newname
+            {
+                return
+            }
             
             DataSource.sharedInstance.user?.firstName = newname
             DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
                 if success
                 {
-                    println(" -> UserProfileVC succeeded to edit user LastName: /n->Old FirstName: \(oldName) /n->New FirstName: \(DataSource.sharedInstance.user?.lastName)")
+                    //println(" -> UserProfileVC succeeded to edit user LastName: /n->Old FirstName: \(oldName) /n->New FirstName: \(DataSource.sharedInstance.user?.lastName)")
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -923,7 +933,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
-                    println(" -> UserProfileVC failed to edit user FirstName.")
+                    //println(" -> UserProfileVC failed to edit user FirstName.")
                     
                     if let anError = error
                     {
@@ -947,13 +957,17 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     {
         if let newname = newLastName
         {
-            let oldLastName = DataSource.sharedInstance.user?.lastName
+            let oldLastName = DataSource.sharedInstance.user?.lastName as? String
+            if oldLastName == newname
+            {
+                return
+            }
             
             DataSource.sharedInstance.user?.lastName = newname
             DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
                 if success
                 {
-                    println(" -> UserProfileVC succeeded to edit user LastName: /n->Old LastName: \(oldLastName) /n->New LastName: \(DataSource.sharedInstance.user?.lastName)")
+                    //println(" -> UserProfileVC succeeded to edit user LastName: /n->Old LastName: \(oldLastName) /n->New LastName: \(DataSource.sharedInstance.user?.lastName)")
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -963,7 +977,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
-                    println(" -> UserProfileVC failed to edit user LastName.")
+                    //println(" -> UserProfileVC failed to edit user LastName.")
                     
                     if let anError = error
                     {
@@ -981,5 +995,43 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
             })
         }
+    }
+    
+    func userDidchangeMood(newMood:String)
+    {
+        let oldMood = DataSource.sharedInstance.user?.mood as? String
+        if oldMood == newMood
+        {
+            return
+        }
+        DataSource.sharedInstance.user?.mood = newMood
+        DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+            if success
+            {
+                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                    if let weakSelf = self
+                    {
+                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Mood.rawValue, inSection: 0)])
+                    }
+                    })
+            }
+            else
+            {
+                if let anError = error
+                {
+                    println("Error: \n ->\(anError)")
+                }
+                
+                DataSource.sharedInstance.user?.password = oldMood
+                
+                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                    if let weakSelf = self
+                    {
+                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Mood.rawValue, inSection: 0)])
+                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your status.", cancelButtonTitle: "Close")
+                    }
+                    })
+            }
+        })
     }
 }

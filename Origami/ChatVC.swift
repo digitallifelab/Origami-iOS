@@ -303,20 +303,39 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         contactsButton.addTarget(self, action: "showContactsChecker", forControlEvents: .TouchUpInside)
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: contactsButton)
+        
     }
     
     func setupNavigationTitleView()
     {
-        if let participantsCount = currentElement?.passWhomIDs.count
+//        if let participantsCount = currentElement?.passWhomIDs.count
+//        {
+//            // setup title label
+//            var lvTitleLabel = UILabel(frame: CGRectMake(0, 0, 100.0, 40.0))
+//            let titleFont =  UIFont(name: "Segoe UI", size: 15.0)
+//            lvTitleLabel.font = titleFont!
+//            lvTitleLabel.text = "\(participantsCount)" + " " + "participants".localizedWithComment("")
+//            lvTitleLabel.textAlignment = NSTextAlignment.Center
+//            lvTitleLabel.textColor = kWhiteColor
+//            self.navigationItem.titleView = lvTitleLabel
+//        }
+        if let title = currentElement?.title as? String
         {
-            // setup title label
-            var lvTitleLabel = UILabel(frame: CGRectMake(0, 0, 100.0, 40.0))
+            var lvTitleLabel = UILabel()
             let titleFont =  UIFont(name: "Segoe UI", size: 15.0)
             lvTitleLabel.font = titleFont!
-            lvTitleLabel.text = "\(participantsCount)" + " " + "participants".localizedWithComment("")
+            lvTitleLabel.text = title//"\(participantsCount)" + " " + "participants".localizedWithComment("")
+            lvTitleLabel.sizeToFit()
             lvTitleLabel.textAlignment = NSTextAlignment.Center
             lvTitleLabel.textColor = kWhiteColor
+            lvTitleLabel.center.x = CGRectGetMidX(self.view.bounds)
+            lvTitleLabel.numberOfLines = 1
+            //lvTitleLabel.layer.borderWidth = 1.0
+            lvTitleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingTail
+            lvTitleLabel.frame = CGRectMake(60.0, 0.0, 100.0, 21.0)
+            lvTitleLabel.center.x = CGRectGetMidX(self.view.bounds)
             self.navigationItem.titleView = lvTitleLabel
+            
         }
     }
     

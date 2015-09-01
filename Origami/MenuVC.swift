@@ -31,8 +31,8 @@ protocol SwitchDelegate
 class SideMenuCell: UITableViewCell
 {
     var cellType = SideMenuCellType()
-    @IBOutlet var label:UILabel!
-    var menuIcon:UIImageView?
+    @IBOutlet weak var label:UILabel!
+    @IBOutlet var menuIcon:UIImageView?
     var switcher:UISwitch?
     var switchDelegate:SwitchDelegate?
     
@@ -61,15 +61,6 @@ class SideMenuCell: UITableViewCell
                 }
             }
         }
-        
-        for aSubView in self.contentView.subviews
-        {
-            if let anImageView = aSubView as? UIImageView
-            {
-                self.menuIcon = anImageView
-                break
-            }
-        }
     }
     
     func setupSwitch()
@@ -92,7 +83,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
     //@IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
     var menuTable:UITableView?
-    var menuItemsTitles = ["Home", "Profile", "Contacts", "DisplayMode"]
+    var menuItemsTitles = ["Home", "Profile", "Contacts", "Display Mode"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,15 +139,19 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         if let cellTitle = titleForMenuCellAtIndexPath(indexPath)
         {
             cell.label.text = cellTitle
-            if cellTitle == "DisplayMode"
+            if cellTitle == "Display Mode"
             {
                 cell.cellType = .DisplayModeSwitch
                 cell.switchDelegate = self
+                cell.label.numberOfLines = 2
             }
             else
             {
                 cell.cellType = .Regular
+                cell.label.numberOfLines = 1
             }
+            
+            cell.menuIcon?.image = menuIconForIndexPath(indexPath)
         }
     }
     
@@ -176,7 +171,32 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         }
     }
     
-    
+    func menuIconForIndexPath(indexPath:NSIndexPath) -> UIImage?
+    {
+        let section = indexPath.section
+        let row = indexPath.row
+        switch section
+        {
+        case 0:
+            switch row{
+            case 0:
+                return UIImage(named: "menu-icon-home")?.imageWithRenderingMode(.AlwaysTemplate)
+            case 1:
+                return UIImage(named: "menu-icon-profile")?.imageWithRenderingMode(.AlwaysTemplate)
+            case 2:
+                return UIImage(named: "menu-icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            case 3:
+                return UIImage(named: "menu-icon-displaymode")?.imageWithRenderingMode(.AlwaysTemplate)
+            default:
+                break
+            }
+        case 1:
+            return UIImage(named: "menu-icon-logout")?.imageWithRenderingMode(.AlwaysTemplate)
+        default:
+            break
+        }
+        return nil
+    }
     
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
