@@ -62,7 +62,8 @@ enum ProfileTextCellType:Int
     case Language //6
     case PhoneNumber //7
     case Age //8
-    case Password //9
+    case Sex //9
+    case Password //10
 }
 
 enum DisplayMode:Int

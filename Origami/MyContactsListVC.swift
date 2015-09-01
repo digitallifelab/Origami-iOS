@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource {
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource,UIViewControllerTransitioningDelegate {
 
     @IBOutlet weak var myContactsTable:UITableView!
     @IBOutlet weak var homeButtonItem:UIBarButtonItem?
@@ -19,7 +19,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
-    
+    var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -151,6 +151,23 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         self.homeButtonItem?.target = self
         self.homeButtonItem?.action = "dismissSelf:"
+        
+        configureLeftBarButtonItem()
+    }
+    
+    func configureLeftBarButtonItem()
+    {
+        var leftButton = UIButton.buttonWithType(.System) as! UIButton
+        leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
+        leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        //leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+        leftButton.tintColor = kDayNavigationBarBackgroundColor
+        
+        var leftBarButton = UIBarButtonItem(customView: leftButton)
+        
+        //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
+        self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
     func dismissSelf(sender:AnyObject?)
@@ -479,5 +496,95 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             })
         }
     }
+    
+    //MARK: ------ menu displaying
+    func menuButtonTapped(sender:AnyObject)
+    {
+        handleDisplayingMenuAnimated(true, completion: { () -> () in
+            
+        })
+    }
+
+    func handleDisplayingMenuAnimated(animated:Bool, completion completionBlock:(()->())? = nil)
+    {
+        
+        // hide MenuTableVC
+        if let menuPresentedVC = self.presentedViewController as? MenuVC
+        {
+            let menuAnimator = MenuTransitionAnimator()
+            menuAnimator.shouldAnimate = animated
+            customTransitionAnimator = menuAnimator
+            
+            menuPresentedVC.transitioningDelegate = self
+            menuPresentedVC.dismissViewControllerAnimated(true, completion: { () -> Void in
+                if let compBlock = completionBlock
+                {
+                    compBlock()
+                }
+            }) //NOTE! this does not dismiss TabBarController, but dismisses menu VC from Tabbar`s presented view controller. the same could be achieved by calling "menuPresendedVC.dismissViewControllerAnimated ...."
+            return
+        }
+//        if let contactsOrProfileNavHolderVC = self.presentedViewController as? UINavigationController
+//        {
+//            contactsOrProfileNavHolderVC.dismissViewControllerAnimated(true, completion: { () -> Void in
+//                completionBlock?()
+//            })
+//            return
+//        }
+        
+        // present MenuTableVC
+        if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
+        {
+            let menuAnimator = MenuTransitionAnimator()
+            menuAnimator.shouldAnimate = animated
+            customTransitionAnimator = menuAnimator
+            
+            menuVC.modalPresentationStyle = .Custom
+            menuVC.transitioningDelegate = self
+            
+            self.presentViewController(menuVC, animated: true, completion: { () -> Void in
+                if let compBlock = completionBlock
+                {
+                    compBlock()
+                }
+            })
+        }
+    }
+    
+    //MARK: UIViewControllerTransitioningDelegate
+    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        if let fadeInTransitor = customTransitionAnimator as? FadeOpaqueAnimator
+//        {
+//            fadeInTransitor.transitionDirection = .FadeIn
+//            return fadeInTransitor
+//        }
+//        else 
+        if let menuShowTransitor = customTransitionAnimator as? MenuTransitionAnimator
+        {
+            menuShowTransitor.transitionDirection = .FadeIn
+            return menuShowTransitor
+        }
+        
+        println(" Will not animate view controller transitioning")
+        return nil
+    }
+    
+    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        if let fadeInTransitor = customTransitionAnimator as? FadeOpaqueAnimator
+//        {
+//            fadeInTransitor.transitionDirection = .FadeOut
+//            return fadeInTransitor
+//        }
+//        else
+            if let menuShowTransitor = customTransitionAnimator as? MenuTransitionAnimator
+        {
+            menuShowTransitor.transitionDirection = .FadeOut
+            return menuShowTransitor
+        }
+        
+        println(" Will not animate view controller transitioning")
+        return nil
+    }
+    
 
 }

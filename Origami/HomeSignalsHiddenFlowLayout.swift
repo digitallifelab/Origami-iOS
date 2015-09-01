@@ -204,6 +204,8 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             
             headerAttributes![indexPathForSection] = sectionHeaderAttributes
             
+            //println("header attributes: \(headerAttributes?.count)")
+            
             //move down
             offsetY += sectionHeaderAttributes.frame.size.height + self.minimumLineSpacing
             
@@ -213,7 +215,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             switch section
             {
             case 0:
-                numberOfItemsInSection = max(privSignals + 1, 1)
+                numberOfItemsInSection = max(privSignals + 1, 2)
             case 1:
                 if countOfSections == 2
                 {
@@ -344,10 +346,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         {
             superForIndexPath = existingItemAttrs
         }
-//        else
-//        {
-//            //println("Cell attributes is null.  Returning super attributes.")
-//        }
+
         return superForIndexPath
     }
     
@@ -380,32 +379,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         if let superAttrs = super.layoutAttributesForElementsInRect(rect)
         {
             var existingAttrs = [UICollectionViewLayoutAttributes]()
-            
-//            for attr in superAttrs
-//            {
-//                let currentElementCategory = attr.representedElementCategory.rawValue
-//                
-//                switch currentElementCategory
-//                {
-//                case UICollectionElementCategory.Cell.rawValue:
-//                    if let existingItemAttr = cellAttributes?[attr.indexPath]
-//                    {
-//                        existingAttrs.append(existingItemAttr)
-//                    }
-//                case UICollectionElementCategory.SupplementaryView.rawValue:
-//                    if attr.representedElementKind == UICollectionElementKindSectionHeader
-//                    {
-//                        if let existingHeader = headerAttributes?[attr.indexPath]
-//                        {
-//                            existingAttrs.append(existingHeader)
-//                        }
-//                    }
-//                case UICollectionElementCategory.DecorationView.rawValue:
-//                    break
-//                default:
-//                    break
-//                }
-//            }
             
             if let cellAttrs = cellAttributes
             {

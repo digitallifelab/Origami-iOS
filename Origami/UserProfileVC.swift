@@ -8,18 +8,19 @@
 
 import UIKit
 
-class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UITextFieldDelegate, UserProfileAvatarCollectionCellDelegate, AttachPickingDelegate, TableItemPickerDelegate, UIAlertViewDelegate {
+class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate, UITextFieldDelegate, UserProfileCollectionCellDelegate, AttachPickingDelegate, TableItemPickerDelegate, UIAlertViewDelegate {
 
-    var user = DataSource.sharedInstance.user
+    weak var user = DataSource.sharedInstance.user
     let avatarCellIdentifier = "UserProfileAvatarCell"
     let textCellIdentifier = "UserProfileTextCell"
+    let sexCellIdentifier = "UserProfileSexCell"
     var defaultEdgeInsets:UIEdgeInsets?
     var currentAvatar:UIImage?
-    var displayMode:DisplayMode = .Day{
+    var displayMode:DisplayMode = .Day {
         didSet{
             switch displayMode{
             case .Day:
-                self.view.backgroundColor = kDayNavigationBarBackgroundColor
+                self.view.backgroundColor = kWhiteColor
             case .Night:
                 self.view.backgroundColor = kBlackColor
             }
@@ -34,6 +35,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureLeftBarButtonItem()
+        
         self.displayMode = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? .Night : .Day
         
         profileCollection.dataSource = self
@@ -41,7 +44,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         
         self.navigationController?.navigationBar.tintColor = kWhiteColor
         
-        if let layout = UserProfileFlowLayout(numberOfItems: 10)
+        if let layout = UserProfileFlowLayout(numberOfItems: 11)
         {
             profileCollection.setCollectionViewLayout(layout, animated: false) //we are in view did load, so false
         }
@@ -79,6 +82,22 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    //MARK:---
+    func configureLeftBarButtonItem()
+    {
+        var leftButton = UIButton.buttonWithType(.System) as! UIButton
+        leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
+        leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        //leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+        leftButton.tintColor = kDayNavigationBarBackgroundColor
+        
+        var leftBarButton = UIBarButtonItem(customView: leftButton)
+        
+        //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
+        self.navigationItem.leftBarButtonItem = leftBarButton
+    }
+    
     //MARK: - UITextViewDelegate and stuff
     func addObserversForKeyboard()
     {
@@ -159,7 +178,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
             case .Name:
                 userDidChangeFirstName(textView.text)
-                
             case .LastName:
                 userDidChangeLastName(textView.text)
             case .Mood:
@@ -182,8 +200,11 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             showAlertAboutChangePassword()
         }
         textField.removeFromSuperview()
+        
         return true
     }
+    
+    
 
     //MARK: UICollectionViewDataSource
     
@@ -192,7 +213,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10 // cells with different type of info about logged in user
+        return 11 // cells with different type of info about logged in user
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -264,6 +285,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
             }
             
+        case ProfileTextCellType.Sex.rawValue:
+            let sexCell = collectionView.dequeueReusableCellWithReuseIdentifier(sexCellIdentifier, forIndexPath: indexPath) as! UserProfileSexCell
+            sexCell.titleLabel?.text = "sex".localizedWithComment("")
+            sexCell.sexLabel?.text = user?.localizedSexString()
+            sexCell.delegate = self
+            sexCell.displayMode = self.displayMode
+            return sexCell
+            
         case ProfileTextCellType.PhoneNumber.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.titleLabel?.text = "phone".localizedWithComment("")
@@ -312,7 +341,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
-    //MARK: UserProfileAvatarCollectionCellDelegate
+    //MARK: UserProfileCollectionCellDelegate
     func showAvatarPressed() {
         showFullscreenUserPhoto()
     }
@@ -326,13 +355,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
     }
     
-    
     func changeInfoPressed(cellType: ProfileTextCellType) {
         
         switch cellType
         {
         case .Age:
             startEditingUserBirthDate()
+        case .Sex:
+            startEditingSex()
         case .Country:
             startEditingCountry()
         case .Language:
@@ -350,6 +380,21 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         case .Email:
             break
             
+        }
+    }
+    
+    func changeSexSwitchPresed(newValue: Int) {
+        if let oldValue = user?.sex
+        {
+            if oldValue.integerValue == newValue
+            {
+                return
+            }
+            userDidChangeSex(newValue)
+        }
+        else
+        {
+            userDidChangeSex(newValue)
         }
     }
     
@@ -404,6 +449,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
         })
     }
+    
     //MARK: Edit User Text Info
     
     func startEditingUserBirthDate()
@@ -527,9 +573,17 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell.enableTextView(nil)
           
             textCell.passwordTextField?.delegate = self
-            
             textCell.startEditingText()
             profileCollection.scrollToItemAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        }
+    }
+    
+    func startEditingSex()
+    {
+        let indexPath = NSIndexPath(forItem: ProfileTextCellType.Sex.rawValue, inSection: 0)
+        if let sexCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileSexCell
+        {
+            sexCell.enableSexSwitchControl(user?.sex)
         }
     }
     
@@ -1029,6 +1083,41 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                     {
                         weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Mood.rawValue, inSection: 0)])
                         weakSelf.showAlertWithTitle("Error.", message: "Could not update your status.", cancelButtonTitle: "Close")
+                    }
+                    })
+            }
+        })
+    }
+    
+    func userDidChangeSex(newSexValue:Int)
+    {
+        let oldValue = user?.sex
+        
+        DataSource.sharedInstance.user?.sex = NSNumber(integer: newSexValue)
+        DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
+            if success
+            {
+                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                    if let weakSelf = self
+                    {
+                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Sex.rawValue, inSection: 0)])
+                    }
+                    })
+            }
+            else
+            {
+                if let anError = error
+                {
+                    println("Error: \n ->\(anError)")
+                }
+                
+                DataSource.sharedInstance.user?.sex = oldValue
+                
+                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                    if let weakSelf = self
+                    {
+                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Sex.rawValue, inSection: 0)])
+                        weakSelf.showAlertWithTitle("Error.", message: "Could not update your gender.", cancelButtonTitle: "Close")
                     }
                     })
             }

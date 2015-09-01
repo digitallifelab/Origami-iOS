@@ -14,7 +14,7 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     @IBOutlet weak var textLabel:UILabel?
     @IBOutlet weak var editButton:UIButton?
     
-    var delegate:UserProfileAvatarCollectionCellDelegate?
+    var delegate:UserProfileCollectionCellDelegate?
     
     var textView:UITextView?
     var passwordTextField:UITextField?
@@ -38,13 +38,13 @@ class UserProfileTextContainerCell: UICollectionViewCell {
             switch displayMode
             {
             case .Day:
-                textLabel?.textColor = kBlackColor
+                textLabel?.textColor = kDayCellBackgroundColor
                 editButton?.tintColor = kDayCellBackgroundColor
-                self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.7)
+                //self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.7)
             case .Night:
                 textLabel?.textColor = kWhiteColor
                 editButton?.tintColor = kWhiteColor
-                self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.5)
+                //self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.5)
             }
         }
     }
@@ -139,6 +139,8 @@ class UserProfileTextContainerCell: UICollectionViewCell {
             //passTextField.text = "password"
             passTextField.userInteractionEnabled = true
             passTextField.backgroundColor = kWhiteColor
+            passTextField.returnKeyType = UIReturnKeyType.Send
+            
             self.addSubview(passTextField)
             self.bringSubviewToFront(passTextField)
         }

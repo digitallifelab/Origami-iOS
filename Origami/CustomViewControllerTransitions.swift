@@ -114,6 +114,14 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
             toVC!.view.frame = menuFrame // now hidden to left
             
             containerView.insertSubview(toVC!.view, aboveSubview: fromVC!.view)
+            
+            if !shouldAnimate
+            {
+                toVC!.view.frame = CGRectOffset(menuFrame, menuWidth, 0.0)
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                return
+            }
+            
             UIView.animateWithDuration(
                 transitionDuration(transitionContext),
                 delay: 0.0,

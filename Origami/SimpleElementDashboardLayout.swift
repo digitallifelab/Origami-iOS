@@ -33,7 +33,7 @@ struct ElementDetailsStruct
     
     var hiddenDetailsText = true {
         didSet{
-            println(" - > elementStruct details visibility toggled!\n Visible = \(self.hiddenDetailsText)")
+            println(" - > elementStruct details visibility toggled! -- Visible = \(self.hiddenDetailsText)")
         }
     }
     
@@ -233,13 +233,13 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 {
                     var textLabelSize = nsStringTitleText.boundingRectWithSize(CGSizeMake(mainFrame.width - (60 + 16), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil)
                     size.height =  ceil(textLabelSize.height) + 48 + 53 + 8
-                    println("-> Title Label Size: \(textLabelSize)")
+                    //println("-> Title Label Size: \(textLabelSize)")
                 }
                 
                 if aDataSource.titleCellMode == .Title
                 {
                     titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
-                    println("-> Title Cell Size:\(titleFrame.size)")
+                    //println("-> Title Cell Size:\(titleFrame.size)")
                 }
                 else // .Dates
                 {
@@ -305,7 +305,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                             var labelSize = label.sizeThatFits(CGSizeMake(mainFrame.width - (28 + 8), CGFloat(FLT_MAX) ))
 
                             detailsSize.height = labelSize.height + 2 + 2 + 32 //top and bottom constraints
-                            println("-> Details Cell Size: \(detailsSize)")
+                            //println("-> Details Cell Size: \(detailsSize)")
                             
                             if detailsSize.height < detailsFrame.size.height
                             {

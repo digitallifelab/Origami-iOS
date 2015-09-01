@@ -24,6 +24,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
         
+        //println("...viewDidLoad")
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
@@ -45,8 +46,15 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         //println(" \(wSelf) Loaded elements")
                         wSelf.loadingAllElementsInProgress = false
                         wSelf.shouldReloadCollection = true
+                        println("reloadDashboardView from viewDidLoad - success TRUE")
                         wSelf.reloadDashboardView()
                     }
+                }
+                else
+                {
+                    wSelf.loadingAllElementsInProgress = false
+                    println("reloadDashboardView from viewDidLoad - success FALSE")
+                    wSelf.reloadDashboardView()
                 }
             }
             else
@@ -60,6 +68,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     //#endif
                 }
             }
+            
+            DataSource.sharedInstance.messagesLoader = MessagesLoader()
+            DataSource.sharedInstance.startRefreshingNewMessages()
         }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
@@ -67,7 +78,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
         
-        DataSource.sharedInstance.startRefreshingNewMessages()
     }
 
     override func didReceiveMemoryWarning()
@@ -88,6 +98,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
+        
+        println("-> viewDidAppear")
+        
         if let user = DataSource.sharedInstance.user
         {
             //register for night-day modes switching
@@ -105,7 +118,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             if !loadingAllElementsInProgress
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                
+                println("reload collection view from viewDidAppear")
                 reloadDashboardView()
             }
             
@@ -156,6 +169,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK:-----
     func reloadDashboardView()
     {
+        println("-> reloadDashboardView")
         loadingAllElementsInProgress = true
             
         DataSource.sharedInstance.getDashboardElements({[weak self](dashboardElements) -> () in
@@ -207,10 +221,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             
                             if let hiddenLayout = aSelf.collectionDashboard!.collectionViewLayout as? HomeSignalsHiddenFlowLayout
                             {
-                                
                                 if aSelf.shouldReloadCollection
                                 {
-                                    hiddenLayout.privSignals = newSignalsCount
+                                    hiddenLayout.privSignals = newSignalsCount + 1
                                     
                                     hiddenLayout.privFavourites = newFavs
                                     
@@ -226,15 +239,17 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard.reloadData()
                                     aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                    //aSelf.collectionDashboard.setCollectionViewLayout(hiddenLayout, animated: true)
                                     aSelf.shouldReloadCollection = false
+                                    //aSelf.collectionDashboard.reloadData()
+                                    //aSelf.collectionDashboard.reloadSections(
+                                    //NSIndexSet(indexesInRange: NSRangeFromString("0..<2")))
                                 }
                                 else
                                 {
                                     println(" ->  hiddenLayout. Will not reload Home CollectionView.")
                                 }
                             
-                                
-                                
                                 //customLayout.invalidateLayout() // to recalculate position of home elements
                             }
                             else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
@@ -272,7 +287,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             else
                             {
                                 println(" -> Hone VC. New Layout.")
-                                let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount , favourites: newFavs, other: newOther)
+                                let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount + 1 , favourites: newFavs, other: newOther)
                                 
                                 aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
                                     
@@ -282,21 +297,37 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     
                                     aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
                                     aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-                                    //aSelf.collectionDashboard.reloadData()
+                                    
                                     aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
                                     }, completion: { (finished) -> Void in
                                         //                                    if shouldReloadCollection
                                         //                                    {
-                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: false)
+                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
+                                        aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+//                                        let aRange:NSRange = NSMakeRange(0, 2)
+//                                        aSelf.collectionDashboard.reloadSections(NSIndexSet(indexesInRange: aRange))
+//                                        aSelf.loadingAllElementsInProgress = false
                                         //                                    }
                                 })
                                 
+                                
                             }
                             
-                            aSelf.loadingAllElementsInProgress = false
-                            aSelf.shouldReloadCollection = false
-                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                            //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0)), dispatch_get_main_queue(), { [weak self]() -> Void in
+                               // if let aSelf = self
+                                //{
+                                    aSelf.loadingAllElementsInProgress = false
+                                    aSelf.shouldReloadCollection = false
+                               // }
+                                
+                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                           // })
+                          
+                        }
+                        else
+                        {
+                            aSelf.showAddTheVeryFirstElementPlus()
                         }
                     }
                 }
@@ -546,6 +577,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 {
                     switch numberTapped
                     {
+                    case 0:
+                        if let presented = aSelf.presentedViewController
+                        {
+                            
+                        }
                     case 1:
                         aSelf.showUserProfileVC()
                     case 2:
@@ -662,15 +698,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             }) //NOTE! this does not dismiss TabBarController, but dismisses menu VC from Tabbar`s presented view controller. the same could be achieved by calling "menuPresendedVC.dismissViewControllerAnimated ...."
             return
         }
-        
-        if !animated
+        if let contactsOrProfileNavHolderVC = self.presentedViewController as? UINavigationController
         {
-            if let compBlock = completionBlock
-            {
-                compBlock()
-            }
+            contactsOrProfileNavHolderVC.dismissViewControllerAnimated(true, completion: { () -> Void in
+                completionBlock?()
+            })
             return
         }
+        
         // present MenuTableVC
         if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
         {

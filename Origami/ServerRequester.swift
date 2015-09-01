@@ -1149,7 +1149,7 @@ class ServerRequester: NSObject
                             
                             if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
                             {
-                                println("-> downloadAvatar response: \(jsonString)")
+                                //println("-> downloadAvatar response: \(jsonString)")
                                 toReturnCompletion(avatarData: nil, error: nil)
                             }
                         }

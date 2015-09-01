@@ -192,4 +192,20 @@ class User
         return toReturn
     }
     
+    func localizedSexString() -> String
+    {
+        if let sexNumber = self.sex
+        {
+            if sexNumber.integerValue == 0
+            {
+                return "male".localizedWithComment("")
+            }
+            if sexNumber.integerValue == 1
+            {
+                return "female".localizedWithComment("")
+            }
+        }
+        return ""
+    }
+    
 }

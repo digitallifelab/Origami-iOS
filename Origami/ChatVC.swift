@@ -374,9 +374,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             {
                 let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
                 println("\n -> LastIndexPathRow: \(lastMessagePath.row)")
-                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: true)
+                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: false)
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3)), dispatch_get_main_queue(), { [weak self]() -> Void in
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [weak self]() -> Void in
                     if let weakSelf = self
                     {
                         let newLastPath = NSIndexPath(forRow: weakSelf.currentChatMessages.count - 1, inSection: 0)

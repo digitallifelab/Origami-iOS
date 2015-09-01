@@ -179,7 +179,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func loadAllMessagesFromServer()
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        serverRequester.loadAllMessages {
+        DataSource.sharedInstance.serverRequester.loadAllMessages {
             (resultArray, serverError) -> () in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
                 if let messagesArray = resultArray as? [Message]
@@ -187,7 +187,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var lvMessagesHolder = [NSNumber:[Message]]()
                     for lvMessage in messagesArray
                     {
-                        //println(">>> ElementId:\(lvMessage.elementId) , Message: \(lvMessage.textBody)")
+                        //println(">>> ElementId:\(lvMessage.elementId) , \n type: \(lvMessage.typeId), \n Message: \(lvMessage.textBody)")
                         if lvMessagesHolder[lvMessage.elementId!] != nil
                         {
                             lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -695,8 +695,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
         dispatch_async(dispatchQueue,
         {
-            [unowned self] in
-            
+            if DataSource.sharedInstance.elements.isEmpty
+            {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion(nil)
+                })
+                return
+            }
             var favouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
                 return checkedElement.isFavourite.boolValue
             })
@@ -779,18 +784,31 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             if let allElements = result as? [Element]
             {
-                //if let elements = DataSource.sharedInstance.elements
-                //{
+                if allElements .isEmpty
+                {
+                    completion(success: false, failure: nil)
+                    return
+                }
+                
+                let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
+                dispatch_async(backgroundQueue, { () -> Void in
                     DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
-                //}
+                    
+                    
+                    var elementsSet = Set(allElements)
+                    var elementsArrayFromSet = Array(elementsSet)
+                    ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
+                    
+                    DataSource.sharedInstance.elements += elementsArrayFromSet
+                    println("Count Elements = \(elementsArrayFromSet.count)")
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completion(success: true, failure: nil)
+                    })
+                })
                 
-                var elementsSet = Set(allElements)
-                var elementsArrayFromSet = Array(elementsSet)
-                ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
                 
-                DataSource.sharedInstance.elements += elementsArrayFromSet
-                println("Count Elements = \(elementsArrayFromSet.count)")
-                completion(success: true, failure: nil)
+                
                 
                 //test stuff
 //                DataSource.sharedInstance.databaseHandler?.insertElements(Set(DataSource.sharedInstance.elements), completion: { (finishInfo, error) -> Void in

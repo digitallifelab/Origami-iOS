@@ -41,7 +41,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         super.viewDidLoad()
      
-        println(" ...viewDidLoad....")
+        //println(" ...viewDidLoad....")
         self.fadeViewControllerAnimator = FadeOpaqueAnimator()
         
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
@@ -54,14 +54,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         if let ourElement = self.currentElement
         {
-            println("pass Whom IDs old: \(ourElement.passWhomIDs)")
+            //println("pass Whom IDs old: \(ourElement.passWhomIDs)")
             DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
                 if let aSelf = self
                 {
                     if finished
                     {
                         aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElement.elementId!.integerValue)
-                        println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
+                        //println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
                     }
                     else
                     {

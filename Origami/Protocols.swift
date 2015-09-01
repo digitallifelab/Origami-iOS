@@ -53,11 +53,12 @@ protocol MessageTapDelegate
 }
 
 
-protocol UserProfileAvatarCollectionCellDelegate
+protocol UserProfileCollectionCellDelegate
 {
     func showAvatarPressed()
     func changeAvatarPressed()
     func changeInfoPressed(cellType:ProfileTextCellType)
+    func changeSexSwitchPresed(newValue:Int)
 }
 
 protocol TableItemPickerDelegate

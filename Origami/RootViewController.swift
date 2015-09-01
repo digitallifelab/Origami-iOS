@@ -31,7 +31,7 @@ class RootViewController: UIViewController {
         if let user = DataSource.sharedInstance.user
         {
             self.performSegueWithIdentifier("ShowMainTabbar", sender: nil)
-            DataSource.sharedInstance.messagesLoader = MessagesLoader()//self.messagesLoader
+            
             return
         }
         
