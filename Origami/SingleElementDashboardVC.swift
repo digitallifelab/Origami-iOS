@@ -70,6 +70,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
             })
         }
+        
+       // prepareCollectionViewDataAndLayout()
+        
         afterViewDidLoad = true
     }
 
@@ -144,6 +147,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 self.collectionView.reloadItemsAtIndexPaths([chatPath])
             }
         }
+        
+        if self.view.hasAmbiguousLayout()
+        {
+            println("\(self) view has ambiguous layout.\n")
+            //self.view.exerciseAmbiguityInLayout()
+        }
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -159,11 +168,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     override func viewDidDisappear(animated: Bool)
     {
         super.viewDidDisappear(animated)
-//        if self.currentElement != nil
-//        {
-//           // collectionView.scrollRectToVisible(CGRectMake(0, 0, 200, 50), animated: false)
-//            collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: true, scrollPosition: .Top)
-//        }
     }
     
     func configureRightBarButtonItem()

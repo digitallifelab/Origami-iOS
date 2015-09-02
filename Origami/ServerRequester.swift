@@ -36,6 +36,7 @@ class ServerRequester: NSObject
     
     func editUser(userToEdit:User, completion:(success:Bool, error:NSError?) -> () )
     {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         var requestString:String = "\(serverURL)" + "\(editUserUrlPart)"
         let dictUser = userToEdit.toDictionary()
         //let dictionaryDebug = NSDictionary(dictionary: dictUser)
@@ -66,6 +67,7 @@ class ServerRequester: NSObject
                     //println(" -> Edit user result: \(result)")
                 }
                 completion(success: true, error: nil)
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             
         })
             { (operation, responseError) -> Void in
@@ -81,6 +83,7 @@ class ServerRequester: NSObject
                 }
     
             completion(success: false, error: responseError)
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         
         editOperation.start()

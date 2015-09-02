@@ -11,23 +11,44 @@ import UIKit
 class UserProfileSexCell: UICollectionViewCell {
 
     @IBOutlet weak var titleLabel:UILabel?
-    @IBOutlet weak var sexLabel:UILabel?
-    var switcher:UISegmentedControl?
+
+    @IBOutlet weak var switcher:UISegmentedControl?
     
     var delegate:UserProfileCollectionCellDelegate?
     let cellType:ProfileTextCellType = .Sex
 
+    
+    var currentGender:Int = 0
+    
     var displayMode:DisplayMode = .Day{
         didSet{
             switch displayMode
             {
             case .Day:
-                sexLabel?.textColor = kDayCellBackgroundColor
+                switcher?.tintColor = kDayCellBackgroundColor
 
             case .Night:
-                sexLabel?.textColor = kWhiteColor
+                switcher?.tintColor = kWhiteColor
             }
         }
+    }
+    var editingEnabled = false {
+        didSet {
+            if editingEnabled
+            {
+                enableSexSwitchControl(NSNumber(integer:currentGender))
+            }
+            else
+            {
+                disableSexSwitch()
+            }
+        }
+    }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        switcher?.setTitle("male".localizedWithComment(""), forSegmentAtIndex: 0)
+        switcher?.setTitle("female".localizedWithComment(""), forSegmentAtIndex: 1)
     }
     
     @IBAction func editButtonTapped(sender:UIButton?)
@@ -37,19 +58,13 @@ class UserProfileSexCell: UICollectionViewCell {
 
     func enableSexSwitchControl(currentSex:NSNumber?)
     {
-        let segmentedControl = UISegmentedControl(items: ["male".localizedWithComment(""), "female".localizedWithComment("")])
-        let centerBounds = CGPointMake(floor(CGRectGetMidX(self.bounds)), floor(CGRectGetMidY(self.bounds)))
-        segmentedControl.center = centerBounds
-        segmentedControl.tintColor = kDayNavigationBarBackgroundColor
-        segmentedControl.backgroundColor = kWhiteColor
         if let currentSexNumber = currentSex
         {
-            segmentedControl.selectedSegmentIndex = currentSexNumber.integerValue
+            switcher?.selectedSegmentIndex = currentSexNumber.integerValue
         }
         
-        segmentedControl.addTarget(self, action: "segmentedControlChanged:", forControlEvents: .ValueChanged)
-        self.switcher = segmentedControl
-        self.addSubview(segmentedControl)
+        switcher?.addTarget(self, action: "segmentedControlChanged:", forControlEvents: .ValueChanged)
+        switcher?.enabled = true
     }
     
     func segmentedControlChanged(sender:UISegmentedControl)
@@ -60,8 +75,8 @@ class UserProfileSexCell: UICollectionViewCell {
     
     func disableSexSwitch()
     {
-        switcher?.removeFromSuperview()
-        switcher = nil
+        switcher?.removeTarget(self, action: "segmentedControlChanged:", forControlEvents: .ValueChanged)
+        switcher?.enabled = false
     }
     
 }

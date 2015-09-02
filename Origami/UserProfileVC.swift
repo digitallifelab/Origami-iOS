@@ -14,9 +14,10 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     let avatarCellIdentifier = "UserProfileAvatarCell"
     let textCellIdentifier = "UserProfileTextCell"
     let sexCellIdentifier = "UserProfileSexCell"
-    var defaultEdgeInsets:UIEdgeInsets?
-    var currentAvatar:UIImage?
-    var displayMode:DisplayMode = .Day {
+    var navigationBackgroundView:UIView?
+    private var defaultEdgeInsets:UIEdgeInsets?
+    private var currentAvatar:UIImage?
+    private var displayMode:DisplayMode = .Day {
         didSet{
             switch displayMode{
             case .Day:
@@ -27,6 +28,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
     }
     
+    private var editingProfile = false
+    
     var tempPassword:String?
     
     @IBOutlet var profileCollection:UICollectionView!
@@ -36,7 +39,11 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         super.viewDidLoad()
 
         configureLeftBarButtonItem()
+        configureRightBarButtonItem()
         
+        addNavigationBarBackgroundView()
+        
+        setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         self.displayMode = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? .Night : .Day
         
         profileCollection.dataSource = self
@@ -60,7 +67,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                         })
-                        
                     }
                 })
             }
@@ -69,33 +75,95 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
+        defaultEdgeInsets = profileCollection.contentInset
         addObserversForKeyboard()
     }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         removeObserversForKeyboard()
+        profileCollection.contentInset = defaultEdgeInsets!
+        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    //MARK:---
+   
+    
+    //MARK: --- Appearance
+    func addNavigationBarBackgroundView()
+    {
+        let navView = UIView()
+        navView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        self.view.addSubview(navView)
+        
+        //constraints
+        
+        let viewsDict = ["navView":navView]
+        
+        let horConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[navView]|", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
+        let vertConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[navView(64)]", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
+        
+        self.view.addConstraints(horConstraints)
+        self.view.addConstraints(vertConstraints)
+        
+        //store to use
+        self.navigationBackgroundView = navView
+    }
+    
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        if nightModeOn
+        {
+            //self.displayMode = .Night
+            self.view.backgroundColor = UIColor.blackColor()
+            self.navigationBackgroundView?.backgroundColor = UIColor.blackColor()
+        }
+        else
+        {
+            //self.displayMode = .Day
+            self.view.backgroundColor = kDayViewBackgroundColor 
+            self.navigationBackgroundView?.backgroundColor = kDayNavigationBarBackgroundColor
+        }
+        
+        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
+        
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.translucent = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+    }
+    
     func configureLeftBarButtonItem()
     {
         var leftButton = UIButton.buttonWithType(.System) as! UIButton
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        //leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         leftButton.tintColor = kDayNavigationBarBackgroundColor
         
         var leftBarButton = UIBarButtonItem(customView: leftButton)
-        
-        //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
         self.navigationItem.leftBarButtonItem = leftBarButton
+    }
+    
+    func configureRightBarButtonItem()
+    {
+        var editButton = UIButton.buttonWithType(.System) as! UIButton
+        editButton.frame = CGRectMake(0.0, 0.0, 40.0, 40.0)
+        editButton.imageEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8)
+        editButton.setImage(UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        editButton.tintColor = kDayNavigationBarBackgroundColor
+        editButton.addTarget(self, action: "toggleEditingMode", forControlEvents: .TouchUpInside)
+        var rightBarButton = UIBarButtonItem(customView: editButton)
+        self.navigationItem.rightBarButtonItem = rightBarButton
+    }
+    
+    func toggleEditingMode()
+    {
+        self.editingProfile = !self.editingProfile
+        self.navigationItem.rightBarButtonItem?.tintColor = (editingProfile) ? kDaySignalColor : kDayNavigationBarBackgroundColor
+        profileCollection.reloadSections(NSIndexSet(index: 0))
     }
     
     //MARK: - UITextViewDelegate and stuff
@@ -127,7 +195,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             if notification.name == UIKeyboardWillShowNotification
             {
                 keyboardIsToShow = true
-                defaultEdgeInsets = profileCollection.contentInset
+                
                 let edgeInsets = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
                 profileCollection.contentInset = edgeInsets
                 
@@ -139,20 +207,20 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
             
             
-            UIView.animateWithDuration(animationTime,
-                delay: 0.0,
-                options: options,
-                animations: {  [weak self]  in
-                    if let weakSelf = self
-                    {
-                        weakSelf.view.layoutIfNeeded()
-                    }
-                    
-                    
-                },
-                completion: { [weak self]  (finished) -> () in
-                    
-                })
+//            UIView.animateWithDuration(animationTime,
+//                delay: 0.0,
+//                options: options,
+//                animations: {  [weak self]  in
+//                    if let weakSelf = self
+//                    {
+//                        weakSelf.view.layoutIfNeeded()
+//                    }
+//                    
+//                    
+//                },
+//                completion: { [weak self]  (finished) -> () in
+//                    
+//                })
         }
     }
     
@@ -231,6 +299,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 avatarCell.avatarImageView?.image = image
             }
+            avatarCell.editingEnabled = editingProfile
             return avatarCell
             
         case ProfileTextCellType.Mood.rawValue:
@@ -244,6 +313,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell?.cellType = .Email
             textCell?.titleLabel?.text = "email".localizedWithComment("")
             textCell?.textLabel?.text = user?.userName as? String
+            textCell?.editingEnabled = false
             shouldBeDelegate = false
             
         case ProfileTextCellType.Name.rawValue:
@@ -288,9 +358,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         case ProfileTextCellType.Sex.rawValue:
             let sexCell = collectionView.dequeueReusableCellWithReuseIdentifier(sexCellIdentifier, forIndexPath: indexPath) as! UserProfileSexCell
             sexCell.titleLabel?.text = "sex".localizedWithComment("")
-            sexCell.sexLabel?.text = user?.localizedSexString()
+            if let sexNumber = user?.sex
+            {
+                sexCell.currentGender = sexNumber.integerValue
+            }
+          
             sexCell.delegate = self
             sexCell.displayMode = self.displayMode
+            sexCell.editingEnabled = editingProfile
             return sexCell
             
         case ProfileTextCellType.PhoneNumber.rawValue:
@@ -313,6 +388,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             cell.delegate = (shouldBeDelegate) ? self : nil
             cell.displayMode = self.displayMode
+            cell.editingEnabled = editingProfile
             return cell
         }
         
@@ -321,15 +397,25 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     //MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        if let datePickerHolder = self.view.viewWithTag(0xDA7E)
-        {
-            datePickerCancels(nil)
-        }
+        
         for aCell in profileCollection.visibleCells()
         {
             if let textCell = aCell as? UserProfileTextContainerCell
             {
                 textCell.stopEditingText()
+            }
+        }
+        
+        if let datePickerHolder = self.view.viewWithTag(0xDA7E)
+        {
+            datePickerCancels(nil)
+        }
+        
+        if self.editingProfile
+        {
+            if let cellType = ProfileTextCellType(rawValue: indexPath.row)
+            {
+                changeInfoPressed(cellType)
             }
         }
         
@@ -350,7 +436,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         if let imagePicker = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePickerVC") as? ImagePickingViewController
         {
             imagePicker.attachPickingDelegate = self
-            
             self.presentViewController(imagePicker, animated: true, completion: nil)
         }
     }
@@ -397,6 +482,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             userDidChangeSex(newValue)
         }
     }
+    
     
     //MARK: handle editing user Photo
     func showFullscreenUserPhoto()

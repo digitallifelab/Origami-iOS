@@ -33,6 +33,26 @@ class UserProfileTextContainerCell: UICollectionViewCell {
         }
     }
     
+    var editingEnabled = false {
+        didSet{
+            if editingEnabled
+            {
+                if cellType == .Email
+                {
+                    editButton?.hidden = true
+                }
+                else
+                {
+                    editButton?.hidden = false
+                }
+            }
+            else
+            {
+                editButton?.hidden = true
+            }
+        }
+    }
+    
     var displayMode:DisplayMode = .Day{
         didSet{
             switch displayMode
@@ -47,6 +67,13 @@ class UserProfileTextContainerCell: UICollectionViewCell {
                 //self.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.5)
             }
         }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        textView?.removeFromSuperview()
+        textView = nil
+        
     }
     
     @IBAction func editButtonTapped(sender:UIButton?)
@@ -102,6 +129,8 @@ class UserProfileTextContainerCell: UICollectionViewCell {
         {
             if let textField = self.passwordTextField
             {
+                textField.layer.borderWidth = 1.0
+                textField.layer.borderColor = kDayNavigationBarBackgroundColor.CGColor
                 textField.becomeFirstResponder()
             }
             return
@@ -115,11 +144,10 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     
     func stopEditingText()
     {
-        //textView?.resignFirstResponder()
+        textView?.resignFirstResponder()
         textView?.removeFromSuperview()
+        passwordTextField?.resignFirstResponder()
         passwordTextField?.removeFromSuperview()
-        textView = nil
-        passwordTextField = nil
     }
     
     //MARK: UITextField for editing password

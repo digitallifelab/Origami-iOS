@@ -30,6 +30,18 @@ class UserProfileAvatarCollectionCell: UICollectionViewCell {
             }
         }
     }
+    var editingEnabled = false {
+        didSet{
+            if editingEnabled
+            {
+                changeAvatarButton?.hidden = false
+            }
+            else
+            {
+                changeAvatarButton?.hidden = true
+            }
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

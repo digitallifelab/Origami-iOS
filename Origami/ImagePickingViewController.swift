@@ -15,6 +15,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
     var attachPickingDelegate:AttachPickingDelegate?
+    
     private var selectedMedia:MediaFile? {
         didSet{
             if let lvData = selectedMedia?.data
@@ -42,6 +43,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         // Do any additional setup after loading the view.
         
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
+        
     }
 
     override func didReceiveMemoryWarning() {

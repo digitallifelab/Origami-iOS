@@ -10,12 +10,11 @@ import UIKit
 
 class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
 
-    @IBOutlet var imageScrollView:UIScrollView!
-    @IBOutlet var navigationBackgroundView:UIView!
+    @IBOutlet weak var imageScrollView:UIScrollView!
+    @IBOutlet weak var navigationBackgroundView:UIView!
     
     var imageToDisplay:UIImage?
     var imageHolder:UIImageView?
-    
     var doubleTapRecognizer:UITapGestureRecognizer?
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,9 +29,8 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         doubleTapRecognizer?.numberOfTouchesRequired = 1
         imageScrollView.addGestureRecognizer(doubleTapRecognizer!)
         imageScrollView.delegate = self
-        
+       
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
-        
     }
 
     override func didReceiveMemoryWarning() {

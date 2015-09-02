@@ -48,14 +48,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 //println("\n appended ATTACHES")
                 self.attachesHandler = attachesCollectionHandler
                 options.append(.Attaches)
-            }
-            
-            //println("\n appended BUTTONS")
-//            if self.elementIsOwned()
-//            {
-//                 options.append(.Buttons)
-//            }
-           
+            }           
             
             if let subordinates = getElementSubordinates()
             {
@@ -455,6 +448,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return subordinateCell
         }
     }
+    
+//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+//        if indexPath.item == 0
+//        {
+//            if let titleCell = cell as? SingleElementTitleCell
+//            {
+//                titleCell.labelTitle.text = getElementTitle()
+//            }
+//        }
+//    }
     
     func createActionButtonModels() -> [ActionButtonModel]?
     {

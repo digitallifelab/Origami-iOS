@@ -1939,13 +1939,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                         else
                         {
-                            
+                            println(" Did not recieve avatar image bytes.")
+                            if let completionClosure = completionBlock
+                            {
+                                completionClosure(image: nil)
+                            }
                         }
                         return
                     }
                     if let anError = error
                     {
                         println(" Error while downloading avatar for userName: \(loginName): \n \(anError.description) ")
+                        completionBlock?(image: nil)
                     }
                     else
                     {
