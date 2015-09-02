@@ -5,7 +5,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="segoeui.ttf">
@@ -422,7 +421,7 @@
                                     </collectionViewCell>
                                 </cells>
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DashHeader" id="XLf-fl-1NQ" customClass="DashHeaderView" customModule="Origami_task_manager" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="64" width="320" height="30"/>
+                                    <rect key="frame" x="0.0" y="64" width="600" height="30"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signals" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rjN-dc-B59" userLabel="titleLabel">
@@ -463,6 +462,7 @@
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="IgO-A8-ay8" firstAttribute="top" secondItem="aih-nU-CTF" secondAttribute="bottom" id="CaA-S0-sMj"/>
                             <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="IgO-A8-ay8" secondAttribute="bottom" priority="750" constant="-64" id="CgS-5e-agk"/>
@@ -685,7 +685,7 @@
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
                                 <rect key="frame" x="0.0" y="64" width="600" height="487"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ta0-yn-MRa">
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ta0-yn-MRa" customClass="SimpleElementDashboardLayout" customModule="Origami_task_manager" customModuleProvider="target">
                                     <size key="itemSize" width="310" height="152"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
@@ -699,16 +699,6 @@
                                             <rect key="frame" x="0.0" y="0.0" width="438" height="187"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="100" horizontalCompressionResistancePriority="100" verticalCompressionResistancePriority="100" text="" lineBreakMode="tailTruncation" numberOfLines="15" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PBu-aF-Ydb" userLabel="titleCellTitleLabel">
-                                                    <rect key="frame" x="60" y="48" width="362" height="79"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="30"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                    <variation key="heightClass=regular" misplaced="YES">
-                                                        <rect key="frame" x="60" y="48" width="164" height="70"/>
-                                                    </variation>
-                                                </label>
                                                 <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27.07.2015" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nsE-RP-MTO" userLabel="dateLabelTitleCell">
                                                     <rect key="frame" x="63" y="13" width="67" height="19"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -832,38 +822,36 @@
                                                         <action selector="favoutireButtonTap:" destination="gaw-RK-O0B" eventType="touchUpInside" id="XRp-Cn-bbb"/>
                                                     </connections>
                                                 </button>
+                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="200" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adip" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWq-EV-t1H" userLabel="titleCellTitleTextView">
+                                                    <rect key="frame" x="50" y="28" width="372" height="113"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="30"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
+                                                </textView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" red="0.12941176469999999" green="0.60784313729999995" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstItem="nsE-RP-MTO" firstAttribute="top" secondItem="gaw-RK-O0B" secondAttribute="topMargin" constant="5" id="0N3-ch-QY4"/>
+                                            <constraint firstAttribute="bottom" secondItem="RWq-EV-t1H" secondAttribute="bottom" constant="46" id="0RF-Kh-Pwd"/>
+                                            <constraint firstItem="nsE-RP-MTO" firstAttribute="leading" secondItem="gaw-RK-O0B" secondAttribute="leadingMargin" constant="55" id="4Lq-T5-eFz"/>
                                             <constraint firstAttribute="trailing" secondItem="jWw-ig-Xmn" secondAttribute="trailing" priority="750" constant="16" id="BE0-KS-jKm"/>
                                             <constraint firstAttribute="bottom" secondItem="jWw-ig-Xmn" secondAttribute="bottom" constant="2" id="C18-6A-NB0"/>
-                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="trailing" secondItem="jWw-ig-Xmn" secondAttribute="trailing" id="Lsc-Li-F2B"/>
+                                            <constraint firstAttribute="trailing" secondItem="RWq-EV-t1H" secondAttribute="trailing" constant="16" id="Qoh-lI-jps"/>
                                             <constraint firstItem="2nx-F5-2Rs" firstAttribute="top" secondItem="gaw-RK-O0B" secondAttribute="top" constant="51" id="S4h-Cm-fiO"/>
-                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="leading" secondItem="nsE-RP-MTO" secondAttribute="leading" constant="-3" id="cvW-Aa-Fuq"/>
+                                            <constraint firstItem="RWq-EV-t1H" firstAttribute="leading" secondItem="gaw-RK-O0B" secondAttribute="leading" constant="50" id="ay2-Dd-hze"/>
+                                            <constraint firstItem="RWq-EV-t1H" firstAttribute="top" secondItem="gaw-RK-O0B" secondAttribute="top" constant="28" id="cmb-T6-5hq"/>
                                             <constraint firstItem="2nx-F5-2Rs" firstAttribute="leading" secondItem="gaw-RK-O0B" secondAttribute="leading" constant="-3" id="cx3-Wa-R7B"/>
-                                            <constraint firstAttribute="trailing" secondItem="PBu-aF-Ydb" secondAttribute="trailing" constant="16" id="foM-Pa-zZO"/>
-                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="top" secondItem="gaw-RK-O0B" secondAttribute="top" constant="48" id="m5R-cj-ksY"/>
-                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="leading" secondItem="nsE-RP-MTO" secondAttribute="leading" constant="-3" id="mPQ-Yw-6bo"/>
-                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="leading" secondItem="gaw-RK-O0B" secondAttribute="leading" constant="60" id="md7-YO-Mag"/>
                                             <constraint firstItem="jWw-ig-Xmn" firstAttribute="leading" secondItem="gaw-RK-O0B" secondAttribute="leading" constant="50" id="pMv-OH-KB2"/>
-                                            <constraint firstItem="PBu-aF-Ydb" firstAttribute="width" secondItem="jWw-ig-Xmn" secondAttribute="width" multiplier="0.95" id="q3y-K4-Gas"/>
-                                            <constraint firstAttribute="bottomMargin" secondItem="PBu-aF-Ydb" secondAttribute="bottom" priority="450" constant="52" id="xEV-8R-UFM"/>
                                         </constraints>
                                         <size key="customSize" width="438" height="187"/>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="Lsc-Li-F2B"/>
-                                                <exclude reference="mPQ-Yw-6bo"/>
-                                                <exclude reference="q3y-K4-Gas"/>
-                                            </mask>
-                                        </variation>
                                         <connections>
                                             <outlet property="favouriteButton" destination="2nx-F5-2Rs" id="de3-uL-6R5"/>
                                             <outlet property="labelDate" destination="nsE-RP-MTO" id="3bB-qq-Gjp"/>
-                                            <outlet property="labelTitle" destination="PBu-aF-Ydb" id="XuY-3m-AKw"/>
+                                            <outlet property="titleTextView" destination="RWq-EV-t1H" id="M81-cF-16R"/>
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ElementDetailsCell" id="Dye-67-SwN" customClass="SingleElementDetailsCell" customModule="Origami_task_manager" customModuleProvider="target">
@@ -2012,17 +2000,15 @@
                                                         <action selector="avatarPressed:" destination="mWG-cw-aRa" eventType="touchUpInside" id="t8h-ia-crA"/>
                                                     </connections>
                                                 </button>
-                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2m-qv-hbH" userLabel="editButton">
+                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2m-qv-hbH" userLabel="editButton">
                                                     <rect key="frame" x="264" y="8" width="30" height="30"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="DB5-9c-Lpx"/>
                                                         <constraint firstAttribute="width" constant="30" id="TW1-ee-Zxq"/>
                                                     </constraints>
-                                                    <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                    <state key="normal" image="icon-edit">
-                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
+                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" image="icon-edit"/>
                                                     <connections>
                                                         <action selector="changeAvatarPressed:" destination="mWG-cw-aRa" eventType="touchUpInside" id="UVW-Rt-un5"/>
                                                     </connections>

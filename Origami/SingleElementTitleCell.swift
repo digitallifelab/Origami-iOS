@@ -44,10 +44,10 @@ class SingleElementTitleCell: UICollectionViewCell {
     var buttonTrueColor = UIColor.whiteColor()
     var buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
     
-    @IBOutlet var labelTitle:UILabel!
+    //@IBOutlet var labelTitle:UILabel!
     @IBOutlet var labelDate:UILabel!
     @IBOutlet var favouriteButton:UIButton!
-    
+    @IBOutlet var titleTextView:UITextView!
     @IBAction func favoutireButtonTap(sender:UIButton)
     {
         var tapNotification = NSNotification(name: kElementFavouriteButtonTapped, object: self)
@@ -83,8 +83,8 @@ class SingleElementTitleCell: UICollectionViewCell {
         let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
         self.layer.shadowPath = offsetPath.CGPath
         
-       
-        //super.layoutSubviews()
+        titleTextView.font = UIFont(name: "SegoeUI", size: 30.0)
+        titleTextView.textColor = kWhiteColor
     }
     
 //    deinit

@@ -141,7 +141,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        leftButton.tintColor = kDayNavigationBarBackgroundColor
+        leftButton.tintColor = kWhiteColor
         
         var leftBarButton = UIBarButtonItem(customView: leftButton)
         self.navigationItem.leftBarButtonItem = leftBarButton
@@ -153,7 +153,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         editButton.frame = CGRectMake(0.0, 0.0, 40.0, 40.0)
         editButton.imageEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8)
         editButton.setImage(UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        editButton.tintColor = kDayNavigationBarBackgroundColor
+        editButton.tintColor = kWhiteColor
         editButton.addTarget(self, action: "toggleEditingMode", forControlEvents: .TouchUpInside)
         var rightBarButton = UIBarButtonItem(customView: editButton)
         self.navigationItem.rightBarButtonItem = rightBarButton
@@ -298,6 +298,10 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             if let image = self.currentAvatar
             {
                 avatarCell.avatarImageView?.image = image
+            }
+            else
+            {
+                avatarCell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
             avatarCell.editingEnabled = editingProfile
             return avatarCell

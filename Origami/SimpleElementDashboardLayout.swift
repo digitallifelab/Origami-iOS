@@ -225,13 +225,20 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         {
             if let titleCellFromDataSource = aDataSource.titleCell
             {
-                let font = titleCellFromDataSource.labelTitle.font
-                
+                var font = titleCellFromDataSource.titleTextView?.font//labelTitle.font
+                if let aFont = font
+                {
+                    
+                }
+                else
+                {
+                    font = UIFont(name: "SegoeUI", size: 30.0)
+                }
                 var size = CGSizeMake(mainFrame.width, 200.0)
 
                 if let nsStringTitleText =  self.elementStruct?.title
                 {
-                    var textLabelSize = nsStringTitleText.boundingRectWithSize(CGSizeMake(mainFrame.width - (60 + 16), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil)
+                    var textLabelSize = nsStringTitleText.boundingRectWithSize(CGSizeMake(mainFrame.width - (60 + 16), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font!], context: nil)
                     size.height =  ceil(textLabelSize.height) + 48 + 53 + 8
                     //println("-> Title Label Size: \(textLabelSize)")
                 }

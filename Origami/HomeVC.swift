@@ -8,15 +8,16 @@
 
 import UIKit
 
-class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelegate, UIViewControllerTransitioningDelegate
+class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate
 {
 
     @IBOutlet var collectionDashboard:UICollectionView!
     @IBOutlet var navigationBackgroundView:UIView!
     
+    var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer?
+    
     var collectionSource:HomeCollectionHandler?
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
-    
     private var loadingAllElementsInProgress = false
  
     var shouldReloadCollection = false
@@ -24,7 +25,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
         
-        //println("...viewDidLoad")
+//        screenEdgePanRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "leftEdgePan:")
+//        screenEdgePanRecognizer?.edges = UIRectEdge.Left
+//        screenEdgePanRecognizer?.delegate = self
+//        screenEdgePanRecognizer?.delaysTouchesBegan = false
+//        self.view.addGestureRecognizer(screenEdgePanRecognizer!)
+   
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
@@ -92,6 +98,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         if let user = DataSource.sharedInstance.user
         {
             nightModeDidChange(nil)
+        }
+        if let recognizers = self.view.gestureRecognizers
+        {
+            println(recognizers)
         }
     }
     
@@ -404,9 +414,33 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func menuButtonTapped(sender:AnyObject?)
     {
-        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self.navigationController, userInfo: nil)
+        if let aSender = sender as? UIButton //menu button
+        {
+            NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self.navigationController, userInfo: nil)
+            return
+        }
+    }
+    
+    @IBAction func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)
+    {
+        println("left pan.")
+        let translationX = round(recognizer.translationInView(recognizer.view!).x)
+        let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
+        println(" Horizontal Velocity: \(velocityX)")
+        println(" Horizontal Translation: \(translationX)")
+        
+        if translationX > 60.0
+        {
+            let ratio = ceil(velocityX / translationX)
+            if  ratio > 3
+            {
+                menuButtonTapped(nil)
+            }
+        }
+        
     }
 
+  
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
@@ -570,6 +604,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func processMenuDisplaying(notification:NSNotification?)
     {
+       
         handleDisplayingMenuAnimated(true, completion: {[weak self] () -> () in
             if let info = notification?.userInfo as? [String:Int], numberTapped = info["tapped"]
             {
@@ -695,6 +730,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 {
                     compBlock()
                 }
+                
             }) //NOTE! this does not dismiss TabBarController, but dismisses menu VC from Tabbar`s presented view controller. the same could be achieved by calling "menuPresendedVC.dismissViewControllerAnimated ...."
             return
         }
@@ -753,5 +789,19 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             self.presentViewController(contactsNavHolderVC, animated: true, completion: nil)
         }
     }
+    
+    //MARK: UIGEstureRecognizerDelegate
+  
+    
+//    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+//        return true
+//    }
+//    
+//    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return true
+//    }
+    
+    
+    
     
 }
