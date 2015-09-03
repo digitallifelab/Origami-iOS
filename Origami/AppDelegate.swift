@@ -46,5 +46,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         DataSource.sharedInstance.saveDB()
     }
     
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+         let string = deviceToken.description
+        
+        println(" -> recieved device token for PUSHes: \(string)")
+        
+        
+        
+    }
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        application.registerForRemoteNotifications()
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        println(" -> Failed to register fot PUSHes : \n\(error)")
+    }
+    
+    
 }
 

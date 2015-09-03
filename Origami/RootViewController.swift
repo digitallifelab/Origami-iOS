@@ -17,6 +17,48 @@ class RootViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleLogoutNotification:", name: kLogoutNotificationName, object: nil)
+        
+        
+        var appDelegate = UIApplication.sharedApplication().delegate
+        var application = UIApplication.sharedApplication()
+        
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+        }
+        else
+        {
+            let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
+        
+            application.registerUserNotificationSettings(settings)
+        }
+        
+        /*
+        
+        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+        {
+            UIUserNotificationType types;
+            types = [[UIApplication sharedApplication] currentUserNotificationSettings].types;
+        
+            if (types & UIUserNotificationTypeAlert)
+                pushEnabled=YES;
+            else
+                pushEnabled=NO;
+        }
+        else
+        {
+            UIRemoteNotificationType types;
+            types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
+            
+            if (types & UIRemoteNotificationTypeAlert)
+                pushEnabled=YES;
+            else
+                pushEnabled=NO;
+        
+        }
+        
+        */
+        
     }
 
     override func didReceiveMemoryWarning() {

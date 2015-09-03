@@ -100,10 +100,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             nightModeDidChange(nil)
         }
-        if let recognizers = self.view.gestureRecognizers
-        {
-            println(recognizers)
-        }
+//        if let recognizers = self.view.gestureRecognizers
+//        {
+//            println(recognizers)
+//        }
     }
     
     override func viewDidAppear(animated: Bool)
