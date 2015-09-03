@@ -31,7 +31,7 @@ class ServerRequester: NSObject
             completion(success: false, error: error)
         }
         
-        operation.start()
+        operation?.start()
     }
     
     func editUser(userToEdit:User, completion:(success:Bool, error:NSError?) -> () )
@@ -51,12 +51,13 @@ class ServerRequester: NSObject
         httpManager.requestSerializer = requestSerializer
         
         
-        let acceptableTypes:NSSet = jsonSerializer.acceptableContentTypes as NSSet
+        if let acceptableTypes = jsonSerializer.acceptableContentTypes //as? NSSet<NSObject>
+        {
+            var newSet = NSMutableSet(set: acceptableTypes)
+            newSet.addObjectsFromArray(["text/html", "application/json"])
+            jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
+        }
       
-        var newSet = NSMutableSet(set: acceptableTypes)
-        newSet.addObjectsFromArray(["text/html", "application/json"])
-        jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
-        
         let editOperation = httpManager.POST(
             requestString,
             parameters: params,
@@ -77,16 +78,15 @@ class ServerRequester: NSObject
                     println("->failure string in edit uer: \n \(errorString) \n")
                 }
                 
-                if let resultError = responseError
-                {
-                    println(" -> Edit user Error: \(resultError)")
-                }
+                
+                println(" -> Edit user Error: \(responseError)")
+                
     
             completion(success: false, error: responseError)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         
-        editOperation.start()
+        editOperation?.start()
         
         /*
         NSString *editUserUrlString = [NSString stringWithFormat:@"%@EditUser", BasicURL];
@@ -181,7 +181,7 @@ class ServerRequester: NSObject
                 }
         }
         
-        loginOperation.start()
+        loginOperation?.start()
         
     }
     
@@ -213,13 +213,12 @@ class ServerRequester: NSObject
                 
             })/*failure*/
             { (operation, responseError) -> Void in
-                if let error = responseError
-                {
-                    completion?(languages:nil, error: error)
-                }
+                
+                completion?(languages:nil, error: responseError)
+                
         }
         
-        langOperation.start()
+        langOperation?.start()
     }
     
     func loadCountries(completion:((countries:[Country]?, error:NSError?) ->())?)
@@ -247,14 +246,10 @@ class ServerRequester: NSObject
         })
                 { (operation, responseError) -> Void in
             
-            if let error = responseError
-            {
-                completion?(countries:nil, error: error)
-            }
-            
+            completion?(countries:nil, error: responseError)
         }
             
-        countriesOp.start()
+        countriesOp?.start()
     }
  
     
@@ -353,7 +348,7 @@ class ServerRequester: NSObject
                         }
                 })
                 
-                postOperation.start()
+                postOperation?.start()
             })
         }
         else
@@ -407,7 +402,7 @@ class ServerRequester: NSObject
                         }                        
                 })
                 
-                editRequestOperation.start()
+                editRequestOperation?.start()
             })
         }
     }
@@ -440,20 +435,27 @@ class ServerRequester: NSObject
                         
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
-                        let responseString = operation.responseString
-                        if responseString.isEmpty
+                        if let responseString = operation.responseString
                         {
-                            requestError = error
+                            if responseString.isEmpty
+                            {
+                                requestError = error
+                            }
+                            else
+                            {
+                                requestError = NSError(domain: "ElementEditingError", code: -1002, userInfo: [NSLocalizedDescriptionKey:responseString])
+                            }
                         }
                         else
                         {
-                            requestError = NSError(domain: "ElementEditingError", code: -1002, userInfo: [NSLocalizedDescriptionKey:responseString])
-                            
+                            requestError = error
                         }
+                        
+                        
                         completionClosure(success: false, error: requestError)
                 })
                 
-                editRequestOperation.start()
+                editRequestOperation?.start()
             })
             return
         }
@@ -488,7 +490,7 @@ class ServerRequester: NSObject
                 }
             })
             
-            requestIDsOperation.start()
+            requestIDsOperation?.start()
             
             return
         }
@@ -526,7 +528,7 @@ class ServerRequester: NSObject
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         
-        deleteOperation.start()
+        deleteOperation?.start()
     }
     
     //MARK: Messages
@@ -563,7 +565,7 @@ class ServerRequester: NSObject
                     }
             }
             
-            messagesOp.start()
+            messagesOp?.start()
             return
         }
         
@@ -625,7 +627,7 @@ class ServerRequester: NSObject
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
-            messageSendOp.start()
+            messageSendOp?.start()
             
             return
         }
@@ -686,7 +688,7 @@ class ServerRequester: NSObject
                 
             })
             
-            lastMessagesOperation.start()
+            lastMessagesOperation?.start()
             return
         }
         
@@ -741,15 +743,15 @@ class ServerRequester: NSObject
                     {
                         println("-> Failure while loading attachesList: \(responseString)")
                     }
-                    if let errorFailure = error
-                    {
-                         println("-> Failure while loading attachesList: \(errorFailure)")
-                    }
+                    
+                    
+                    println("-> Failure while loading attachesList: \(error)")
+                    
                     completion(nil, error)
             })
             
             
-            requestOperation.start()
+            requestOperation?.start()
             return
         }
         
@@ -1014,7 +1016,7 @@ class ServerRequester: NSObject
                     }
             })
             
-            requestOperation.start()
+            requestOperation?.start()
             return
         }
         
@@ -1314,13 +1316,12 @@ class ServerRequester: NSObject
                 }
             })
             
-            contactsRequestOp.start()
+            contactsRequestOp?.start()
             return
         }
-        if completionClosure != nil
-        {
-            completionClosure!(contacts: nil, error: noUserTokenError)
-        }
+        
+        completionClosure?(contacts: nil, error: noUserTokenError)
+        
     }
     
     func passElement(elementId:NSNumber, toContact contactId:NSNumber, forDeletion delete:Bool, completion completionClosure:(success:Bool, error: NSError?) -> ())
@@ -1370,7 +1371,7 @@ class ServerRequester: NSObject
                 }
             })
             
-            requestOp.start()
+            requestOp?.start()
             return
         }
         
@@ -1495,7 +1496,7 @@ class ServerRequester: NSObject
                     }
             })
             
-            contactsRequestOp.start()
+            contactsRequestOp?.start()
             
 //            let queue = NSOperationQueue()
 //            var request = NSMutableURLRequest(URL: NSURL(string: requestString)!)
@@ -1551,7 +1552,7 @@ class ServerRequester: NSObject
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
-            favOperation.start()
+            favOperation?.start()
             return
         }
         
@@ -1585,7 +1586,7 @@ class ServerRequester: NSObject
                     }
             })
             
-            removeContactOperation.start()
+            removeContactOperation?.start()
             return
         }
         
@@ -1619,7 +1620,7 @@ class ServerRequester: NSObject
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
-            addContactOperation.start()
+            addContactOperation?.start()
             return
         }
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false

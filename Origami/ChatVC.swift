@@ -32,6 +32,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationController?.toolbarHidden = true
         bottomControlsContainerView.delegate = self
         // Do any additional setup after loading the view.
         if let messages = DataSource.sharedInstance.getMessagesQuantyty(20, forElementId: currentElement!.elementId!, lastMessageId: nil)
@@ -78,6 +79,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         removeObserversForKeyboard()
         
          bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
+        self.navigationController?.toolbarHidden = false
     }
     
     
@@ -238,7 +240,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             if notification.name == UIKeyboardWillShowNotification
             {
                 keyboardIsToShow = true
-                textHolderBottomConstaint.constant = keyboardHeight - self.tabBarController!.tabBar.bounds.size.height
+                textHolderBottomConstaint.constant = keyboardHeight //- self.navigationController!.toolbar.bounds.size.height
             }
             else
             {
