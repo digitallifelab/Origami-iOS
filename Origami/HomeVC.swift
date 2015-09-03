@@ -13,7 +13,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 
     @IBOutlet var collectionDashboard:UICollectionView!
     @IBOutlet var navigationBackgroundView:UIView!
-    
+    @IBOutlet var bottomHomeToolBarButton:UIBarButtonItem!
     var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer?
     
     var collectionSource:HomeCollectionHandler?
@@ -25,11 +25,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
         
-//        screenEdgePanRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "leftEdgePan:")
-//        screenEdgePanRecognizer?.edges = UIRectEdge.Left
-//        screenEdgePanRecognizer?.delegate = self
-//        screenEdgePanRecognizer?.delaysTouchesBegan = false
-//        self.view.addGestureRecognizer(screenEdgePanRecognizer!)
+        screenEdgePanRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "leftEdgePan:")
+        screenEdgePanRecognizer?.edges = UIRectEdge.Left
+        screenEdgePanRecognizer?.delegate = self
+        screenEdgePanRecognizer?.delaysTouchesBegan = false
+        self.view.addGestureRecognizer(screenEdgePanRecognizer!)
    
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
@@ -83,6 +83,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
+        configureNavigationControllerToolbarItems()
         
     }
 
@@ -131,8 +132,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 println("reload collection view from viewDidAppear")
                 reloadDashboardView()
             }
-            
-            //self.tabBarController?.tabBar.layoutSubviews()
         }
     }
     
@@ -143,7 +142,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
     }
     
-    //MARK: -- --
+    //MARK: ----- NavigationBarButtons
     
     func configureRightBarButtonItem()
     {
@@ -174,6 +173,33 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         titleImageView.frame = CGRectMake(0, 0, 200, 40)
         
         self.navigationItem.titleView = titleImageView
+    }
+    
+    
+    func configureNavigationControllerToolbarItems()
+    {
+        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        //homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
+        //        let imageView = UIImageView(frame: CGRectMake(0, 0, 44, 44))
+        //        imageView.contentMode = UIViewContentMode.ScaleAspectFill
+        //        imageView.image = UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate)
+        let homeImageButton = UIBarButtonItem(customView: homeButton)
+        //        homeImageButton.target = self
+        //        homeImageButton.action = "homeButtonPressed:"
+        
+        //let homeButton = UIBarButtonItem(image: UIImage(named: "icon-home-SH")!.imageWithRenderingMode(.AlwaysTemplate), style: UIBarButtonItemStyle.Bordered, target: self, action: "homeButtonPressed:")
+        
+        let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
+        
+        //
+        self.setToolbarItems(currentToolbarItems, animated: false)
     }
     
     //MARK:-----
@@ -357,7 +383,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             newElementCreator.modalPresentationStyle = .Custom
             newElementCreator.transitioningDelegate = self
             
-            
             self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
                 newElementCreator.editingStyle = .AddNew
                 
@@ -390,7 +415,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         tapButton.backgroundColor = UIColor.clearColor()
         tapButton.opaque = true
         tapButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
-        //tapButton.layer.borderWidth = 1.0
         
         tapView.addSubview(tapButton)
         
@@ -400,17 +424,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     }
     
     // MARK: - Navigation
-
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
-    {
-//        if sender is Element
-//        {
-//            if let destinationVC = segue.destinationViewController as? ElementDashboardVC
-//            {
-//                destinationVC.element = sender as! Element
-//            }
-//        }
-    }
     
     func menuButtonTapped(sender:AnyObject?)
     {
@@ -419,32 +432,40 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self.navigationController, userInfo: nil)
             return
         }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
     }
     
-    @IBAction func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)
+    func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)
     {
-        println("left pan.")
-        let translationX = round(recognizer.translationInView(recognizer.view!).x)
-        let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
-        println(" Horizontal Velocity: \(velocityX)")
-        println(" Horizontal Translation: \(translationX)")
-        
-        if translationX > 60.0
+        if recognizer.state == UIGestureRecognizerState.Began
         {
-            let ratio = ceil(velocityX / translationX)
-            if  ratio > 3
-            {
-                menuButtonTapped(nil)
-            }
-        }
+            println("left pan.")
+            let translationX = round(recognizer.translationInView(recognizer.view!).x)
+            let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
+            println(" Horizontal Velocity: \(velocityX)")
+            println(" Horizontal Translation: \(translationX)")
         
+//            if translationX > 60.0
+//            {
+                let ratio = ceil(velocityX / translationX)
+                if  ratio > 3
+                {
+                    menuButtonTapped(nil)
+                }
+//            }
+        }
     }
 
   
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
-        presentNewSingleElementVC(element)
+        DataSource.sharedInstance.refreshAttachesForElement(element, completion: { (attaches) -> () in
+            self.presentNewSingleElementVC(element)
+        })
+        
+        
     }
     
     func presentNewSingleElementVC(element:Element)
@@ -456,7 +477,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             newVC.currentElement = element
             self.navigationController?.pushViewController(newVC, animated: true)
         }
-
     }
     
     //MARK: ElementComposingDelegate
@@ -544,15 +564,15 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func elementWasDeleted(notification:NSNotification?)
     {
-        if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
-        {
-            if let currentDataSource = self.collectionSource, foundIndexPaths = currentDataSource.indexpathForElementById(elementId.integerValue, shouldDelete:true)
-            {
-                self.collectionDashboard.reloadData()
-                
-                self.reloadDashboardView()
-            }
-        }
+//        if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
+//        {
+//            if let currentDataSource = self.collectionSource, foundIndexPaths = currentDataSource.indexpathForElementById(elementId.integerValue, shouldDelete:true)
+//            {
+//                self.collectionDashboard.reloadData()
+//                
+//                self.reloadDashboardView()
+//            }
+//        }
     }
     
     //MARK: UIViewControllerTransitioningDelegate
@@ -604,7 +624,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func processMenuDisplaying(notification:NSNotification?)
     {
-       
         handleDisplayingMenuAnimated(true, completion: {[weak self] () -> () in
             if let info = notification?.userInfo as? [String:Int], numberTapped = info["tapped"]
             {
@@ -656,26 +675,26 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-      
+        self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
         
         if nightModeOn
         {
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-
-            //self.tabBarController?.tabBar.tintColor = kWhiteColor
-            self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.backgroundColor = kBlackColor
+            self.navigationController?.toolbar.tintColor = kWhiteColor
         }
         else
         {
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
+            self.navigationController?.toolbar.backgroundColor = kWhiteColor
             
-            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
-
-            //self.tabBarController?.tabBar.tintColor = kDayCellBackgroundColor
         }
         
         self.collectionSource?.turnNightModeOn(nightModeOn)
@@ -768,6 +787,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             profileNavHolder.modalPresentationStyle = .Custom
             profileNavHolder.transitioningDelegate = self
+            profileNavHolder.toolbarHidden = false
             
             customTransitionAnimator = FadeOpaqueAnimator()
             
@@ -783,7 +803,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             
             contactsNavHolderVC.modalPresentationStyle = .Custom
             contactsNavHolderVC.transitioningDelegate = self
-            
+            contactsNavHolderVC.toolbarHidden = false
             customTransitionAnimator = FadeOpaqueAnimator()
             
             self.presentViewController(contactsNavHolderVC, animated: true, completion: nil)

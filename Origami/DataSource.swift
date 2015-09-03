@@ -1057,6 +1057,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         
         NSLog("   ->Finished deleting element from local storage.")
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementId)])
+        })
+   
     }
     
     func cleanAttachesForElement(elementId:Int)

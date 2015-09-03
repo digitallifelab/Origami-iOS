@@ -26,7 +26,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         // Do any additional setup after loading the view.
         
         configureNavigationItems()
-        
+        configureNavigationControllerToolbarItems()
         //myContactsTable.editing = true
         
         DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
@@ -170,9 +170,36 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
+    func configureNavigationControllerToolbarItems()
+    {
+        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        homeButton.tintColor = kDayNavigationBarBackgroundColor
+        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
+        
+        let homeImageButton = UIBarButtonItem(customView: homeButton)
+        
+        let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
+        
+        //
+        self.setToolbarItems(currentToolbarItems, animated: false)
+    }
+    
     func dismissSelf(sender:AnyObject?)
     {
         self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    //MARK: Dismiss
+    func homeButtonPressed(sender:UIButton)
+    {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     func showAllContactsVC()

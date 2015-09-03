@@ -71,6 +71,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             //self.displayMode = .Night
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+            
         }
         else
         {
@@ -78,7 +79,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
         }
-        
+        self.navigationController?.navigationBar.tintColor = kWhiteColor
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
         
         self.navigationController?.navigationBar.shadowImage = UIImage()

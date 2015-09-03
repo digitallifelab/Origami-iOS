@@ -43,6 +43,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         
         addNavigationBarBackgroundView()
         
+        configureNavigationControllerToolbarItems()
+        
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         self.displayMode = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? .Night : .Day
         
@@ -113,6 +115,26 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         self.navigationBackgroundView = navView
     }
     
+    func configureNavigationControllerToolbarItems()
+    {
+        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
+        
+        let homeImageButton = UIBarButtonItem(customView: homeButton)
+        
+        let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
+        
+        //
+        self.setToolbarItems(currentToolbarItems, animated: false)
+    }
+    
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
         if nightModeOn
@@ -120,12 +142,16 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             //self.displayMode = .Night
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView?.backgroundColor = UIColor.blackColor()
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.backgroundColor = kBlackColor
         }
         else
         {
             //self.displayMode = .Day
             self.view.backgroundColor = kDayViewBackgroundColor 
             self.navigationBackgroundView?.backgroundColor = kDayNavigationBarBackgroundColor
+            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
+            self.navigationController?.toolbar.backgroundColor = kWhiteColor
         }
         
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
@@ -133,6 +159,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
     }
     
     func configureLeftBarButtonItem()
@@ -164,6 +191,12 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         self.editingProfile = !self.editingProfile
         self.navigationItem.rightBarButtonItem?.tintColor = (editingProfile) ? kDaySignalColor : kDayNavigationBarBackgroundColor
         profileCollection.reloadSections(NSIndexSet(index: 0))
+    }
+    
+    //MARK: Dismiss
+    func homeButtonPressed(sender:UIButton)
+    {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     //MARK: - UITextViewDelegate and stuff
@@ -424,11 +457,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
         
         collectionView.deselectItemAtIndexPath(indexPath, animated: false)
-    }
-    
-    @IBAction func homeButtonTapped(sender:UIButton)
-    {
-        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     //MARK: UserProfileCollectionCellDelegate

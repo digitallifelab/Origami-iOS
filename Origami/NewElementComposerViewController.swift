@@ -145,7 +145,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         case .EditCurrent:
             var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
             var flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-            var archiveBarButton = UIBarButtonItem(title: "Archive", style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
+            var archiveBarButton = UIBarButtonItem(title: "Archive".localizedWithComment(""), style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
             var flexibleSpaceCenter = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
             var deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
             var flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)

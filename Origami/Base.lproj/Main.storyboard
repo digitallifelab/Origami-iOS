@@ -69,13 +69,13 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="480"/>
                     <connections>
-                        <segue destination="bUg-lL-gBX" kind="show" identifier="ShowMainTabbar" id="nmz-TR-PBN"/>
                         <segue destination="UGF-yz-ac4" kind="presentation" identifier="ShowLoginScreen" id="Xby-XW-Lzh"/>
+                        <segue destination="XMk-tn-8Z2" kind="presentation" identifier="ShowMainTabbar" id="2KC-Ua-zFk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KVr-P9-YW8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="181" y="151"/>
+            <point key="canvasLocation" x="-222" y="341"/>
         </scene>
         <!--LoginVC-->
         <scene sceneID="JPH-bJ-umA">
@@ -201,7 +201,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Yi0-Xo-9bL">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="5" minimumInteritemSpacing="5" id="M71-ih-wFK" customClass="HomeSignalsHiddenFlowLayout" customModule="Origami_task_manager" customModuleProvider="target">
                                     <size key="itemSize" width="120" height="120"/>
@@ -464,6 +464,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="WBg-rL-2c0" firstAttribute="top" secondItem="Yi0-Xo-9bL" secondAttribute="bottom" id="CK7-PI-aFF"/>
                             <constraint firstItem="IgO-A8-ay8" firstAttribute="top" secondItem="aih-nU-CTF" secondAttribute="bottom" id="CaA-S0-sMj"/>
                             <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="IgO-A8-ay8" secondAttribute="bottom" priority="750" constant="-64" id="CgS-5e-agk"/>
                             <constraint firstAttribute="trailing" secondItem="Yi0-Xo-9bL" secondAttribute="trailing" id="Fwa-cG-6Pc"/>
@@ -477,7 +478,7 @@
                             <constraint firstItem="aih-nU-CTF" firstAttribute="top" secondItem="Yi0-Xo-9bL" secondAttribute="top" priority="990" id="mej-SM-bDC"/>
                             <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="IgO-A8-ay8" secondAttribute="bottom" constant="-44" id="pEo-w0-Y7D"/>
                             <constraint firstItem="IgO-A8-ay8" firstAttribute="top" secondItem="aih-nU-CTF" secondAttribute="bottom" id="shU-uc-9ml"/>
-                            <constraint firstItem="WBg-rL-2c0" firstAttribute="top" secondItem="Yi0-Xo-9bL" secondAttribute="bottom" constant="-49" id="xhw-zX-f5C"/>
+                            <constraint firstItem="WBg-rL-2c0" firstAttribute="top" secondItem="Yi0-Xo-9bL" secondAttribute="bottom" constant="-48" id="xhw-zX-f5C"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -488,6 +489,7 @@
                                 <exclude reference="mHh-6q-gch"/>
                                 <exclude reference="shU-uc-9ml"/>
                                 <exclude reference="mej-SM-bDC"/>
+                                <exclude reference="xhw-zX-f5C"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -501,6 +503,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <toolbarItems/>
                     <navigationItem key="navigationItem" id="ytm-bS-c7w"/>
                     <connections>
                         <outlet property="collectionDashboard" destination="Yi0-Xo-9bL" id="ZNO-rL-heD"/>
@@ -510,7 +513,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EgA-hI-pa5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1910" y="71"/>
+            <point key="canvasLocation" x="1745" y="60"/>
         </scene>
         <!--New Element Composer View Controller-->
         <scene sceneID="6cG-CO-FuR">
@@ -683,7 +686,7 @@
                                 </constraints>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
-                                <rect key="frame" x="0.0" y="64" width="600" height="487"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="492"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ta0-yn-MRa" customClass="SimpleElementDashboardLayout" customModule="Origami_task_manager" customModuleProvider="target">
                                     <size key="itemSize" width="310" height="152"/>
@@ -1435,7 +1438,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jpy-27-TYM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2378" y="211"/>
+            <point key="canvasLocation" x="2442" y="60"/>
         </scene>
         <!--All ContactsVC-->
         <scene sceneID="7wU-Tg-Hjb">
@@ -1669,7 +1672,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4Ah-4v-u9l">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="431"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ContactCheckerCell" rowHeight="50" id="JlK-Hs-TzM" customClass="ContactCheckerCell" customModule="Origami_task_manager" customModuleProvider="target">
@@ -1948,7 +1951,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="erZ-mQ-nuD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4641" y="469"/>
+            <point key="canvasLocation" x="4384" y="426"/>
         </scene>
         <!--User ProfileVC-->
         <scene sceneID="H28-4L-iPc">
@@ -1963,7 +1966,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="3cB-Td-GvF">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="430"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="nwI-mT-4O6">
                                     <size key="itemSize" width="50" height="50"/>
@@ -2162,41 +2165,19 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gcc-Sq-heO">
-                                <rect key="frame" x="143" y="437" width="35" height="35"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="hnu-9C-bI8"/>
-                                    <constraint firstAttribute="width" constant="35" id="rJr-is-a7M"/>
-                                </constraints>
-                                <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
-                                <inset key="contentEdgeInsets" minX="-5" minY="-14" maxX="-5" maxY="-5"/>
-                                <state key="normal" image="icon-home-SH">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="homeButtonTapped:" destination="6l0-Qx-1y5" eventType="touchUpInside" id="3CY-TI-8Do"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="tintColor" red="0.13645310960000001" green="0.59057903410000001" blue="0.071161886209999997" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="tJm-Hz-mso" firstAttribute="top" secondItem="gcc-Sq-heO" secondAttribute="bottom" constant="8" id="2fH-XN-DUE"/>
                             <constraint firstItem="3cB-Td-GvF" firstAttribute="top" secondItem="7Im-r4-Nvg" secondAttribute="bottom" id="AZI-nF-kgW"/>
-                            <constraint firstItem="gcc-Sq-heO" firstAttribute="leading" secondItem="eYv-ID-F01" secondAttribute="leadingMargin" constant="522" id="EsY-Xb-GAE"/>
                             <constraint firstItem="3cB-Td-GvF" firstAttribute="leading" secondItem="eYv-ID-F01" secondAttribute="leading" id="FwZ-Om-ZFQ"/>
                             <constraint firstItem="3cB-Td-GvF" firstAttribute="top" secondItem="7Im-r4-Nvg" secondAttribute="bottom" constant="-64" id="MTV-jH-ehV"/>
-                            <constraint firstAttribute="centerX" secondItem="gcc-Sq-heO" secondAttribute="centerX" constant="-0.5" id="Twa-Ph-0f7"/>
                             <constraint firstAttribute="trailing" secondItem="3cB-Td-GvF" secondAttribute="trailing" id="WQU-zL-AaH"/>
-                            <constraint firstItem="tJm-Hz-mso" firstAttribute="top" secondItem="3cB-Td-GvF" secondAttribute="bottom" constant="50" id="rc5-p1-akW"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="gcc-Sq-heO" secondAttribute="trailing" constant="16" id="ufr-aW-6JQ"/>
+                            <constraint firstItem="tJm-Hz-mso" firstAttribute="top" secondItem="3cB-Td-GvF" secondAttribute="bottom" id="rc5-p1-akW"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="AZI-nF-kgW"/>
-                                <exclude reference="EsY-Xb-GAE"/>
-                                <exclude reference="ufr-aW-6JQ"/>
                             </mask>
                         </variation>
                     </view>
@@ -2358,7 +2339,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="600" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="73" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="D6b-aP-BCJ">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="436"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MyContactCell" rowHeight="73" id="WUu-eI-ikg" customClass="MyContactListCell" customModule="Origami_task_manager" customModuleProvider="target">
@@ -2429,33 +2410,18 @@
                                     <outlet property="delegate" destination="aNZ-FD-v6J" id="d48-3h-R9B"/>
                                 </connections>
                             </tableView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ibe-1d-wgf">
-                                <rect key="frame" x="0.0" y="436" width="320" height="44"/>
-                                <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Xah-Rt-JNY"/>
-                                    <barButtonItem image="icon-home-SH" id="gIn-Fd-QRp">
-                                        <inset key="imageInsets" minX="0.0" minY="-5" maxX="0.0" maxY="2"/>
-                                        <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="WyO-R0-RGu"/>
-                                </items>
-                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="ibe-1d-wgf" secondAttribute="trailing" id="HOb-tS-ZRv"/>
-                            <constraint firstItem="ibe-1d-wgf" firstAttribute="leading" secondItem="gPx-uG-wVu" secondAttribute="leading" id="ON3-2E-N2l"/>
                             <constraint firstItem="D6b-aP-BCJ" firstAttribute="top" secondItem="gPx-uG-wVu" secondAttribute="top" id="dVd-qt-jd5"/>
+                            <constraint firstItem="RA0-3u-jjw" firstAttribute="top" secondItem="D6b-aP-BCJ" secondAttribute="bottom" id="gDl-r0-2V1"/>
                             <constraint firstItem="D6b-aP-BCJ" firstAttribute="leading" secondItem="gPx-uG-wVu" secondAttribute="leading" id="jL1-eb-FjN"/>
-                            <constraint firstItem="RA0-3u-jjw" firstAttribute="top" secondItem="ibe-1d-wgf" secondAttribute="bottom" id="ob9-se-KCP"/>
                             <constraint firstAttribute="trailing" secondItem="D6b-aP-BCJ" secondAttribute="trailing" id="xJi-LW-emm"/>
-                            <constraint firstItem="ibe-1d-wgf" firstAttribute="top" secondItem="D6b-aP-BCJ" secondAttribute="bottom" id="zzC-Ew-VAz"/>
                         </constraints>
                     </view>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="480"/>
                     <connections>
-                        <outlet property="homeButtonItem" destination="gIn-Fd-QRp" id="3sQ-HR-IaN"/>
                         <outlet property="myContactsTable" destination="D6b-aP-BCJ" id="lDg-0E-pua"/>
                     </connections>
                 </viewController>
@@ -2531,7 +2497,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oGj-dc-QSj" customClass="ChatTextInputView" customModule="Origami_task_manager" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="382" width="320" height="49"/>
+                                <rect key="frame" x="0.0" y="387" width="320" height="49"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ij3-eq-guf" userLabel="topDividerView">
                                         <rect key="frame" x="2" y="0.0" width="316" height="1"/>
@@ -2632,7 +2598,7 @@
                                 </connections>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="77" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="aoE-9g-R1b">
-                                <rect key="frame" x="0.0" y="64" width="320" height="318"/>
+                                <rect key="frame" x="0.0" y="64" width="320" height="323"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="MyMessageCell" rowHeight="74" id="2Ic-Yf-LWF" customClass="ChatMessageSentCell" customModule="Origami_task_manager" customModuleProvider="target">
@@ -2834,30 +2800,10 @@
             </objects>
             <point key="canvasLocation" x="2739" y="166"/>
         </scene>
-        <!--Home Screen Tab Bar Controller-->
-        <scene sceneID="3Ud-qd-Zig">
-            <objects>
-                <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bUg-lL-gBX" customClass="HomeScreenTabBarController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="600" height="600"/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="DUR-5O-L7K">
-                        <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    </tabBar>
-                    <connections>
-                        <segue destination="XMk-tn-8Z2" kind="relationship" relationship="viewControllers" id="DDR-lu-1zp"/>
-                    </connections>
-                </tabBarController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yGH-NH-VtD" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="717" y="141"/>
-        </scene>
         <!--Home-->
         <scene sceneID="ebQ-zU-eKt">
             <objects>
-                <navigationController id="XMk-tn-8Z2" customClass="HomeNavigationController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController toolbarHidden="NO" id="XMk-tn-8Z2" customClass="HomeNavigationController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Home" image="icon-home-SH" id="A5W-o3-zcD">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="20"/>
                     </tabBarItem>
@@ -2867,18 +2813,21 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="hOK-Tb-NaN">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="kCr-Uh-jTS" kind="relationship" relationship="rootViewController" id="dBh-fy-KIm"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fbD-sf-jSo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1384" y="151"/>
+            <point key="canvasLocation" x="1079" y="60"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="LT0-DO-slv">
             <objects>
-                <navigationController storyboardIdentifier="ProfileNavController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="K7K-n4-FlS" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="ProfileNavController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" toolbarHidden="NO" id="K7K-n4-FlS" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="lTX-Ho-eA2">
@@ -2886,6 +2835,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="8P6-ZG-mY6">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="6l0-Qx-1y5" kind="relationship" relationship="rootViewController" id="WoY-fw-g57"/>
                     </connections>
@@ -2901,7 +2853,7 @@
         <image name="icon-edit" width="50" height="50"/>
         <image name="icon-favourite" width="50" height="50"/>
         <image name="icon-flag" width="50" height="50"/>
-        <image name="icon-home-SH" width="50" height="60"/>
+        <image name="icon-home-SH" width="55" height="55"/>
         <image name="icon-idea" width="50" height="50"/>
         <image name="icon-okey" width="50" height="50"/>
         <image name="icon-send" width="50" height="50"/>

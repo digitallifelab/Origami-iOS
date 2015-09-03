@@ -27,7 +27,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             if collectionDataSource != nil
             {
                 collectionDataSource?.displayMode = self.displayMode
-                collectionView.reloadData()
+                self.prepareCollectionViewDataAndLayout()
             }
         }
     }
@@ -42,11 +42,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewDidLoad()
      
         //println(" ...viewDidLoad....")
-        self.fadeViewControllerAnimator = FadeOpaqueAnimator()
         
+        //prepare our appearance
+        self.fadeViewControllerAnimator = FadeOpaqueAnimator()
+        configureRightBarButtonItem()
+        configureNavigationControllerToolbarItems()
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         
-        configureRightBarButtonItem()
+        
         
         queryAttachesDataAndShowAttachesCellOnCompletion()
         
@@ -131,6 +134,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
         
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
+        
         let chatPath = NSIndexPath(forItem: 1, inSection: 0)
         var chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
         
@@ -153,6 +158,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             println("\(self) view has ambiguous layout.\n")
             //self.view.exerciseAmbiguityInLayout()
         }
+        
+        //configureNavigationControllerToolbarItems()
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -163,17 +170,43 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementMoreDetailsNotification, object: nil)
+     
     }
     
     override func viewDidDisappear(animated: Bool)
     {
         super.viewDidDisappear(animated)
     }
-    
+    //MARK: Appearance --
     func configureRightBarButtonItem()
     {
         var addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "optionsBarButtonTapped:")
         self.navigationItem.rightBarButtonItem = addButton
+    }
+    
+    func configureNavigationControllerToolbarItems()
+    {
+        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
+
+        let homeImageButton = UIBarButtonItem(customView: homeButton)
+        
+        let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
+        
+        //
+        self.setToolbarItems(currentToolbarItems, animated: false)
+    }
+    
+    func homeButtonPressed(sender:UIBarButtonItem)
+    {
+        self.navigationController?.popToRootViewControllerAnimated(true)
     }
     
     //MARK: -----
@@ -372,18 +405,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
         
         if nightModeOn
         {
             self.displayMode = .Night
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.backgroundColor = kBlackColor
         }
         else
         {
             self.displayMode = .Day
             self.view.backgroundColor = kDayViewBackgroundColor//kDayCellBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
+            self.navigationController?.toolbar.backgroundColor = kWhiteColor
         }
         
         self.collectionView.reloadData()
@@ -1044,7 +1082,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
                             DataSource.sharedInstance.deleteElementFromLocalStorage(elementID)
                             
-                            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementID)])
+//                            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementID)])
                             
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }
@@ -1059,12 +1097,21 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
+    func elementWasDeleted(notification:NSNotification?)
+    {
+        if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
+        {
+           self.prepareCollectionViewDataAndLayout()
+        }
+    }
+    
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element) {
         
         let nextViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as! SingleElementDashboardVC
         nextViewController.currentElement = element
         self.navigationController?.pushViewController(nextViewController, animated: true)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
     }
     
     //MARK: AttachmentSelectionDelegate

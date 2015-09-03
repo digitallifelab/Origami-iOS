@@ -58,7 +58,6 @@
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
 		F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
-		F87E144E1B554A0C0072BE3A /* HomeScreenTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */; };
 		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
 		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
 		F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */; };
@@ -163,7 +162,6 @@
 		F8C93AF31B861B94009D890E /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */; };
 		F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8016FF01B304614002A1620 /* FrameCounter.swift */; };
 		F8C93AF51B861B94009D890E /* ElementActionButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */; };
-		F8C93AF61B861B94009D890E /* HomeScreenTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */; };
 		F8C93AF71B861B94009D890E /* ElementDashboardCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9101B2704D200B867BF /* ElementDashboardCollectionViewCell.swift */; };
 		F8C93AF81B861B94009D890E /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */; };
@@ -299,7 +297,6 @@
 		F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementAttachedFilesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
 		F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableItemPickerVC.swift; sourceTree = "<group>"; };
-		F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenTabBarController.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
 		F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementButtonsCell.swift; sourceTree = "<group>"; };
@@ -605,7 +602,6 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
-				F87E144D1B554A0C0072BE3A /* HomeScreenTabBarController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F87637791B56604100AFE376 /* Menu */,
@@ -1150,7 +1146,6 @@
 				F8C93AF31B861B94009D890E /* ImagePickingViewController.swift in Sources */,
 				F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */,
 				F8C93AF51B861B94009D890E /* ElementActionButtonCell.swift in Sources */,
-				F8C93AF61B861B94009D890E /* HomeScreenTabBarController.swift in Sources */,
 				F8C93AF71B861B94009D890E /* ElementDashboardCollectionViewCell.swift in Sources */,
 				F8C93AF81B861B94009D890E /* FileHandler.m in Sources */,
 				F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */,
@@ -1265,7 +1260,6 @@
 				F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */,
 				F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */,
 				F87FE6C01B611726004CA576 /* ElementActionButtonCell.swift in Sources */,
-				F87E144E1B554A0C0072BE3A /* HomeScreenTabBarController.swift in Sources */,
 				F874D9111B2704D200B867BF /* ElementDashboardCollectionViewCell.swift in Sources */,
 				F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */,
 				F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */,

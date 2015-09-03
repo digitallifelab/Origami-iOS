@@ -41,7 +41,10 @@ class SideMenuCell: UITableViewCell
         var nightModeOn:Bool = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         switcher?.on = nightModeOn
     }
-    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.backgroundColor = UIColor.clearColor()
+    }
     override func layoutSubviews() {
         
         super.layoutSubviews()
@@ -97,6 +100,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
                 self.menuTable = table
                 self.menuTable?.delegate = self
                 self.menuTable?.dataSource = self
+                self.menuTable?.backgroundColor = kDayNavigationBarBackgroundColor
                 break
             }
         }
