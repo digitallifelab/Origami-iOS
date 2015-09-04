@@ -9,12 +9,6 @@
 import Foundation
 import UIKit
 
-
-
-
-///------------------------------------------///
-///--                                     ---///
-///------------------------------------------///
 class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
 {
     var cellAttributes:[NSIndexPath : UICollectionViewLayoutAttributes]?

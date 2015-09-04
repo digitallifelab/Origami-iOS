@@ -259,36 +259,44 @@ class ServerRequester: NSObject
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
             let params = [tokenKey:DataSource.sharedInstance.user?.token as! String]
-        
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             var requestString = "\(serverURL)" + "\(getElementsUrlPart)"
             let requestOperation = httpManager.GET(
                 requestString,
                 parameters:params,
                 success:
                 { (operation, responseObject) -> Void in
-                    if let dictionary = responseObject as? [String:AnyObject],
-                        elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
-                    {
-                        var elements = Set<Element>()
-                        for lvElementDict in elementsArray
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    let bgQueue = dispatch_queue_create("ElementsCompletionQueue", DISPATCH_QUEUE_SERIAL)
+                   
+                    dispatch_async(bgQueue, { () -> Void in
+                        if let dictionary = responseObject as? [String:AnyObject],
+                            elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
                         {
-                            //let type = lvElementDict["TypeId"] as? Int
-                            //println(" -> element type: \(type) \n")
-                            let lvElement = Element(info: lvElementDict)
+                            var elements = Set<Element>()
+                            for lvElementDict in elementsArray
+                            {
+                                //let type = lvElementDict["TypeId"] as? Int
+                                //println(" -> element type: \(type) \n")
+                                let lvElement = Element(info: lvElementDict)
+                                
+                                elements.insert(lvElement)
+                            }
+                            println("loaded \(elements.count) elements.. ")
                             
-                            elements.insert(lvElement)
+                            completion(Array(elements),nil)
                         }
-                        println("loaded \(elements.count) elements.. ")
-                        completion(Array(elements),nil)
-                    }
-                    else
-                    {
-                        completion(nil,NSError())
-                    }
+                        else
+                        {
+                            completion(nil,NSError())
+                        }
+                    })
+                    
                     
             },
                 failure:
                 { (operation, responseError) -> Void in
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 completion(nil, responseError)
             })
         }

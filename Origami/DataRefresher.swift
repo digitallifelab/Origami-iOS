@@ -25,8 +25,12 @@ class DataRefresher
     func startRefreshingElementsWithTimeoutInterval(timeout:NSTimeInterval)
     {
         refreshInterval = timeout
-        
-        loadElements()
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {[weak self] () -> Void in
+            if let weakSelf = self
+            {
+                weakSelf.loadElements()
+            }
+        })
     }
     
     func loadElements()
@@ -35,6 +39,7 @@ class DataRefresher
         isInProgress = true
         
         serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
+            
             if let weakSelf = self
             {
                 if weakSelf.cancelled

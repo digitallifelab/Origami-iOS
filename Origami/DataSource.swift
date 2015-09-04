@@ -406,40 +406,55 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 allMessagesSet.unionInPlace( Set(lvMessages))
             }
-            var unsortedArray = Array(allMessagesSet)
+            var sortedArray = Array(allMessagesSet)
             
-            ObjectsConverter.sortMessagesByDate(&unsortedArray)
+            ObjectsConverter.sortMessagesByDate(&sortedArray)
             
-            if unsortedArray.count > messagesQuantity //now the array is actually SORTED
-            {
+//            if sortedArray.count > messagesQuantity //now the array is actually SORTED
+//            {
                 var lastThreeItems = [Message]()
-                for var i = 0; i < messagesQuantity; i++
+                let reversed = sortedArray.reverse()
+                var index = 0
+            
+            var elementIDsToDeleteMessageSet = Set<NSNumber>()
+            for aMessage in reversed
+            {
+                if lastThreeItems.count > 2
                 {
-                    var last = unsortedArray.removeLast()
-                    lastThreeItems.insert(last, atIndex: 0)
+                    break
                 }
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if let completionBlock = completionClosure
+                
+                let lastMessage = reversed[index]
+                index += 1
+                
+                if let elementId = lastMessage.elementId
+                {
+                    if let existElementForMEssage = DataSource.sharedInstance.getElementById(elementId.integerValue)
                     {
-                        //println(" Finished sorting last 3 messages for HomeScreen.")
-                        completionBlock(messages: lastThreeItems) //return result
+                        lastThreeItems.insert(lastMessage, atIndex: 0)
                     }
-                })
+                    else
+                    {
+                        elementIDsToDeleteMessageSet.insert(elementId)
+                    }
+                }
                 
             }
-            else
+            
+            if !elementIDsToDeleteMessageSet.isEmpty
             {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if let completionBlock = completionClosure
-                    {
-                        //println(" Finished sorting last 3 messages for HomeScreen.")
-                        completionBlock(messages: unsortedArray) //return result
-                    }
-                })
+                println(" deleting messages for non existing elements...")
+                DataSource.sharedInstance.removeMessagesForDeletedElements(elementIDsToDeleteMessageSet)
             }
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let completionBlock = completionClosure
+                {
+                    //println(" Finished sorting last 3 messages for HomeScreen.")
+                    completionBlock(messages: lastThreeItems) //return result
+                }
+            })
         })
         
-       
     }
     
     func addObserverForNewMessagesForElement(newObserver:MessageObserver, elementId:NSNumber) -> ResponseType
@@ -473,6 +488,19 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
     }
+    
+    func removeMessagesForDeletedElements(elementIDs:Set<NSNumber>)
+    {
+        let aLock = NSLock()
+        aLock.name = "MessageDeletionLock"
+        aLock.lock()
+        for anId in elementIDs
+        {
+            DataSource.sharedInstance.messages[anId] = nil
+        }
+        aLock.unlock()
+    }
+    
     
     func loadLastMessages(completion:successErrorClosure?)
     {
