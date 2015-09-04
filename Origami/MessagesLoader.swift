@@ -92,8 +92,7 @@ class MessagesLoader:NSObject
             let intervalTime = UInt64(interval * Double(NSEC_PER_SEC))
             let startTime = dispatch_time(DISPATCH_TIME_NOW, 0)
         
-            dispatch_source_set_timer(dispatchSource!, startTime, intervalTime, 0)
-        
+        dispatch_source_set_timer(dispatchSource!, startTime, intervalTime, 0)
     }
     
     func stopRefreshingLastMessages()

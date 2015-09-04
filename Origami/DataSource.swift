@@ -491,7 +491,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var lvMessagesHolder = [NSNumber:[Message]]()
                     for lvMessage in messagesArray
                     {
-                        //println(">>> ElementId:\(lvMessage.elementId) , Message: \(lvMessage.textBody)")
+                        println(">>> \(lvMessage.toDictionary().description)))")
                         if lvMessagesHolder[lvMessage.elementId!] != nil
                         {
                             lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -853,8 +853,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         })
                     }
                 })
-                
-                
             }
             else
             {
@@ -862,7 +860,52 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
     }
+    func countExistingElementsLocked() -> Int
+    {
+        var elementsCount:Int = 0
+        
+        let aLock =  NSLock()
+        aLock.lock()
+            elementsCount = DataSource.sharedInstance.elements.count
+        aLock.unlock()
+        
+        return elementsCount
+        
+    }
+    func getAllElementsLocked() -> [Element]?
+    {
+        let aLock = NSLock()
+        var elements = [Element]()
+        aLock.lock()
+            elements += DataSource.sharedInstance.elements
+        aLock.unlock()
+        
+        if elements.isEmpty
+        {
+            return nil
+        }
+        return elements
+    }
     
+    func addElementsLocked(newElements:[Element])
+    {
+        let aLock = NSLock()
+        aLock.lock()
+        DataSource.sharedInstance.elements += newElements
+        aLock.unlock()
+        
+    }
+    
+    func deleteElementsLocked(elementsToDelete:[Int])
+    {
+        let aLock = NSLock()
+        aLock.lock()
+        for anElementId in elementsToDelete
+        {
+            DataSource.sharedInstance.deleteElementFromLocalStorage(anElementId)
+        }
+        aLock.unlock()
+    }
 //    func getRootElementTitlesFor(element:Element) -> [String]
 //    {
 //        var lvTitles = [String]()

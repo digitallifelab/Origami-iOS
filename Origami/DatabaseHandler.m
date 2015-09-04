@@ -76,7 +76,10 @@
         //NSLog(@"Database store path: \n  %@ \n", storeURL.absoluteString);
 #endif
         NSError *error = nil;
-        NSAssert([psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error], @"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
+        NSPersistentStore *result = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:options error:&error];
+        NSAssert( result , @"Error initializing PSC: %@\n%@", [error localizedDescription], [error userInfo]);
+        
+        [result loadMetadata:&error];
         
         if (weakSelf.callback != nil)
         {

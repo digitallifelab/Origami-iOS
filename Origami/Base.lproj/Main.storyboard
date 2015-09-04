@@ -70,7 +70,7 @@
                     <size key="freeformSize" width="320" height="480"/>
                     <connections>
                         <segue destination="UGF-yz-ac4" kind="presentation" identifier="ShowLoginScreen" id="Xby-XW-Lzh"/>
-                        <segue destination="XMk-tn-8Z2" kind="presentation" identifier="ShowMainTabbar" id="2KC-Ua-zFk"/>
+                        <segue destination="XMk-tn-8Z2" kind="presentation" identifier="ShowHomeVC" animates="NO" id="2KC-Ua-zFk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KVr-P9-YW8" userLabel="First Responder" sceneMemberID="firstResponder"/>

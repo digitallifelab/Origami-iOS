@@ -269,17 +269,17 @@ class ServerRequester: NSObject
                     if let dictionary = responseObject as? [String:AnyObject],
                         elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
                     {
-                        var elements = [Element]()
+                        var elements = Set<Element>()
                         for lvElementDict in elementsArray
                         {
-                            let type = lvElementDict["TypeId"] as? Int
+                            //let type = lvElementDict["TypeId"] as? Int
                             //println(" -> element type: \(type) \n")
                             let lvElement = Element(info: lvElementDict)
                             
-                            elements.append(lvElement)
+                            elements.insert(lvElement)
                         }
                         println("loaded \(elements.count) elements.. ")
-                        completion(elements,nil)
+                        completion(Array(elements),nil)
                     }
                     else
                     {

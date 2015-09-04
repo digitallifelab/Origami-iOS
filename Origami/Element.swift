@@ -158,13 +158,40 @@ class Element:NSObject
     override func isEqual(object: AnyObject?) -> Bool {
         if let lvElement = object as? Element
         {
+            var titlesEqual = false
+            var descriptionsEqual = false
+            var elementIdIsEqual = false
+            
             if self.elementId != nil && lvElement.elementId != nil
             {
-                if self.elementId! == lvElement.elementId!
+                if self.elementId!.isEqualToNumber( lvElement.elementId!)
                 {
-                    return true
+                     elementIdIsEqual = true
                 }
             }
+            
+            if let aTitle = self.title as? String, objTitle = lvElement.title as? String
+            {
+                if aTitle == objTitle
+                {
+                    titlesEqual = true
+                }
+            }
+            
+            if let aDescription = self.details as? String , objDescription = lvElement.details as? String
+            {
+                if aDescription == objDescription
+                {
+                    descriptionsEqual = true
+                }
+            }
+            
+            if self.details == nil && lvElement.details == nil
+            {
+                descriptionsEqual = true
+            }
+            
+            return elementIdIsEqual && titlesEqual && descriptionsEqual
         }
         
         return false

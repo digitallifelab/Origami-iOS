@@ -329,7 +329,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 titleCell.displayMode = self.displayMode
                 
                 //titleCell.labelTitle.text = getElementTitle()
-                titleCell.titleTextView?.text = getElementTitle()
+                if let title = getElementTitle()
+                {
+                    titleCell.titleTextView?.attributedText = NSAttributedString(string: title, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 30)!, NSForegroundColorAttributeName:kWhiteColor])
+                }
+                
                 titleCell.labelDate.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateStringShortStyle() as? String
                 if let isFavourite = self.handledElement?.isFavourite.boolValue
                 {

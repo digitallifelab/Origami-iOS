@@ -83,8 +83,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
-        configureNavigationControllerToolbarItems()
-        
+        configureNavigationControllerToolbarItems()        
     }
 
     override func didReceiveMemoryWarning()
@@ -110,7 +109,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidAppear(animated)
         
-        println("-> viewDidAppear")
+        //println("-> viewDidAppear")
         
         if let user = DataSource.sharedInstance.user
         {

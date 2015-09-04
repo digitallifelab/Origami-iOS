@@ -15,7 +15,7 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UITextViewDelegate {
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UITextViewDelegate, UIAlertViewDelegate {
 
     var rootElementID:Int = 0
     var composingDelegate:ElementComposingDelegate?
@@ -647,22 +647,38 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func deleteElementToolBarButtonTapped(sender:UIButton?)
     {
-        var alertController = UIAlertController(title: "Warning", message: "You are about to delete current element and all it`s subordinates.", preferredStyle: .Alert)
-        let deleteAction = UIAlertAction(title: "Delete", style: UIAlertActionStyle.Default ) { [unowned self](alertAction) -> Void in
-            
-            self.dismissViewControllerAnimated(true, completion: {[unowned self] () -> Void in
-                NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: self, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
-            })
+        let warningTitle = "Warning".localizedWithComment("")
+        let warningMessage = "You are about to delete current element and all it`s subordinates."
+        let deleteTitle = "delete".localizedWithComment("")
+        let cancelTitle = "cancel".localizedWithComment("")
+        
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            let alertDelete = UIAlertView(title: warningTitle, message: warningMessage, delegate: self, cancelButtonTitle: cancelTitle, otherButtonTitles: deleteTitle)
+            alertDelete.tag = 0xde1e7e
+            alertDelete.show()
         }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (alertAction) -> Void in
+        else
+        {
+            var alertController = UIAlertController(title: warningTitle, message: warningMessage, preferredStyle: .Alert)
+            let deleteAction = UIAlertAction(title: deleteTitle , style: UIAlertActionStyle.Default ) { [weak self](alertAction) -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.dismissSelfWithElementDeletedNotification()
+                }
+                
+            }
             
+            let cancelAction = UIAlertAction(title: cancelTitle, style: .Cancel) { (alertAction) -> Void in
+                
+            }
+            
+            alertController.addAction(deleteAction)
+            alertController.addAction(cancelAction)
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
         }
-        
-        alertController.addAction(deleteAction)
-        alertController.addAction(cancelAction)
-        
-        self.presentViewController(alertController, animated: true, completion: nil)
+      
     
     }
     
@@ -671,6 +687,26 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
     }
     
+    func alertView(alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int)
+    {
+        if alertView.tag == 0xde1e7e
+        {
+            if buttonIndex != alertView.cancelButtonIndex
+            {
+               
+                dismissSelfWithElementDeletedNotification()
+            }
+        }
+    }
+    
+    
+    func dismissSelfWithElementDeletedNotification()
+    {
+        self.dismissViewControllerAnimated(true, completion: { () -> Void in
+             NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
+        })
+        
+    }
 }// class end
 
 

@@ -39,6 +39,7 @@
 "female" = "Женщина";
 
 "cancel" = "Отмена";
+"delete" = "Удалить";
 "done" = "Готово";
 "change" = "Изменить";
 "sureToChangePassword" = "Подтвердите смену пароля.";

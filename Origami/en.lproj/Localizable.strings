@@ -38,6 +38,7 @@
 "female" = "Woman";
 
 "cancel" = "Cancel";
+"delete" = "Delete";
 "done" = "Done";
 "change" = "Change";
 "sureToChangePassword" = "Are you sure to change password?";

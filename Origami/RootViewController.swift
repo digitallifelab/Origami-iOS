@@ -11,7 +11,7 @@ import UIKit
 class RootViewController: UIViewController {
     
     //var messagesLoader = MessagesLoader()
-    
+    let dataRefresher = DataRefresher()
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -24,44 +24,28 @@ class RootViewController: UIViewController {
         
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
-            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+            var types:UIRemoteNotificationType = application.enabledRemoteNotificationTypes()
+            if (types == .None)
+            {
+                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+            }
+   
         }
         else
         {
-            let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
-        
-            application.registerUserNotificationSettings(settings)
+            var types: UIUserNotificationType = application.currentUserNotificationSettings().types
+            if types == .None
+            {
+                let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
+                
+                application.registerUserNotificationSettings(settings)
+            }
         }
-        
-        /*
-        
-        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
-        {
-            UIUserNotificationType types;
-            types = [[UIApplication sharedApplication] currentUserNotificationSettings].types;
-        
-            if (types & UIUserNotificationTypeAlert)
-                pushEnabled=YES;
-            else
-                pushEnabled=NO;
-        }
-        else
-        {
-            UIRemoteNotificationType types;
-            types = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-            
-            if (types & UIRemoteNotificationTypeAlert)
-                pushEnabled=YES;
-            else
-                pushEnabled=NO;
-        
-        }
-        
-        */
         
     }
 
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
         DataSource.sharedInstance.cleanDataCache()
@@ -72,7 +56,9 @@ class RootViewController: UIViewController {
         super.viewDidAppear(animated)
         if let user = DataSource.sharedInstance.user
         {
-            self.performSegueWithIdentifier("ShowMainTabbar", sender: nil)
+            self.performSegueWithIdentifier("ShowHomeVC", sender: nil)
+            
+            dataRefresher.startRefreshingElementsWithTimeoutInterval(30.0)
             
             return
         }
@@ -83,6 +69,8 @@ class RootViewController: UIViewController {
   
     func handleLogoutNotification(notification:NSNotification?)
     {
+        self.dataRefresher.stopRefreshingElements()
+        
         DataSource.sharedInstance.performLogout {[weak self] () -> () in
             if let weakSelf = self
             {

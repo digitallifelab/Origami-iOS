@@ -153,11 +153,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
         }
         
-        if self.view.hasAmbiguousLayout()
-        {
-            println("\(self) view has ambiguous layout.\n")
-            //self.view.exerciseAmbiguityInLayout()
-        }
+//        if self.view.hasAmbiguousLayout()
+//        {
+//            println("\(self) view has ambiguous layout.\n")
+//            //self.view.exerciseAmbiguityInLayout()
+//        }
         
         //configureNavigationControllerToolbarItems()
     }
