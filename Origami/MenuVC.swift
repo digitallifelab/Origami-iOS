@@ -85,7 +85,7 @@ class SideMenuCell: UITableViewCell
 class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, SwitchDelegate {
 
     //@IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
-    var menuTable:UITableView?
+    @IBOutlet weak var menuTable:UITableView?
     var menuItemsTitles = ["Home", "Profile", "Contacts", "Display Mode"]
     
     override func viewDidLoad() {
@@ -93,17 +93,17 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
         // Do any additional setup after loading the view.
         
-        for aView in self.view.subviews
-        {
-            if let table = aView as? UITableView
-            {
-                self.menuTable = table
+//        for aView in self.view.subviews
+//        {
+//            if let table = aView as? UITableView
+//            {
+//                self.menuTable = table
                 self.menuTable?.delegate = self
                 self.menuTable?.dataSource = self
-                self.menuTable?.backgroundColor = kDayNavigationBarBackgroundColor
-                break
-            }
-        }
+                self.menuTable?.backgroundColor = UIColor.clearColor()// kDayNavigationBarBackgroundColor
+//                break
+//            }
+//        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -184,7 +184,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         case 0:
             switch row{
             case 0:
-                return UIImage(named: "menu-icon-home")?.imageWithRenderingMode(.AlwaysTemplate)
+                return UIImage(named: "menu-icon-home")?.imageWithRenderingMode(.AlwaysTemplate) // set "alwaysTemplate" in code because ios 7 from storyboard does not understand image assets set to be alwaystemplate...
             case 1:
                 return UIImage(named: "menu-icon-profile")?.imageWithRenderingMode(.AlwaysTemplate)
             case 2:
@@ -253,5 +253,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         
         NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Switch_Night_Mode_Changed, object: nil, userInfo: ["mode":state])
     }
+    
+    
 
 }

@@ -159,6 +159,48 @@ class Contact:NSObject
         return toReturn
     }
     
+    func birthdayString() -> String?
+    {
+        if let birhday = self.birthDay
+        {
+            if let date = birhday.dateFromServerDateString()
+            {
+                if let birthDateString = date.dateStringMediumStyle()
+                {
+                    return birthDateString
+                }
+            }
+        }
+        return nil
+    }
+    
+    func nameAndLastNameSpacedString() -> String?
+    {
+        var nameString = ""
+        if let firstName = self.firstName as? String
+        {
+            nameString += firstName
+        }
+        if let lastName = self.lastName as? String
+        {
+            if nameString.isEmpty
+            {
+                nameString = lastName
+            }
+            else
+            {
+                nameString += (" " + lastName)
+            }
+        }
+        
+        if nameString.isEmpty
+        {
+            return nil
+        }
+        return nameString
+    }
+    
+    //MARK: Set , NSSet stuff
     override func isEqual(contact:AnyObject?)->Bool
     {
         if let object = contact as? Contact

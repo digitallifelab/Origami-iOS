@@ -67,7 +67,7 @@ extension NSDate
     {
         var dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .ShortStyle
+        dateFormatter.timeStyle = .MediumStyle
         
         let toReturn = dateFormatter.stringFromDate(self)
         

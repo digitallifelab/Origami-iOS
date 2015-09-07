@@ -1886,10 +1886,10 @@
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SideMenuCell" id="2W4-4w-C9e" customClass="SideMenuCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2W4-4w-C9e" id="bg0-Jt-Khg">
+                                        <tableViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2W4-4w-C9e" id="bg0-Jt-Khg">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YZr-TL-RHH">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YZr-TL-RHH" userLabel="menuIconImageView">
                                                     <rect key="frame" x="8" y="7" width="30" height="30"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1911,6 +1911,7 @@
                                                     <rect key="frame" x="357" y="5" width="51" height="31"/>
                                                 </switch>
                                             </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="centerY" secondItem="zMJ-w5-zdy" secondAttribute="centerY" id="6Wx-lo-6RB"/>
                                                 <constraint firstItem="yHU-im-CrB" firstAttribute="trailing" secondItem="bg0-Jt-Khg" secondAttribute="trailingMargin" id="8gS-lE-yV6"/>
@@ -1948,10 +1949,13 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="414" height="736"/>
+                    <connections>
+                        <outlet property="menuTable" destination="8Uw-wK-quV" id="G6f-vC-qoh"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="erZ-mQ-nuD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4384" y="426"/>
+            <point key="canvasLocation" x="4293" y="430"/>
         </scene>
         <!--User ProfileVC-->
         <scene sceneID="H28-4L-iPc">

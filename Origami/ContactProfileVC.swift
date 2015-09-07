@@ -72,7 +72,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         {
         case 0: // avatar
             return 117.0
-        case 1..<6: // name, email, phone, mood, so on
+        case 1..<10: // name, email, phone, mood, so on
             return 60.0
         default:
             return 0.0
@@ -81,7 +81,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     //MARK: UITableViewDataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return 9
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -120,50 +120,91 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         let currentRow = indexPath.row
             switch currentRow
             {
-            case 1:
-                toReturnInfo[titleInfoKey] = "name".localizedWithComment("")
-                toReturnInfo[detailsInfoKey] = contactNameStringFromContact(contact)
-                return toReturnInfo
-            case 2:
-            if let email = contact.userName as? String
-            {
-                toReturnInfo[titleInfoKey] = "email".localizedWithComment("")
-                toReturnInfo[detailsInfoKey] = email
-                return toReturnInfo
-            }
-            case 3:
-                if let userPhone = contact.phone as? String
-                {
+                case 1:
+                    toReturnInfo[titleInfoKey] = "mood".localizedWithComment("")
+                    if let contactMood = contact.mood as? String
+                    {
+                        toReturnInfo[detailsInfoKey] = contactMood
+                    }
+                case 2:
+                    toReturnInfo[titleInfoKey] = "name".localizedWithComment("")
+                    if let nameAndLastNameSingleString = contact.nameAndLastNameSpacedString()
+                    {
+                        toReturnInfo[detailsInfoKey] = nameAndLastNameSingleString //contactNameStringFromContact(contact)
+                    }
+                case 3:
+                    toReturnInfo[titleInfoKey] = "email".localizedWithComment("")
+                    if let email = contact.userName as? String
+                    {
+                        toReturnInfo[detailsInfoKey] = email
+                    }
+                case 4:
                     toReturnInfo[titleInfoKey] = "phone".localizedWithComment("")
-                    toReturnInfo[detailsInfoKey] = userPhone
-                    return toReturnInfo
-                }
-            default :
-                break
+                    if let userPhone = contact.phone as? String
+                    {
+                        toReturnInfo[detailsInfoKey] = userPhone
+                    }
+                case 5:
+                    toReturnInfo[titleInfoKey] = "age".localizedWithComment("")
+                    if let aBirthDay = contact.birthdayString()
+                    {
+                        toReturnInfo[detailsInfoKey] = aBirthDay
+                    }
+                case 6:
+                    toReturnInfo[titleInfoKey] = "language".localizedWithComment("")
+                    if let aLang = contact.language as? String
+                    {
+                        toReturnInfo[detailsInfoKey] = aLang
+                    }
+                case 7:
+                    toReturnInfo[titleInfoKey] = "country".localizedWithComment("")
+                    if let aCountry = contact.country as? String
+                    {
+                        toReturnInfo[detailsInfoKey] = aCountry
+                    }
+                case 8:
+                    toReturnInfo[titleInfoKey] = "sex".localizedWithComment("")
+                    if let aGender = contact.sex
+                    {
+                        let female = aGender.boolValue
+                        if female
+                        {
+                            toReturnInfo[detailsInfoKey] = "female".localizedWithComment("")
+                        }
+                        else
+                        {
+                            toReturnInfo[detailsInfoKey] = "male".localizedWithComment("")
+                        }
+                    }
+                
+                default :
+                    break
             }
+            return toReturnInfo
+            
         }
         return nil
     }
-    
-    private func contactNameStringFromContact(contact:Contact) -> String
-    {
-        var nameString = ""
-        if let firstName = contact.firstName as? String
-        {
-            nameString += firstName
-        }
-        if let lastName = contact.lastName as? String
-        {
-            if nameString.isEmpty
-            {
-                nameString = lastName
-            }
-            else
-            {
-                nameString += (" " + lastName)
-            }
-        }
-        
-        return nameString
-    }
+//    
+//    private func contactNameStringFromContact(contact:Contact) -> String
+//    {
+//        var nameString = ""
+//        if let firstName = contact.firstName as? String
+//        {
+//            nameString += firstName
+//        }
+//        if let lastName = contact.lastName as? String
+//        {
+//            if nameString.isEmpty
+//            {
+//                nameString = lastName
+//            }
+//            else
+//            {
+//                nameString += (" " + lastName)
+//            }
+//        }
+//        
+//        return nameString
+//    }
 }

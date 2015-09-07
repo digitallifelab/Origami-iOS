@@ -182,16 +182,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
-        //homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
-        //        let imageView = UIImageView(frame: CGRectMake(0, 0, 44, 44))
-        //        imageView.contentMode = UIViewContentMode.ScaleAspectFill
-        //        imageView.image = UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate)
+    
         let homeImageButton = UIBarButtonItem(customView: homeButton)
-        //        homeImageButton.target = self
-        //        homeImageButton.action = "homeButtonPressed:"
-        
-        //let homeButton = UIBarButtonItem(image: UIImage(named: "icon-home-SH")!.imageWithRenderingMode(.AlwaysTemplate), style: UIBarButtonItemStyle.Bordered, target: self, action: "homeButtonPressed:")
-        
         let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         
