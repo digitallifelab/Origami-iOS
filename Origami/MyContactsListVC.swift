@@ -124,12 +124,20 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         super.viewDidAppear(animated)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "contactFavouriteToggledNotification:", name: kContactFavouriteButtonTappedNotification, object: nil)
+        
+        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
+        {
+            self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
+        }
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kContactFavouriteButtonTappedNotification, object: nil)
-        
+        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
+        {
+            self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
+        }
     }
     
     func configureNavigationItems()
@@ -161,7 +169,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        //leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+        leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         leftButton.tintColor = kDayNavigationBarBackgroundColor
         
         var leftBarButton = UIBarButtonItem(customView: leftButton)
@@ -199,7 +207,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     //MARK: Dismiss
     func homeButtonPressed(sender:UIButton)
     {
-        self.dismissViewControllerAnimated(true, completion: nil)
+//        self.dismissViewControllerAnimated(true, completion: nil)
+        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+        {
+            self.navigationController?.setViewControllers([home], animated: true)
+        }
     }
     
     func showAllContactsVC()
@@ -527,90 +539,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     //MARK: ------ menu displaying
     func menuButtonTapped(sender:AnyObject)
     {
-        handleDisplayingMenuAnimated(true, completion: { () -> () in
-            
-        })
-    }
-
-    func handleDisplayingMenuAnimated(animated:Bool, completion completionBlock:(()->())? = nil)
-    {
-        
-        // hide MenuTableVC
-        if let menuPresentedVC = self.presentedViewController as? MenuVC
-        {
-            let menuAnimator = MenuTransitionAnimator()
-            menuAnimator.shouldAnimate = animated
-            customTransitionAnimator = menuAnimator
-            
-            menuPresentedVC.transitioningDelegate = self
-            menuPresentedVC.dismissViewControllerAnimated(true, completion: { () -> Void in
-                if let compBlock = completionBlock
-                {
-                    compBlock()
-                }
-            }) //NOTE! this does not dismiss TabBarController, but dismisses menu VC from Tabbar`s presented view controller. the same could be achieved by calling "menuPresendedVC.dismissViewControllerAnimated ...."
-            return
-        }
-//        if let contactsOrProfileNavHolderVC = self.presentedViewController as? UINavigationController
-//        {
-//            contactsOrProfileNavHolderVC.dismissViewControllerAnimated(true, completion: { () -> Void in
-//                completionBlock?()
-//            })
-//            return
-//        }
-        
-        // present MenuTableVC
-        if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
-        {
-            let menuAnimator = MenuTransitionAnimator()
-            menuAnimator.shouldAnimate = animated
-            customTransitionAnimator = menuAnimator
-            
-            menuVC.modalPresentationStyle = .Custom
-            menuVC.transitioningDelegate = self
-            
-            self.presentViewController(menuVC, animated: true, completion: { () -> Void in
-                if let compBlock = completionBlock
-                {
-                    compBlock()
-                }
-            })
-        }
-    }
-    
-    //MARK: UIViewControllerTransitioningDelegate
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//        if let fadeInTransitor = customTransitionAnimator as? FadeOpaqueAnimator
-//        {
-//            fadeInTransitor.transitionDirection = .FadeIn
-//            return fadeInTransitor
-//        }
-//        else 
-        if let menuShowTransitor = customTransitionAnimator as? MenuTransitionAnimator
-        {
-            menuShowTransitor.transitionDirection = .FadeIn
-            return menuShowTransitor
-        }
-        
-        println(" Will not animate view controller transitioning")
-        return nil
-    }
-    
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//        if let fadeInTransitor = customTransitionAnimator as? FadeOpaqueAnimator
-//        {
-//            fadeInTransitor.transitionDirection = .FadeOut
-//            return fadeInTransitor
-//        }
-//        else
-            if let menuShowTransitor = customTransitionAnimator as? MenuTransitionAnimator
-        {
-            menuShowTransitor.transitionDirection = .FadeOut
-            return menuShowTransitor
-        }
-        
-        println(" Will not animate view controller transitioning")
-        return nil
+        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
     }
     
 

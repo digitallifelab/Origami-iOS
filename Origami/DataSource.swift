@@ -77,13 +77,15 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
-    #if SHEVCHENKO
-    #else
+    
     func saveDB()
     {
+        #if SHEVCHENKO
+        #else
         DataSource.sharedInstance.databaseHandler?.save()
+        #endif
     }
-    #endif
+   
     func removeAllObserversForNewMessages()
     {
         if !DataSource.sharedInstance.messagesObservers.isEmpty // self.messageObservers.count > 0

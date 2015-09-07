@@ -58,6 +58,9 @@ class FadeOpaqueAnimator : NSObject, UIViewControllerAnimatedTransitioning {
     }
 }
 
+
+
+//MARK: --------
 class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
 {
     var transitionDirection:FadedTransitionDirection = .FadeIn // used this enum to shorten enums quantity in project.  Better is to use some enum saying - "Display"<->"Hide"
@@ -169,3 +172,111 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         }
     }
 }
+
+//MARK: ----
+
+class menuRevealAnimator : MenuTransitionAnimator
+{
+    override func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
+        let containerView = transitionContext.containerView()
+        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
+        let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
+        
+        let wholeFrame = containerView.bounds
+        
+        var currentDeviceIdiom:UIUserInterfaceIdiom = .Phone
+        
+        
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            currentDeviceIdiom = UIDevice.currentDevice().userInterfaceIdiom
+        }
+        else
+        {
+            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
+            currentDeviceIdiom  = currentTraitCollection.userInterfaceIdiom
+        }
+        
+        var menuWidth:CGFloat = 210.0
+        
+        if currentDeviceIdiom == .Pad
+        {
+            menuWidth = 200.0
+        }
+        else
+        {
+            menuWidth = max(wholeFrame.size.width / 3.0, 200)
+        }
+        
+        
+        
+        //prepare animation options
+        var animationCurve = UIViewAnimationOptions.CurveEaseIn
+        
+        //perform the needed transition
+        if transitionDirection == .FadeIn //show menu
+        {
+            let hideMainViewFrame = CGRectOffset(fromVC!.view.frame, menuWidth, 0.0) // move to right HomeScreenVC`s view
+            let menuFrame = CGRectMake(-menuWidth, 0, menuWidth, wholeFrame.size.height)
+            //toVC!.view.frame = menuFrame // now hidden to left
+            
+            containerView.insertSubview(toVC!.view, aboveSubview: fromVC!.view)
+            
+            if !shouldAnimate
+            {
+                fromVC!.view.frame = hideMainViewFrame//CGRectOffset(menuFrame, menuWidth, 0.0)
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                return
+            }
+            
+            UIView.animateWithDuration(
+                transitionDuration(transitionContext),
+                delay: 0.0,
+                options: animationCurve,
+                animations: { () -> Void in
+                    
+                    fromVC!.view.frame = hideMainViewFrame //move to right
+                    //toVC!.view.frame = CGRectOffset(menuFrame, menuWidth, 0.0)//move to right
+                },
+                completion: { (finished) -> Void in
+                    
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+            })
+        }
+        else //hide menu
+        {
+            animationCurve = .CurveEaseOut
+            
+            let toHideFrame = CGRectOffset(fromVC!.view.frame, -CGRectGetWidth(fromVC!.view.frame), 0.0)
+            
+            containerView.insertSubview(fromVC!.view, aboveSubview: toVC!.view)
+            
+            
+            if !shouldAnimate
+            {
+                //toVC?.view.frame = wholeFrame //move to left HomeScreenVC
+                fromVC!.view.frame = toHideFrame //move to left Menu VC
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                return
+            }
+            
+            UIView.animateWithDuration(
+                transitionDuration(transitionContext),
+                delay: 0.0,
+                options: animationCurve,
+                animations: { () -> Void in
+                    
+                    //toVC?.view.frame = wholeFrame //move to left HomeScreenVC
+                    fromVC!.view.frame = toHideFrame //move to left Menu VC
+                },
+                completion: { (finished) -> Void in
+                    
+                    transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+            })
+        }
+    }
+
+    
+}
+
+

@@ -43,6 +43,8 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -103,12 +105,6 @@
                                     <action selector="loginButtonPress:" destination="UGF-yz-ac4" eventType="touchUpInside" id="6Gp-Ng-drI"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AKb-PF-R3o">
-                                <rect key="frame" x="16" y="240" width="568" height="30"/>
-                                <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
-                            </textField>
                             <view hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OI8-MY-dbo">
                                 <rect key="frame" x="262" y="278" width="76" height="5"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -117,11 +113,22 @@
                                     <constraint firstAttribute="width" constant="76" id="yZy-iP-lyg"/>
                                 </constraints>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Vhg-5m-q1o">
-                                <rect key="frame" x="16" y="291" width="568" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="password" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Vhg-5m-q1o">
+                                <rect key="frame" x="16" y="291" width="568" height="52"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="16"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES" secureTextEntry="YES"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="email" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AKb-PF-R3o">
+                                <rect key="frame" x="16" y="218" width="568" height="52"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" red="0.96078431369999995" green="0.2784313725" blue="0.28235294119999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="52" id="oa3-5C-Kxh"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                             </textField>
                         </subviews>
                         <color key="backgroundColor" red="0.11764705882352941" green="0.61960784313725492" blue="0.43137254901960786" alpha="1" colorSpace="calibratedRGB"/>
@@ -129,6 +136,7 @@
                             <constraint firstItem="OI8-MY-dbo" firstAttribute="top" secondItem="AKb-PF-R3o" secondAttribute="bottom" constant="8" id="A7b-9a-OSz"/>
                             <constraint firstItem="fYw-zZ-iPv" firstAttribute="top" secondItem="Uxo-Jh-pfs" secondAttribute="bottom" constant="54" id="Eu8-5H-vR2"/>
                             <constraint firstItem="AKb-PF-R3o" firstAttribute="leading" secondItem="T6g-Z0-Sgb" secondAttribute="leadingMargin" constant="167" id="NBO-3z-iAp"/>
+                            <constraint firstItem="AKb-PF-R3o" firstAttribute="height" secondItem="Vhg-5m-q1o" secondAttribute="height" id="NhK-tG-Evg"/>
                             <constraint firstItem="AKb-PF-R3o" firstAttribute="leading" secondItem="T6g-Z0-Sgb" secondAttribute="leadingMargin" priority="750" id="YCN-qV-pPk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Vhg-5m-q1o" secondAttribute="trailing" constant="166" id="Z5e-u1-vH0"/>
                             <constraint firstAttribute="centerY" secondItem="OI8-MY-dbo" secondAttribute="centerY" constant="60" id="ZwN-gf-mnV"/>
@@ -191,7 +199,7 @@
         <!--HomeVC-->
         <scene sceneID="PTC-Ke-b3A">
             <objects>
-                <viewController autoresizesArchivedViewToFullSize="NO" id="kCr-Uh-jTS" customClass="HomeVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HomeVC" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="kCr-Uh-jTS" customClass="HomeVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IgO-A8-ay8"/>
                         <viewControllerLayoutGuide type="bottom" id="WBg-rL-2c0"/>
@@ -513,7 +521,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EgA-hI-pa5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1745" y="60"/>
+            <point key="canvasLocation" x="1790" y="60"/>
         </scene>
         <!--New Element Composer View Controller-->
         <scene sceneID="6cG-CO-FuR">
@@ -1582,9 +1590,9 @@
                                     <constraint firstAttribute="height" constant="44" id="Yai-ZZ-Xoe"/>
                                 </constraints>
                                 <items>
-                                    <barButtonItem systemItem="done" id="NnN-ps-bl6">
+                                    <barButtonItem systemItem="cancel" id="NnN-ps-bl6">
                                         <connections>
-                                            <action selector="doneTapped:" destination="1BA-qx-qiz" id="HPd-ik-iT8"/>
+                                            <action selector="cancelTapped:" destination="1BA-qx-qiz" id="3dJ-eW-znr"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="8rZ-Z6-8e2"/>
@@ -1600,9 +1608,9 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="WMq-9F-KCJ"/>
-                                    <barButtonItem systemItem="cancel" id="Gq2-Cx-ftG">
+                                    <barButtonItem systemItem="done" id="Gq2-Cx-ftG">
                                         <connections>
-                                            <action selector="cancelTapped:" destination="1BA-qx-qiz" id="v5D-ve-ByY"/>
+                                            <action selector="doneTapped:" destination="1BA-qx-qiz" id="NEo-qg-68x"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -1650,6 +1658,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="320" height="480"/>
                     <connections>
+                        <outlet property="bottomToolbar" destination="8vC-8C-sCB" id="Cvv-C0-bdx"/>
                         <outlet property="cameraButton" destination="zY1-RR-uUZ" id="L13-LR-Rk5"/>
                         <outlet property="navigationBackgroundView" destination="KYP-KT-9V9" id="b3r-TN-p9P"/>
                         <outlet property="preview" destination="naJ-vE-x8r" id="y5J-bM-y7K"/>
@@ -1880,8 +1889,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="40" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="8Uw-wK-quV">
-                                <rect key="frame" x="0.0" y="30" width="414" height="676"/>
+                                <rect key="frame" x="0.0" y="30" width="200" height="676"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="xGD-FK-0TK"/>
+                                </constraints>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SideMenuCell" id="2W4-4w-C9e" customClass="SideMenuCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="200" height="44"/>
@@ -1899,7 +1911,7 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="menu item name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zMJ-w5-zdy">
-                                                    <rect key="frame" x="46" y="12" width="303" height="20"/>
+                                                    <rect key="frame" x="46" y="12" width="89" height="20"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="15"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -1908,7 +1920,7 @@
                                                     </variation>
                                                 </label>
                                                 <switch hidden="YES" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="yHU-im-CrB">
-                                                    <rect key="frame" x="357" y="5" width="51" height="31"/>
+                                                    <rect key="frame" x="143" y="5" width="51" height="31"/>
                                                 </switch>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1943,6 +1955,7 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="Q82-Fx-pxV"/>
+                                <exclude reference="oQ6-Wo-CpZ"/>
                             </mask>
                         </variation>
                     </view>
@@ -1955,7 +1968,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="erZ-mQ-nuD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4293" y="430"/>
+            <point key="canvasLocation" x="4182" y="444"/>
         </scene>
         <!--User ProfileVC-->
         <scene sceneID="H28-4L-iPc">
@@ -2807,7 +2820,7 @@
         <!--Home-->
         <scene sceneID="ebQ-zU-eKt">
             <objects>
-                <navigationController toolbarHidden="NO" id="XMk-tn-8Z2" customClass="HomeNavigationController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="HomeNavigationController" useStoryboardIdentifierAsRestorationIdentifier="YES" toolbarHidden="NO" id="XMk-tn-8Z2" customClass="HomeNavigationController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Home" image="icon-home-SH" id="A5W-o3-zcD">
                         <offsetWrapper key="titlePositionAdjustment" horizontal="0.0" vertical="20"/>
                     </tabBarItem>

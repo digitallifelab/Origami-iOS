@@ -22,5 +22,24 @@ import UIKit
 
 class HomeNavigationController: UINavigationController {
 
+    func currentPresentedMenuItem() -> NSInteger
+    {
+        if let vc =  self.topViewController as? HomeVC
+        {
+            return 0
+        }
+        
+        if let vc = self.topViewController as? UserProfileVC
+        {
+            return 1
+        }
+        
+        if let vc = self.topViewController as? MyContactsListVC
+        {
+            return 2
+        }
+         //WARNING: to expand menu items add ather conditions here
+        return NSIntegerMax
+    }
 
 }

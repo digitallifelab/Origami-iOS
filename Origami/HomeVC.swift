@@ -14,7 +14,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     @IBOutlet var collectionDashboard:UICollectionView!
     @IBOutlet var navigationBackgroundView:UIView!
     @IBOutlet var bottomHomeToolBarButton:UIBarButtonItem!
-    var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer?
     
     var collectionSource:HomeCollectionHandler?
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
@@ -25,11 +24,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
         
-        screenEdgePanRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "leftEdgePan:")
-        screenEdgePanRecognizer?.edges = UIRectEdge.Left
-        screenEdgePanRecognizer?.delegate = self
-        screenEdgePanRecognizer?.delaysTouchesBegan = false
-        self.view.addGestureRecognizer(screenEdgePanRecognizer!)
    
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
@@ -74,12 +68,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     //#endif
                 }
             }
-            
-            DataSource.sharedInstance.messagesLoader = MessagesLoader()
-            DataSource.sharedInstance.startRefreshingNewMessages()
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
         
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
@@ -99,26 +89,23 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             nightModeDidChange(nil)
         }
-//        if let recognizers = self.view.gestureRecognizers
-//        {
-//            println(recognizers)
-//        }
     }
     
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
         
-        //println("-> viewDidAppear")
-        
         if let user = DataSource.sharedInstance.user
         {
             //register for night-day modes switching
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
+            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
+
             
             if DataSource.sharedInstance.isMessagesEmpty()
             {
@@ -131,14 +118,25 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 println("reload collection view from viewDidAppear")
                 reloadDashboardView()
             }
+            
+            if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
+            {
+                self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
+            }
         }
     }
     
     override func viewWillDisappear(animated: Bool)
     {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+//        NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Switch_Night_Mode_Changed, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
+        
+        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
+        {
+            self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
+        }
     }
     
     //MARK: ----- NavigationBarButtons
@@ -161,17 +159,18 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         
         var leftBarButton = UIBarButtonItem(customView: leftButton)
         
-        //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
     func configureNavigationTitleView()
     {
+        #if SHEVCHENKO
         let titleImageView = UIImageView(image:UIImage(named: "title-home"))
         titleImageView.contentMode = .ScaleAspectFit
         titleImageView.frame = CGRectMake(0, 0, 200, 40)
         
         self.navigationItem.titleView = titleImageView
+        #endif
     }
     
     
@@ -598,46 +597,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         println(" Will not animate view controller transitioning")
         return nil
     }
-    
-//    //MARK: Alert
-//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-//    {
-//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-//        alertController.addAction(closeAction)
-//        
-//        self.presentViewController(alertController, animated: true, completion: nil)
-//    }
-    
-    
+
     
     //MARK:  Handling Notifications
-    
-    func processMenuDisplaying(notification:NSNotification?)
-    {
-        handleDisplayingMenuAnimated(true, completion: {[weak self] () -> () in
-            if let info = notification?.userInfo as? [String:Int], numberTapped = info["tapped"]
-            {
-                if let aSelf = self
-                {
-                    switch numberTapped
-                    {
-                    case 0:
-                        if let presented = aSelf.presentedViewController
-                        {
-                            
-                        }
-                    case 1:
-                        aSelf.showUserProfileVC()
-                    case 2:
-                        aSelf.showContactsVC()
-                    default:
-                        break
-                    }
-                }
-            }
-        })
-    }
     
     func nightModeDidChange(notification:NSNotification?)
     {

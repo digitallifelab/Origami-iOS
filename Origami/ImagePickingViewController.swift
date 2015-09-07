@@ -15,6 +15,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
     var attachPickingDelegate:AttachPickingDelegate?
+    @IBOutlet var bottomToolbar:UIToolbar!
     
     private var selectedMedia:MediaFile? {
         didSet{
@@ -58,12 +59,16 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             //self.displayMode = .Night
             self.view.backgroundColor = UIColor.blackColor()
             self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
+            self.bottomToolbar.backgroundColor = kBlackColor
+            self.bottomToolbar.tintColor = kWhiteColor
         }
         else
         {
             //self.displayMode = .Day
             self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            self.bottomToolbar.tintColor = kDayNavigationBarBackgroundColor
+            self.bottomToolbar.backgroundColor = kWhiteColor
         }
         
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
@@ -71,6 +76,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        self.bottomToolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
     }
     
     //MARK: UIImagePickerControllerDelegate

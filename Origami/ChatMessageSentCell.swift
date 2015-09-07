@@ -31,6 +31,7 @@ class ChatMessageSentCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         textContainerView.layer.cornerRadius = 5.0
+        textContainerView.backgroundColor = kDayCellBackgroundColor
     }
 
     override func layoutSubviews() {

@@ -17,6 +17,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        nameField.layer.cornerRadius = 5.0
+        passwordField.layer.cornerRadius = 5.0
+        
         nameField.delegate = self
         passwordField.delegate = self
         // Do any additional setup after loading the view.
@@ -28,6 +31,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
         passwordField.text = password
         
         loginButton.setTitle("LoginButtonTitle".localizedWithComment(""), forState: .Normal)
+        self.view.backgroundColor = kDayNavigationBarBackgroundColor
     }
 
     override func didReceiveMemoryWarning() {

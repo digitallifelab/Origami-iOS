@@ -52,18 +52,8 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+        avatarImage = nil
     }
-    
-
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-//        if let existContact = self.contact
-//        {
-//            println("\(self.contact!.toDictionary().description)")
-//        }
-    }
-    
-    
 
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -130,7 +120,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     toReturnInfo[titleInfoKey] = "name".localizedWithComment("")
                     if let nameAndLastNameSingleString = contact.nameAndLastNameSpacedString()
                     {
-                        toReturnInfo[detailsInfoKey] = nameAndLastNameSingleString //contactNameStringFromContact(contact)
+                        toReturnInfo[detailsInfoKey] = nameAndLastNameSingleString
                     }
                 case 3:
                     toReturnInfo[titleInfoKey] = "email".localizedWithComment("")
@@ -185,26 +175,4 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
         return nil
     }
-//    
-//    private func contactNameStringFromContact(contact:Contact) -> String
-//    {
-//        var nameString = ""
-//        if let firstName = contact.firstName as? String
-//        {
-//            nameString += firstName
-//        }
-//        if let lastName = contact.lastName as? String
-//        {
-//            if nameString.isEmpty
-//            {
-//                nameString = lastName
-//            }
-//            else
-//            {
-//                nameString += (" " + lastName)
-//            }
-//        }
-//        
-//        return nameString
-//    }
 }

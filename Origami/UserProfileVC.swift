@@ -79,12 +79,22 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         super.viewDidAppear(animated)
         defaultEdgeInsets = profileCollection.contentInset
         addObserversForKeyboard()
+        
+        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
+        {
+            self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
+        }
     }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         
         removeObserversForKeyboard()
         profileCollection.contentInset = defaultEdgeInsets!
+        
+        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
+        {
+            self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
+        }
         
     }
 
@@ -169,7 +179,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.tintColor = kWhiteColor
-        
+        leftButton.addTarget(self, action: "menuTapped:", forControlEvents: .TouchUpInside)
         var leftBarButton = UIBarButtonItem(customView: leftButton)
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
@@ -196,7 +206,18 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     //MARK: Dismiss
     func homeButtonPressed(sender:UIButton)
     {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        //self.dismissViewControllerAnimated(true, completion: nil)
+        
+        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+        {
+            self.navigationController?.setViewControllers([home], animated: true)
+        }
+    }
+    
+    //MARK: Menu show
+    func menuTapped(sender:UIButton)
+    {
+        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
     }
     
     //MARK: - UITextViewDelegate and stuff

@@ -8,16 +8,31 @@
 
 import UIKit
 
-class RootViewController: UIViewController {
+class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //var messagesLoader = MessagesLoader()
-    let dataRefresher = DataRefresher()
+    var dataRefresher:DataRefresher?
+    var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer()
+    var leftMenuVC:MenuVC?
+    var currentNavigationController:HomeNavigationController?
+    
+    var isShowingMenu = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        {
+            appDelegate.rootViewController = self
+        }
         // Do any additional setup after loading the view.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "handleLogoutNotification:", name: kLogoutNotificationName, object: nil)
         
+        screenEdgePanRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "leftEdgePan:")
+        screenEdgePanRecognizer.edges = UIRectEdge.Left
+        //screenEdgePanRecognizer?.delegate = self
+        screenEdgePanRecognizer.delaysTouchesBegan = false
+        //self.view.addGestureRecognizer(screenEdgePanRecognizer!)
         
         var appDelegate = UIApplication.sharedApplication().delegate
         var application = UIApplication.sharedApplication()
@@ -41,7 +56,6 @@ class RootViewController: UIViewController {
                 application.registerUserNotificationSettings(settings)
             }
         }
-        
     }
 
     override func didReceiveMemoryWarning()
@@ -56,12 +70,47 @@ class RootViewController: UIViewController {
         super.viewDidAppear(animated)
         if let user = DataSource.sharedInstance.user
         {
-            self.performSegueWithIdentifier("ShowHomeVC", sender: nil)
+            //self.performSegueWithIdentifier("ShowHomeVC", sender: nil)
             
-            dataRefresher.startRefreshingElementsWithTimeoutInterval(30.0)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+            
+            if let navController = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavigationController") as? HomeNavigationController
+            {
+                self.currentNavigationController = navController
+                self.view.addSubview(navController.view)
+                if let homeVC = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+                {
+                    //navController.setViewControllers([homeVC], animated: true)
+                    if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
+                    {
+                        self.leftMenuVC = menuVC
+                        self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
+                    }
+                    navController.setViewControllers([homeVC], animated: true)
+                    //self.presentViewController(navController, animated: true, completion: nil)
+                    
+                    
+                }
+            }
+         
+            let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
+            let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 20.0))
+            dispatch_after(time, bgQueue, {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.dataRefresher = DataRefresher()
+                    weakSelf.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                    
+                    DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                    DataSource.sharedInstance.startRefreshingNewMessages()
+                }
+            })
+            
             
             return
         }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
         
         self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
     }
@@ -69,13 +118,179 @@ class RootViewController: UIViewController {
   
     func handleLogoutNotification(notification:NSNotification?)
     {
-        self.dataRefresher.stopRefreshingElements()
+        self.dataRefresher?.stopRefreshingElements()
+        dataRefresher = nil
+        isShowingMenu = false
         
         DataSource.sharedInstance.performLogout {[weak self] () -> () in
             if let weakSelf = self
             {
-                weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                //weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                weakSelf.currentNavigationController?.view.removeFromSuperview()
+                weakSelf.leftMenuVC?.view.removeFromSuperview()
+                weakSelf.currentNavigationController = nil
+                weakSelf.leftMenuVC = nil
+                
+                weakSelf.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+            }
+            
+        }
+    }
+    
+    //MARK: Menu
+    func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)
+    {
+        if recognizer.state == UIGestureRecognizerState.Began
+        {
+            println("left pan.")
+            let translationX = round(recognizer.translationInView(recognizer.view!).x)
+            let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
+            println(" Horizontal Velocity: \(velocityX)")
+            println(" Horizontal Translation: \(translationX)")
+            
+            let ratio = ceil(velocityX / translationX)
+            if  ratio > 3
+            {
+                showMenu(true, completion: nil)
             }
         }
     }
+    
+    func getCurrentTopViewController() -> UIViewController?
+    {
+        if isShowingMenu
+        {
+            return self.leftMenuVC
+        }
+        return self.currentNavigationController
+    }
+
+    func processMenuDisplaying(notification:NSNotification?)
+    {
+        
+        if isShowingMenu
+        {
+            if let info = notification?.userInfo as? [String:Int], numberTapped = info["tapped"]
+            {
+                
+                switch numberTapped
+                {
+                case 0:
+                    self.showHomeVC()
+                case 1:
+                    self.showUserProfileVC()
+                case 2:
+                    self.showContactsVC()
+                default:
+                    break
+                }
+            }
+        }
+        else
+        {
+            showMenu(true, completion: {[weak self] () -> () in
+                
+           })    
+        }
+       
+    }
+    
+    func showMenu(animated:Bool, completion:(()->())?)
+    {
+        if let navController = self.currentNavigationController, menu = self.leftMenuVC
+        {
+            let navFrame = navController.view.frame
+            let movedToLeftFrame = CGRectOffset(navFrame, 200.0, 0.0)
+            
+            UIView.animateWithDuration(0.2,
+                delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseOut,
+                animations:
+                { () -> Void in
+                navController.view.frame = movedToLeftFrame
+            },
+                completion: {[weak self] (finished) -> Void in
+                if let weakSelf = self
+                {
+                    //weakSelf.view.bringSubviewToFront(menu.view)
+                    println("Menu Frame: \(menu.view.frame)")
+                    weakSelf.isShowingMenu = true
+                }
+                completion?()
+            })
+        }
+    }
+    
+    func hideMenu(animated:Bool, completion:(()->())?)
+    {
+        
+        if let navController = self.currentNavigationController
+        {
+            UIView.animateWithDuration(0.2,
+                delay: 0.0,
+                options: UIViewAnimationOptions.CurveEaseIn,
+                animations: { () -> Void in
+                navController.view.frame = self.view.bounds
+            }, completion: {[weak self] (finished) -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.isShowingMenu = false
+                }
+                
+                completion?()
+            })
+        }
+    }
+    
+    func showHomeVC()
+    {
+        if let navController = self.currentNavigationController
+        {
+            let currentVisibleIndex = navController.currentPresentedMenuItem()
+            
+            if currentVisibleIndex != 0
+            {
+                if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+                {
+                    self.hideMenu(true, completion: {[weak self] () -> () in
+                        if let weakSelf = self
+                        {
+                            weakSelf.currentNavigationController?.setViewControllers([home], animated: false)
+                        }
+                    })
+                }
+            }
+            else
+            {
+                self.hideMenu(true, completion: nil)
+            }
+        }
+    }
+    
+    func showUserProfileVC()
+    {
+        if let profile = self.storyboard?.instantiateViewControllerWithIdentifier("UserProfileVC") as? UserProfileVC
+        {
+            self.hideMenu(true, completion: {[weak self] () -> () in
+                if let weakSelf = self
+                {
+                    weakSelf.currentNavigationController?.setViewControllers([profile], animated: false)
+                }
+            })
+        }
+    }
+    
+    func showContactsVC()
+    {
+        if let myContacts = self.storyboard?.instantiateViewControllerWithIdentifier("MyContactsListVC") as? MyContactsListVC
+        {
+            self.hideMenu(true, completion: {[weak self] () -> () in
+                if let weakSelf = self
+                {
+                    weakSelf.currentNavigationController?.setViewControllers([myContacts], animated: false)
+                }
+            })
+        }
+    }
+    
 }

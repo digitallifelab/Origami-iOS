@@ -28,15 +28,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 {
                     contactIDsToPass.insert(number.integerValue)
                 }
-                //contactIDsToPass = Set(passIDs)
             }
-            //println("Will pass to contact ids: \n \(contactIDsToPass)")
             table.reloadData()
         }
     }
     
     var contactImages = [String:UIImage]()
-    //var transitionAnimator:FadeOpaqueAnimator?
+    
     var allContacts = DataSource.sharedInstance.getMyContacts()
     
     var editingConfuguration:CurrentEditingConfiguration = .None
@@ -71,7 +69,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     var textViews = [NSIndexPath:UITextView]()
     
-    @IBOutlet var table: UITableView!
+    @IBOutlet var table:UITableView!
+    
     @IBOutlet var toolbar:UIToolbar!
     
     //MARK: methods
@@ -110,7 +109,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     })
                 }
             }
-
         }
     }
 
@@ -208,7 +206,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
                 else
                 {
-                   println("Element title did not change")
+                    println("Element title did not change")
                 }
             }
         }

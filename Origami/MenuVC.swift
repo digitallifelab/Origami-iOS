@@ -36,16 +36,21 @@ class SideMenuCell: UITableViewCell
     var switcher:UISwitch?
     var switchDelegate:SwitchDelegate?
     
-    override func prepareForReuse() {
+    override func prepareForReuse()
+    {
         self.cellType = .Regular
         var nightModeOn:Bool = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         switcher?.on = nightModeOn
     }
-    override func awakeFromNib() {
+    
+    override func awakeFromNib()
+    {
         super.awakeFromNib()
         self.backgroundColor = UIColor.clearColor()
     }
-    override func layoutSubviews() {
+    
+    override func layoutSubviews()
+    {
         
         super.layoutSubviews()
         
@@ -86,24 +91,16 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
     //@IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
     @IBOutlet weak var menuTable:UITableView?
-    var menuItemsTitles = ["Home", "Profile", "Contacts", "Display Mode"]
+    var menuItemsTitles = ["Home", "Profile".localizedWithComment(""), "Contacts".localizedWithComment(""), "Display Mode".localizedWithComment("")]
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-        
-//        for aView in self.view.subviews
-//        {
-//            if let table = aView as? UITableView
-//            {
-//                self.menuTable = table
-                self.menuTable?.delegate = self
-                self.menuTable?.dataSource = self
-                self.menuTable?.backgroundColor = UIColor.clearColor()// kDayNavigationBarBackgroundColor
-//                break
-//            }
-//        }
+        self.menuTable?.delegate = self
+        self.menuTable?.dataSource = self
+        self.menuTable?.backgroundColor = UIColor.clearColor()// kDayNavigationBarBackgroundColor
+
+        self.view.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
     }
 
     override func didReceiveMemoryWarning() {
@@ -232,7 +229,8 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
             switch indexPath.row
             {
             case 0: //home button
-                self.dismissViewControllerAnimated(true, completion: nil)
+                //self.dismissViewControllerAnimated(true, completion: nil)
+                fallthrough
             case 1: // profile,contacts
                 fallthrough
             case 2:

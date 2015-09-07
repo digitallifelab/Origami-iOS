@@ -16,7 +16,7 @@ class NewElementTextViewCell: UITableViewCell {
     @IBOutlet weak var textViewToBottomConstraint: NSLayoutConstraint!
     var attributedText:NSAttributedString? = nil {
         didSet{
-            textView.attributedText = (attributedText != nil) ? attributedText : defaultAttributedText
+            textView.attributedText = (attributedText != nil) ? attributedText : nil//defaultAttributedText
         }
     }
     
@@ -28,7 +28,7 @@ class NewElementTextViewCell: UITableViewCell {
             {
                 self.backgroundColor = UIColor.whiteColor()//kDayCellBackgroundColor
                 titleLabel.text = "Title".localizedWithComment("")
-                defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+                defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.grayColor()])
                 
                 textViewToBottomConstraint.constant = 5.0
             }
@@ -36,7 +36,7 @@ class NewElementTextViewCell: UITableViewCell {
             {
                 self.backgroundColor = UIColor.whiteColor()
                 titleLabel.text = "Description".localizedWithComment("")
-                defaultAttributedText = NSAttributedString(string:"add description", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()])
+                defaultAttributedText = NSAttributedString(string:"add description", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.grayColor()])
                 
                 textViewToBottomConstraint.constant = 24.0
             }
@@ -49,6 +49,9 @@ class NewElementTextViewCell: UITableViewCell {
         textView.layer.cornerRadius = 5.0
         textView.layer.borderWidth = 1.0
         textView.layer.borderColor = UIColor.lightGrayColor().CGColor
+        textView.tintColor = kDayCellBackgroundColor
+         titleLabel.tintColor = kDayCellBackgroundColor
+        titleLabel.textColor = kDayCellBackgroundColor
     }
 
     

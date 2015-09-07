@@ -62,9 +62,15 @@ let noUserTokenError = NSError(domain: "User Token", code: -55, userInfo: [NSLoc
 let kDaySignalColor = UIColor(red: 213.0/255.0, green: 47.0/255.0, blue: 47.0/255.0, alpha: 1.0)//UIColor(red: 255.0/255.0, green: 64.0/255.0, blue: 129.0 / 255.0, alpha: 1.0)
 let kNightSignalColor = UIColor(red: 244.0/255.0, green: 71.0/255.0, blue: 71.0/255.0, alpha: 1.0)
 let kDayViewBackgroundColor = UIColor.whiteColor()//UIColor(red: 227.0/255.0, green: 242.0/255.0, blue: 253.0/255.0, alpha: 1.0)
-let kDayNavigationBarBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)//UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
 
-let kDayCellBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)//UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+#if SHEVCHENKO
+let kDayNavigationBarBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0) //green
+let kDayCellBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)
+#else
+let kDayCellBackgroundColor =          UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0) //blue
+let kDayNavigationBarBackgroundColor = UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+#endif
+
 let kWhiteColor = UIColor.whiteColor()
 let kBlackColor = UIColor.blackColor()
 
