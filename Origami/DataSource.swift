@@ -575,8 +575,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.submitNewElement(newElement, completion: { (result, error) -> () in
             if let successElement = result as? Element
             {
-                DataSource.sharedInstance.addNewElements([successElement], completion: nil)
-                closure(newElementId: successElement.elementId?.integerValue, error: nil)
+                DataSource.sharedInstance.addNewElements([successElement], completion: { () -> () in
+                    closure(newElementId: successElement.elementId?.integerValue, error: nil)
+                })
+                
             }
             else
             {
@@ -963,6 +965,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func editElement(element:Element, completionClosure completion:(edited:Bool) -> () )
     {
+    
        DataSource.sharedInstance.serverRequester.editElement(element, completion: { (success, error) -> () in
        NSOperationQueue().addOperationWithBlock({ () -> Void in
         
@@ -976,6 +979,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         existingElement.details = element.details
                         existingElement.isFavourite = element.isFavourite
                         existingElement.isSignal = element.isSignal
+                        existingElement.typeId = element.typeId
                     }
                 }
             }

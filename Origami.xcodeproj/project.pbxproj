@@ -18,6 +18,8 @@
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
 		F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
+		F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
+		F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
 		F81BAD681B5F874D00DB50F8 /* SingleElementDashboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */; };
 		F81BAD6A1B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD691B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift */; };
 		F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6B1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift */; };
@@ -246,6 +248,7 @@
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
 		F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashHeaderView.swift; sourceTree = "<group>"; };
+		F817EE561B9EE2CD007E8EBD /* OptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDashboardVC.swift; sourceTree = "<group>"; };
 		F81BAD691B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimpleElementDashboardLayout.swift; sourceTree = "<group>"; };
 		F81BAD6B1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementCollectionViewDataSource.swift; sourceTree = "<group>"; };
@@ -680,6 +683,7 @@
 			children = (
 				F88563FA1B31C102005D223E /* ChatVC.swift */,
 				F88563FD1B31C48B005D223E /* ChatTextInputView.swift */,
+				F817EE561B9EE2CD007E8EBD /* OptionsView.swift */,
 				F88564001B31CB82005D223E /* TableCells */,
 			);
 			name = Chat;
@@ -922,7 +926,6 @@
 				ORGANIZATIONNAME = CloudCraft;
 				TargetAttributes = {
 					F8C93AB91B861B94009D890E = {
-						DevelopmentTeam = XD42YSD8LL;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -937,7 +940,6 @@
 					};
 					F8D4569C1B1DEFA100172667 = {
 						CreatedOnToolsVersion = 6.3.2;
-						DevelopmentTeam = XD42YSD8LL;
 					};
 				};
 			};
@@ -1082,6 +1084,7 @@
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F8C65F481B98AA5A001EDEA6 /* AFURLResponseSerialization.m in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
+				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
 				F8C93B131B861B94009D890E /* ChatVC.swift in Sources */,
 				F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F8C65F4A1B98AA5A001EDEA6 /* AFURLSessionManager.m in Sources */,
@@ -1205,6 +1208,7 @@
 				F80597491B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
 				F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */,
 				F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */,
+				F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
 				F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */,
 				F8A1DFC71B7B727000A66692 /* Element.swift in Sources */,
 			);
@@ -1249,8 +1253,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1273,8 +1277,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1379,8 +1383,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1389,7 +1393,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "f4521a2a-451c-4183-98eb-5627dcce04f1";
+				PROVISIONING_PROFILE = "0343011a-3c45-46bd-8c7e-57629dc38641";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1401,14 +1405,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				INFOPLIST_FILE = Origami/Origami.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "f4521a2a-451c-4183-98eb-5627dcce04f1";
+				PROVISIONING_PROFILE = "0343011a-3c45-46bd-8c7e-57629dc38641";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 			};
 			name = Release;

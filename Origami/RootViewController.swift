@@ -44,7 +44,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             {
                 application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
             }
-   
         }
         else
         {
@@ -54,6 +53,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                 let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
                 
                 application.registerUserNotificationSettings(settings)
+                //application.registerForRemoteNotifications()
             }
         }
     }

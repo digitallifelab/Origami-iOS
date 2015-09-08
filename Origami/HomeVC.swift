@@ -353,7 +353,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         }
                         else
                         {
-                            aSelf.showAddTheVeryFirstElementPlus()
+                            if let token = DataSource.sharedInstance.user?.token as? String
+                            {
+                                aSelf.showAddTheVeryFirstElementPlus()
+                            }
+                            else
+                            {
+                                self?.showAlertWithTitle("Error", message: "Please relogin.", cancelButtonTitle: "Close")
+                            }
                         }
                     }
                 }

@@ -44,3 +44,8 @@
 "change" = "Изменить";
 "sureToChangePassword" = "Подтвердите смену пароля.";
 "attention" = "Внимание";
+
+"Signal" = "Сигнал";
+"Idea" = "Идея";
+"Task" = "Задача";
+"Decision" = "Решение";

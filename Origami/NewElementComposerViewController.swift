@@ -37,7 +37,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     var allContacts = DataSource.sharedInstance.getMyContacts()
     
-    var editingConfuguration:CurrentEditingConfiguration = .None
+    private var editingConfuguration:CurrentEditingConfiguration = .None
     
     var displayMode:DisplayMode = .Day {
         didSet{
@@ -61,11 +61,18 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 self.newElement = Element()
                 self.newElement?.rootElementId = NSNumber(integer:self.rootElementID)
                 self.newElement?.passWhomIDs = Array(self.contactIDsToPass)
+                if self.currentElementType != .None
+                {
+                    self.newElement?.title = self.composingDelegate?.newElementComplserTitleForNewElement?(self)
+                    self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement?(self)
+                }
             }
             configureBottomToolbar()
             table.reloadData()
         }
     }
+    
+    var currentElementType:NewElementCreationType = .None
     
     var textViews = [NSIndexPath:UITextView]()
     
@@ -634,6 +641,33 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             
             anElement.rootElementId = NSNumber(integer:  self.rootElementID)
+            
+            
+            if self.currentElementType != .None
+            {
+                let optionsConverter = ElementOptionsConverter()
+                var selectedOption = 0
+                switch self.currentElementType
+                {
+                    case .Signal:
+                        anElement.isSignal = NSNumber(bool:true)
+                    case .Idea:
+                        selectedOption = 1
+                    case .Task:
+                        selectedOption = 2
+                    case .Decision:
+                        selectedOption = 3
+                    case .None:
+                        selectedOption = 0
+                }
+                
+                if selectedOption > 0
+                {
+                    let option = optionsConverter.toggleOptionChange(0, selectedOption: selectedOption)
+                    anElement.typeId = NSNumber(integer: option)
+                }
+                
+            }
             
             composingDelegate?.newElementComposer(self, finishedCreatingNewElement: anElement)
         }

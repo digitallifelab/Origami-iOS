@@ -41,17 +41,19 @@ protocol AttachPickingDelegate {
     func mediaPickerDidCancel(picker:AnyObject)
 }
 
-protocol ElementComposingDelegate
+@objc protocol ElementComposingDelegate
 {
     func newElementComposerWantsToCancel(composer:NewElementComposerViewController)
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
+    
+    optional func newElementComplserTitleForNewElement(composer:NewElementComposerViewController) -> String?
+    optional func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?
 }
 
 protocol MessageTapDelegate
 {
     func chatMessageWasTapped(message:Message?)
 }
-
 
 protocol UserProfileCollectionCellDelegate
 {

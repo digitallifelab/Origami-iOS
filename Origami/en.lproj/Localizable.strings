@@ -43,3 +43,8 @@
 "change" = "Change";
 "sureToChangePassword" = "Are you sure to change password?";
 "attention" = "Attention";
+
+"Signal" = "Signal";
+"Idea" = "Idea";
+"Task" = "Task";
+"Decision" = "Decision";

@@ -115,3 +115,12 @@ enum TableItemPickerType:Int{
     case Language = 2
 }
 
+
+enum NewElementCreationType
+{
+    case Signal
+    case Idea
+    case Task
+    case Decision
+    case None
+}

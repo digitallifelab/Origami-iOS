@@ -17,6 +17,8 @@ class ChatMessageSentCell: UITableViewCell {
     @IBOutlet var textContainerView:UIView!
     var borderLayer:CAShapeLayer?
     var maskLayer:CAShapeLayer?
+    
+    var longPress:UILongPressGestureRecognizer?
     var message:String?{
         didSet{
             borderLayer?.removeFromSuperlayer()
@@ -32,6 +34,16 @@ class ChatMessageSentCell: UITableViewCell {
         // Initialization code
         textContainerView.layer.cornerRadius = 5.0
         textContainerView.backgroundColor = kDayCellBackgroundColor
+        
+        if (longPress == nil)
+        {
+            longPress = UILongPressGestureRecognizer(target: self, action: "handleLongPress:")
+            longPress?.cancelsTouchesInView = true;
+            longPress?.minimumPressDuration = 0.5;
+            
+            self.messageLabel.addGestureRecognizer(longPress!)
+            self.messageLabel.userInteractionEnabled = true
+        }
     }
 
     override func layoutSubviews() {
@@ -71,6 +83,16 @@ class ChatMessageSentCell: UITableViewCell {
 //        view.layer.insertSublayer(borderLayer, above:shape);
         
         super.layoutSubviews()
+    }
+    
+    func handleLongPress(sender:UILongPressGestureRecognizer)
+    {
+        if sender.state != UIGestureRecognizerState.Began
+        {
+            return
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(kLongPressMessageNotification, object: self)
     }
 
 }

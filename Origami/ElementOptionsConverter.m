@@ -29,13 +29,13 @@
             break;
         case 2:
         {
-            if (currentOptions & ElementOptionsDone)
+            if (currentOptions & ElementOptionsTask)
             {
-                currentOptions = currentOptions & ~ElementOptionsDone;
+                currentOptions = currentOptions & ~ElementOptionsTask;
             }
             else
             {
-                currentOptions = currentOptions | ElementOptionsDone;
+                currentOptions = currentOptions | ElementOptionsTask;
             }
         }
             break;

@@ -12,7 +12,7 @@ typedef NS_OPTIONS(NSInteger, ElementOptions) // this enum type is currently use
 {
     ElementOptionsNone = 0,
     ElementOptionsIdea = (1 << 2),
-    ElementOptionsDone = (1 << 3),
+    ElementOptionsTask = (1 << 3),
     ElementOptionsDecision = (1 << 4),
     ElementOptionsReservedValue1 = (1 << 5),
     ElementOptionsReservedValue2 = (1 << 6)

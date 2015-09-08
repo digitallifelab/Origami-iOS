@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableViewDataSource, UITableViewDelegate {
+class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableViewDataSource, UITableViewDelegate, TableItemPickerDelegate, ElementComposingDelegate {
 
     var currentElement:Element?
     
@@ -29,6 +29,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             
         }
     }
+    
+    var newElementOptionsView:OptionsView?
+    var newElementDetailsInfo:String?
+    var newCreatedElement:Element?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,11 +66,13 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         reloadChatTable()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "cellWasLongPressedNotification:", name: kLongPressMessageNotification, object: nil)
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+        self.navigationController?.toolbarHidden = true
         let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightModeOn)
         
@@ -78,8 +85,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         removeObserversForKeyboard()
         
-         bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
+        bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
         self.navigationController?.toolbarHidden = false
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kLongPressMessageNotification, object: nil)
     }
     
     
@@ -337,7 +346,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             lvTitleLabel.frame = CGRectMake(60.0, 0.0, 100.0, 21.0)
             lvTitleLabel.center.x = CGRectGetMidX(self.view.bounds)
             self.navigationItem.titleView = lvTitleLabel
-            
         }
     }
     
@@ -469,6 +477,44 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         bottomControlsContainerView.endEditing(true)
     }
     
+    //MARK: TableItemPickerDelegate
+    func itemPickerDidCancel(itemPicker: AnyObject) {
+        if let picker = itemPicker as? OptionsView
+        {
+            hideOptionsView(picker, completion: nil)
+        }
+    }
+    
+    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
+        if let picker = itemPicker as? OptionsView
+        {
+            var indexpath = item as? NSIndexPath
+            hideOptionsView(picker, completion: {[weak self] () -> () in
+                
+                if let indexPath = indexpath
+                {
+                    let row = indexPath.row
+                    if let weakSelf = self
+                    {
+                        switch row
+                        {
+                        case 0: //Signal
+                            weakSelf.startNewSubordinateWithType(.Signal, message:picker.message)
+                        case 1: //Idea
+                            weakSelf.startNewSubordinateWithType(.Idea, message:picker.message)
+                        case 2: //Task
+                            weakSelf.startNewSubordinateWithType(.Task, message:picker.message)
+                        case 3: //Solution
+                            weakSelf.startNewSubordinateWithType(.Decision, message:picker.message)
+                        default:
+                            break
+                        }
+                    }
+                }
+            })
+        }
+    }
+    
     //MARK: Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "ShowContactsChecker"
@@ -478,6 +524,227 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 toVC.currentElement = currentElement
             }
         }
+    }
+    
+    //MARK: Bottom OptionsView stuff
+    
+    func cellWasLongPressedNotification(note:NSNotification)
+    {
+        var currentMessage:Message?
+        if let cell = note.object as? UITableViewCell
+        {
+            if let targetIndexPath = self.chatTable.indexPathForCell(cell)
+            {
+                if let message = messageForIndexPath(targetIndexPath)
+                {
+                    currentMessage = message
+                    println(" pressed  message: \(message.textBody)")
+                }
+            }
+            
+        }
+        
+        var originX = floor (CGRectGetMidX(self.view.bounds) - 160.0)
+        var originY = CGRectGetMaxY(self.view.bounds) - 200.0
+        
+        var optionsFame:CGRect = CGRectMake(originX, originY, 320, 200)
+        
+        var currentWidth = self.view.bounds.size.width
+        var currentHeight = self.view.bounds.size.height
+        
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            let orientation = FrameCounter.getCurrentDeviceOrientation()
+            if orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight
+            {
+                currentHeight = self.view.bounds.size.width
+                currentWidth = self.view.bounds.size.height
+            }
+        }
+        
+        showOptionsView(optionsFame,
+            params: [
+            ["Signal".localizedWithComment("")   : "icon-flag"],
+            ["Idea".localizedWithComment("")     : "icon-idea"],
+            ["Task".localizedWithComment("")     : "icon-okey"],
+            ["Decision".localizedWithComment("") : "icon-solution"]
+            ], message:currentMessage)
+    }
+    
+    func showOptionsView(frame:CGRect, params:[[String:String]], message:Message?)
+    {
+        if let optionsView = OptionsView(optionsInfo: params)
+        {
+            optionsView.frame = frame
+            optionsView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
+            self.view.addSubview(optionsView)
+            optionsView.delegate = self
+            optionsView.message = message
+            self.newElementOptionsView = optionsView
+            
+        }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kLongPressMessageNotification, object: nil)
+    }
+    
+    func hideOptionsView(view:OptionsView, completion:(()->())?)
+    {
+        UIView.animateWithDuration(0.2, animations: { () -> Void in
+            view.alpha = 0.0
+            }, completion: { (finished) -> Void in
+                view.removeFromSuperview()
+                
+                completion?()
+        })
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "cellWasLongPressedNotification:", name: kLongPressMessageNotification, object: nil)
+    }
+    
+    func startNewSubordinateWithType(type:NewElementCreationType, message:Message?)
+    {
+        if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
+        {
+            if let elementId = currentElement?.elementId
+            {
+                if let textBody = message?.textBody
+                {
+                    self.newElementDetailsInfo = textBody
+                }
+                
+                newElementCreator.composingDelegate = self
+                newElementCreator.rootElementID = elementId.integerValue
+                if let passwhomIDs = currentElement?.passWhomIDs
+                {
+                    if passwhomIDs.count > 0
+                    {
+                        var idInts = Set<Int>()
+                        for number in passwhomIDs
+                        {
+                            idInts.insert(number.integerValue)
+                        }
+                        newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
+                    }
+                    
+                }
+              
+                newElementCreator.currentElementType = type
+                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
+                    newElementCreator.editingStyle = .AddNew
+                })
+                
+                
+            }
+        }
+    }
+    
+    //MARK: ElementComposingDelegate
+    func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
+        self.dismissViewControllerAnimated(true, completion: nil)
+       // self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
+        self.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
+             if let weakSelf = self
+             {
+                weakSelf.handleAddingNewElement(newElement)
+                
+            }
+        })
+    }
+    
+    func newElementComplserTitleForNewElement(composer: NewElementComposerViewController) -> String? {
+        if let fullInfo = self.newElementDetailsInfo
+        {
+            let countChars = count(fullInfo)
+            
+            if countChars > 40
+            {
+                let startIndex = fullInfo.startIndex
+                let toIndex = advance(startIndex, 40)
+                let cutString = fullInfo.substringToIndex(toIndex)
+                return cutString
+            }
+            return fullInfo
+        }
+        return nil
+    }
+    
+    func newElementComposerDetailsForNewElement(composer: NewElementComposerViewController) -> String? {
+        
+        return self.newElementDetailsInfo
+    }
+    //MARK: -----
+    func handleAddingNewElement(element:Element)
+    {
+        // 1 - send new element to server
+        // 2 - send passWhomIDs, if present
+        var passWhomIDs:[Int]?
+        let nsNumberArray = element.passWhomIDs
+        if !nsNumberArray.isEmpty
+        {
+            passWhomIDs = [Int]()
+            for number in nsNumberArray
+            {
+                passWhomIDs!.append(number.integerValue)
+            }
+        }
+        
+        let sentTypeIdInteger = element.typeId.integerValue
+        
+        let newLocalElement = Element(info:  element.toDictionary())
+        self.newCreatedElement = newLocalElement
+        // 1
+        DataSource.sharedInstance.submitNewElementToServer(newLocalElement, completion: {[weak self] (newElementID, submitingError) -> () in
+            if let lvElementId = newElementID
+            {
+                if let passWhomIDsArray = passWhomIDs // 2
+                {
+                    let passWhomSet = Set(passWhomIDsArray)
+                    DataSource.sharedInstance.addSeveralContacts(passWhomSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
+                        if !failedIDs.isEmpty
+                        {
+                            println(" added to \(succeededIDs)")
+                            println(" failed to add to \(failedIDs)")
+                            if let weakSelf = self
+                            {
+                                weakSelf.showAlertWithTitle("ERROR.", message: "Could not add contacts to new element.", cancelButtonTitle: "Ok")
+                            }
+                        }
+                        else
+                        {
+                            println(" added to \(succeededIDs)")
+                        }
+                    })
+                }
+                
+                if sentTypeIdInteger != 0
+                {
+                    if let weakSelf = self, currentNewElement = weakSelf.newCreatedElement
+                    {
+                        currentNewElement.elementId = lvElementId
+                        DataSource.sharedInstance.editElement(currentNewElement, completionClosure: { (edited) -> () in
+                            if edited
+                            {
+                                println("Updated element`s typeId")
+                            }
+                            else
+                            {
+                                println("error while updating element`s type id")
+                            }
+                        })
+                    }
+                    
+                }
+            }
+            else
+            {
+                if let weakSelf = self
+                {
+                    weakSelf.showAlertWithTitle("ERROR.", message: "Could not create new element.", cancelButtonTitle: "Ok")
+                }
+            }
+        })
     }
     
 }

@@ -162,6 +162,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             signalButton.backgroundColor = (currentElement.isSignal.boolValue) ? kDaySignalColor : UIColor.clearColor()
         }
     }
+    
     private func setupIdeaButton()
     {
         if let currentElement = self.handledElement, ideaButton = self.viewWithTag(ActionButtonCellType.Idea.rawValue)
@@ -179,11 +180,12 @@ class SingleElementTitleCell: UICollectionViewCell {
         }
     
     }
+    
     private func setupCheckMarkButton()
     {
         if let currentElement = self.handledElement, checkmarkButton = self.viewWithTag(ActionButtonCellType.CheckMark.rawValue)
         {
-            if (optionsConverter.isOptionEnabled(ElementOptions.Done, forCurrentOptions: currentElement.typeId.integerValue))
+            if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
             {
                 checkmarkButton.backgroundColor = kDaySignalColor
             }
@@ -193,6 +195,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
         }
     }
+    
     private func setupDecisionButton()
     {
         if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Solution.rawValue)
@@ -207,6 +210,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
         }
     }
+    
     func actionButtonTapped(sender:AnyObject?)
     {
         if let button = sender as? UIButton

@@ -505,9 +505,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             
             editingVC.modalPresentationStyle = .Custom
             editingVC.transitioningDelegate = self
-            //create copy of current element
             let copyElement = Element(info:  self.currentElement!.toDictionary())
-            //editingVC.newElement =  copyElement
             editingVC.composingDelegate = self
             
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
@@ -568,11 +566,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 case .Signal:
                     elementSignalToggled()
                 case .CheckMark:
-                    elementCheckMarkPressed()
+                    elementTaskPressed()
                 case .Idea:
                     elementIdeaPressed()
                 case .Solution:
-                    elementSolutionPressed()
+                    elementDecisionPressed()
                 }
             }
             else
@@ -657,18 +655,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         handleDeletingCurrentElement()
     }
     
-    func elementCheckMarkPressed()
-    {
-        println("CheckMark tapped.")
-        let anOptionsConverter = ElementOptionsConverter()
-        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
-        var editingElement = Element(info: self.currentElement!.toDictionary())
-        editingElement.typeId = NSNumber(integer: newOptions)
-        println("new element type id: \(editingElement.typeId)")
-        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
-        
-    }
-    
     func elementIdeaPressed()
     {
         println("Idea tapped.")
@@ -680,7 +666,19 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     
-    func elementSolutionPressed()
+    func elementTaskPressed()
+    {
+        println("CheckMark tapped.")
+        let anOptionsConverter = ElementOptionsConverter()
+        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
+        var editingElement = Element(info: self.currentElement!.toDictionary())
+        editingElement.typeId = NSNumber(integer: newOptions)
+        println("new element type id: \(editingElement.typeId)")
+        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        
+    }
+    
+    func elementDecisionPressed()
     {
         println("Decision tapped.")
         let anOptionsConverter = ElementOptionsConverter()
