@@ -76,7 +76,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         else
         {
             //self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor
             self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
         }
         self.navigationController?.navigationBar.tintColor = kWhiteColor

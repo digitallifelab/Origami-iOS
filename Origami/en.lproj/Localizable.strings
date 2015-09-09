@@ -48,3 +48,11 @@
 "Idea" = "Idea";
 "Task" = "Task";
 "Decision" = "Decision";
+
+"Menu" = "Menu";
+"authorization" = "authorization";
+"LogOut" = "Log out";
+"Contacts" = "Contacts";
+"Home" = "Home";
+"Profile" = "Profile";
+"Display Mode" = "Display Mode";

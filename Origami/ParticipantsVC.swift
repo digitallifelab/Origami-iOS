@@ -310,8 +310,8 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         else
         {
-            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
-            self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor
+            self.topNavBarBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
 
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)

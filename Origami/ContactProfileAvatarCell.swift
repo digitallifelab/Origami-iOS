@@ -11,7 +11,7 @@ import UIKit
 class ContactProfileAvatarCell: UITableViewCell {
 
     @IBOutlet weak var avatar:UIImageView?
-    @IBOutlet weak var favIcon:UIImageView?
+    @IBOutlet weak var favIcon:UIImageView!
     
     var favourite = false{
         didSet{
@@ -26,9 +26,17 @@ class ContactProfileAvatarCell: UITableViewCell {
             self.setNeedsLayout()
         }
     }
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        favIcon.image = UIImage(named: "icon-favourite")?.imageWithRenderingMode(.AlwaysTemplate)
+        favIcon.tintColor = kDayCellBackgroundColor
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
-        favIcon?.tintColor = kDayCellBackgroundColor
-        favIcon?.image = UIImage(named: "icon-favourite")?.imageWithRenderingMode(.AlwaysTemplate)
+//        favIcon.image = UIImage(named: "icon-favourite")?.imageWithRenderingMode(.AlwaysTemplate)
+//        favIcon.tintColor = kDayCellBackgroundColor
+        //favIcon.backgroundColor = kWhiteColor
     }
 }

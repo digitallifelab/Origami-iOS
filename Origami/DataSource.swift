@@ -1562,6 +1562,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)
     {
+//        let sender = NSProcessInfo.processInfo()
+//        let name = sender.processName
+//        let identifier = sender.processIdentifier
+//        let availableMenory = sender.physicalMemory
         
         DataSource.sharedInstance.serverRequester.loadAllContacts { (contacts, error) -> () in
             if error != nil

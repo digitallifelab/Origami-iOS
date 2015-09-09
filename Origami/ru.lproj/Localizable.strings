@@ -49,3 +49,11 @@
 "Idea" = "Идея";
 "Task" = "Задача";
 "Decision" = "Решение";
+
+"Menu" = "Меню";
+"authorization" = "авторизация";
+"LogOut" = "Выход";
+"Contacts" = "Контакты";
+"Home" = "Главная";
+"Profile" = "Профиль";
+"Display Mode" = "Вид";

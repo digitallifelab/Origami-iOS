@@ -65,8 +65,8 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         else
         {
             //self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
-            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor
+            self.navigationBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
             self.bottomToolbar.tintColor = kDayNavigationBarBackgroundColor
             self.bottomToolbar.backgroundColor = kWhiteColor
         }

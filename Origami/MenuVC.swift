@@ -128,7 +128,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var menuCell = tableView.dequeueReusableCellWithIdentifier("SideMenuCell", forIndexPath: indexPath) as! SideMenuCell
-        
+        menuCell.backgroundColor = UIColor.clearColor()
         configureMenuCell(menuCell, forIndexpath: indexPath)
         
         return menuCell
@@ -140,11 +140,13 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         if let cellTitle = titleForMenuCellAtIndexPath(indexPath)
         {
             cell.label.text = cellTitle
-            if cellTitle == "Display Mode"
+            if cellTitle == "Display Mode".localizedWithComment("")
             {
                 cell.cellType = .DisplayModeSwitch
                 cell.switchDelegate = self
                 cell.label.numberOfLines = 2
+                cell.label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+                cell.label.sizeToFit()
             }
             else
             {
@@ -204,9 +206,9 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         switch section
         {
         case 0:
-            return "Menu"
+            return "Menu".localizedWithComment("")
         case 1:
-            return "authorization"
+            return "authorization".localizedWithComment("")
         default:
             return nil
         }
@@ -243,6 +245,14 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
             NSNotificationCenter.defaultCenter().postNotification(logoutNotification)
         default: break
         }
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60.0
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 60.0
     }
     
     //MARK: SwitchDelegate

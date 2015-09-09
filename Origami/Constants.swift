@@ -8,7 +8,6 @@
 
 import Foundation
 
-let serverURL = "http://cloudcraftt1.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
 
 let currentLogin = "CurrentUser"
 let currentPassword = "CurrentPassword"
@@ -66,9 +65,11 @@ let kDayViewBackgroundColor = UIColor.whiteColor()//UIColor(red: 227.0/255.0, gr
 #if SHEVCHENKO
 let kDayNavigationBarBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0) //green
 let kDayCellBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)
+let serverURL = "http://shevchenkonw.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
 #else
 let kDayCellBackgroundColor =          UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0) //blue
 let kDayNavigationBarBackgroundColor = UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
+let serverURL = "http://cloudcraftt1.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
 #endif
 
 let kWhiteColor = UIColor.whiteColor()

@@ -20,6 +20,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
+
+    //MARK:----
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -143,7 +145,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationItems()
     {
         self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
-        
+        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default
+        self.navigationController?.navigationBar.translucent = false
 //        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Reply, target: self, action: "dismissSelf:")
 //        self.navigationItem.leftBarButtonItem = closeButton
         
@@ -151,7 +154,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         contactsSearchButton?.enabled = false
         self.navigationItem.rightBarButtonItem = contactsSearchButton
         
-        let segmentedControl = UISegmentedControl(items: ["All".localizedWithComment(""), "Favourite".localizedWithComment("")])
+        let segmentedControl = UISegmentedControl(items: ["All".localizedWithComment(""), "Favorite".localizedWithComment("")])
         segmentedControl.selectedSegmentIndex = 0
         currentSelectedContactsIndex = segmentedControl.selectedSegmentIndex
         segmentedControl.addTarget(self, action: "contactsFilterDidChange:", forControlEvents: UIControlEvents.ValueChanged)
@@ -367,7 +370,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             }
             else
             {
-                cell.favouriteButton.tintColor = UIColor.grayColor()
+                cell.favouriteButton.tintColor = UIColor.lightGrayColor()
             }
             cell.favouriteButton.tag = indexPath.row
             

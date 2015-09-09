@@ -41,7 +41,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         configureLeftBarButtonItem()
         configureRightBarButtonItem()
         
-        addNavigationBarBackgroundView()
+//        addNavigationBarBackgroundView()
         
         configureNavigationControllerToolbarItems()
         
@@ -105,25 +105,25 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
    
     
     //MARK: --- Appearance
-    func addNavigationBarBackgroundView()
-    {
-        let navView = UIView()
-        navView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.view.addSubview(navView)
-        
-        //constraints
-        
-        let viewsDict = ["navView":navView]
-        
-        let horConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[navView]|", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
-        let vertConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[navView(64)]", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
-        
-        self.view.addConstraints(horConstraints)
-        self.view.addConstraints(vertConstraints)
-        
-        //store to use
-        self.navigationBackgroundView = navView
-    }
+//    func addNavigationBarBackgroundView()
+//    {
+//        let navView = UIView()
+//        navView.setTranslatesAutoresizingMaskIntoConstraints(false)
+//        self.view.addSubview(navView)
+//        
+//        //constraints
+//        
+//        let viewsDict = ["navView":navView]
+//        
+//        let horConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[navView]|", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
+//        let vertConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[navView(64)]", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
+//        
+//        self.view.addConstraints(horConstraints)
+//        self.view.addConstraints(vertConstraints)
+//        
+//        //store to use
+//        self.navigationBackgroundView = navView
+//    }
     
     func configureNavigationControllerToolbarItems()
     {
@@ -151,25 +151,30 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             //self.displayMode = .Night
             self.view.backgroundColor = UIColor.blackColor()
-            self.navigationBackgroundView?.backgroundColor = UIColor.blackColor()
-            self.navigationController?.toolbar.tintColor = kWhiteColor
-            self.navigationController?.toolbar.backgroundColor = kBlackColor
+            //self.navigationBackgroundView?.backgroundColor = UIColor.blackColor()
+//            self.navigationController?.toolbar.tintColor = kWhiteColor
+//            self.navigationController?.toolbar.backgroundColor = kBlackColor
         }
         else
         {
             //self.displayMode = .Day
             self.view.backgroundColor = kDayViewBackgroundColor 
-            self.navigationBackgroundView?.backgroundColor = kDayNavigationBarBackgroundColor
-            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
-            self.navigationController?.toolbar.backgroundColor = kWhiteColor
+            //self.navigationBackgroundView?.backgroundColor = kDayNavigationBarBackgroundColor
+//            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
+//            self.navigationController?.toolbar.backgroundColor = kWhiteColor
         }
         
         self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
         
         self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
+       // self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
         self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
+        
+        
+        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default
+        self.navigationController?.navigationBar.translucent = false
+        self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
     }
     
     func configureLeftBarButtonItem()
@@ -178,7 +183,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        leftButton.tintColor = kWhiteColor
+        leftButton.tintColor = kDayNavigationBarBackgroundColor
         leftButton.addTarget(self, action: "menuTapped:", forControlEvents: .TouchUpInside)
         var leftBarButton = UIBarButtonItem(customView: leftButton)
         self.navigationItem.leftBarButtonItem = leftBarButton
@@ -190,7 +195,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         editButton.frame = CGRectMake(0.0, 0.0, 40.0, 40.0)
         editButton.imageEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8)
         editButton.setImage(UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        editButton.tintColor = kWhiteColor
+        editButton.tintColor = kDayNavigationBarBackgroundColor
         editButton.addTarget(self, action: "toggleEditingMode", forControlEvents: .TouchUpInside)
         var rightBarButton = UIBarButtonItem(customView: editButton)
         self.navigationItem.rightBarButtonItem = rightBarButton

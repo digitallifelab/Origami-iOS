@@ -23,6 +23,8 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
     var delegate:TableItemPickerDelegate?
     var message:Message?
     
+    let displayMode:DisplayMode = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? .Night : .Day
+    
     required init(coder aDecoder: NSCoder) {
         self.tableView = UITableView(frame: CGRectZero, style: .Plain)
         super.init(coder: aDecoder)
@@ -55,6 +57,20 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        if self.displayMode == .Day
+        {
+            self.backgroundColor = kWhiteColor
+            self.layer.shadowColor = UIColor.blackColor().colorWithAlphaComponent(0.6).CGColor
+        }
+        else
+        {
+            self.backgroundColor = kBlackColor
+            self.layer.shadowColor = UIColor.whiteColor().colorWithAlphaComponent(0.6).CGColor
+        }
+   
+        self.layer.shadowOpacity = 1.0
+        self.layer.shadowRadius = 3.0
+        self.layer.shadowOffset = CGSizeMake(0.0, -2.0)
         
         configureTable()
     }
@@ -116,9 +132,20 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
                 {
                     cell.textLabel?.font = font
                 }
-                cell.textLabel?.textColor = kDayCellBackgroundColor
+                
+                if self.displayMode == .Day
+                {
+                    cell.imageView?.tintColor = kDayCellBackgroundColor
+                    cell.textLabel?.textColor = kDayCellBackgroundColor
+                }
+                else
+                {
+                    cell.textLabel?.textColor = kWhiteColor
+                    cell.imageView?.tintColor = kWhiteColor
+                }
+                
                 cell.imageView?.contentMode = .ScaleAspectFit
-                cell.imageView?.tintColor = kDayCellBackgroundColor
+             
             }
             cell.backgroundColor = UIColor.clearColor()
         }
@@ -127,6 +154,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
             cell.textLabel?.text = "cancel".localizedWithComment("")
             cell.textLabel?.textColor = kDaySignalColor
             cell.textLabel?.textAlignment = NSTextAlignment.Center
+            cell.backgroundColor = UIColor.clearColor()
         }
     }
     
@@ -146,16 +174,16 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     
     //MARK: layout
-    func configureTable()
+    private func configureTable()
     {
         self.tableView.removeFromSuperview()
         
         self.tableView.setTranslatesAutoresizingMaskIntoConstraints(true)
         
-        //self.tableView.backgroundColor = kWhiteColor
+        self.tableView.backgroundColor = UIColor.clearColor()
         
         self.tableView.frame = self.bounds
-        
+       
         self.addSubview(self.tableView)
         
         self.tableView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
@@ -171,7 +199,28 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
         
         self.tableView.delegate = self
         self.tableView.reloadData()
+        self.tableView.contentOffset = CGPointMake(0, -2) // to hide bottom cell delimiter
         
+        self.alpha = 0.0
+        
+        showYourselfAnimated(true)
     }
     
+    //MARK: --
+    func showYourselfAnimated(animated:Bool)
+    {
+        if animated
+        {
+            UIView.animateWithDuration(0.2, animations: {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.alpha = 1.0
+                }
+            })
+        }
+        else
+        {
+            self.alpha = 1.0
+        }
+    }
 }

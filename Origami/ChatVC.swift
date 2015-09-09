@@ -104,7 +104,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         }
         else
         {
-            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor
             self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
             self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
@@ -319,17 +319,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func setupNavigationTitleView()
     {
-//        if let participantsCount = currentElement?.passWhomIDs.count
-//        {
-//            // setup title label
-//            var lvTitleLabel = UILabel(frame: CGRectMake(0, 0, 100.0, 40.0))
-//            let titleFont =  UIFont(name: "Segoe UI", size: 15.0)
-//            lvTitleLabel.font = titleFont!
-//            lvTitleLabel.text = "\(participantsCount)" + " " + "participants".localizedWithComment("")
-//            lvTitleLabel.textAlignment = NSTextAlignment.Center
-//            lvTitleLabel.textColor = kWhiteColor
-//            self.navigationItem.titleView = lvTitleLabel
-//        }
         if let title = currentElement?.title as? String
         {
             var lvTitleLabel = UILabel()
@@ -341,7 +330,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             lvTitleLabel.textColor = kWhiteColor
             lvTitleLabel.center.x = CGRectGetMidX(self.view.bounds)
             lvTitleLabel.numberOfLines = 1
-            //lvTitleLabel.layer.borderWidth = 1.0
             lvTitleLabel.lineBreakMode = NSLineBreakMode.ByTruncatingTail
             lvTitleLabel.frame = CGRectMake(60.0, 0.0, 100.0, 21.0)
             lvTitleLabel.center.x = CGRectGetMidX(self.view.bounds)
@@ -379,7 +367,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         let contentHeight = chatTable.contentSize.height
         if contentHeight > chatTable.bounds.size.height
         {
-            
             if self.currentChatMessages.count > 1
             {
                 let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
@@ -397,20 +384,22 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         }
     }
     
-    
     //MARK: UITableViewDataSource
-    func messageForIndexPath(indexPath:NSIndexPath) -> Message? {
+    func messageForIndexPath(indexPath:NSIndexPath) -> Message?
+    {
         if currentChatMessages.count > indexPath.row {
             return currentChatMessages[indexPath.row]
         }
         return nil
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
         return currentChatMessages.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    {
         if let existingMessage = messageForIndexPath(indexPath)
         {
             if existingMessage.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
@@ -419,6 +408,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 sentCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
                 sentCell.message = existingMessage.textBody
                 sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
+                sentCell.backgroundColor = UIColor.clearColor()
                 return sentCell
             }
             else
@@ -428,6 +418,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
                 recievedCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
                 recievedCell.avatar.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
+                recievedCell.backgroundColor = UIColor.clearColor()
                 return recievedCell
             }
         }
@@ -437,23 +428,15 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             return tableViewDefaultCell
         }
     }
-//    
-//    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-//        if let aCell = cell as? ChatMessageRecievedCell
-//        {
-//            aCell.roundCorners()
-//        }
-//        if let aCell = cell as? ChatMessageSentCell
-//        {
-//            aCell.roundCorners()
-//        }
-//    }
     
-    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    //MARK: UITableViewDelegate
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    {
         return 70.0
     }
     
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
+    {
         
         if let nsString:NSString = messageForIndexPath(indexPath)?.textBody
         {
@@ -470,7 +453,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         return 70.0
     }
     
-    //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
@@ -576,10 +558,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         if let optionsView = OptionsView(optionsInfo: params)
         {
             optionsView.frame = frame
-            optionsView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
+            //optionsView.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.6)
             self.view.addSubview(optionsView)
             optionsView.delegate = self
             optionsView.message = message
+            //optionsView.showYourselfAnimated(true)
             self.newElementOptionsView = optionsView
             
         }
@@ -631,8 +614,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
                     newElementCreator.editingStyle = .AddNew
                 })
-                
-                
             }
         }
     }

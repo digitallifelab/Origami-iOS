@@ -648,8 +648,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
         else
         {
-            self.view.backgroundColor = kDayViewBackgroundColor //kDayViewBackgroundColor
-            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor
+            self.navigationBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
             UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
             self.navigationController?.toolbar.tintColor = kWhiteColor
             self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor

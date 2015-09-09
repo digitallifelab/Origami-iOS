@@ -426,8 +426,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         else
         {
             self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor//kDayCellBackgroundColor
-            self.navigationBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
+            self.view.backgroundColor = kDayViewBackgroundColor
+            self.navigationBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
             self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
             self.navigationController?.toolbar.backgroundColor = kWhiteColor
         }
