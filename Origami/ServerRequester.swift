@@ -282,7 +282,7 @@ class ServerRequester: NSObject
                                 
                                 elements.insert(lvElement)
                             }
-                            println("loaded \(elements.count) elements.. ")
+                            //println("loaded \(elements.count) elements.. ")
                             
                             completion(Array(elements),nil)
                         }
@@ -310,7 +310,11 @@ class ServerRequester: NSObject
     {
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
-            NSOperationQueue().addOperationWithBlock({ [unowned self]() -> Void in
+            let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgQueue, { [unowned self] () -> Void in
+                
+//            })
+//            NSOperationQueue().addOperationWithBlock({ [unowned self]() -> Void in
                 let elementDict = element.toDictionary()
            
                 let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
@@ -370,7 +374,11 @@ class ServerRequester: NSObject
         if let userToken = DataSource.sharedInstance.user?.token as? String
         {
             var requestError:NSError?
-            NSOperationQueue().addOperationWithBlock({ () -> Void in
+            
+            let bgQueue = dispatch_queue_create("edit_sueue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgQueue, { () -> Void in
+            
+//            NSOperationQueue().addOperationWithBlock({ () -> Void in
                 let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
                 let elementDict = element.toDictionary()
                 let params = ["element":elementDict]
@@ -384,12 +392,12 @@ class ServerRequester: NSObject
                 let editRequestOperation = manager.POST(editUrlString,
                     parameters: params,
                     success: { (operation, resultObject) -> Void in
-                        
+                        // afnetworking returns here in main thread
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                        completonClosure(success: true, error: nil)
                     },
                     failure: { (operation, error) -> Void in
-                        
+                        // afnetworking returns here in main thread
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
                         if let responseString = operation.responseString
@@ -1505,27 +1513,6 @@ class ServerRequester: NSObject
             })
             
             contactsRequestOp?.start()
-            
-//            let queue = NSOperationQueue()
-//            var request = NSMutableURLRequest(URL: NSURL(string: requestString)!)
-//            request.HTTPMethod = "GET"
-//            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler: { (urlResponse, responseData, responseError) -> Void in
-//                if let data = responseData
-//                {
-//                    var jsonError:NSError?
-//                    if let json = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments, error: &jsonError) as? [NSObject:AnyObject]
-//                    {
-//                        println("---> Raw response: \(json)")
-//                    }
-//                    else if let string = NSString(data: data, encoding: NSUTF8StringEncoding)
-//                    {
-//                        println("---> RawString response: \(string)")
-//                    }
-//                }
-//            })
-            
-            
-            
             return
         }
         

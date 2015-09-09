@@ -37,6 +37,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     @IBOutlet var collectionView:UICollectionView!
     @IBOutlet var navigationBackgroundView:UIView!
     
+    deinit
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        println(" ->removed observer  SingleDashVC from Deinit.")
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -86,6 +92,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     override func viewWillAppear(animated: Bool)
     {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
+        println(" --- Removed From observing new elements added...")
         super.viewWillAppear(animated)
         if afterViewDidLoad
         {
@@ -1079,9 +1087,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         {
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
                             DataSource.sharedInstance.deleteElementFromLocalStorage(elementID)
-                            
-//                            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementID)])
-                            
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }
                     }
@@ -1094,12 +1099,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             })
         }
     }
-    
+    //MARK: handling notifications
     func elementWasDeleted(notification:NSNotification?)
     {
         if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
         {
            self.prepareCollectionViewDataAndLayout()
+        }
+    }
+    
+    func refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement(notification:NSNotification)
+    {
+        if let info = notification.userInfo, elementIdNumbersSet = info["IDs"] as? Set<NSNumber>
+        {
+            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.prepareCollectionViewDataAndLayout()
+                }
+            })
         }
     }
     
@@ -1110,6 +1128,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         nextViewController.currentElement = element
         self.navigationController?.pushViewController(nextViewController, animated: true)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement:", name: kNewElementsAddedNotification, object: nil)
     }
     
     //MARK: AttachmentSelectionDelegate
@@ -1222,6 +1241,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         if let chatVC = self.storyboard?.instantiateViewControllerWithIdentifier("ChatVC") as? ChatVC
         {
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement:", name: kNewElementsAddedNotification, object: nil)
+            
+            println(" -- > Added self to observe new element added")
+            
             chatVC.currentElement = self.currentElement
             self.navigationController?.pushViewController(chatVC, animated: true)
         }
@@ -1231,14 +1254,5 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func chatMessageWasTapped(message: Message?) {
         showChatForCurrentElement()
     }
-    
-//    //MARK: Alert
-//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-//    {
-//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-//        alertController.addAction(closeAction)
-//        
-//        self.presentViewController(alertController, animated: true, completion: nil)
-//    }
+
 }

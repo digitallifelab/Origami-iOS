@@ -259,6 +259,8 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                             dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
                                 weakSelf.setUpInitialArrays()
                             })
+                            
+                    
                         }
                         else
                         {
@@ -294,16 +296,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
-//    //MARK: Alert
-//    func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
-//    {
-//        let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
-//        let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
-//        alertController.addAction(closeAction)
-//        
-//        self.presentViewController(alertController, animated: true, completion: nil)
-//    }
-    
     //MARK: Appearance
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
@@ -331,11 +323,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         self.navigationController?.navigationBar.shadowImage = UIImage()
         self.navigationController?.navigationBar.translucent = true
         self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        
-        
-        //TODO: switch message cells night-day modes
-        // self.collectionSource?.turnNightModeOn(nightModeOn)
-        // self.collectionDashboard.reloadData()
-        
+
     }
 }

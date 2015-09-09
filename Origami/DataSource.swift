@@ -539,7 +539,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
                         }
                         
-                        //NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
                         
                         if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
                         {
@@ -591,6 +590,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func addNewElements(elements:[Element], completion:voidClosure?)
     {
         DataSource.sharedInstance.elements += elements
+        var elementIDs = Set<NSNumber>()
+        for anElement in elements
+        {
+            if let id = anElement.elementId
+            {
+                elementIDs.insert(id)
+            }
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: ["IDs" : elementIDs])
+        
         if (completion != nil)
         {
             completion!()

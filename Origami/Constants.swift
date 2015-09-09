@@ -107,4 +107,4 @@ let kHomeScreenMessageTappedNotification = "HomeScreenMessageTapped"
 let kLogoutNotificationName = "LogOutPressed"
 let kContactFavouriteButtonTappedNotification = "ContactFavouriteTapped"
 let kLongPressMessageNotification = "LongPressedMessage"
-
+let kNewElementsAddedNotification = "NewElementsAdded"
