@@ -62,6 +62,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
        private var databaseHandler:DatabaseHandler?
     #endif
  
+    var shouldReloadAfterElementChanged = false
     
     var messagesLoader:MessagesLoader?
     
@@ -733,7 +734,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getDashboardElements( completion:([Int:[Element]]?)->() )
     {
-        //println("\r _________ Started gathering elements for Dashboard.....")
+        NSLog("\r _________ Started gathering elements for Dashboard.....")
         let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
         dispatch_async(dispatchQueue,
         {
@@ -789,10 +790,31 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 _ in
                 let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
+                
+                 NSLog("\r _________ Finished gathering elements for Dashboard.....")
                 completion(toReturn)
             })
         })
     }
+    
+    func getAllElementsSortedByActivity( completion:((elements:[Element]?) -> ())? )
+    {
+        NSLog("_________ Started gathering elements for RecentActivityTableVC.....")
+        
+        let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+        dispatch_async(bgQueue, { () -> Void in
+            
+            var elementsToSort = DataSource.sharedInstance.elements
+            
+            ObjectsConverter.sortElementsByDate(&elementsToSort)
+            NSLog("_________ Finished gathering elements for RecentActivityTableVC.....")
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion?(elements: elementsToSort)
+            })
+        })
+    }
+
+    
     #if SHEVCHENKO
     #else
     func loadExistingDashboardElementsFromLocalDatabaseCompletion( completion:((elements:[String:[DBElement]]?, error:NSError?)->()) )
@@ -990,6 +1012,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         existingElement.isFavourite = element.isFavourite
                         existingElement.isSignal = element.isSignal
                         existingElement.typeId = element.typeId
+                        let currentDate = NSDate()
+                        if let dateForServer = currentDate.dateForServer()
+                        {
+                            existingElement.changeDate = dateForServer
+                        }
+                        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
                 }
             }
@@ -1019,9 +1047,25 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func updateElement(element:Element, isFavourite favourite:Bool, completion completionClosure:(edited:Bool)->() )
     {
+        let elementId = element.elementId!.integerValue
+        
         serverRequester.setElementWithId(element.elementId!, favourite: favourite) { (success, error) -> () in
+            
             if success{
-                completionClosure(edited: true)
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                    {
+                        let date = NSDate()
+                        if let currentStringDate = date.dateForServer()
+                        {
+                            existingElement.changeDate = currentStringDate
+                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+                        }
+                    }
+                })
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completionClosure(edited: true)
+                })
             }
             else
             {
@@ -1508,7 +1552,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         })
     }
     
-    
     //MARK: Contact
     func addNewContacts(contacts:[Contact], completion:voidClosure?)
     {        
@@ -1544,10 +1587,15 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         for aContact in aContacts
                         {
                             dispatch_group_enter(group)
-                            DataSource.sharedInstance.loadAvatarForLoginName(aContact.userName as! String, completion: { (image) -> () in
-                                //println(" finishd loading avatar for contact \(aContact.userName)")
-                                dispatch_group_leave(group)
-                            })
+                            if let contactUserName = aContact.userName as? String
+                            {
+                                println("loading avatar for \(contactUserName)")
+                                DataSource.sharedInstance.loadAvatarForLoginName(contactUserName, completion: { (image) -> () in
+                                    //println(" finishd loading avatar for contact \(aContact.userName)")
+                                    dispatch_group_leave(group)
+                                })
+                            }
+                            
                         }
                         dispatch_group_notify(group, dispatch_queue_create("bg-queue", DISPATCH_QUEUE_CONCURRENT), { () -> Void in
                             println(" finishd loading avatars for contacts")
@@ -1970,22 +2018,28 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
     func loadAvatarForLoginName(loginName:String, completion completionBlock:((image:UIImage?) ->())? )
     {
-        if let complete = completionBlock
-        {
+        let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+        dispatch_async(bgQueue, { () -> Void in
             //step 1 try to get from RAM
             if let existingAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), avatarImage = UIImage(data: existingAvatarData)
             {
-                complete(image: avatarImage)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completionBlock?(image: avatarImage)
+                })
+                
                 //println(" got avatar from RAM..")
                 return
             }
+            
             
             //step 2 try to get from disc
             DataSource.sharedInstance.loadAvatarFromDiscForLoginName(loginName, completion: { (image, error) -> () in
                 
                 if let avatarImage = image
                 {
-                    complete(image: avatarImage)
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completionBlock?(image: avatarImage)
+                    })
                     println(" got avatar from Disc..")
                     return
                 }
@@ -2009,7 +2063,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                     
                                     if let completionClosure = completionBlock
                                     {
-                                        completionClosure(image: nil)
+                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                            completionClosure(image: nil)
+                                        })
+                                        
                                     }
                                 }
                                 
@@ -2019,14 +2076,19 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                     {
                                         if let completionClosure = completionBlock
                                         {
-                                            completionClosure(image: toReturnImage)
+                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                                completionClosure(image: toReturnImage)
+                                            })
+                                            
                                         }
                                     }
                                     else
                                     {
                                         if let completionClosure = completionBlock
                                         {
-                                            completionClosure(image: nil)
+                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                                completionClosure(image: nil)
+                                            })
                                         }
                                     }
                                 })
@@ -2037,7 +2099,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             println(" Did not recieve avatar image bytes.")
                             if let completionClosure = completionBlock
                             {
-                                completionClosure(image: nil)
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    completionClosure(image: nil)
+                                })
                             }
                         }
                         return
@@ -2051,14 +2115,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         if let completionClosure = completionBlock
                         {
-                            completionClosure(image: nil)
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                completionClosure(image: nil)
+                            })
                         }
                     }
                     
                 })
-
+                
             })
-        }
+
+        })
     }
     
     func uploadAvatarForCurrentUser(data:NSData, completion completionBlock:((success:Bool, error:NSError?)->())?)

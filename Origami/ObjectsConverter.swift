@@ -145,22 +145,41 @@ class ObjectsConverter {
         if elements.count > 1
         {
             elements.sort({ (element1, element2) -> Bool in
-                if element1.changeDate != nil && element2.changeDate != nil
+                if let changed1 = element1.changeDate , changed2 =  element2.changeDate
                 {
-                    
-                    let  date1 = element1.createDate!.dateFromServerDateString()
-                    let  date2 = element2.createDate!.dateFromServerDateString()
+                    let  date1 = changed1.dateFromServerDateString()
+                    let  date2 = changed2.dateFromServerDateString()
                     if date1 != nil && date2 != nil
                     {
                         let result = date1!.compare(date2!)
                         if result == NSComparisonResult.OrderedDescending
                         {
+                            //println("\n date1: \(date1) is older than date2: \(date2) ")
                             return true
                         }
+                        //println("date1: \(date1) is earlier than date2: \(date2) ")
                         return false
                         
                     }
                 }
+                else if let created1 = element1.createDate, created2 = element2.createDate
+                {
+                    let  date1 = created1.dateFromServerDateString()
+                    let  date2 = created2.dateFromServerDateString()
+                    if date1 != nil && date2 != nil
+                    {
+                        let result = date1!.compare(date2!)
+                        if result == NSComparisonResult.OrderedDescending
+                        {
+                            //println("\n date1: \(date1) is older than date2: \(date2) ")
+                            return true
+                        }
+                        //println("date1: \(date1) is earlier than date2: \(date2) ")
+                        return false
+                        
+                    }
+                }
+                
                 return false
             })
         }

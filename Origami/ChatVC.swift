@@ -75,7 +75,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         self.navigationController?.toolbarHidden = true
         let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightModeOn)
-        
+        turnNightModeOn(nightModeOn)
         bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
     }
     
@@ -93,35 +93,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     
     //MARK: Appearance
-    func setAppearanceForNightModeToggled(nightModeOn:Bool)
-    {
-        if nightModeOn
-        {
-            self.view.backgroundColor = UIColor.blackColor()
-            self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
-            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
-        }
-        else
-        {
-            self.view.backgroundColor = kDayViewBackgroundColor
-            self.topNavBarBackgroundView.backgroundColor = /*UIColor.whiteColor()*/kDayNavigationBarBackgroundColor
-            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
-        }
-        
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-        
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        
-        
-        //TODO: switch message cells night-day modes
-        self.turnNightModeOn(nightModeOn)
-        self.chatTable.reloadSections(NSIndexSet(index:0), withRowAnimation: .Fade)
-       
-    }
     
     //MARK: DayMode
     func turnNightModeOn(nightMode:Bool)
@@ -135,6 +106,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             self.displayMode = .Day
         }
         bottomControlsContainerView.displayMode = self.displayMode
+        self.chatTable.reloadSections(NSIndexSet(index:0), withRowAnimation: .Fade)
     }
     
     //MARK: ChatInputViewDelegate
@@ -161,7 +133,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             {
                 let nsDict = NSDictionary(
                     objects:
-                    [inputView.textView.text!, NSNumber(integer: 0), "Ivan", currentElement!.elementId!, DataSource.sharedInstance.user!.userId!, NSDate().dateForServer()],
+                    [inputView.textView.text!, NSNumber(integer: 0), "Ivan", currentElement!.elementId!, DataSource.sharedInstance.user!.userId!, NSDate().dateForServer() ?? NSDate.dummyDate()],
                     forKeys:
                     ["Msg","TypeId","FirstName","ElementId", "CreatorId", "CreateDate"])
                 

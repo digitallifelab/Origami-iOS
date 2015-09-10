@@ -211,6 +211,10 @@
 		F8C93B3B1B862865009D890E /* DBContact.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC61B74ED1500EC114C /* DBContact.m */; };
 		F8C93B3C1B862868009D890E /* DBElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC31B74ED1400EC114C /* DBElement.m */; };
 		F8C93B3D1B862873009D890E /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */; };
+		F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
+		F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
+		F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */; };
+		F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */; };
 		F8D0A3481B5FCE7F0033FD43 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D0A3471B5FCE7F0033FD43 /* MenuVC.swift */; };
 		F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2B1B283DE900584B8D /* Enumerations.swift */; };
 		F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
@@ -358,6 +362,8 @@
 		F8C65F361B98AA5A001EDEA6 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
+		F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableVC.swift; sourceTree = "<group>"; };
+		F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableCell.swift; sourceTree = "<group>"; };
 		F8D0A3471B5FCE7F0033FD43 /* MenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		F8D2FF2B1B283DE900584B8D /* Enumerations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enumerations.swift; sourceTree = "<group>"; };
 		F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewHandler.swift; sourceTree = "<group>"; };
@@ -608,6 +614,7 @@
 		F874D90C1B26FA8A00B867BF /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
@@ -777,6 +784,15 @@
 			);
 			name = AFNetworking;
 			path = Origami/AFNetworking;
+			sourceTree = "<group>";
+		};
+		F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */ = {
+			isa = PBXGroup;
+			children = (
+				F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */,
+				F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */,
+			);
+			name = ElementsActivity;
 			sourceTree = "<group>";
 		};
 		F8D2FF311B2870AA00584B8D /* Subordinates */ = {
@@ -1044,6 +1060,7 @@
 				F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */,
 				F8A2A4D01B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */,
+				F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F8C93AEA1B861B94009D890E /* ElementAttachedFilesCollectionHandler.swift in Sources */,
 				F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */,
 				F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */,
@@ -1072,6 +1089,7 @@
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
 				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
 				F8C93B051B861B94009D890E /* RootViewController.swift in Sources */,
+				F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F8C65F3E1B98AA5A001EDEA6 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				F8C93B071B861B94009D890E /* PopupMenuCell.swift in Sources */,
 				F8C93B091B861B94009D890E /* ServerRequester.swift in Sources */,
@@ -1123,6 +1141,7 @@
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C65F451B98AA5A001EDEA6 /* AFURLRequestSerialization.m in Sources */,
 				F8521FEB1B78906500B418A3 /* HomeVCCollectionHandler.swift in Sources */,
+				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F855BBC41B74ED1400EC114C /* DBElement.m in Sources */,
 				F855BBC71B74ED1500EC114C /* DBContact.m in Sources */,
@@ -1186,6 +1205,7 @@
 				F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */,
 				F89F3B5C1B21C7C600156CEC /* RootViewController.swift in Sources */,
 				F882328F1B6B71AD00990A4E /* PopupMenuCell.swift in Sources */,
+				F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
 				F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */,

@@ -23,7 +23,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 return
             }
-            
+        
             if collectionDataSource != nil
             {
                 collectionDataSource?.displayMode = self.displayMode
@@ -40,7 +40,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        println(" ->removed observer  SingleDashVC from Deinit.")
+        println(" ->removed observer SingleDashVC from Deinit.")
     }
     
     override func viewDidLoad()
@@ -53,9 +53,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         self.fadeViewControllerAnimator = FadeOpaqueAnimator()
         configureRightBarButtonItem()
         configureNavigationControllerToolbarItems()
-        setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
-        
-        
+        let nightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        setAppearanceForNightModeToggled(nightMode)
+        self.displayMode = (nightMode) ? .Night : .Day
         
         queryAttachesDataAndShowAttachesCellOnCompletion()
         
@@ -406,35 +406,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     
     //MARK: Day/Night Mode
-    func setAppearanceForNightModeToggled(nightModeOn:Bool)
-    {
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-        
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
-        
-        if nightModeOn
-        {
-            self.displayMode = .Night
-            self.view.backgroundColor = UIColor.blackColor()
-            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
-            self.navigationController?.toolbar.tintColor = kWhiteColor
-            self.navigationController?.toolbar.backgroundColor = kBlackColor
-        }
-        else
-        {
-            self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor
-            self.navigationBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
-            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
-            self.navigationController?.toolbar.backgroundColor = kWhiteColor
-        }
-        
-        self.collectionView.reloadData()
-        
-    }
 
     func prepareCollectionViewDataAndLayout()
     {
@@ -461,7 +432,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             collectionView.performBatchUpdates({ [weak self]() -> Void in
                 
             }, completion: {[unowned self] (finished) -> Void in
-               
+               self.collectionView.reloadData()
             })
 
         }

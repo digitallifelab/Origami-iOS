@@ -26,14 +26,14 @@ extension NSDate
         return "/Date(0)/"
     }
     
-    func dateForServer() -> NSString
+    func dateForServer() -> NSString?
     {
         let utcTimeZone = NSTimeZone(abbreviation: "UTC")
         
         let gmtOffset = utcTimeZone?.secondsFromGMTForDate(self)
         if gmtOffset == nil
         {
-            return ""
+            return nil
         }
         
         let interval = self.timeIntervalSince1970
@@ -409,6 +409,32 @@ extension UIViewController
             UIAlertView(title: alertTitle, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle).show()
             
            
+        }
+    }
+    
+    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+        self.navigationController?.navigationBar.translucent = false
+        self.navigationController?.toolbar.translucent = false
+        
+        //    UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+        
+        if nightModeOn
+        {
+            self.navigationController?.navigationBar.barStyle = UIBarStyle.Black
+            self.navigationController?.navigationBar.barTintColor = kBlackColor
+            self.view.backgroundColor = kBlackColor
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.barTintColor = kBlackColor
+        }
+        else
+        {
+            self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
+            self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor
+            self.view.backgroundColor = kWhiteColor
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor
         }
     }
 }

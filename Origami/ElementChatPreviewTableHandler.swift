@@ -95,13 +95,15 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         {
             if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
             {
-                DataSource.sharedInstance.loadAvatarForLoginName(DataSource.sharedInstance.user!.userName as! String, completion: {[weak chatCell] (image) -> () in
-                    if let cell = chatCell, avatarImage = image
-                    {
-                        cell.avatarView.image = avatarImage
-                    }
-                })
-                
+                if let username = DataSource.sharedInstance.user!.userName as? String
+                {
+                    DataSource.sharedInstance.loadAvatarForLoginName(username, completion: {[weak chatCell] (image) -> () in
+                        if let cell = chatCell, avatarImage = image
+                        {
+                            cell.avatarView.image = avatarImage
+                        }
+                    })
+                }
                 chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
             }
             else

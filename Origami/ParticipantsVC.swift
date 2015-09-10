@@ -40,6 +40,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         
         let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightModeOn)
+        self.displayMode = (nightModeOn) ? .Night : .Day
     }
     
     //MARK: ---
@@ -296,33 +297,4 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
     
-    //MARK: Appearance
-    func setAppearanceForNightModeToggled(nightModeOn:Bool)
-    {
-        if nightModeOn
-        {
-            self.view.backgroundColor = UIColor.blackColor()
-            self.topNavBarBackgroundView.backgroundColor = UIColor.blackColor()
-            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            
-            self.tabBarController?.tabBar.backgroundColor = UIColor.blackColor()
-            self.displayMode = .Night
-        }
-        else
-        {
-            self.view.backgroundColor = kDayViewBackgroundColor
-            self.topNavBarBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
-            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-
-            self.tabBarController?.tabBar.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(1.0)
-            self.displayMode = .Day
-        }
-        
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-        
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-
-    }
 }

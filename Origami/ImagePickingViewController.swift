@@ -11,7 +11,7 @@ import UIKit
 class ImagePickingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     private var imagePickerController:UIImagePickerController = UIImagePickerController()
-    @IBOutlet var navigationBackgroundView:UIView!
+ 
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
     var attachPickingDelegate:AttachPickingDelegate?
@@ -52,31 +52,20 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         // Dispose of any resources that can be recreated.
     }
     //MARK: Appearance
-    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    override func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
+        super.setAppearanceForNightModeToggled(nightModeOn)
+        self.bottomToolbar.translucent = false
         if nightModeOn
         {
-            //self.displayMode = .Night
-            self.view.backgroundColor = UIColor.blackColor()
-            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
             self.bottomToolbar.backgroundColor = kBlackColor
             self.bottomToolbar.tintColor = kWhiteColor
         }
         else
         {
-            //self.displayMode = .Day
-            self.view.backgroundColor = kDayViewBackgroundColor
-            self.navigationBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
             self.bottomToolbar.tintColor = kDayNavigationBarBackgroundColor
             self.bottomToolbar.backgroundColor = kWhiteColor
         }
-        
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-        
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        self.bottomToolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
     }
     
     //MARK: UIImagePickerControllerDelegate

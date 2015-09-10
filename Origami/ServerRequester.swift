@@ -1139,7 +1139,7 @@ class ServerRequester: NSObject
         }];
         */
         
-        let userAvatarRequestURLString = serverURL + "GetPhoto?userName=" + loginName
+        let userAvatarRequestURLString = serverURL + "GetPhoto?username=" + loginName
         if let requestURL = NSURL(string: userAvatarRequestURLString)
         {
             var mutableRequest = NSMutableURLRequest(URL: requestURL)
@@ -1147,45 +1147,53 @@ class ServerRequester: NSObject
             mutableRequest.HTTPMethod = "GET"
             
             let sessionTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData, response, responseError) -> Void in
-                if let toReturnCompletion = completionBlock
-                {
-                    if let responseBytes = responseData
+                let bgQueue = dispatch_queue_create("image.Loading.completion.queue", DISPATCH_QUEUE_SERIAL)
+                dispatch_async(bgQueue, { () -> Void in
+                    if let toReturnCompletion = completionBlock
                     {
-                        var jsonError:NSError?
-                        if let
-                            jsonObject = NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? [String:AnyObject]
+                        if let responseBytes = responseData
                         {
-                            if let response = jsonObject["GetPhotoResult"] as? [Int]
+                            var jsonError:NSError?
+                            if let
+                                jsonObject = NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? [NSObject:AnyObject]
                             {
-                                if let aData = NSData.dataFromIntegersArray(response)
+                                if let response = jsonObject["GetPhotoResult"] as? [NSNumber]
                                 {
-                                    toReturnCompletion(avatarData: aData, error: nil)
+                                    var ints = [Int]()
+                                    for aNumber in response
+                                    {
+                                        ints.append(aNumber.integerValue)
+                                    }
+                                    if let aData = NSData.dataFromIntegersArray(ints)
+                                    {
+                                        toReturnCompletion(avatarData: aData, error: nil)
+                                    }
+                                    else
+                                    {
+                                        toReturnCompletion(avatarData: nil, error: nil)
+                                    }
+                                    return
                                 }
-                                else
+                                
+                                if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
                                 {
+                                    println("-> downloadAvatar response: \(jsonString) for userName: \(loginName)")
                                     toReturnCompletion(avatarData: nil, error: nil)
                                 }
-                                return
                             }
-                            
-                            if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
+                            else
                             {
-                                //println("-> downloadAvatar response: \(jsonString)")
                                 toReturnCompletion(avatarData: nil, error: nil)
                             }
+                            return
                         }
-                        else
+                        if let anError = responseError
                         {
-                            toReturnCompletion(avatarData: nil, error: nil)
+                            println("\(anError)")
                         }
-                        return
+                        toReturnCompletion(avatarData: nil, error: responseError)
                     }
-                    if let anError = responseError
-                    {
-                        println("\(anError)")
-                    }
-                    toReturnCompletion(avatarData: nil, error: responseError)
-                }
+                })
             })
             
             sessionTask.resume()

@@ -47,6 +47,8 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         tableView?.delegate = self
         tableView?.dataSource = self
+        
+        setupToolbarHomeButton()
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,7 +56,37 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         // Dispose of any resources that can be recreated.
         avatarImage = nil
     }
+    
+    func setupToolbarHomeButton()
+    {
+        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
+        
+        let homeImageButton = UIBarButtonItem(customView: homeButton)
+        
+        let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
+        
+        //
+        self.setToolbarItems(currentToolbarItems, animated: false)
+    }
 
+    //MARK: Dismiss
+    func homeButtonPressed(sender:UIButton)
+    {
+        //        self.dismissViewControllerAnimated(true, completion: nil)
+        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+        {
+            self.navigationController?.setViewControllers([home], animated: true)
+        }
+    }
+    
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let currentRow = indexPath.row

@@ -144,12 +144,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func configureNavigationItems()
     {
-        self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
-        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default
-        self.navigationController?.navigationBar.translucent = false
-//        let closeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Reply, target: self, action: "dismissSelf:")
-//        self.navigationItem.leftBarButtonItem = closeButton
-        
         contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "showAllContactsVC")
         contactsSearchButton?.enabled = false
         self.navigationItem.rightBarButtonItem = contactsSearchButton
@@ -173,7 +167,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
-        leftButton.tintColor = kDayNavigationBarBackgroundColor
+        //leftButton.tintColor = kDayNavigationBarBackgroundColor
         
         var leftBarButton = UIBarButtonItem(customView: leftButton)
         
@@ -184,7 +178,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationControllerToolbarItems()
     {
         let homeButton = UIButton.buttonWithType(.System) as! UIButton
-        homeButton.tintColor = kDayNavigationBarBackgroundColor
+        //homeButton.tintColor = kDayNavigationBarBackgroundColor
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)

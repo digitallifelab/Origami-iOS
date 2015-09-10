@@ -12,7 +12,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 {
 
     @IBOutlet var collectionDashboard:UICollectionView!
-    @IBOutlet var navigationBackgroundView:UIView!
+    @IBOutlet weak var navigationBackgroundView:UIView?
     @IBOutlet var bottomHomeToolBarButton:UIBarButtonItem!
     
     var collectionSource:HomeCollectionHandler?
@@ -247,8 +247,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             
                             if let hiddenLayout = aSelf.collectionDashboard!.collectionViewLayout as? HomeSignalsHiddenFlowLayout
                             {
-                                if aSelf.shouldReloadCollection
+                                if aSelf.shouldReloadCollection || DataSource.sharedInstance.shouldReloadAfterElementChanged
                                 {
+                                    DataSource.sharedInstance.shouldReloadAfterElementChanged = false
+                                    
                                     hiddenLayout.privSignals = newSignalsCount + 1
                                     
                                     hiddenLayout.privFavourites = newFavs
@@ -616,6 +618,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             {
                 println(" New Night Mode Value: \(nightModeEnabled)")
                 setAppearanceForNightModeToggled(nightModeEnabled)
+                self.collectionSource?.turnNightModeOn(nightModeEnabled)
                 self.collectionDashboard.reloadData()
             }
         }
@@ -624,42 +627,39 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             // handle recieving call not from notification centre
             let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
             setAppearanceForNightModeToggled(nightModeOn)
+            self.collectionSource?.turnNightModeOn(nightModeOn)
             self.collectionDashboard.reloadData()
         }
     }
     
-    func setAppearanceForNightModeToggled(nightModeOn:Bool)
-    {
-        self.navigationController?.navigationBar.backgroundColor = UIColor.clearColor()
-        
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        self.navigationController?.navigationBar.translucent = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        self.navigationController?.toolbar.setBackgroundImage(UIImage(), forToolbarPosition: .Any, barMetrics: .Default)
-        
-        if nightModeOn
-        {
-            self.view.backgroundColor = UIColor.blackColor()
-            self.navigationBackgroundView.backgroundColor = UIColor.blackColor()
-            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-            self.navigationController?.toolbar.tintColor = kWhiteColor
-            self.navigationController?.toolbar.backgroundColor = kBlackColor
-            self.navigationController?.toolbar.tintColor = kWhiteColor
-        }
-        else
-        {
-            self.view.backgroundColor = kDayViewBackgroundColor
-            self.navigationBackgroundView.backgroundColor = kDayNavigationBarBackgroundColor
-            UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-            self.navigationController?.toolbar.tintColor = kWhiteColor
-            self.navigationController?.toolbar.tintColor = kDayNavigationBarBackgroundColor
-            self.navigationController?.toolbar.backgroundColor = kWhiteColor
-            
-        }
-        
-        self.collectionSource?.turnNightModeOn(nightModeOn)
-        
-    }
+//    func setAppearanceForNightModeToggled(nightModeOn:Bool)
+//    {
+//        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+//        self.navigationController?.navigationBar.translucent = false
+//        self.navigationController?.toolbar.translucent = false
+//        
+//        //    UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+//        
+//       if nightModeOn
+//       {
+//            self.navigationController?.navigationBar.barStyle = UIBarStyle.Black
+//            self.navigationController?.navigationBar.barTintColor = kBlackColor
+//            self.view.backgroundColor = kBlackColor
+//            self.navigationController?.toolbar.tintColor = kWhiteColor
+//            self.navigationController?.toolbar.barTintColor = kBlackColor
+//       }
+//       else
+//       {
+//            self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
+//            self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor
+//            self.view.backgroundColor = kWhiteColor
+//            self.navigationController?.toolbar.tintColor = kWhiteColor
+//            self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor
+//       }
+//        
+//        self.collectionSource?.turnNightModeOn(nightModeOn)
+//        
+//    }
     
     func didTapOnChatMessage(notification:NSNotification?)
     {
@@ -689,6 +689,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     self.navigationController?.setViewControllers(toShowVCs, animated: true)
                 }
             }
+        }
+        else //show recent activity view
+        {
+            self.performSegueWithIdentifier("ShowRecentActivitySegue", sender: nil)
+//            if let recentsVC = self.storyboard?.instantiateViewControllerWithIdentifier("RecentActivityTableVC") as? RecentActivityTableVC
+//            {
+//                self.navigationController?.pushViewController(recentsVC, animated: true)
+//            }
         }
     }
     
