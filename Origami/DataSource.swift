@@ -235,6 +235,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func sendNewMessage(message:Message, completion:errorClosure)
     {
         //can be not main queue
+        let elementId = message.elementId?.integerValue
+        
         println(" -> Send new message Called.")
         serverRequester.sendMessage(message, toElement: message.elementId!) { (result, error) -> () in
             
@@ -246,7 +248,21 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             else
             {
                 DataSource.sharedInstance.addMessages([message], forElementId: message.elementId!, completion: nil)
+                //return callback to ChatVC
                 completion(nil)
+                
+                if let intElementId = elementId
+                {
+                    if let existingElement = DataSource.sharedInstance.getElementById(intElementId)
+                    {
+                        let date = NSDate()
+                        if let currentStringDate = date.dateForServer()
+                        {
+                            existingElement.changeDate = currentStringDate
+                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+                        }
+                    }
+                }
             }
         }
     }
@@ -888,9 +904,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
 //                })
                 
                 //start loading ather info in background
-                NSOperationQueue().addOperationWithBlock({ () -> Void in
-                    for anElement in DataSource.sharedInstance.elements
-                    {
+                let bgOperationQueue = NSOperationQueue()
+                bgOperationQueue.maxConcurrentOperationCount = 3
+                
+                
+                for anElement in DataSource.sharedInstance.elements
+                {
+                    bgOperationQueue.addOperationWithBlock({ () -> Void in
                         // load attach files info
                         if !anElement.attachIDs.isEmpty
                         {
@@ -910,13 +930,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 }
                             })
                         }
-                        
+                    })
+                    
+                    bgOperationQueue.addOperationWithBlock({ () -> Void in
                         // load connected userIDs for element
-                        DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion: { (finished) -> () in
-                            //println(" loadPassWhomIdsForElement completion block.")
+                        DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion:
+                            { (finished) -> () in
+                            println(" loadPassWhomIdsForElement completion block.")
                         })
-                    }
-                })
+                    })
+                }
+                
             }
             else
             {
@@ -1082,15 +1106,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadPassWhomIdsForElementID(elementIdInt, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
+                println(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
                 if let elementFromDataSource = DataSource.sharedInstance.getElementById(elementIdInt)
                 {
                     elementFromDataSource.passWhomIDs = recievedIDs
                 }
-                element.passWhomIDs = recievedIDs
+                //element.passWhomIDs = recievedIDs
                 completionClosure(finished: true)
             }
             else
             {
+                println("did not load passWhomIDs for element: \(elementIdInt)")
                 completionClosure(finished: false)
             }
         })
@@ -1187,6 +1213,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
         
+        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
         NSLog("   ->Finished deleting element from local storage.")
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
             NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementId)])
@@ -1357,7 +1384,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 completionClosure(success: false, error: eraseError)
                             }
                         })
-                      
                     })
                 })
             }

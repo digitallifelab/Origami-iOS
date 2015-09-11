@@ -26,6 +26,12 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     @IBOutlet weak var datesTable:UITableView!
     @IBOutlet weak var ownerNameLabel:UILabel!
     @IBOutlet weak var editButton:UIButton?
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.datesTable.scrollsToTop = false
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         

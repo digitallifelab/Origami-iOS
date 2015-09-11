@@ -91,11 +91,12 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
     //@IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
     @IBOutlet weak var menuTable:UITableView?
-    var menuItemsTitles = ["Home", "Profile".localizedWithComment(""), "Contacts".localizedWithComment(""), "Display Mode".localizedWithComment("")]
+    var menuItemsTitles = ["Home", "Sorting".localizedWithComment(""), "Profile".localizedWithComment(""), "Contacts".localizedWithComment(""), "Display Mode".localizedWithComment("")]
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.menuTable?.scrollsToTop = false
         self.menuTable?.delegate = self
         self.menuTable?.dataSource = self
         self.menuTable?.backgroundColor = UIColor.clearColor()// kDayNavigationBarBackgroundColor
@@ -185,10 +186,12 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
             case 0:
                 return UIImage(named: "menu-icon-home")?.imageWithRenderingMode(.AlwaysTemplate) // set "alwaysTemplate" in code because ios 7 from storyboard does not understand image assets set to be alwaystemplate...
             case 1:
-                return UIImage(named: "menu-icon-profile")?.imageWithRenderingMode(.AlwaysTemplate)
+                return UIImage(named: "menu-icon-sorting")?.imageWithRenderingMode(.AlwaysTemplate)
             case 2:
-                return UIImage(named: "menu-icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                return UIImage(named: "menu-icon-profile")?.imageWithRenderingMode(.AlwaysTemplate)
             case 3:
+                return UIImage(named: "menu-icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            case 4:
                 return UIImage(named: "menu-icon-displaymode")?.imageWithRenderingMode(.AlwaysTemplate)
             default:
                 break
@@ -230,12 +233,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         case 0:
             switch indexPath.row
             {
-            case 0: //home button
-                //self.dismissViewControllerAnimated(true, completion: nil)
-                fallthrough
-            case 1: // profile,contacts
-                fallthrough
-            case 2:
+            case 0..<4:
                 NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self, userInfo: ["tapped":indexPath.row] as [NSObject:AnyObject])
             default: break
             }

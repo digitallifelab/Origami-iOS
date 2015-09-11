@@ -178,15 +178,15 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     }
     
     //MARK: Dismiss
-    func homeButtonPressed(sender:UIButton)
-    {
-        //self.dismissViewControllerAnimated(true, completion: nil)
-        
-        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-        {
-            self.navigationController?.setViewControllers([home], animated: true)
-        }
-    }
+//    func homeButtonPressed(sender:UIButton)
+//    {
+//        //self.dismissViewControllerAnimated(true, completion: nil)
+//        
+//        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+//        {
+//            self.navigationController?.setViewControllers([home], animated: true)
+//        }
+//    }
     
     //MARK: Menu show
     func menuTapped(sender:UIButton)

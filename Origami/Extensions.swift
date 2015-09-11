@@ -437,4 +437,32 @@ extension UIViewController
             self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor
         }
     }
+    
+    func homeButtonPressed(sender:UIBarButtonItem)
+    {
+        if let currentVCs = self.navigationController?.viewControllers
+        {
+            if currentVCs.count > 1
+            {
+                if let rootIsHome = currentVCs.first as? HomeVC
+                {
+                    self.navigationController?.popToRootViewControllerAnimated(true)
+                }
+                else
+                {
+                    if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+                    {
+                        self.navigationController?.setViewControllers([home], animated: true)
+                    }
+                }
+            }
+            else
+            {
+                if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+                {
+                    self.navigationController?.setViewControllers([home], animated: true)
+                }
+            }
+        }
+    }
 }

@@ -212,10 +212,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
     
-    func homeButtonPressed(sender:UIBarButtonItem)
-    {
-        self.navigationController?.popToRootViewControllerAnimated(true)
-    }
+//    func homeButtonPressed(sender:UIBarButtonItem)
+//    {
+//        self.navigationController?.popToRootViewControllerAnimated(true)
+//    }
     
     //MARK: -----
     func queryAttachesPreviewData()

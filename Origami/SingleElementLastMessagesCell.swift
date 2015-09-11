@@ -31,6 +31,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     override func awakeFromNib() {
         self.backgroundColor = UIColor.clearColor()
+        self.messagesTable.scrollsToTop = false
     }
     
     override func prepareForReuse() {

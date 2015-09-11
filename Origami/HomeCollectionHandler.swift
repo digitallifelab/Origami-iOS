@@ -323,6 +323,10 @@ import UIKit
     }
  
     //MARK: Delegate
+    func scrollViewShouldScrollToTop(scrollView: UIScrollView) -> Bool {
+        return true
+    }
+    
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
     {
         collectionView.deselectItemAtIndexPath(indexPath, animated: false)

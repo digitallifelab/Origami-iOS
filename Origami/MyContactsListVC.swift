@@ -11,7 +11,7 @@ import UIKit
 class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource,UIViewControllerTransitioningDelegate {
 
     @IBOutlet weak var myContactsTable:UITableView!
-    @IBOutlet weak var homeButtonItem:UIBarButtonItem?
+    
     var myContacts:[Contact]?
     var favContacts:[Contact] = [Contact]()
     var allContacts:[Contact]?
@@ -153,9 +153,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         currentSelectedContactsIndex = segmentedControl.selectedSegmentIndex
         segmentedControl.addTarget(self, action: "contactsFilterDidChange:", forControlEvents: UIControlEvents.ValueChanged)
         self.navigationItem.titleView = segmentedControl
-        
-        self.homeButtonItem?.target = self
-        self.homeButtonItem?.action = "dismissSelf:"
+
         
         configureLeftBarButtonItem()
     }
@@ -167,11 +165,9 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
-        //leftButton.tintColor = kDayNavigationBarBackgroundColor
         
         var leftBarButton = UIBarButtonItem(customView: leftButton)
         
-        //let menuButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Organize, target: self, action: "menuButtonTapped:")
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
@@ -196,21 +192,23 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
     
-    func dismissSelf(sender:AnyObject?)
-    {
-        self.navigationController?.dismissViewControllerAnimated(true, completion: nil)
-    }
     
     //MARK: Dismiss
-    func homeButtonPressed(sender:UIButton)
-    {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-        {
-            self.navigationController?.setViewControllers([home], animated: true)
-        }
-    }
+//    func homeButtonPressed(sender:UIButton)
+//    {
+////        self.dismissViewControllerAnimated(true, completion: nil)
+//        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+//        {
+//            self.navigationController?.setViewControllers([home], animated: true)
+//        }
+//    }
     
+    //MARK: ------ menu displaying
+    func menuButtonTapped(sender:AnyObject)
+    {
+        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
+    }
+    //MARK: ---
     func showAllContactsVC()
     {
         if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
@@ -532,12 +530,5 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             })
         }
     }
-    
-    //MARK: ------ menu displaying
-    func menuButtonTapped(sender:AnyObject)
-    {
-        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
-    }
-    
 
 }

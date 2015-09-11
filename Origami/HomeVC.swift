@@ -693,10 +693,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         else //show recent activity view
         {
             self.performSegueWithIdentifier("ShowRecentActivitySegue", sender: nil)
-//            if let recentsVC = self.storyboard?.instantiateViewControllerWithIdentifier("RecentActivityTableVC") as? RecentActivityTableVC
-//            {
-//                self.navigationController?.pushViewController(recentsVC, animated: true)
-//            }
         }
     }
     

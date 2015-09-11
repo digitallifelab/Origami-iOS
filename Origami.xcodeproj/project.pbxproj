@@ -226,6 +226,8 @@
 		F8D9BABF1B3985D2006B507D /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */; };
 		F8D9BAC31B399880006B507D /* MediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BAC21B399880006B507D /* MediaFile.swift */; };
+		F8DBE5361BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DBE5351BA2C3BA00A8891E /* ElementsSortedByUserVC.swift */; };
+		F8DBE5371BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DBE5351BA2C3BA00A8891E /* ElementsSortedByUserVC.swift */; };
 		F8DE59D41B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */; };
 		F8DE685D1B4581ED001EE9A0 /* ObjectsConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */; };
 		F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7EF1B68FCC60004F0CB /* Structs.swift */; };
@@ -379,6 +381,7 @@
 		F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AttachesTableHeaderView.xib; sourceTree = "<group>"; };
 		F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickingViewController.swift; sourceTree = "<group>"; };
 		F8D9BAC21B399880006B507D /* MediaFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFile.swift; sourceTree = "<group>"; };
+		F8DBE5351BA2C3BA00A8891E /* ElementsSortedByUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementsSortedByUserVC.swift; sourceTree = "<group>"; };
 		F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSignalsVisibleFlowLayout.swift; sourceTree = "<group>"; };
 		F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectsConverter.swift; sourceTree = "<group>"; };
 		F8DEE7EF1B68FCC60004F0CB /* Structs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
@@ -614,6 +617,7 @@
 		F874D90C1B26FA8A00B867BF /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
 				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
@@ -895,6 +899,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */ = {
+			isa = PBXGroup;
+			children = (
+				F8DBE5351BA2C3BA00A8891E /* ElementsSortedByUserVC.swift */,
+			);
+			name = ElementsSortedByUser;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1081,6 +1093,7 @@
 				F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */,
 				F8C93AFE1B861B94009D890E /* LoginVC.swift in Sources */,
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
+				F8DBE5371BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
 				F8C65F461B98AA5A001EDEA6 /* AFURLRequestSerialization.m in Sources */,
 				F8C93B391B86285F009D890E /* DBMessage.m in Sources */,
 				F8C93B001B861B94009D890E /* Extensions.swift in Sources */,
@@ -1153,6 +1166,7 @@
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
 				F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */,
 				F8D456C31B1DEFFC00172667 /* DataSource.swift in Sources */,
+				F8DBE5361BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
 				F891BBE61B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F8DE59D41B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F8C65F3D1B98AA5A001EDEA6 /* AFNetworkActivityIndicatorManager.m in Sources */,

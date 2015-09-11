@@ -178,8 +178,10 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                 case 0:
                     self.showHomeVC()
                 case 1:
-                    self.showUserProfileVC()
+                    self.showElementsSortingVC()
                 case 2:
+                    self.showUserProfileVC()
+                case 3:
                     self.showContactsVC()
                 default:
                     break
@@ -266,6 +268,20 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
     }
+    
+    func showElementsSortingVC()
+    {
+        if let recentsVC = self.storyboard?.instantiateViewControllerWithIdentifier("ElementsSortedByUserVC") as? ElementsSortedByUserVC
+        {
+            self.hideMenu(true, completion: {[weak self] () -> () in
+                if let weakSelf = self
+                {
+                    weakSelf.currentNavigationController?.setViewControllers([recentsVC], animated: true)
+                }
+            })
+        }
+    }
+    
     
     func showUserProfileVC()
     {

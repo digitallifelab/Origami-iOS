@@ -47,6 +47,8 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -1692,36 +1694,23 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HGe-M0-e80" userLabel="navigationBackgroundView">
-                                <rect key="frame" x="0.0" y="64" width="600" height="64"/>
-                                <color key="backgroundColor" white="1" alpha="0.83999999999999997" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="64" id="YXc-iS-c9D"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="4Ah-4v-u9l" firstAttribute="top" secondItem="xy5-6r-JoT" secondAttribute="bottom" constant="-20" id="0H6-ys-yKJ"/>
-                            <constraint firstItem="4Ah-4v-u9l" firstAttribute="top" secondItem="xy5-6r-JoT" secondAttribute="bottom" constant="-64" id="2e8-1R-psG"/>
-                            <constraint firstItem="xy5-6r-JoT" firstAttribute="top" secondItem="HGe-M0-e80" secondAttribute="bottom" constant="-64" id="8GG-nQ-2gE"/>
-                            <constraint firstItem="xy5-6r-JoT" firstAttribute="top" secondItem="HGe-M0-e80" secondAttribute="bottom" id="Wqv-ig-FRC"/>
-                            <constraint firstAttribute="trailing" secondItem="4Ah-4v-u9l" secondAttribute="trailing" id="Zhr-4P-sFb"/>
-                            <constraint firstItem="4Ah-4v-u9l" firstAttribute="leading" secondItem="SgG-JJ-2ts" secondAttribute="leading" id="hvP-Pk-6LJ"/>
-                            <constraint firstItem="HGe-M0-e80" firstAttribute="leading" secondItem="SgG-JJ-2ts" secondAttribute="leading" id="jMF-cJ-HAx"/>
-                            <constraint firstAttribute="trailing" secondItem="HGe-M0-e80" secondAttribute="trailing" id="uQQ-IP-auK"/>
-                            <constraint firstItem="1qn-l9-g7X" firstAttribute="top" secondItem="4Ah-4v-u9l" secondAttribute="bottom" id="uuf-LF-Jnp"/>
+                            <constraint firstItem="4Ah-4v-u9l" firstAttribute="top" secondItem="SgG-JJ-2ts" secondAttribute="top" id="Jp2-CF-fIc"/>
+                            <constraint firstItem="4Ah-4v-u9l" firstAttribute="bottom" secondItem="1qn-l9-g7X" secondAttribute="top" id="eaN-M8-pjq"/>
+                            <constraint firstItem="4Ah-4v-u9l" firstAttribute="leading" secondItem="SgG-JJ-2ts" secondAttribute="leading" id="o9z-Ib-NUU"/>
+                            <constraint firstAttribute="trailing" secondItem="4Ah-4v-u9l" secondAttribute="trailing" id="uwv-2r-KQK"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="0H6-ys-yKJ"/>
-                                <exclude reference="Wqv-ig-FRC"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
                         <outlet property="contactsTable" destination="4Ah-4v-u9l" id="qN8-oe-deu"/>
-                        <outlet property="topNavBarBackgroundView" destination="HGe-M0-e80" id="FyQ-Y1-Qwa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b0z-nd-3vq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2893,6 +2882,89 @@
             </objects>
             <point key="canvasLocation" x="5523" y="439"/>
         </scene>
+        <!--Elements Sorted By UserVC-->
+        <scene sceneID="GcG-Iu-ddF">
+            <objects>
+                <viewController storyboardIdentifier="ElementsSortedByUserVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="C5Y-Ay-Vc7" customClass="ElementsSortedByUserVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="6AM-X7-xbC"/>
+                        <viewControllerLayoutGuide type="bottom" id="jLo-Kg-eUM"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="rsN-Dm-FAF">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="101" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="01A-7P-eGn">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ElementTableCell" rowHeight="100" id="DWE-mI-zng" customClass="RecentActivityTableCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DWE-mI-zng" id="lej-34-5yK">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="element title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Y4-fY-tDA">
+                                                    <rect key="frame" x="8" y="8" width="551" height="27"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="27" id="bcF-Zl-RDW"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="20"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="element details text view. element details text view. element details text view. element details text view." selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dbs-Ma-wcR">
+                                                    <rect key="frame" x="8" y="43" width="551" height="40"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="40" id="4bW-aE-rxr"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="4bW-aE-rxr"/>
+                                                        </mask>
+                                                    </variation>
+                                                </textView>
+                                            </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="dbs-Ma-wcR" secondAttribute="bottom" constant="8" id="0fD-dx-dAo"/>
+                                                <constraint firstItem="dbs-Ma-wcR" firstAttribute="leading" secondItem="2Y4-fY-tDA" secondAttribute="leading" id="32C-PQ-Qt2"/>
+                                                <constraint firstItem="2Y4-fY-tDA" firstAttribute="trailing" secondItem="lej-34-5yK" secondAttribute="trailingMargin" id="6mM-lT-0Vx"/>
+                                                <constraint firstItem="2Y4-fY-tDA" firstAttribute="leading" secondItem="lej-34-5yK" secondAttribute="leadingMargin" id="Epd-Mf-cgT"/>
+                                                <constraint firstItem="dbs-Ma-wcR" firstAttribute="top" secondItem="2Y4-fY-tDA" secondAttribute="bottom" constant="8" id="QM3-Bd-0ak"/>
+                                                <constraint firstItem="dbs-Ma-wcR" firstAttribute="width" secondItem="2Y4-fY-tDA" secondAttribute="width" id="W5O-1I-zY8"/>
+                                                <constraint firstItem="2Y4-fY-tDA" firstAttribute="top" secondItem="lej-34-5yK" secondAttribute="topMargin" id="e3U-1b-BtF"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <connections>
+                                            <outlet property="elementDetailsTextView" destination="dbs-Ma-wcR" id="uSX-HA-JUR"/>
+                                            <outlet property="elementTitleLabel" destination="2Y4-fY-tDA" id="fCf-v8-53a"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="01A-7P-eGn" firstAttribute="top" secondItem="rsN-Dm-FAF" secondAttribute="top" id="2Ba-oK-3w4"/>
+                            <constraint firstAttribute="trailing" secondItem="01A-7P-eGn" secondAttribute="trailing" id="LeP-PE-5Hn"/>
+                            <constraint firstItem="01A-7P-eGn" firstAttribute="leading" secondItem="rsN-Dm-FAF" secondAttribute="leading" id="OKR-aR-e2b"/>
+                            <constraint firstItem="01A-7P-eGn" firstAttribute="bottom" secondItem="jLo-Kg-eUM" secondAttribute="top" id="k2s-65-9Cn"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="01A-7P-eGn" id="n6m-5R-GUF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CKv-dd-3Yu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2616" y="2067"/>
+        </scene>
     </scenes>
     <resources>
         <image name="icon-attach" width="50" height="50"/>
@@ -2908,6 +2980,6 @@
         <image name="icon-star" width="128" height="128"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="2Og-vg-MiQ"/>
+        <segue reference="W7P-5v-EqO"/>
     </inferredMetricsTieBreakers>
 </document>

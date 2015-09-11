@@ -17,7 +17,7 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     
         override func awakeFromNib() {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
-            
+            messagesTable.scrollsToTop = false
             if currentMessages == nil
             {
                 currentMessages = [Message]()

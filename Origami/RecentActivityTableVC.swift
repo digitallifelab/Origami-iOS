@@ -12,7 +12,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
 
     @IBOutlet weak var tableView:UITableView?
     let kElementCellIdentifier = "ElementTableCell"
-    private var isReloadingTable = false
+    var isReloadingTable = false
     var elements:[Element]?
     var displayMode:DisplayMode = .Day{
         didSet{
@@ -39,22 +39,11 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
         //black or
         self.displayMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey) ? .Night : .Day
         configureNavigationControllerToolbarItems()
         
-        DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
-            if let weakSelf = self
-            {
-                weakSelf.elements = elements
-                if !weakSelf.isReloadingTable
-                {
-                    weakSelf.reloadTableView()
-                }
-              
-            }
-        }
+        startLoadingElementsByActivity()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -69,14 +58,29 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     
-    override func viewWillDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        self.tableView?.delegate = nil
-        self.tableView?.dataSource = nil
-        self.elements = nil
-    }
+//    override func viewWillDisappear(animated: Bool) {
+//        super.viewDidDisappear(animated)
+////        self.tableView?.delegate = nil
+////        self.tableView?.dataSource = nil
+////        self.elements = nil
+//    }
     
     //MARK --
+    
+    func startLoadingElementsByActivity()
+    {
+        DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
+            if let weakSelf = self
+            {
+                weakSelf.elements = elements
+                if !weakSelf.isReloadingTable
+                {
+                    weakSelf.reloadTableView()
+                }
+            }
+        }
+    }
+    
     func reloadTableView()
     {
         isReloadingTable = true
@@ -116,10 +120,33 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
     
-    func homeButtonPressed(sender:UIBarButtonItem)
-    {
-        self.navigationController?.popToRootViewControllerAnimated(true)
-    }
+//    func homeButtonPressed(sender:UIBarButtonItem)
+//    {
+//        if let currentVCs = self.navigationController?.viewControllers
+//        {
+//            if currentVCs.count > 1
+//            {
+//                if let rootIsHome = currentVCs.first as? HomeVC
+//                {
+//                    self.navigationController?.popToRootViewControllerAnimated(true)
+//                }
+//                else
+//                {
+//                    if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+//                    {
+//                        self.navigationController?.setViewControllers([home], animated: true)
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+//                {
+//                    self.navigationController?.setViewControllers([home], animated: true)
+//                }
+//            }
+//        }
+//    }
     
     func pushElementDashBoardForElement(element:Element)
     {
@@ -138,6 +165,10 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     }
     
     //MARK: UITableViewDataSource
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let elements = self.elements
         {
@@ -171,6 +202,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     }
     
     //MARK: UITableViewDelegate
+    
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 100.0
