@@ -58,13 +58,13 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         self.bottomToolbar.translucent = false
         if nightModeOn
         {
-            self.bottomToolbar.backgroundColor = kBlackColor
             self.bottomToolbar.tintColor = kWhiteColor
+            self.bottomToolbar.barTintColor = kBlackColor
         }
         else
         {
             self.bottomToolbar.tintColor = kDayNavigationBarBackgroundColor
-            self.bottomToolbar.backgroundColor = kWhiteColor
+            self.bottomToolbar.barTintColor = kWhiteColor
         }
     }
     
