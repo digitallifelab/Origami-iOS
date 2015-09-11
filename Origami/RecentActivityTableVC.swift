@@ -12,7 +12,11 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
 
     @IBOutlet weak var tableView:UITableView?
     let kElementCellIdentifier = "ElementTableCell"
-    var isReloadingTable = false
+    var isReloadingTable = false {
+        didSet{
+            println(" ->  isReloadingTable = \(isReloadingTable)")
+        }
+    }
     var elements:[Element]?
     var displayMode:DisplayMode = .Day{
         didSet{

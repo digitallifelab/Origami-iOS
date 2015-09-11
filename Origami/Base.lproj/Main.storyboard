@@ -49,6 +49,7 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -2964,6 +2965,72 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CKv-dd-3Yu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2616" y="2067"/>
+        </scene>
+        <!--Pick Contact-->
+        <scene sceneID="ljH-DZ-KIv">
+            <objects>
+                <tableViewController storyboardIdentifier="ConfigurableContactsVC" title="Pick Contact" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1pq-2Y-8GN" customClass="ConfigurableContactsVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="22" sectionFooterHeight="22" id="KLT-dV-SFK">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="SelectableContactCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="SelectableContactCell" rowHeight="65" id="U2W-Ki-yQy" customClass="SelectableContactCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="U2W-Ki-yQy" id="Qxu-dm-CB6">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1DG-H1-idx">
+                                            <rect key="frame" x="8" y="2" width="60" height="60"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="60" id="phv-T4-cE1"/>
+                                                <constraint firstAttribute="width" constant="60" id="rpx-8N-T75"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name Lastname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="igC-pA-iQH">
+                                            <rect key="frame" x="76" y="20" width="516" height="23"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="23" id="gLi-hX-eyp"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="centerY" secondItem="1DG-H1-idx" secondAttribute="centerY" id="01V-C9-Jq8"/>
+                                        <constraint firstItem="igC-pA-iQH" firstAttribute="trailing" secondItem="Qxu-dm-CB6" secondAttribute="trailingMargin" id="6tS-Ht-ugb"/>
+                                        <constraint firstItem="igC-pA-iQH" firstAttribute="centerY" secondItem="1DG-H1-idx" secondAttribute="centerY" constant="-0.5" id="dUh-Ut-M1d"/>
+                                        <constraint firstItem="igC-pA-iQH" firstAttribute="leading" secondItem="1DG-H1-idx" secondAttribute="trailing" constant="8" id="eQw-GV-0U8"/>
+                                        <constraint firstItem="1DG-H1-idx" firstAttribute="leading" secondItem="Qxu-dm-CB6" secondAttribute="leadingMargin" id="sWs-ij-ayG"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="avatarImageView" destination="1DG-H1-idx" id="j2k-id-sao"/>
+                                    <outlet property="contactNameLabel" destination="igC-pA-iQH" id="fzC-0V-Kf1"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="1pq-2Y-8GN" id="IFC-Mm-43J"/>
+                            <outlet property="delegate" destination="1pq-2Y-8GN" id="QMd-tN-m7L"/>
+                        </connections>
+                    </tableView>
+                    <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="ae9-6M-EnJ">
+                        <autoresizingMask key="autoresizingMask"/>
+                        <attributedString key="attributedTitle">
+                            <fragment content="Refreshing">
+                                <attributes>
+                                    <font key="NSFont" metaFont="smallSystem"/>
+                                    <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                </attributes>
+                            </fragment>
+                        </attributedString>
+                    </refreshControl>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qEC-gP-P7n" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3310" y="2022"/>
         </scene>
     </scenes>
     <resources>

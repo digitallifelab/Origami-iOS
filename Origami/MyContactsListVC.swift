@@ -15,12 +15,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     var myContacts:[Contact]?
     var favContacts:[Contact] = [Contact]()
     var allContacts:[Contact]?
-    
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
-
+    
     //MARK:----
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,7 +62,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                             weakSelf.myContactsTable.reloadData()
                                         })
-                                        
                                     }
                                 }
                             })
