@@ -625,9 +625,9 @@
 		F874D90C1B26FA8A00B867BF /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
 				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
-				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F87637791B56604100AFE376 /* Menu */,

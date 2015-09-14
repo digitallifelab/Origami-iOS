@@ -342,7 +342,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             if self.currentChatMessages.count > 1
             {
                 let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
-                println("\n -> LastIndexPathRow: \(lastMessagePath.row)")
+                //println("\n -> LastIndexPathRow: \(lastMessagePath.row)")
                 chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: false)
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [weak self]() -> Void in
@@ -492,7 +492,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 if let message = messageForIndexPath(targetIndexPath)
                 {
                     currentMessage = message
-                    println(" pressed  message: \(message.textBody)")
+                    //println(" pressed  message: \(message.textBody)")
                 }
             }
             
@@ -657,8 +657,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     DataSource.sharedInstance.addSeveralContacts(passWhomSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
-                            println(" added to \(succeededIDs)")
-                            println(" failed to add to \(failedIDs)")
+                            //println(" added to \(succeededIDs)")
+                            //println(" failed to add to \(failedIDs)")
                             if let weakSelf = self
                             {
                                 weakSelf.showAlertWithTitle("ERROR.", message: "Could not add contacts to new element.", cancelButtonTitle: "Ok")
@@ -666,7 +666,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                         }
                         else
                         {
-                            println(" added to \(succeededIDs)")
+                            //println(" added to \(succeededIDs)")
                         }
                     })
                 }
@@ -679,7 +679,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                         DataSource.sharedInstance.editElement(currentNewElement, completionClosure: { (edited) -> () in
                             if edited
                             {
-                                println("Updated element`s typeId")
+                                //println("Updated element`s typeId")
                             }
                             else
                             {

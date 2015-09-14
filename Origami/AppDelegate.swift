@@ -17,8 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     var rootViewController:UIViewController = UIViewController()
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-
-        UITabBar.appearance().backgroundImage = UIImage()
         
         return true
     }

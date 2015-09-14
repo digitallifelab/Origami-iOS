@@ -29,7 +29,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 DataSource.sharedInstance.loadAvatarForLoginName(contactLoginName, completion: { [weak self](image) -> () in
                     if let avatarImage = image, weakSelf = self
                     {
-                        println(" Loaded avatar for contact.")
+                        //println(" Loaded avatar for contact.")
                         weakSelf.avatarImage = avatarImage
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
                             weakSelf.tableView?.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)

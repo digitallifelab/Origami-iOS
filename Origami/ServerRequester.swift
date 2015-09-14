@@ -258,6 +258,7 @@ class ServerRequester: NSObject
     {
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
+            let testUserId = DataSource.sharedInstance.user?.userId
             let params = [tokenKey:DataSource.sharedInstance.user?.token as! String]
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             var requestString = "\(serverURL)" + "\(getElementsUrlPart)"
@@ -273,13 +274,15 @@ class ServerRequester: NSObject
                         if let dictionary = responseObject as? [String:AnyObject],
                             elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
                         {
+                            println("Current User Id: \(testUserId)")
                             var elements = Set<Element>()
                             for lvElementDict in elementsArray
                             {
                                 //let type = lvElementDict["TypeId"] as? Int
                                 //println(" -> element type: \(type) \n")
                                 let lvElement = Element(info: lvElementDict)
-                                
+                                println(" creator: \(lvElement.creatorId)")
+                                println(" elementId: \(lvElement.elementId)")
                                 elements.insert(lvElement)
                             }
                             //println("loaded \(elements.count) elements.. ")

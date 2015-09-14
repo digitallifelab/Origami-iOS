@@ -105,8 +105,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
             DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
             DataSource.sharedInstance.attaches.removeAll(keepCapacity: false)
+            println("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
-           
+            println("AvatarsHolder After cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             DataSource.sharedInstance.stopRefreshingNewMessages()
             DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
             
@@ -237,7 +238,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         //can be not main queue
         let elementId = message.elementId?.integerValue
         
-        println(" -> Send new message Called.")
+        //println(" -> Send new message Called.")
         serverRequester.sendMessage(message, toElement: message.elementId!) { (result, error) -> () in
             
             //main queue
@@ -462,7 +463,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             if !elementIDsToDeleteMessageSet.isEmpty
             {
-                println(" deleting messages for non existing elements...")
+                println(" \n -> deleting messages for non existing elements...")
                 DataSource.sharedInstance.removeMessagesForDeletedElements(elementIDsToDeleteMessageSet)
             }
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -515,7 +516,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         aLock.lock()
         for anId in elementIDs
         {
-            DataSource.sharedInstance.messages[anId] = nil
+            if let existMessage = DataSource.sharedInstance.messages.removeValueForKey(anId)
+            {
+                // sometmes throws an exception of "fatal error: unexpectedly found nil while unwrapping an Optional value"
+                //DataSource.sharedInstance.messages[anId] = nil
+                println(" -> Deleted messages array.")
+            }
+        
         }
         aLock.unlock()
     }
@@ -538,7 +545,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var lvMessagesHolder = [NSNumber:[Message]]()
                     for lvMessage in messagesArray
                     {
-                        println(">>> \(lvMessage.toDictionary().description)))")
+                        println(" ->New message: >>> \(lvMessage.toDictionary().description)))")
                         if lvMessagesHolder[lvMessage.elementId!] != nil
                         {
                             lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -757,6 +764,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if DataSource.sharedInstance.elements.isEmpty
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    NSLog("\r _________ Finished gathering elements for Dashboard..... Returning empty.")
                     completion(nil)
                 })
                 return
@@ -936,7 +944,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         // load connected userIDs for element
                         DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion:
                             { (finished) -> () in
-                            println(" loadPassWhomIdsForElement completion block.")
+                            //println(" loadPassWhomIdsForElement completion block.")
                         })
                     })
                 }
@@ -1050,7 +1058,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 { () -> Void in
                     if success
                     {
-                        println("\r - Edit successfull")
+                        //println("\r - Edit successfull")
                         
                         completion(edited: true)
                     }
@@ -1106,7 +1114,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadPassWhomIdsForElementID(elementIdInt, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
-                println(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
+                //println(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
                 if let elementFromDataSource = DataSource.sharedInstance.getElementById(elementIdInt)
                 {
                     elementFromDataSource.passWhomIDs = recievedIDs
@@ -1389,7 +1397,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
             else
             {
-                println("Could not deattach file on server: \n Error: \n\(fromServerError)")
+                println("Could not deAttach file on server: \n Error: \n\(fromServerError)")
                 completionClosure(success: success, error: fromServerError)
             }
         }
@@ -1477,7 +1485,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
                 else
                 {
-                    println("FileReadingError: \n\(readingError.localizedDescription)")
+                    println(" ->FileReadingError: \n\(readingError.localizedDescription)")
                 }
                 //dispatch_group_leave(waiterGroup)
             })
@@ -1497,6 +1505,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage
     {
         //let reduceTagretSize = CGSizeMake(180, 140) // 90x70 cell size x 2
+        NSLog(" -> Image Size Before reducing: \(image.size)")
         let largestDimension:CGFloat = max(image.size.width, image.size.height)
         
         var ratio:CGFloat = 1.0
@@ -1511,7 +1520,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         let reducedImageSize = CGSizeMake(image.size.width * ratio, image.size.height * ratio)
         let scaledToSizeImage = image.scaleToSizeKeepAspect(reducedImageSize)
-        
+        NSLog(" -> Image Size After reducing: \(scaledToSizeImage.size)")
         return scaledToSizeImage
     }
     
@@ -2049,8 +2058,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             //step 1 try to get from RAM
             if let existingAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), avatarImage = UIImage(data: existingAvatarData)
             {
+                let toReturnImage = DataSource.sharedInstance.reduceImageSize(avatarImage, toSize: CGSizeMake(200, 200))
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completionBlock?(image: avatarImage)
+                    completionBlock?(image: toReturnImage)
                 })
                 
                 //println(" got avatar from RAM..")
@@ -2063,8 +2073,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 if let avatarImage = image
                 {
+                    let toReturnImage = DataSource.sharedInstance.reduceImageSize(avatarImage, toSize: CGSizeMake(200, 200))
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completionBlock?(image: avatarImage)
+                        completionBlock?(image: toReturnImage)
                     })
                     println(" got avatar from Disc..")
                     return
@@ -2075,9 +2086,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         if let avatar = UIImage(data: avatarBytes)
                         {
-                            //complete(image: avatar) //return
+                            let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200))
+                            let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
                             println(" got avatar from Server..")
-                            DataSource.sharedInstance.avatarsHolder[loginName] = avatarBytes //save to RAM also
+                            DataSource.sharedInstance.avatarsHolder[loginName] = avatarData //save to RAM also
                             
                             //save to disc
                             let fileHandler = FileHandler()
@@ -2169,7 +2181,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         if let saveError = error
                         {
                             println("-> Could not update current user avatar on disc.")
+                            return
                         }
+                        DataSource.sharedInstance.avatarsHolder.removeValueForKey(userName) //for later re-reloading new avatar from disc
                     })
                 }
             }

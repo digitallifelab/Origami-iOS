@@ -98,11 +98,14 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             dispatch_after(time, bgQueue, {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    weakSelf.dataRefresher = DataRefresher()
-                    weakSelf.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
-                    
-                    DataSource.sharedInstance.messagesLoader = MessagesLoader()
-                    DataSource.sharedInstance.startRefreshingNewMessages()
+                    if let userId = DataSource.sharedInstance.user?.userId
+                    {
+                        weakSelf.dataRefresher = DataRefresher()
+                        weakSelf.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                        
+                        DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
                 }
             })
             
@@ -118,6 +121,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
   
     func handleLogoutNotification(notification:NSNotification?)
     {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
         self.dataRefresher?.stopRefreshingElements()
         dataRefresher = nil
         isShowingMenu = false

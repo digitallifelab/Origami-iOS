@@ -20,7 +20,7 @@ class MessagesLoader:NSObject
     
     deinit
     {
-        println("... MessagesLoader deinit ...")
+        //println("... MessagesLoader deinit ...")
     }
     
     func startRefreshingLastMessages()
@@ -68,7 +68,7 @@ class MessagesLoader:NSObject
             })
             
             dispatch_source_set_cancel_handler(source, {[weak self] () -> Void in
-                println("cancellation handler called...")
+                println(" -> MessagesLoader -> cancellation handler called...")
                 
                 //typically this is never executed, because of cancelDispatchSource() call->
                 if let weakSelf = self
@@ -108,7 +108,7 @@ class MessagesLoader:NSObject
         if let source = self.dispatchSource
         {
            self.dispatchSource = nil
-            println("removed dispatch source...")
+            println(" -> MessagesLoader -> removed dispatch source...")
         }
     }
 }

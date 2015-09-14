@@ -57,16 +57,22 @@ class ConfigurableContactsVC: UITableViewController {
         
         if let contacts = contactsToSelectFrom
         {
-            return 1
+            return 2
         }
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 0
+        {
+            return 1
+        }
+        
         if let contacts = contactsToSelectFrom
         {
             return contacts.count
         }
+        
         return 0
     }
 
@@ -74,21 +80,31 @@ class ConfigurableContactsVC: UITableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(kContactCellIdentifier, forIndexPath: indexPath) as! SelectableContactCell
 
-        if let contact = contactForIndexPath(indexPath)
+        if indexPath.section == 1
         {
-            if let contactFullname = contact.nameAndLastNameSpacedString()
+            if let contact = contactForIndexPath(indexPath)
             {
-                cell.contactNameLabel?.text = contactFullname
+                if let contactFullname = contact.nameAndLastNameSpacedString()
+                {
+                    cell.contactNameLabel?.text = contactFullname
+                }
             }
-        }
-        
-        if let avatar = avatarsHolder[indexPath]
-        {
-            cell.avatarImageView?.image = avatar
+            
+            if let avatar = avatarsHolder[indexPath]
+            {
+                cell.avatarImageView?.image = avatar
+            }
+            else
+            {
+                cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            }
         }
         else
         {
-            cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            if let user = DataSource.sharedInstance.user
+            {
+                cell.contactNameLabel?.text = "Me".localizedWithComment("")
+            }
         }
 
         return cell
@@ -96,9 +112,15 @@ class ConfigurableContactsVC: UITableViewController {
     
     func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
     {
+        //println("contact for section: \(indexPath.section) row: \(indexPath.row)")
+        if indexPath.section == 0
+        {
+            return nil
+        }
+        
         if let contacts = contactsToSelectFrom
         {
-            if indexPath.row < contacts.count
+            if (indexPath.row) < contacts.count
             {
                 return contacts[indexPath.row]
             }
@@ -112,9 +134,14 @@ class ConfigurableContactsVC: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         if let aContact = contactForIndexPath(indexPath)
         {
-            println("did selet contact: \(aContact.firstName)")
+           // println("did selet contact: \(aContact.firstName)")
             
             self.delegate?.itemPicker(self, didPickItem: aContact)
+        }
+        else
+        {
+            //println("-> Did select current user")
+            self.delegate?.itemPickerDidCancel(self)
         }
     }
     

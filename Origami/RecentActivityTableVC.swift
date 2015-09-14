@@ -88,9 +88,11 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     func reloadTableView()
     {
         isReloadingTable = true
+      
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         self.tableView?.reloadData()
+
         isReloadingTable = false
     }
     
@@ -188,6 +190,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
             if let element = elementForIndexPath(indexPath)
             {
                 activityCell.elementTitleLabel?.text = element.title as? String
+                println(" -> Cell Element Title: \(activityCell.elementTitleLabel!.text) ")
                 activityCell.elementDetailsTextView?.text = element.details as? String
                 activityCell.displayMode = self.displayMode
             }

@@ -56,36 +56,49 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     override func startLoadingElementsByActivity() {
         
-        isReloadingTable = true
-        
-        DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
-            if let weakSelf = self
-            {
-                let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-                dispatch_async(bgQueue, {[weak self] () -> Void in
-                    if let weakerSelf = self
-                    {
-                        weakerSelf.elements = elements
-                        if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
+        if DataSource.sharedInstance.shouldReloadAfterElementChanged || self.elements == nil
+        {
+            isReloadingTable = true
+            println(" -> Getting all elements By Activity from DataSource... ")
+            DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
+                if let weakSelf = self
+                {
+                    let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+                    dispatch_async(bgQueue, {[weak self] () -> Void in
+                        if let weakerSelf = self
                         {
-                            weakSelf.sortCurrentElementsForNewUserId()
+                            weakerSelf.elements = elements
+                            if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
+                            {
+                                println(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
+                                weakSelf.sortCurrentElementsForNewUserId()
+                            }
                         }
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        if !weakSelf.isReloadingTable
-                        {
-                            weakSelf.reloadTableView()
-                        }
-                    })//end of main_queue
-                }) //end of bgQueue
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            if !weakSelf.isReloadingTable
+                            {
+                                //println(" -> reloading tableView.")
+                                weakSelf.reloadTableView()
+                            }
+                        })//end of main_queue
+                        }) //end of bgQueue
+                }
             }
         }
-
     }
     
     func sortCurrentElementsForNewUserId()
     {
+        let numberOfSectionsBeforeDeleting = self.numberOfSectionsInTableView(self.tableView!)
+        
+        self.elementsCreatedByUser?.removeAll(keepCapacity: false)
+        self.elementsUserParticipatesIn?.removeAll(keepCapacity: false)
+        self.elementsCreatedByUser = nil
+        self.elementsUserParticipatesIn = nil
+        println(" -> Reloading tableview..")
+        self.tableView?.deleteSections(NSIndexSet(indexesInRange: NSMakeRange(0, numberOfSectionsBeforeDeleting)), withRowAnimation: .None)
+        
         if let allElements = self.elements
         {
             let userIDFromDataSource = DataSource.sharedInstance.user?.userId
@@ -130,10 +143,12 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             
             if sortedMyElements.count > 0
             {
+                //self.elementsCreatedByUser?.removeAll(keepCapacity: true)
                 self.elementsCreatedByUser = sortedMyElements
             }
             if sortedParticipatingElements.count > 0
             {
+                //self.elementsUserParticipatesIn?.removeAll(keepCapacity: true)
                 self.elementsUserParticipatesIn = sortedParticipatingElements
             }
         }
@@ -251,6 +266,22 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         }
     }
     
+    override func reloadTableView()
+    {
+        if isReloadingTable == true
+        {
+            return
+        }
+        
+        self.tableView?.delegate = self
+        self.tableView?.dataSource = self
+        self.tableView?.reloadData()
+        let length = self.numberOfSectionsInTableView(self.tableView!)
+        
+        self.tableView?.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, length)), withRowAnimation: .Top)
+        isReloadingTable = false
+    }
+    
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section
         {
@@ -301,7 +332,6 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             
             configureCurrentRightButtonImage()
         }
-        
     }
     
     func configureCurrentRightButtonImage()
@@ -335,7 +365,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             
             if let userNameExist = currentUserName
             {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
                     DataSource.sharedInstance.loadAvatarForLoginName(userNameExist, completion: {[weak self] (image) -> () in
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -343,6 +373,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                             {
                                 if let anImage = image
                                 {
+                                    println(" - > Avatar image size: \(anImage.size)")
                                     weakSelf.currentSelectedUserAvatar = anImage
                                     weakSelf.currentTopRightButton?.setImage(weakSelf.currentSelectedUserAvatar?.imageWithRenderingMode(.AlwaysOriginal), forState: .Normal)
                                     return
@@ -354,14 +385,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                                     
                                     println(" -> Could not load AVATAR image for selected contact.")
                                 }
-                                
                             }
                         })
                     })
                 })
-
             }
-
         }
     }
     
@@ -379,11 +407,30 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     //MARK: TableItemPickerDelegate
     func itemPickerDidCancel(itemPicker: AnyObject) {
+        //self.isReloadingTable = true
+       
+        if let aNumber = DataSource.sharedInstance.user?.userId
+        {
+            if self.selectedUserId.integerValue != aNumber.integerValue
+            {
+                self.selectedUserId = NSNumber(integer: aNumber.integerValue)
+                self.configureCurrentRightButtonImage()
+                
+                sortCurrentElementsForNewUserId()
+                
+                self.reloadTableView()
+            }
+            else
+            {
+                isReloadingTable = false
+            }
+        }
         
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
-        self.navigationController?.popViewControllerAnimated(true)
+        //self.isReloadingTable = true
         
         if let aContact = item as? Contact
         {
@@ -393,10 +440,17 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 {
                     self.selectedUserId = NSNumber(integer: aNumber.integerValue)
                     self.configureCurrentRightButtonImage()
-                    self.isReloadingTable = true
+                    
                     sortCurrentElementsForNewUserId()
+                    self.reloadTableView()
+                }
+                else
+                {
+                    self.isReloadingTable = false
                 }
             }
         }
+        
+        self.navigationController?.popViewControllerAnimated(true)
     }
 }

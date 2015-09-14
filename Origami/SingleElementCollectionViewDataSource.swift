@@ -353,7 +353,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 
                 datesCell.setupActionButtons(elementIsOwned())
                
-                
                 return datesCell
             }
             
@@ -620,18 +619,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                         self.chatMessageWasTapped(nil)
                     default: break
                 }
-                
             }
         }
-        
-    
     }
-    
-//    func sendStartEditingForTitle(titleEdit:Bool)
-//    {
-//        NSNotificationCenter.defaultCenter().postNotificationName(kElementEditTextNotification, object: nil, userInfo: ["title" : titleEdit])
-//    }
-    
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
         if let aCell = cell as? SingleElementTitleCell

@@ -35,7 +35,7 @@ class DataRefresher
     
     func loadElements()
     {
-        println(" -->DataRefresher.loadElements() called")
+        //println(" -->DataRefresher.loadElements() called")
         isInProgress = true
         
         serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
@@ -103,12 +103,12 @@ class DataRefresher
                     
                     if existingMoreThanNewSet.count > 0
                     {
-                        println("\n->> Some Elements were DELETED on server...")
+                        //println("\n->> Some Elements were DELETED on server...")
                     }
                     
                     if newMoreThanExisting.count > 0
                     {
-                        println("\n->> Some Elements were ADDED on server...")
+                        //println("\n->> Some Elements were ADDED on server...")
                     }
                 }
             }
