@@ -195,6 +195,14 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
     }
 
     //MARK: ------
+    
+    func clearAllElements()
+    {
+        privSignals = 0
+        privFavourites?.removeAll(keepCapacity: false)
+        privOther?.removeAll(keepCapacity: false)
+    }
+    
     func configureAttributes()
     {
         var viewWidth = UIScreen.mainScreen().bounds.size.width - 10.0

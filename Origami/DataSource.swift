@@ -63,6 +63,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     #endif
  
     var shouldReloadAfterElementChanged = false
+    var isRemovingObsoleteMessages = false
+    var shouldLoadAllMessages = true
     
     var messagesLoader:MessagesLoader?
     
@@ -511,20 +513,32 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func removeMessagesForDeletedElements(elementIDs:Set<NSNumber>)
     {
+        if DataSource.sharedInstance.isRemovingObsoleteMessages
+        {
+            return
+        }
+        
+        DataSource.sharedInstance.isRemovingObsoleteMessages = true
+        DataSource.sharedInstance.shouldLoadAllMessages = false
         let aLock = NSLock()
         aLock.name = "MessageDeletionLock"
         aLock.lock()
         for anId in elementIDs
         {
-            if let existMessage = DataSource.sharedInstance.messages.removeValueForKey(anId)
+            if !DataSource.sharedInstance.messages.isEmpty
             {
-                // sometmes throws an exception of "fatal error: unexpectedly found nil while unwrapping an Optional value"
-                //DataSource.sharedInstance.messages[anId] = nil
-                println(" -> Deleted messages array.")
+                if DataSource.sharedInstance.messages.removeValueForKey(anId) != nil
+                {
+                    // sometmes throws an exception of "fatal error: unexpectedly found nil while unwrapping an Optional value"
+                    //DataSource.sharedInstance.messages[anId] = nil
+                    println(" -> Deleted messages array.")
+                }
             }
+            
         
         }
         aLock.unlock()
+        DataSource.sharedInstance.isRemovingObsoleteMessages = false
     }
     
     

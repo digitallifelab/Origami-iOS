@@ -280,7 +280,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             self.hideMenu(true, completion: {[weak self] () -> () in
                 if let weakSelf = self
                 {
-                    weakSelf.currentNavigationController?.setViewControllers([recentsVC], animated: true)
+                    weakSelf.currentNavigationController?.setViewControllers([recentsVC], animated: false)
                 }
             })
         }

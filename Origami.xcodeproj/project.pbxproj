@@ -626,15 +626,15 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
+				F87637791B56604100AFE376 /* Menu */,
+				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
+				F8D2FF311B2870AA00584B8D /* Subordinates */,
 				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
 				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
-				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
-				F87637791B56604100AFE376 /* Menu */,
 				F86F74261B56835E00E48E13 /* UserProfile */,
 				F86F74251B56834E00E48E13 /* Contacts */,
 				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
-				F8D2FF311B2870AA00584B8D /* Subordinates */,
 				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
 			);
 			name = ViewControllers;

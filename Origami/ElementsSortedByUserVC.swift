@@ -26,6 +26,20 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        DataSource.sharedInstance.loadAvatarForLoginName(DataSource.sharedInstance.user!.userName as! String, completion: { [weak self] (image) -> () in
+            if let weakSelf = self
+            {
+                if let anImage = image
+                {
+                    if weakSelf.selectedUserId.isEqualToNumber(DataSource.sharedInstance.user!.userId!)
+                    {
+                        weakSelf.currentSelectedUserAvatar = anImage
+                        weakSelf.configureCurrentRightButtonImage()
+                    }
+                }
+            }
+        })
+        
         configureCurrentRightTopButton()
     }
 
@@ -96,6 +110,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.elementsUserParticipatesIn?.removeAll(keepCapacity: false)
         self.elementsCreatedByUser = nil
         self.elementsUserParticipatesIn = nil
+        
         println(" -> Reloading tableview..")
         self.tableView?.deleteSections(NSIndexSet(indexesInRange: NSMakeRange(0, numberOfSectionsBeforeDeleting)), withRowAnimation: .None)
         
@@ -143,12 +158,10 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             
             if sortedMyElements.count > 0
             {
-                //self.elementsCreatedByUser?.removeAll(keepCapacity: true)
                 self.elementsCreatedByUser = sortedMyElements
             }
             if sortedParticipatingElements.count > 0
             {
-                //self.elementsUserParticipatesIn?.removeAll(keepCapacity: true)
                 self.elementsUserParticipatesIn = sortedParticipatingElements
             }
         }
@@ -276,9 +289,9 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         self.tableView?.reloadData()
-        let length = self.numberOfSectionsInTableView(self.tableView!)
+        //let length = self.numberOfSectionsInTableView(self.tableView!)
         
-        self.tableView?.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, length)), withRowAnimation: .Top)
+        //self.tableView?.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, length)), withRowAnimation: .None)
         isReloadingTable = false
     }
     
@@ -308,7 +321,10 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section < 2
         {
-            return 50.0
+            if let title = self.tableView(tableView, titleForHeaderInSection: section)
+            {
+                return 50.0
+            }
         }
         return 0.0
     }

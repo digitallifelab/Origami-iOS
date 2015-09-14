@@ -29,7 +29,12 @@ import UIKit
         //println("---> HomeCollectionHandler -  Initialized with \(self.signals?.count) signals");
     }
 
-    
+    func deleteAllElements()
+    {
+        signals?.removeAll(keepCapacity: false)
+        favourites?.removeAll(keepCapacity: false)
+        other?.removeAll(keepCapacity: false)
+    }
     //MARK: DataSource
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int
     {

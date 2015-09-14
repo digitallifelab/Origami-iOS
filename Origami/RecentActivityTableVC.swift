@@ -187,12 +187,16 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         
         if let activityCell = tableView.dequeueReusableCellWithIdentifier(kElementCellIdentifier, forIndexPath: indexPath) as? RecentActivityTableCell
         {
+            //activityCell.elementTitleLabel?.text = nil
+            //activityCell.elementDetailsTextView?.text = nil
+            
             if let element = elementForIndexPath(indexPath)
             {
                 activityCell.elementTitleLabel?.text = element.title as? String
                 println(" -> Cell Element Title: \(activityCell.elementTitleLabel!.text) ")
                 activityCell.elementDetailsTextView?.text = element.details as? String
                 activityCell.displayMode = self.displayMode
+                return activityCell
             }
         }
         

@@ -923,7 +923,7 @@
                                                                             <rect key="frame" x="43" y="1" width="28" height="20"/>
                                                                         </variation>
                                                                     </label>
-                                                                    <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Message text from user in chat for this element. Single line and truncate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M6g-49-OvE" userLabel="messageLabel">
+                                                                    <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="248" verticalHuggingPriority="247" text="Message text from user in chat for this element. Single line and truncate" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M6g-49-OvE" userLabel="messageLabel">
                                                                         <rect key="frame" x="43" y="22" width="327" height="21"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                                         <constraints>
@@ -961,6 +961,7 @@
                                                                     <constraint firstItem="dql-80-M9T" firstAttribute="top" secondItem="NbB-h5-e4m" secondAttribute="topMargin" id="1U4-3c-eJa"/>
                                                                     <constraint firstItem="dad-7V-46K" firstAttribute="top" secondItem="NbB-h5-e4m" secondAttribute="top" constant="2" id="7LY-7k-evL"/>
                                                                     <constraint firstItem="dql-80-M9T" firstAttribute="leading" secondItem="NbB-h5-e4m" secondAttribute="leading" constant="5" id="7xZ-k4-9IF"/>
+                                                                    <constraint firstItem="dad-7V-46K" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="lJe-M9-mYy" secondAttribute="trailing" constant="8" id="98d-vK-jMZ"/>
                                                                     <constraint firstItem="M6g-49-OvE" firstAttribute="bottom" secondItem="NbB-h5-e4m" secondAttribute="bottom" id="9cT-ds-jDk"/>
                                                                     <constraint firstItem="lJe-M9-mYy" firstAttribute="leading" secondItem="dql-80-M9T" secondAttribute="trailing" constant="8" id="Prb-Ii-Nrv"/>
                                                                     <constraint firstItem="M6g-49-OvE" firstAttribute="top" secondItem="lJe-M9-mYy" secondAttribute="bottom" constant="1" id="Yl9-7R-d6h"/>

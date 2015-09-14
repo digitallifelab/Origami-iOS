@@ -107,7 +107,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
 
             
-            if DataSource.sharedInstance.isMessagesEmpty()
+            if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
             {
                 DataSource.sharedInstance.loadAllMessagesFromServer()
             }
@@ -115,7 +115,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             if !loadingAllElementsInProgress
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                println("reload collection view from viewDidAppear")
+                println("-> reload collection view from viewDidAppear")
                 reloadDashboardView()
             }
             
@@ -395,6 +395,28 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func showAddTheVeryFirstElementPlus()
     {
+        self.collectionSource?.deleteAllElements()
+        let numberOfSections =  self.collectionDashboard.numberOfSections()
+        if numberOfSections > 1
+        {
+            var collectionLayout = self.collectionDashboard.collectionViewLayout
+            if let hiddenLayout = collectionLayout as? HomeSignalsHiddenFlowLayout
+            {
+                hiddenLayout.clearAllElements()
+                self.collectionDashboard.deleteSections(NSIndexSet(indexesInRange: NSMakeRange(1, numberOfSections - 1)))
+            }
+            else if let visibleLayout = collectionLayout as? HomeSignalsVisibleFlowLayout
+            {
+                visibleLayout.clearAllElements()
+                self.collectionDashboard.reloadData()
+            }
+            
+            collectionDashboard.dataSource = nil
+            collectionDashboard.delegate = nil
+            collectionDashboard.collectionViewLayout.invalidateLayout()
+        }
+        
+       
         var tapView = UIView(frame: CGRectMake(0, 0, 200.0, 200.0))
         tapView.userInteractionEnabled = true
         tapView.backgroundColor = UIColor.whiteColor()
@@ -403,7 +425,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         
         var imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
         imageView.contentMode = .ScaleAspectFit
-        imageView.image = UIImage(named: "icon-add")
+        imageView.image = UIImage(named: "icon-add")?.imageWithRenderingMode(.AlwaysTemplate)
         imageView.tintColor = kDayNavigationBarBackgroundColor
         imageView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
         tapView.addSubview(imageView)

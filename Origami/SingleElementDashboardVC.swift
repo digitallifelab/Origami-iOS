@@ -1159,7 +1159,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             attachImagePickerVC.attachPickingDelegate = self
             
-            self.presentViewController(attachImagePickerVC, animated: true, completion: nil)
+            //self.presentViewController(attachImagePickerVC, animated: true, completion: nil)
+            
+            self.navigationController?.pushViewController(attachImagePickerVC, animated: true)
         }
     }
     
@@ -1168,7 +1170,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         if picker is ImagePickingViewController
         {
-            picker.dismissViewControllerAnimated(true, completion: nil)
+            //picker.dismissViewControllerAnimated(true, completion: nil)
+            self.navigationController?.popViewControllerAnimated(true)
         }
         
         DataSource.sharedInstance.attachFile(mediaFile, toElementId: self.currentElement!.elementId!) { (success, error) -> () in
