@@ -96,10 +96,42 @@ class DataRefresher
                         }
                         else
                         {
-                            var newTotalElementsArray = Array(newSet)
-                            ObjectsConverter.sortElementsByDate(&newTotalElementsArray)
+                            let changedElementsSet = newSet.subtract(existingSet)
                             
-                            DataSource.sharedInstance.replaceAllElementsToNew(newTotalElementsArray)
+                            for changedOne in changedElementsSet
+                            {
+                                if let existingElement = DataSource.sharedInstance.getElementById(changedOne.elementId!.integerValue)
+                                {
+                                    //println("existing: \(existingElement.toDictionary().description)")
+                                    //println("changed: \(changedOne.toDictionary().description)")
+                                    existingElement.isSignal = changedOne.isSignal
+                                    existingElement.details = changedOne.details
+                                    existingElement.title = changedOne.title
+                                    existingElement.typeId = changedOne.typeId
+                                    existingElement.changeDate = NSDate().dateForServer()
+                                    if let rootElements = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
+                                    {
+                                        for aRoot in rootElements
+                                        {
+                                            aRoot.changeDate = existingElement.changeDate
+                                        }
+                                    }
+                                    DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+                                }
+                            }
+                            
+                            if DataSource.sharedInstance.shouldReloadAfterElementChanged
+                            {
+                                NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
+                            }
+                            else
+                            {
+                                var newTotalElementsArray = Array(newSet)
+                                ObjectsConverter.sortElementsByDate(&newTotalElementsArray)
+                                
+                                DataSource.sharedInstance.replaceAllElementsToNew(newTotalElementsArray)
+                            }
+                            
                             
                             
                             if let weakSelf = self

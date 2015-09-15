@@ -260,6 +260,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         if let currentStringDate = date.dateForServer()
                         {
                             existingElement.changeDate = currentStringDate
+                            if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
+                            {
+                                for aParent in rootTree
+                                {
+                                    aParent.changeDate = existingElement.changeDate
+                                }
+                            }
                             DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                         }
                     }
@@ -1067,6 +1074,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         {
                             existingElement.changeDate = dateForServer
                         }
+                        if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
+                        {
+                            for aParent in rootTree
+                            {
+                                aParent.changeDate = existingElement.changeDate
+                            }
+                        }
                         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
                 }
@@ -1527,7 +1541,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage
     {
         //let reduceTagretSize = CGSizeMake(180, 140) // 90x70 cell size x 2
-        NSLog(" -> Image Size Before reducing: \(image.size)")
+        //NSLog(" -> Image Size Before reducing: \(image.size)")
         let largestDimension:CGFloat = max(image.size.width, image.size.height)
         
         var ratio:CGFloat = 1.0
@@ -1542,7 +1556,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         let reducedImageSize = CGSizeMake(image.size.width * ratio, image.size.height * ratio)
         let scaledToSizeImage = image.scaleToSizeKeepAspect(reducedImageSize)
-        NSLog(" -> Image Size After reducing: \(scaledToSizeImage.size)")
+        //NSLog(" -> Image Size After reducing: \(scaledToSizeImage.size)")
         return scaledToSizeImage
     }
     

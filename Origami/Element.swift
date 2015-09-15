@@ -47,10 +47,6 @@ class Element:NSObject
         if let signal = info["IsSignal"] as? NSNumber
         {
             self.isSignal = signal.boolValue
-            if self.isSignal.boolValue
-            {
-                println(" --signal")
-            }
         }
         if let lvTitle = info["Title"] as? NSString
         {
