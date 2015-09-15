@@ -47,6 +47,10 @@ class Element:NSObject
         if let signal = info["IsSignal"] as? NSNumber
         {
             self.isSignal = signal.boolValue
+            if self.isSignal.boolValue
+            {
+                println(" --signal")
+            }
         }
         if let lvTitle = info["Title"] as? NSString
         {
@@ -161,6 +165,8 @@ class Element:NSObject
             var titlesEqual = false
             var descriptionsEqual = false
             var elementIdIsEqual = false
+            var typeIdsEqual = false
+            var isSignalEqual = false
             
             if self.elementId != nil && lvElement.elementId != nil
             {
@@ -191,7 +197,19 @@ class Element:NSObject
                 descriptionsEqual = true
             }
             
-            return elementIdIsEqual && titlesEqual && descriptionsEqual
+            if self.typeId.isEqualToNumber(lvElement.typeId)
+            {
+                typeIdsEqual = true
+            }
+            
+            if self.isSignal.isEqualToNumber(lvElement.isSignal)
+            {
+                isSignalEqual = true
+            }
+            
+            let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual
+            return equal
+            
         }
         
         return false

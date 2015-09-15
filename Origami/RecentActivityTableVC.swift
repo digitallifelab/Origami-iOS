@@ -113,7 +113,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
-        homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside)
+        homeButton.addTarget(self, action: "homeButtonPressed:", forControlEvents: .TouchUpInside) //in extension to UIViewController
         
         let homeImageButton = UIBarButtonItem(customView: homeButton)
         

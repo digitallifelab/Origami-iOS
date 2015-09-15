@@ -37,7 +37,20 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     var allContacts = DataSource.sharedInstance.getMyContacts()
     
-    private var editingConfuguration:CurrentEditingConfiguration = .None
+    private var editingConfuguration:CurrentEditingConfiguration = .None{
+        didSet{
+            var configString = ".None"
+            if editingConfuguration == .Title
+            {
+                configString = ".Title"
+            }
+            if editingConfuguration == .Details
+            {
+                configString = ".Details"
+            }
+            println(" ->CurrentEditingConfiguration:  \(configString)")
+        }
+    }
     
     var displayMode:DisplayMode = .Day {
         didSet{
@@ -194,41 +207,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 let contentInsets = UIEdgeInsetsMake(table.contentInset.top, 0.0, 0.0, 0.0)
                 table.contentInset = contentInsets
                 table.scrollIndicatorInsets = contentInsets
-            }
-        }
-    }
-    
-    func stopTyping(tapRecognizer:UITapGestureRecognizer?)
-    {
-        if let cellTitle = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? NewElementTextViewCell
-        {
-            cellTitle.endEditing(true)
-            if count(cellTitle.textView.text) > 0 && cellTitle.textView.text != newElement!.title as? String
-            {
-                var currentTextViewCellTitle = cellTitle.textView.text
-                if currentTextViewCellTitle != cellTitle.defaultAttributedText.string
-                {
-                    newElement?.title = cellTitle.textView.text
-                    println("Element title did change")
-                }
-                else
-                {
-                    println("Element title did not change")
-                }
-            }
-        }
-        
-        if let descriptionCell = table.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 1)) as? NewElementTextViewCell
-        {
-            descriptionCell.endEditing(true)
-            if count(descriptionCell.textView.text) > 0 && descriptionCell.textView.text != newElement!.title as? String
-            {
-                newElement?.details = descriptionCell.textView.text
-                println("Element Description did change")
-            }
-            else
-            {
-                println("Element Description did not change")
             }
         }
     }
@@ -486,15 +464,14 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
             }
             
-            stopTyping(nil)
+            self.table.endEditing(false)
         }
         else
         {
-            editingConfuguration = .None
             contactTappedAtIndexPath(indexPath)
+            editingConfuguration = .None
             return
         }
-        
         
         tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
     }
@@ -518,7 +495,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     //MARK: UIScrollViewDelegate
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        self.stopTyping(nil)
+        self.table.endEditing(false)
     }
     
     //MARK: ButtonTapDelegate
@@ -586,6 +563,19 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     
     //MARK: UITextViewDelegate
+    func textViewDidBeginEditing(textView: UITextView) {
+        
+     
+        if detectTextView_isTitleCell_TextView(textView)
+        {
+            self.editingConfuguration = .Title
+        }
+        else
+        {
+            self.editingConfuguration = .Details
+        }
+    }
+    
     func textViewDidChange(textView: UITextView) {
         let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
         let targetHeight = ceil(lvTestSize.height)
@@ -593,6 +583,59 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object:textView , userInfo:["height": targetHeight])
         }
+    }
+    
+    
+    func textView(textView: UITextView, shouldChangeTextInRange range: NSRange, replacementText text: String) -> Bool {
+        
+        if self.editingConfuguration == .Title && text == "\n"
+        {
+            textView.endEditing(false)
+            return false
+        }
+        
+        return true
+    }
+    func textViewShouldEndEditing(textView: UITextView) -> Bool {
+        if detectTextView_isTitleCell_TextView(textView)
+        {
+            self.newElement?.title = textView.text
+        }
+        else
+        {
+            self.newElement?.details = textView.text
+        }
+        return true
+    }
+    func textViewDidEndEditing(textView: UITextView) {
+        if detectTextView_isTitleCell_TextView(textView)
+        {
+            println(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = TRUE")
+        }
+        else
+        {
+            println(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = FALSE")
+        }
+        
+        
+    }
+    
+    func detectTextView_isTitleCell_TextView(textView:UITextView) -> Bool
+    {
+        let textViewOriginalFrame = textView.frame
+        let textViewFrame = textView.convertRect(textViewOriginalFrame, toView:self.table)
+        if let indexPaths = self.table.indexPathsForRowsInRect(textViewFrame) as? [NSIndexPath], let firstIndexPath = indexPaths.first
+        {
+            if let cell  = self.table.cellForRowAtIndexPath(firstIndexPath) as? NewElementTextViewCell
+            {
+                if cell.isTitleCell
+                {
+                    return true
+                }
+                return false
+            }
+        }
+        return false
     }
     //MARK: ---
     func cancelButtonTap(sender:AnyObject?)
@@ -606,11 +649,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             if count(currentTitle) < 1
             {
-                cancelButtonTap(sender)
-                return
-            }
-            else if currentTitle == "add title"
-            {
+                println(" -> Cancelling editing of element. Reason: Element title is EMPTY")
                 cancelButtonTap(sender)
                 return
             }

@@ -40,7 +40,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     func reloadLastMessagesForElementId(elementId:NSNumber)
     {
-        if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId)//DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: elementId, lastMessageId: nil)
+        if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId)
         {
             self.messageObjects = messages
             trytoGetContactsForLastMessages()

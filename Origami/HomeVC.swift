@@ -20,6 +20,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     private var loadingAllElementsInProgress = false
  
     var shouldReloadCollection = false
+    
+    deinit
+    {
+        println("\n -> removing Home VC from NotificationCenter ->\n")
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -44,7 +51,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     if let wSelf = self
                     {
                         //println(" \(wSelf) Loaded elements")
-                        wSelf.loadingAllElementsInProgress = false
                         wSelf.shouldReloadCollection = true
                         println("reloadDashboardView from viewDidLoad - success TRUE")
                         wSelf.reloadDashboardView()
@@ -52,22 +58,25 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 }
                 else
                 {
-                    wSelf.loadingAllElementsInProgress = false
+                 
                     println("reloadDashboardView from viewDidLoad - success FALSE")
                     wSelf.reloadDashboardView()
                 }
+                wSelf.loadingAllElementsInProgress = false
             }
             else
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let wSelf = self
                 {
-                    wSelf.loadingAllElementsInProgress = false
+                    
                    // #if DEBUG
                     wSelf.showAlertWithTitle("Failed", message: " this is a non production error message. \n Did not load Elements for dashboard.", cancelButtonTitle: "Ok")
                     //#endif
+                    wSelf.loadingAllElementsInProgress = false
                 }
             }
+           
         }
         
         
@@ -105,7 +114,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
-
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
             
             if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
             {
@@ -132,6 +141,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Switch_Night_Mode_Changed, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
         
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
@@ -176,6 +186,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func configureNavigationControllerToolbarItems()
     {
+        //....
         let homeButton = UIButton.buttonWithType(.System) as! UIButton
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
@@ -183,10 +194,35 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
     
         let homeImageButton = UIBarButtonItem(customView: homeButton)
+        
+        //....
+        let filterButton = UIButton.buttonWithType(.System) as! UIButton
+        filterButton.setImage(UIImage(named: "menu-icon-sorting")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        filterButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        filterButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        filterButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        filterButton.addTarget(self, action: "showSortedElements:", forControlEvents: .TouchUpInside)
+        
+        let filterButtonItem = UIBarButtonItem(customView: filterButton)
+        
+        //....
+        let recentActivityButton = UIButton.buttonWithType(.System) as! UIButton
+        recentActivityButton.setImage(UIImage(named: "menu-icon-recent")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        recentActivityButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        recentActivityButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
+        recentActivityButton.frame = CGRectMake(0, 0, 44.0, 44.0)
+        recentActivityButton.addTarget(self, action: "showRecentActivity:", forControlEvents: .TouchUpInside)
+        
+        let recentBarButton = UIBarButtonItem(customView: recentActivityButton)
+        
+        //..
         let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         
-        let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
+        let currentToolbarItems:[UIBarButtonItem] = [filterButtonItem,flexibleSpaceLeft, homeImageButton, flexibleSpaceRight, recentBarButton]
+        
+        
+        
         
         //
         self.setToolbarItems(currentToolbarItems, animated: false)
@@ -282,8 +318,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             }
                             else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
                             {
-                                if aSelf.shouldReloadCollection
+                                if aSelf.shouldReloadCollection || DataSource.sharedInstance.shouldReloadAfterElementChanged
                                 {
+                                    DataSource.sharedInstance.shouldReloadAfterElementChanged = false
+                                    
                                     aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
                                     
                                     let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount , favourites: newFavs, other: newOther)
@@ -585,15 +623,29 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func elementWasDeleted(notification:NSNotification?)
     {
-//        if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
-//        {
-//            if let currentDataSource = self.collectionSource, foundIndexPaths = currentDataSource.indexpathForElementById(elementId.integerValue, shouldDelete:true)
-//            {
-//                self.collectionDashboard.reloadData()
-//                
-//                self.reloadDashboardView()
-//            }
-//        }
+        if let note = notification, userInfo = note.userInfo, elementIds = userInfo["elementIdInts"] as? [Int]
+        {
+            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.reloadDashboardView()
+                }
+            })
+            
+        }
+    }
+    
+    func elementsWereAdded(notification:NSNotification?)
+    {
+        if let note = notification
+        {
+            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.reloadDashboardView()
+                }
+            })
+        }
     }
     
     //MARK: UIViewControllerTransitioningDelegate
@@ -712,10 +764,17 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 }
             }
         }
-        else //show recent activity view
-        {
-            self.performSegueWithIdentifier("ShowRecentActivitySegue", sender: nil)
-        }
+        
+    }
+    
+    func showRecentActivity(sender:AnyObject?)
+    {
+        self.performSegueWithIdentifier("ShowRecentActivitySegue", sender: nil)
+    }
+    
+    func showSortedElements(sender:AnyObject?)
+    {
+        self.performSegueWithIdentifier("ShowSortedElements", sender: sender)
     }
     
     //MARK: ------ menu displaying

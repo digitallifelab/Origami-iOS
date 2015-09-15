@@ -193,7 +193,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var lvMessagesHolder = [NSNumber:[Message]]()
                     for lvMessage in messagesArray
                     {
-                        //println(">>> ElementId:\(lvMessage.elementId) , \n type: \(lvMessage.typeId), \n Message: \(lvMessage.textBody)")
                         if lvMessagesHolder[lvMessage.elementId!] != nil
                         {
                             lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -239,8 +238,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         //can be not main queue
         let elementId = message.elementId?.integerValue
-        
-        //println(" -> Send new message Called.")
+
         serverRequester.sendMessage(message, toElement: message.elementId!) { (result, error) -> () in
             
             //main queue
@@ -290,12 +288,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
            observer.newMessagesAdded(messageObjects)
         }
-        
-//        //also check for HomeVC embeded VC observing for new messages
-//        if let allMessagesObserver = getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
-//        {
-//            allMessagesObserver.newMessagesAdded(messageObjects)
-//        }
         
         //return from function
         if let completionBlock = completion
@@ -421,8 +413,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return
             }
             
-            //println(" Starting sorting for last 3 messages in background")
-            
             var allMessagesSet = Set<Message>()
             for (_,lvMessages) in DataSource.sharedInstance.messages
             {
@@ -432,8 +422,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             ObjectsConverter.sortMessagesByDate(&sortedArray)
             
-//            if sortedArray.count > messagesQuantity //now the array is actually SORTED
-//            {
+
                 var lastThreeItems = [Message]()
                 let reversed = sortedArray.reverse()
                 var index = 0
@@ -471,7 +460,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 if let completionBlock = completionClosure
                 {
-                    //println(" Finished sorting last 3 messages for HomeScreen.")
                     completionBlock(messages: lastThreeItems) //return result
                 }
             })
@@ -529,15 +517,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if DataSource.sharedInstance.messages.removeValueForKey(anId) != nil
                 {
-                    // sometmes throws an exception of "fatal error: unexpectedly found nil while unwrapping an Optional value"
-                    //DataSource.sharedInstance.messages[anId] = nil
                     println(" -> Deleted messages array.")
                 }
             }
-            
-        
         }
         aLock.unlock()
+        
         DataSource.sharedInstance.isRemovingObsoleteMessages = false
     }
     
@@ -946,10 +931,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         else if anElement.hasAttaches.boolValue
                         {
                             DataSource.sharedInstance.loadAttachesForElement(anElement, completion: { (attaches) -> () in
-                                if let existAttaches = attaches
-                                {
-                                    //println("\n --> has attaches - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
-                                }
+//                                if let existAttaches = attaches
+//                                {
+//                                    
+//                                }
                             })
                         }
                     })
@@ -1002,7 +987,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         let aLock = NSLock()
         aLock.lock()
         DataSource.sharedInstance.elements += newElements
+        
         aLock.unlock()
+        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: nil)
         
     }
     
@@ -1012,9 +1000,26 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         aLock.lock()
         for anElementId in elementsToDelete
         {
-            DataSource.sharedInstance.deleteElementFromLocalStorage(anElementId)
+            DataSource.sharedInstance.deleteElementFromLocalStorage(anElementId, shouldNotify:false)
         }
         aLock.unlock()
+        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+        var deletedNotif = NSNotification(name: kElementWasDeletedNotification, object: nil, userInfo:["elementIdInts":elementsToDelete])
+  
+        NSNotificationCenter.defaultCenter().postNotification(deletedNotif)
+    }
+    
+    func replaceAllElementsToNew(newElements:[Element])
+    {
+        let aLock = NSLock()
+        aLock.name = "Elements replacer lock"
+        aLock.lock()
+        DataSource.sharedInstance.elements.removeAll(keepCapacity: true)
+        DataSource.sharedInstance.elements += newElements
+        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+        aLock.unlock()
+        
+        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
     }
 //    func getRootElementTitlesFor(element:Element) -> [String]
 //    {
@@ -1043,7 +1048,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func editElement(element:Element, completionClosure completion:(edited:Bool) -> () )
     {
-    
        DataSource.sharedInstance.serverRequester.editElement(element, completion: { (success, error) -> () in
        NSOperationQueue().addOperationWithBlock({ () -> Void in
         
@@ -1149,7 +1153,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
-    func deleteElementFromLocalStorage(elementId:Int)
+    func deleteElementFromLocalStorage(elementId:Int, shouldNotify:Bool)
     {
         NSLog("   ->Started deleting element from local storage.")
         var index = -1
@@ -1237,9 +1241,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
         NSLog("   ->Finished deleting element from local storage.")
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementId)])
-        })
+        if shouldNotify
+        {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementId)])
+            })
+        }
+        
    
     }
     

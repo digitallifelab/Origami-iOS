@@ -1057,7 +1057,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         if let elementID = weakSelf.currentElement?.elementId?.integerValue
                         {
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
-                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementID)
+                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementID, shouldNotify:true)
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }
                     }

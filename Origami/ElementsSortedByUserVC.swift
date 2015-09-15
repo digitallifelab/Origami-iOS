@@ -179,6 +179,14 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     {
 //        func configureLeftBarButtonItem()
 //        {
+        if let navController = self.navigationController
+        {
+            let viewControllers = navController.viewControllers
+            if viewControllers.count > 1
+            {
+                return
+            }
+        }
             var leftButton = UIButton.buttonWithType(.System) as! UIButton
             leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
             leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)

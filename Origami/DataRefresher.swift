@@ -44,9 +44,14 @@ class DataRefresher
             {
                 if weakSelf.cancelled
                 {
-                    println("Stopped refreshing elements")
+                    println("Stopped refreshing elements : SELF.cancelled")
                     return
                 }
+            }
+            else
+            {
+                println("Stopped refreshing elements : no SELF")
+                return
             }
             
             if let recievedElements = objects as? [Element]
@@ -59,13 +64,66 @@ class DataRefresher
                 
                 if let allCurrentElements = DataSource.sharedInstance.getAllElementsLocked()
                 {
+                    
                     let existingSet = Set(allCurrentElements)
                     let newSet = Set(sortedElements)
-                    let unionSet = newSet.union(existingSet)
+        
                     let comonElementsSetForExisting = existingSet.intersect(newSet)
                     let commonElementSetForNew = newSet.intersect(existingSet)
-                    let existingMoreThanNewSet = existingSet.subtract(newSet)
                     
+                    if existingSet.count == newSet.count
+                    {
+                        if existingSet.isSubsetOf(newSet)
+                        {
+                            if let weakSelf = self
+                            {
+                                if !weakSelf.cancelled
+                                {
+                                    weakSelf.startNewRefreshLoop()
+                                    return
+                                }
+                                else
+                                {
+                                    println("Stopped refreshing elements : SELF.cancelled")
+                                    return
+                                }
+                            }
+                            else
+                            {
+                                println("Stopped refreshing elements : no SELF")
+                                return
+                            }
+                        }
+                        else
+                        {
+                            var newTotalElementsArray = Array(newSet)
+                            ObjectsConverter.sortElementsByDate(&newTotalElementsArray)
+                            
+                            DataSource.sharedInstance.replaceAllElementsToNew(newTotalElementsArray)
+                            
+                            
+                            if let weakSelf = self
+                            {
+                                if !weakSelf.cancelled
+                                {
+                                    weakSelf.startNewRefreshLoop()
+                                    return
+                                }
+                                else
+                                {
+                                    println("Stopped refreshing elements : SELF.cancelled")
+                                    return
+                                }
+                            }
+                            else
+                            {
+                                println("Stopped refreshing elements : no SELF")
+                                return
+                            }
+                        }
+                    }
+                    
+                    ///////-----/////
                     var elementsToDelete = existingSet.subtract(comonElementsSetForExisting)
                     if elementsToDelete.count > 0
                     {
@@ -85,6 +143,7 @@ class DataRefresher
                         DataSource.sharedInstance.deleteElementsLocked(ints)
                     }
                     
+                    ///////-----/////
                     var elementsToInsert = newSet.subtract(commonElementSetForNew)
                     if elementsToInsert.count > 0
                     {
@@ -98,43 +157,48 @@ class DataRefresher
                         
                         DataSource.sharedInstance.addElementsLocked(arrayToIterate)
                     }
-                    
-                    let newMoreThanExisting = newSet.subtract(existingSet)
-                    
-                    if existingMoreThanNewSet.count > 0
-                    {
-                        //println("\n->> Some Elements were DELETED on server...")
-                    }
-                    
-                    if newMoreThanExisting.count > 0
-                    {
-                        //println("\n->> Some Elements were ADDED on server...")
-                    }
                 }
             }
             
             if let weakSelf = self
             {
-                weakSelf.isInProgress = false
-                
-                if weakSelf.refreshInterval > 0
+                if weakSelf.cancelled
                 {
-                    let when = dispatch_time(DISPATCH_TIME_NOW, Int64(weakSelf.refreshInterval * Double(NSEC_PER_SEC)))
-                    let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
-                    dispatch_after(when, globalQueue, {[weak self] () -> Void in
-                        if let aSelf = self
-                        {
-                            if !aSelf.cancelled
-                            {
-                                aSelf.loadElements()
-                            }
-                        }
-                    })
+                    println("Stopped refreshing elements : SELF.cancelled")
+                    return
                 }
+                else
+                {
+                    weakSelf.startNewRefreshLoop()
+                }
+            }
+            else
+            {
+                println("Stopped refreshing elements : no SELF")
+                return
             }
         }
     }
-    
+    func startNewRefreshLoop()
+    {
+        self.isInProgress = false
+        
+        if self.refreshInterval > 0
+        {
+            let when = dispatch_time(DISPATCH_TIME_NOW, Int64(self.refreshInterval * Double(NSEC_PER_SEC)))
+            let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
+            dispatch_after(when, globalQueue, {[weak self] () -> Void in
+                if let aSelf = self
+                {
+                    if !aSelf.cancelled
+                    {
+                        aSelf.loadElements()
+                    }
+                }
+            })
+        }
+
+    }
     func stopRefreshingElements()
     {
         self.cancelled = true
