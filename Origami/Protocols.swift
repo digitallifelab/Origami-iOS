@@ -46,8 +46,9 @@ protocol AttachPickingDelegate {
     func newElementComposerWantsToCancel(composer:NewElementComposerViewController)
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
     
-    optional func newElementComplserTitleForNewElement(composer:NewElementComposerViewController) -> String?
+    optional func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String?
     optional func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?
+    optional func newElementForComposer(composer:NewElementComposerViewController) -> Element?
 }
 
 protocol MessageTapDelegate

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate {
 
     weak var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
@@ -92,6 +92,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     override func viewWillAppear(animated: Bool)
     {
+        self.navigationController?.delegate = nil
+        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
         println(" --- Removed From observing new elements added...")
         super.viewWillAppear(animated)
@@ -482,24 +484,37 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
             
             
-            editingVC.modalPresentationStyle = .Custom
-            editingVC.transitioningDelegate = self
+//            editingVC.modalPresentationStyle = .Custom
+//            editingVC.transitioningDelegate = self
             let copyElement = Element(info:  self.currentElement!.toDictionary())
             editingVC.composingDelegate = self
             
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-            self.presentViewController(editingVC, animated: true, completion: {[weak self] () -> Void in
-                editingVC.newElement =  copyElement
-                editingVC.editingStyle = ElementEditingStyle.EditCurrent
+            self.navigationController?.delegate = self
+            
+            //editingVC.newElement =  copyElement
+            self.navigationController?.pushViewController(editingVC, animated: true)
+//            self.presentViewController(editingVC, animated: true, completion: {[weak self] () -> Void in
+//                editingVC.newElement =  copyElement
+//                editingVC.editingStyle = ElementEditingStyle.EditCurrent
                 
 //                if let weakSelf = self
 //                {
 //                    weakSelf.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
 //                }
-            })
+//            })
         }
     }
     
+    
+    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
+        if let editingVC = viewController as? NewElementComposerViewController
+        {
+            let copyElement = Element(info:  self.currentElement!.toDictionary())
+            editingVC.newElement = copyElement
+            editingVC.editingStyle = .EditCurrent
+        }
+    }
     func elementFavouriteToggled(notification:NSNotification)
     {
         if let element = currentElement
@@ -613,12 +628,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     }
                    
                 }
-                newElementCreator.modalPresentationStyle = .Custom
-                newElementCreator.transitioningDelegate = self
-                
-                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
-                    newElementCreator.editingStyle = .AddNew
-                })
+//                newElementCreator.modalPresentationStyle = .Custom
+//                newElementCreator.transitioningDelegate = self
+
+                self.navigationController?.pushViewController(newElementCreator, animated: true)
+//                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
+//                    newElementCreator.editingStyle = .AddNew
+//                })
             }
         }
     }
@@ -786,11 +802,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: ElementComposingDelegate
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
-        composer.dismissViewControllerAnimated(true, completion: nil)
+        //composer.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
-        composer.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.popViewControllerAnimated(true)
         
         switch composer.editingStyle
         {

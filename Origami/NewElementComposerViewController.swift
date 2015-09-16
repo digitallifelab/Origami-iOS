@@ -29,7 +29,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     contactIDsToPass.insert(number.integerValue)
                 }
             }
-            table.reloadData()
+            self.table.reloadData()
         }
     }
     
@@ -56,27 +56,29 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         didSet{
             switch displayMode{
                 case .Night:
-                    self.toolbar.tintColor = UIColor.whiteColor()
-                    self.toolbar.barTintColor = UIColor.blackColor()
+                    //self.toolbar.tintColor = UIColor.whiteColor()
+                    //self.toolbar.barTintColor = UIColor.blackColor()
                     self.view.backgroundColor = UIColor.blackColor()
                 case .Day:
-                    self.toolbar.tintColor = kDayNavigationBarBackgroundColor
-                    self.toolbar.barTintColor = kWhiteColor
+                    //self.toolbar.tintColor = kDayNavigationBarBackgroundColor
+                    //self.toolbar.barTintColor = kWhiteColor
                     self.view.backgroundColor = UIColor.whiteColor()
             }
         }
     }
     
-    var editingStyle:ElementEditingStyle = .EditCurrent{
+    var editingStyle:ElementEditingStyle = .AddNew {
         didSet{
             if editingStyle == .AddNew
             {
-                self.newElement = Element()
-                self.newElement?.rootElementId = NSNumber(integer:self.rootElementID)
-                self.newElement?.passWhomIDs = Array(self.contactIDsToPass)
+                var elementNew = Element()
+                //self.newElement = Element()
+                elementNew.rootElementId = NSNumber(integer:self.rootElementID)
+                elementNew.passWhomIDs = Array(self.contactIDsToPass)
+                self.newElement = elementNew
                 if self.currentElementType != .None
                 {
-                    self.newElement?.title = self.composingDelegate?.newElementComplserTitleForNewElement?(self)
+                    self.newElement?.title = self.composingDelegate?.newElementComposerTitleForNewElement?(self)
                     self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement?(self)
                 }
             }
@@ -91,7 +93,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     @IBOutlet var table:UITableView!
     
-    @IBOutlet var toolbar:UIToolbar!
+    //@IBOutlet var toolbar:UIToolbar!
     
     //MARK: methods
     override func viewDidLoad() {
@@ -101,6 +103,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         //transitionAnimator = FadeOpaqueAnimator()
         table.estimatedRowHeight = 80.0
         table.rowHeight = UITableViewAutomaticDimension
+        
+        self.editingStyle = .AddNew
+        
+        
         let isNightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         if isNightMode
         {
@@ -159,16 +165,29 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
             var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
             var doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
-            toolbar.items = [cancelBarButton, flexibleSpace, doneBarButtonItem]
+            //toolbar.items = [cancelBarButton, flexibleSpace, doneBarButtonItem]
+        
+            self.navigationItem.leftBarButtonItem = cancelBarButton
+            self.navigationItem.rightBarButtonItem = doneBarButtonItem
+            
+            
         case .EditCurrent:
             var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
-            var flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            var fixedSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
+            fixedSpace.width = 50.0
+            if UIScreen.mainScreen().bounds.size.width < 330
+            {
+                fixedSpace.width = 40.0
+            }
+            
             var archiveBarButton = UIBarButtonItem(title: "Archive".localizedWithComment(""), style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
-            var flexibleSpaceCenter = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
             var deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
-            var flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            
             var doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
-            toolbar.items = [cancelBarButton, flexibleSpaceLeft, archiveBarButton, flexibleSpaceCenter, deleteBarButton, flexibleSpaceRight, doneBarButtonItem]
+            self.navigationItem.setLeftBarButtonItems([ cancelBarButton, flexibleSpace, archiveBarButton, flexibleSpace, deleteBarButton, flexibleSpace, doneBarButtonItem], animated: true)
+            self.navigationItem.setRightBarButtonItems([], animated: true)
+   
         }
     }
     
@@ -403,7 +422,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             let section = indexPath.section
             switch section
             {
-            case 0:
+            case 0: // Title
                 
                 if let textView = textViews[indexPath]
                 {
@@ -412,14 +431,17 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     return titleHeight
                 }
                 return 130.0
-            case 1:
+            case 1: //Details (should be higher than title)
                 if let textView = textViews[indexPath]
                 {
                     let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
                     let detailsHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 24
-                    return detailsHeight
+                    if detailsHeight > 200.0
+                    {
+                        return detailsHeight
+                    }
                 }
-                return 150.0
+                return 200.0
             default:break
             }
             return 100.0
@@ -475,6 +497,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
         tableView.reloadRowsAtIndexPaths([titlePath, detailsPath], withRowAnimation: .None)
     }
+    
     
     func contactTappedAtIndexPath(indexPath: NSIndexPath)
     {
@@ -773,10 +796,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func dismissSelfWithElementDeletedNotification()
     {
-        self.dismissViewControllerAnimated(true, completion: { () -> Void in
-             NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
-        })
+        self.navigationController?.popViewControllerAnimated(false)
         
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+        dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
+        })
     }
 }// class end
 

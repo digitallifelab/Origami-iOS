@@ -306,6 +306,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             lvTitleLabel.frame = CGRectMake(60.0, 0.0, 100.0, 21.0)
             lvTitleLabel.center.x = CGRectGetMidX(self.view.bounds)
             self.navigationItem.titleView = lvTitleLabel
+            self.navigationItem.titleView?.bounds.size.width = 180.0
         }
     }
     
@@ -583,30 +584,39 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 }
               
                 newElementCreator.currentElementType = type
-                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
+                self.navigationController?.pushViewController(newElementCreator, animated: true)
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+                dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
                     newElementCreator.editingStyle = .AddNew
                 })
+//                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
+//                    newElementCreator.editingStyle = .AddNew
+//                })
             }
         }
     }
     
     //MARK: ElementComposingDelegate
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
-       // self.navigationController?.popViewControllerAnimated(true)
+       // self.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
-        self.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
-             if let weakSelf = self
-             {
-                weakSelf.handleAddingNewElement(newElement)
-                
-            }
-        })
+        self.navigationController?.popViewControllerAnimated(true)
+
+        self.handleAddingNewElement(newElement)
+        
+//        self.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
+//             if let weakSelf = self
+//             {
+//                weakSelf.handleAddingNewElement(newElement)
+//                
+//            }
+//        })
     }
     
-    func newElementComplserTitleForNewElement(composer: NewElementComposerViewController) -> String? {
+    func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
         if let fullInfo = self.newElementDetailsInfo
         {
             let countChars = count(fullInfo)

@@ -414,20 +414,20 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
-            customTransitionAnimator = FadeOpaqueAnimator()
+            //customTransitionAnimator = FadeOpaqueAnimator()
+            let composerHolder = UINavigationController(rootViewController: newElementCreator)
             
             newElementCreator.composingDelegate = self
-            newElementCreator.modalPresentationStyle = .Custom
-            newElementCreator.transitioningDelegate = self
             
-            self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
-                newElementCreator.editingStyle = .AddNew
-                
-                if let tapView = self.view.viewWithTag(0xAD12)
-                {
-                    tapView.removeFromSuperview()
-                }
-            })
+//            composerHolder.modalPresentationStyle = .Custom
+//            composerHolder.transitioningDelegate = self
+            
+            self.navigationController?.pushViewController(newElementCreator, animated: true)
+            //newElementCreator.editingStyle = .AddNew - switched to be default
+            if let tapView = self.view.viewWithTag(0xAD12)
+            {
+                tapView.removeFromSuperview()
+            }
         }
     }
     
@@ -541,23 +541,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK: ElementComposingDelegate
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
-        
-        if let fadeAnimator = customTransitionAnimator as? FadeOpaqueAnimator
-        {
-            composer.dismissViewControllerAnimated(true, completion: nil)
-            return
-        }
-        // no animator. create one to dismiss nicely
-        customTransitionAnimator = FadeOpaqueAnimator()
-        composer.dismissViewControllerAnimated(true, completion: nil)
-        
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element)
     {
-        // no animator. create one to dismiss nicely
-        customTransitionAnimator = FadeOpaqueAnimator()
-        composer.dismissViewControllerAnimated(true, completion: nil)
+        self.navigationController?.popViewControllerAnimated(true)
         
         handleAddingNewElement(newElement)
     }
