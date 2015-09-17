@@ -36,9 +36,10 @@ protocol ChatInputViewDelegate
     func chatInputView(inputView:ChatTextInputView, attachButtonTapped button:UIButton)
 }
 
-protocol AttachPickingDelegate {
+@objc protocol AttachPickingDelegate {
     func mediaPicker(picker:AnyObject, didPickMediaToAttach mediaFile:MediaFile)
     func mediaPickerDidCancel(picker:AnyObject)
+    optional func mediaPickerShouldAllowEditing(picker:AnyObject) -> Bool
 }
 
 @objc protocol ElementComposingDelegate

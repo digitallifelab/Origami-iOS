@@ -30,7 +30,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
    
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
@@ -109,8 +108,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             //register for night-day modes switching
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
             
-//            NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
-            
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
@@ -137,7 +134,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     override func viewWillDisappear(animated: Bool)
     {
-//        NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Switch_Night_Mode_Changed, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
@@ -175,11 +171,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func configureNavigationTitleView()
     {
         #if SHEVCHENKO
-        let titleImageView = UIImageView(image:UIImage(named: "title-home"))
-        titleImageView.contentMode = .ScaleAspectFit
-        titleImageView.frame = CGRectMake(0, 0, 200, 40)
-        
-        self.navigationItem.titleView = titleImageView
+            let titleImageView = UIImageView(image:UIImage(named: "title-home"))
+            titleImageView.contentMode = .ScaleAspectFit
+            titleImageView.frame = CGRectMake(0, 0, 200, 40)
+            self.navigationItem.titleView = titleImageView
+        #else
+            let titleLabel = UILabel()
+            self.navigationItem.titleView = titleLabel
         #endif
     }
     
@@ -441,7 +439,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             if let hiddenLayout = collectionLayout as? HomeSignalsHiddenFlowLayout
             {
                 hiddenLayout.clearAllElements()
-                self.collectionDashboard.deleteSections(NSIndexSet(indexesInRange: NSMakeRange(1, numberOfSections - 1)))
+                self.collectionDashboard.reloadData()
+                //self.collectionDashboard.deleteSections(NSIndexSet(indexesInRange: NSMakeRange(1, numberOfSections - 1)))
             }
             else if let visibleLayout = collectionLayout as? HomeSignalsVisibleFlowLayout
             {
@@ -520,10 +519,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
-        DataSource.sharedInstance.refreshAttachesForElement(element, completion: { (attaches) -> () in
-            self.presentNewSingleElementVC(element)
-        })
-        
+//        DataSource.sharedInstance.refreshAttachesForElement(element, completion: { (attaches) -> () in
+//            
+//        })
+        self.presentNewSingleElementVC(element)
         
     }
     

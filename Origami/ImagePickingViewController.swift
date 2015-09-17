@@ -72,12 +72,24 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         
         var selectedImage:UIImage = UIImage()
-        if let originamImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-            selectedImage = originamImage
+        if picker.allowsEditing
+        {
+            if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage {
+                selectedImage = editedImage
+            }
+            else if let originamImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+                selectedImage = originamImage
+            }
         }
-        else if let editedImage = info[UIImagePickerControllerEditedImage] as? UIImage {
-            selectedImage = editedImage
+        else
+        {
+            if let originamImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+                selectedImage = originamImage
+            }
         }
+        
+        
+        
         
         proceedWithSelectedImage(selectedImage)
         
@@ -106,8 +118,14 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         else
         {
             imagePickerController.sourceType = .PhotoLibrary
-            
         }
+        
+        imagePickerController.allowsEditing = false
+        if let allowEditingResult = self.attachPickingDelegate?.mediaPickerShouldAllowEditing?(self)
+        {
+            imagePickerController.allowsEditing = allowEditingResult
+        }
+        
         self.presentViewController(imagePickerController, animated: true, completion: nil)
     }
     

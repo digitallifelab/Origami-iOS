@@ -105,6 +105,7 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
     }
     
     override func prepareLayout() {
+        
         super.prepareLayout()
         if self.attributes == nil
         {

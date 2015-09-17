@@ -39,11 +39,15 @@
 -(void) saveFileToDisc:(NSData *)file fileName:(NSString *)fileName completion:(void(^)(NSString *filePath, NSError *error)) completionBlock;
 
 -(void) loadFileNamed:(NSString *)fileName completion:(void(^)(NSData *fileData, NSError *readingError)) completionBlock;
-
+-(NSData *) synchronouslyLoadFileNamed:(NSString *)fileName;
 -(void) eraseFileNamed:(NSString *) fileName completion:(void(^) (BOOL succes, NSError *eraseError)) completionBlock;
 
 ///  AVATARS
 -(void) saveAvatar:(NSData *)imageData forLoginName:(NSString *)loginName completion:(void(^)(NSError* saveError)) completionBlock;
 -(void) loadAvatarDataForLoginName:(NSString *)loginName completion:(void(^)(NSData* avatarData, NSError* saveError)) completionBlock;
+
+-(void)deleteAvatars;
+-(void)deleteAttachedImages;
+
 
 @end

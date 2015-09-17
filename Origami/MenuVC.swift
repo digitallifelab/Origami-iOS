@@ -35,7 +35,17 @@ class SideMenuCell: UITableViewCell
     @IBOutlet var menuIcon:UIImageView?
     var switcher:UISwitch?
     var switchDelegate:SwitchDelegate?
-    
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            switch displayMode
+            {
+            case .Day:
+                self.label.textColor = kBlackColor
+            case .Night:
+                self.label.textColor = kWhiteColor
+            }
+        }
+    }
     override func prepareForReuse()
     {
         self.cellType = .Regular
@@ -81,6 +91,8 @@ class SideMenuCell: UITableViewCell
         switchDelegate?.switcher(sender, didChangeState: sender.on)
     }
 }
+
+
 ////////////////////////////////////
 ///////////////////////////////////
 //MARK: -------------------
@@ -92,6 +104,19 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
     @IBOutlet weak var menuTable:UITableView?
     var menuItemsTitles = ["Home", "Sorting".localizedWithComment(""), "Profile".localizedWithComment(""), "Contacts".localizedWithComment(""), "Display Mode".localizedWithComment("")]
     
+    var displayMode:DisplayMode = .Day
+        {
+        didSet{
+            switch displayMode
+            {
+            case .Day:
+                self.view.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+            case .Night:
+                self.view.backgroundColor = kBlackColor
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -100,7 +125,8 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         self.menuTable?.dataSource = self
         self.menuTable?.backgroundColor = UIColor.clearColor()// kDayNavigationBarBackgroundColor
 
-        self.view.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+        //self.view.backgroundColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.8)
+        self.setAppaeranceForNightModeDidChange(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
     }
 
     override func didReceiveMemoryWarning() {
@@ -140,6 +166,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         if let cellTitle = titleForMenuCellAtIndexPath(indexPath)
         {
             cell.label.text = cellTitle
+            cell.displayMode = self.displayMode
             if cellTitle == "Display Mode".localizedWithComment("")
             {
                 cell.cellType = .DisplayModeSwitch
@@ -260,10 +287,23 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
     //MARK: SwitchDelegate
     func switcher(aSwitch: UISwitch?, didChangeState state: Bool) {
         NSUserDefaults.standardUserDefaults().setBool( state , forKey: NightModeKey)
-        
+        setAppaeranceForNightModeDidChange(state)
         NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Switch_Night_Mode_Changed, object: nil, userInfo: ["mode":state])
     }
     
+    
+    func setAppaeranceForNightModeDidChange(nightMode:Bool)
+    {
+        if nightMode
+        {
+            displayMode = .Night
+            self.menuTable?.reloadData()
+            return
+        }
+        displayMode = .Day
+        self.menuTable?.reloadData()
+        
+    }
     
 
 }

@@ -19,6 +19,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var titleCell:SingleElementTitleCell?
     var detailsCell:SingleElementDetailsCell?
+    var currentCellsOptions:ElementCellsOptions?
+    
+    var attachesHandler:ElementAttachedFilesCollectionHandler?
+    var subordinatesByIndexPath:[NSIndexPath : Element]?
     
     var handledElement:Element? {
         didSet {
@@ -62,10 +66,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
     }
     
-    var currentCellsOptions:ElementCellsOptions?
-    var attachesHandler:ElementAttachedFilesCollectionHandler?
-    //var cellTypesHolder:[ElementCellType]?
-    var subordinatesByIndexPath:[NSIndexPath : Element]?
+ 
 
     override init() {
         //self.handledElement = Element()

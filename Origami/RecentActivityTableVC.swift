@@ -157,17 +157,17 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     func pushElementDashBoardForElement(element:Element)
     {
         self.view.userInteractionEnabled = false
-            DataSource.sharedInstance.loadAttachesForElement(element, completion: {[weak self] (_) -> () in
-                if let weakSelf = self
-                {
-                    if let dashboard = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+//            DataSource.sharedInstance.loadAttachesInfoForElement(element, completion: {[weak self] (_) -> () in
+//                if let weakSelf = self
+//                {
+                    if let dashboard = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
                     {
                         dashboard.currentElement = element
-                        weakSelf.navigationController?.pushViewController(dashboard, animated: true)
+                        self.navigationController?.pushViewController(dashboard, animated: true)
                     }
-                    weakSelf.view.userInteractionEnabled = true
-                }
-            })
+                    self.view.userInteractionEnabled = true
+//                }
+//            })
     }
     
     //MARK: UITableViewDataSource

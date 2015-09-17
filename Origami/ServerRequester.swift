@@ -737,15 +737,20 @@ class ServerRequester: NSObject
 
                                 if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
                                 {
-                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                                   dispatch_async(dispatch_get_main_queue(),{ () -> Void in
                                     completion(attaches, nil)
                                     })
                                 }
                                 else
                                 {
-                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                                        completion(nil,nil)
+                                    
+                                    dispatch_async(dispatch_get_main_queue(),{ () -> Void in
+                                       completion(nil,nil)
                                     })
+                                    
+//                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+//                                        completion(nil,nil)
+//                                    })
                             }
 
                         })
@@ -1151,8 +1156,8 @@ class ServerRequester: NSObject
             mutableRequest.HTTPMethod = "GET"
             
             let sessionTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData, response, responseError) -> Void in
-                let bgQueue = dispatch_queue_create("image.Loading.completion.queue", DISPATCH_QUEUE_SERIAL)
-                dispatch_async(bgQueue, { () -> Void in
+               // let bgQueue = dispatch_queue_create("image.Loading.completion.queue", DISPATCH_QUEUE_SERIAL)
+                //dispatch_async(bgQueue, { () -> Void in
                     if let toReturnCompletion = completionBlock
                     {
                         if let responseBytes = responseData
@@ -1181,7 +1186,7 @@ class ServerRequester: NSObject
                                 
                                 if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
                                 {
-                                    println("-> downloadAvatar response: \(jsonString) for userName: \(loginName)")
+                                    //println("-> downloadAvatar response: \(jsonString) for userName: \(loginName)")
                                     toReturnCompletion(avatarData: nil, error: nil)
                                 }
                             }
@@ -1197,7 +1202,7 @@ class ServerRequester: NSObject
                         }
                         toReturnCompletion(avatarData: nil, error: responseError)
                     }
-                })
+                //})
             })
             
             sessionTask.resume()

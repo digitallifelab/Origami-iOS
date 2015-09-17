@@ -493,6 +493,20 @@
 			name = ElementCollectionCells;
 			sourceTree = "<group>";
 		};
+		F826A8D21BA9A5FB00C52B2C /* InMemoryObjects */ = {
+			isa = PBXGroup;
+			children = (
+				F8A1DFC61B7B727000A66692 /* Element.swift */,
+				F8A1DFC81B7B72D900A66692 /* Contact.swift */,
+				F8A1DFCA1B7B732B00A66692 /* Message.swift */,
+				F8A1DFCE1B7B738200A66692 /* User.swift */,
+				F8A1DFD01B7B74AB00A66692 /* Country.swift */,
+				F8A1DFD21B7B74BE00A66692 /* Language.swift */,
+				F8D9BAC21B399880006B507D /* MediaFile.swift */,
+			);
+			name = InMemoryObjects;
+			sourceTree = "<group>";
+		};
 		F8468E601B61361C0005174C /* TitleCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -616,6 +630,7 @@
 		F872A4401B46927E000A6AA3 /* EditingAndCreation */ = {
 			isa = PBXGroup;
 			children = (
+				F8A1DFCC1B7B735B00A66692 /* AttachFile.swift */,
 				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
 				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
 			);
@@ -656,14 +671,7 @@
 				F880D1801B25B22900E702D3 /* ServerRequester.swift */,
 				F85CF1031B833D940048B3DE /* MessagesLoader.swift */,
 				F80656CA1B99AFCB008258F8 /* DataRefresher.swift */,
-				F8A1DFC61B7B727000A66692 /* Element.swift */,
-				F8A1DFC81B7B72D900A66692 /* Contact.swift */,
-				F8A1DFCA1B7B732B00A66692 /* Message.swift */,
-				F8A1DFCE1B7B738200A66692 /* User.swift */,
-				F8A1DFD01B7B74AB00A66692 /* Country.swift */,
-				F8A1DFD21B7B74BE00A66692 /* Language.swift */,
-				F8A1DFCC1B7B735B00A66692 /* AttachFile.swift */,
-				F8D9BAC21B399880006B507D /* MediaFile.swift */,
+				F826A8D21BA9A5FB00C52B2C /* InMemoryObjects */,
 				F855BB9D1B74A7AF00EC114C /* CoreData */,
 			);
 			name = Model;
@@ -962,6 +970,7 @@
 				ORGANIZATIONNAME = CloudCraft;
 				TargetAttributes = {
 					F8C93AB91B861B94009D890E = {
+						DevelopmentTeam = XD42YSD8LL;
 						SystemCapabilities = {
 							com.apple.InAppPurchase = {
 								enabled = 0;
@@ -1300,8 +1309,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1312,7 +1321,7 @@
 				OTHER_SWIFT_FLAGS = "-D SHEVCHENKO";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "0da46ddf-a3e3-4128-9c72-fd43d4ce6ab9";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1324,8 +1333,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1336,7 +1345,7 @@
 				OTHER_SWIFT_FLAGS = "-D SHEVCHENKO";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "0da46ddf-a3e3-4128-9c72-fd43d4ce6ab9";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 			};
 			name = Release;

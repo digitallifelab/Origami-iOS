@@ -56,21 +56,21 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         let nightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightMode)
         self.displayMode = (nightMode) ? .Night : .Day
+       
         
-        queryAttachesDataAndShowAttachesCellOnCompletion()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         
         if let ourElement = self.currentElement
         {
-            //println("pass Whom IDs old: \(ourElement.passWhomIDs)")
+            
+            println("pass Whom IDs old: \(ourElement.passWhomIDs)")
             DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
                 if let aSelf = self
                 {
                     if finished
                     {
+                        println("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
                         aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElement.elementId!.integerValue)
-                        //println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
+                        println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
                     }
                     else
                     {
@@ -99,11 +99,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewWillAppear(animated)
         if afterViewDidLoad
         {
-            prepareCollectionViewDataAndLayout()
+            //prepareCollectionViewDataAndLayout()
             afterViewDidLoad = false
         }
         
         var currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
+        println("\n Refreshing attaches in viewWillAppear...")
         DataSource.sharedInstance.refreshAttachesForElement(self.currentElement, completion: { [weak self] (attachesArray) -> () in
             if let weakSelf = self
             {
@@ -118,11 +119,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         if remainderSet.isEmpty
                         {
                             println("-> No new attach files loaded")
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                println("\n Starting to Query attach previews in background..")
+                                weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
+                            })
+                            
                         }
                         else
                         {
                             println("-> Loaded \(remainderSet.count) new attaches")
                             weakSelf.prepareCollectionViewDataAndLayout()
+                            
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                println("\n Starting to Query EXIST attachInfo previews in background..")
+                                weakSelf.startLoadingDataForMissingAttaches(existAttaches)
+                            })
+
                         }
                         
                     }
@@ -143,7 +155,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "singleAttachDataWasLoaded:", name: kAttachDataDidFinishLoadingNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
         
         let chatPath = NSIndexPath(forItem: 1, inSection: 0)
@@ -162,14 +175,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 self.collectionView.reloadItemsAtIndexPaths([chatPath])
             }
         }
-        
-//        if self.view.hasAmbiguousLayout()
-//        {
-//            println("\(self) view has ambiguous layout.\n")
-//            //self.view.exerciseAmbiguityInLayout()
-//        }
-        
-        //configureNavigationControllerToolbarItems()
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -180,13 +185,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementActionButtonPressedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementMoreDetailsNotification, object: nil)
-     
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachFileDataLoadingCompleted, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachDataDidFinishLoadingNotification, object:nil)
     }
     
-    override func viewDidDisappear(animated: Bool)
-    {
-        super.viewDidDisappear(animated)
-    }
     //MARK: Appearance --
     func configureRightBarButtonItem()
     {
@@ -213,199 +215,123 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         //
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
+
     
-//    func homeButtonPressed(sender:UIBarButtonItem)
-//    {
-//        self.navigationController?.popToRootViewControllerAnimated(true)
-//    }
-    
-    //MARK: -----
-    func queryAttachesPreviewData()
-    {
-        DataSource.sharedInstance.loadAttachesForElement(self.currentElement!, completion: { (attachFileArray) -> () in
-            if let attaches = attachFileArray
-            {
-                let countAttaches = attaches.count
-                println("Loaded \(countAttaches) attaches for current element.")
-                
-                println(" Starting to load attaches previewImages...")
-                let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
-                
-                dispatch_async(bgQueue, {[weak self] () -> Void in
-                    if let previewImageDatas = DataSource.sharedInstance.getSnapshotsArrayForAttaches(attaches)
-                    {
-                        let countPreviews = previewImageDatas.count
-                        
-                        if countAttaches != countPreviews
-                        {
-                            println(" starting to load missing attach file datas...")
-                            assert(false, "load missing attaches")
-                        }
-                        else
-                        {
-                            println(" Loaded all previews for attaches from local storage.")
-                            if let weakSelf = self
-                            {
-                                var attachDataHolder = [AttachFile:MediaFile]()
-                                for var i = 0; i < countAttaches; i++
-                                {
-                                    let lvAttachFile = attaches[i]
-                                    let lvAttachDataDict = previewImageDatas[i]
-                                    if let fileData = lvAttachDataDict[lvAttachFile]
-                                    {
-                                        var lvMediaFile = MediaFile()
-                                        lvMediaFile.data = fileData
-                                        lvMediaFile.name = lvAttachFile.fileName ?? ""
-                                        lvMediaFile.type = .Image
-                                        attachDataHolder[lvAttachFile] = lvMediaFile
-                                    }
-                                }
-                                
-                                let mediaCount = attachDataHolder.count
-                                println("\n ->prepared \(mediaCount) attachFilePairs\n")
-                                
-                                if let attachesCollectionHandler = weakSelf.collectionDataSource?.attachesHandler
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        println("\n Reloading attaches collection view \n")
-                                        weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
-                                    })
-                                }
-                                else
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        
-                                        println("\n Assigning new  attaches handler and reloading collection view \n")
-                                        var attachesHandler = ElementAttachedFilesCollectionHandler(items: attaches)
-                                        weakSelf.collectionDataSource?.attachesHandler = attachesHandler
-                                        weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
-                                        weakSelf.collectionView.dataSource = weakSelf.collectionDataSource
-                                        weakSelf.collectionView.delegate = weakSelf.collectionDataSource
-                                        weakSelf.collectionView.reloadData()
-                                        
-                                        weakSelf.collectionView.performBatchUpdates({ () -> Void in
-                                            
-                                            weakSelf.collectionView.reloadSections(NSIndexSet(index: 0)) //this another one reload needed for changing subordinateCcell into attachesCell bug fixing.
-                                            
-                                        }, completion: { (finished) -> Void in
-                                            
-                                            if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
-                                            {
-                                                weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
-                                            }
-                                            else
-                                            {
-                                                println(" ERROR . \nCould not generate new layout for loaded attaches.")
-                                            }
-                                            weakSelf.collectionDataSource?.attachesHandler?.reloadCollectionWithData(attachDataHolder)
-                                            
-                                        })
-                                    })
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if let weakSelf = self
-                        {
-                            weakSelf.startLoadingDataForMissingAttaches(attaches)
-                        }
-                    }
-                })
-            }
-            else
-            {
-#if DEBUG
-                println("Loaded No Attaches for current element")
-#endif
-             }
-        })
-    }
     
     func queryAttachesDataAndShowAttachesCellOnCompletion()
     {
-        if let existingAttaches = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
-        {
-            var attachesHandler = ElementAttachedFilesCollectionHandler(items: existingAttaches)
-            collectionDataSource?.attachesHandler = attachesHandler
-            collectionDataSource?.handledElement = currentElement
-            collectionView.dataSource = collectionDataSource
-            collectionView.delegate = collectionDataSource
-           
-            collectionView.reloadData()
-            
-            if let layout = self.prepareCollectionLayoutForElement(currentElement)
+        let bgQueue = dispatch_queue_create("Attaches.Request.Queue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(bgQueue, {[weak self] () -> Void in
+            if let weakSelf = self
             {
-                collectionView.setCollectionViewLayout(layout, animated: false)
-                //collectionView.reloadSections(NSIndexSet(index: 0))
-            }
-            else
-            {
-                println(" ERROR . \nCould not generate new layout for loaded attaches.")
-            }
-           
-            return
-        }
-        
-        DataSource.sharedInstance.loadAttachesForElement(self.currentElement!, completion: { [weak self](attaches) -> () in
-            if let arrayOfAttaches = attaches
-            {
-                if !arrayOfAttaches.isEmpty
+                if let existingAttaches = DataSource.sharedInstance.getAttachesForElementById(weakSelf.currentElement?.elementId)
                 {
-                    if let weakSelf = self
+                    if let attachesHandler = ElementAttachedFilesCollectionHandler(items: existingAttaches)
                     {
-                        println("\n--> recieved \(arrayOfAttaches.count) attaches for current element\n")
-                        if let existingAttachesHandler = weakSelf.collectionDataSource?.getElementAttachesHandler()
-                        {
-                            if let attachesCellPath = weakSelf.collectionDataSource?.indexPathForAttachesCell()
-                            {
-                                weakSelf.collectionView.reloadItemsAtIndexPaths([attachesCellPath])
-                            }
-                            return
-                        }
-                        var attachesHandler = ElementAttachedFilesCollectionHandler(items: arrayOfAttaches)
                         weakSelf.collectionDataSource?.attachesHandler = attachesHandler
                         weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         weakSelf.collectionView.dataSource = weakSelf.collectionDataSource
                         weakSelf.collectionView.delegate = weakSelf.collectionDataSource
                         weakSelf.collectionView.reloadData()
                         
                         if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
                         {
-                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
-                             weakSelf.collectionView.reloadData()
+                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: true)
                         }
                         else
                         {
                             println(" ERROR . \nCould not generate new layout for loaded attaches.")
                         }
+                    })
+                    println("\n SingleElementDashboardVC. ONLY FOE EXISTING INFO - startLoadingDataForMissingAttaches. \n")
+                    weakSelf.startLoadingDataForMissingAttaches(existingAttaches)
+                    return
+                }
+                // - else
+                if let weakerSelf = self
+                {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        weakerSelf.prepareCollectionViewDataAndLayout()
+                    })
+                    
+                    
+                    
+                    if let element = weakerSelf.currentElement
+                    {
+                        DataSource.sharedInstance.loadAttachesInfoForElement(element, completion: { [weak self](attaches) -> () in
+                            
+                            if let arrayOfAttaches = attaches
+                            {
+                                if !arrayOfAttaches.isEmpty
+                                {
+                                    if let weakSelf = self
+                                    {
+                                        println("\n--> recieved \(arrayOfAttaches.count) attaches for current element\n")
+                                        if let existingAttachesHandler = weakSelf.collectionDataSource?.getElementAttachesHandler()
+                                        {
+                                            if let attachesCellPath = weakSelf.collectionDataSource?.indexPathForAttachesCell()
+                                            {
+                                                weakSelf.collectionView.reloadItemsAtIndexPaths([attachesCellPath])
+                                            }
+                                            //return
+                                        }
+                                        if let attachesHandler = ElementAttachedFilesCollectionHandler(items: arrayOfAttaches)
+                                        {
+                                            weakSelf.collectionDataSource?.attachesHandler = attachesHandler
+                                            //attachesHandler.startLoadingAllAttachedFileData()
+                                        }
+                                        
+                                        weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                                        
+                                        weakSelf.collectionView.dataSource = weakSelf.collectionDataSource
+                                        weakSelf.collectionView.delegate = weakSelf.collectionDataSource
+                                        weakSelf.collectionView.reloadData()
+                                        
+                                        if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
+                                        {
+                                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                                            weakSelf.collectionView.reloadData()
+                                        }
+                                        else
+                                        {
+                                            println(" ERROR . \nCould not generate new layout for loaded attaches.")
+                                            
+                                        }
+                                        
+                                        println("\n SingleElementDashboardVC. FOR FRESHLY DOWNLOADED INFO startLoadingDataForMissingAttaches. \n")
+                                        weakSelf.startLoadingDataForMissingAttaches(arrayOfAttaches)
+                                    }
+                                }
+                                else
+                                {
+                                    println("\n-->Loaded Empty Attaches array for current element\n")
+                                    weakSelf.prepareCollectionViewDataAndLayout()
+                                }
+                            }
+                            else
+                            {
+                                println("\n-->Loaded No Attaches for current element\n")
+                                weakSelf.prepareCollectionViewDataAndLayout()
+                            }
+                        })
+
                     }
                 }
-                else
-                {
-                    println("\n-->Loaded Empty Attaches array for current element\n")
-                }
-            }
-            else
-            {
-                println("\n-->Loaded No Attaches for current element\n")
             }
         })
+      
+        
     }
     
     func startLoadingDataForMissingAttaches(attaches:[AttachFile])
     {
-        DataSource.sharedInstance.loadAttachFileDataForAttaches(attaches, completion: { () -> () in
-            NSNotificationCenter.defaultCenter().postNotificationName(kAttachFileDataLoadingCompleted, object: nil)
-        })
+        DataSource.sharedInstance.loadAttachFileDataForAttaches(attaches, completion:nil)
     }
     
-    func loadingAttachFileDataCompleted(notification:NSNotification)
-    {
-        println(" Recieved notification about finishing of loading missing attach file datas")
-        queryAttachesPreviewData()
-    }
+    
     
     //MARK: Day/Night Mode
 
@@ -433,8 +359,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
             collectionView.performBatchUpdates({ [weak self]() -> Void in
                 
-            }, completion: {[unowned self] (finished) -> Void in
-               self.collectionView.reloadData()
+            }, completion: {[weak self] (finished) -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.collectionView.reloadData()
+                }
             })
 
         }
@@ -482,27 +411,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 editingVC.rootElementID = rootElementId.integerValue
             }
-            
-            
-//            editingVC.modalPresentationStyle = .Custom
-//            editingVC.transitioningDelegate = self
-            let copyElement = Element(info:  self.currentElement!.toDictionary())
-            editingVC.composingDelegate = self
-            
-            self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-            self.navigationController?.delegate = self
-            
-            //editingVC.newElement =  copyElement
-            self.navigationController?.pushViewController(editingVC, animated: true)
-//            self.presentViewController(editingVC, animated: true, completion: {[weak self] () -> Void in
-//                editingVC.newElement =  copyElement
-//                editingVC.editingStyle = ElementEditingStyle.EditCurrent
+
+            if let currentElement = self.currentElement
+            {
+                let copyElement = Element(info:  currentElement.toDictionary())
+                editingVC.composingDelegate = self
                 
-//                if let weakSelf = self
-//                {
-//                    weakSelf.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-//                }
-//            })
+                self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
+                self.navigationController?.delegate = self
+                self.navigationController?.pushViewController(editingVC, animated: true)
+            }
+           
         }
     }
     
@@ -1109,6 +1028,34 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
+    func singleAttachDataWasLoaded(notification:NSNotification)
+    {
+        if notification.name == kAttachDataDidFinishLoadingNotification
+        {
+            if let info = notification.userInfo, attachName = info["fileName"] as? String
+            {
+                println(" -> did Recieve Notification for saving Single attach file: \(attachName)")
+                if let currentDataSource = self.collectionDataSource?.attachesHandler
+                {
+                    if currentDataSource.attachedItems.count > 0
+                    {
+                       currentDataSource.startLoadingAttachedFileSnapshot(attachName)
+                    }
+                    
+                }
+                else
+                {
+                    if let collectionDataSource = self.collectionDataSource
+                    {
+                        let attachesHandler = ElementAttachedFilesCollectionHandler()
+                    }
+                }
+            }
+        }
+    }
+    
+  
+    
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element) {
         
@@ -1133,37 +1080,41 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         //if it is image - get full image from disc and display in new view controller
         NSOperationQueue().addOperationWithBlock { () -> Void in
             let lvFileHandler = FileHandler()
-            lvFileHandler.loadFileNamed(file.fileName!, completion: { (fileData, loadingError) -> Void in
+            lvFileHandler.loadFileNamed(file.fileName!, completion: {[weak self] (fileData, loadingError) -> Void in
                 if fileData != nil
                 {
                     if let imageToDisplay = UIImage(data: fileData)
                     {
-                        NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self]() -> Void in
-                            if let aSelf = self
+                        if let aSelf = self
+                        {
+                            if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName)
                             {
-                                if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName)
-                                {
-                                    switch fileToDisplay.type
+                                NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self]() -> Void in
+                                    if let weakSelf = self
                                     {
-                                    case .Image:
-                                        if let destinationVC = aSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
+                                        switch fileToDisplay.type
                                         {
-                                            destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
-                                            destinationVC.title = fileToDisplay.name
-                                            
-                                            aSelf.navigationController?.pushViewController(destinationVC, animated: true)
+                                        case .Image:
+                                            if let destinationVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
+                                            {
+                                                destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
+                                                destinationVC.title = fileToDisplay.name
+                                                
+                                                weakSelf.navigationController?.pushViewController(destinationVC, animated: true)
+                                            }
+                                        case .Document:
+                                            fallthrough //TODO: Display some external pdf or text viewer or display inside app
+                                        case .Sound:
+                                            fallthrough //TODO: display VC with music player
+                                        case .Video:
+                                            fallthrough //TODO: display VC with Video player
+                                        default: break
                                         }
-                                    case .Document:
-                                        fallthrough //TODO: Display some external pdf or text viewer or display inside app
-                                    case .Sound:
-                                        fallthrough //TODO: display VC with music player
-                                    case .Video:
-                                        fallthrough //TODO: display VC with Video player
-                                    default: break
                                     }
-                                }
+                                    
+                                })
                             }
-                        })
+                        }
                     }
                 }
             })
@@ -1210,10 +1161,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                             if let aSelf = self
                             {
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5) ), dispatch_get_main_queue(), { () -> Void in
-                                    //aSelf.queryAttachesPreviewData()
+                                    
                                     aSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
                                 })
-                                //aSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
+                                
                             }
                         }
                     })

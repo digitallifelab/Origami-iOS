@@ -558,9 +558,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                         weakSelf.showAlertWithTitle("Error", message:"Could not update avatar.", cancelButtonTitle:"Close")
                     })
                 }
-                
             }
         })
+    }
+    
+    func mediaPickerShouldAllowEditing(picker: AnyObject) -> Bool {
+        
+        return true
     }
     
     //MARK: Edit User Text Info

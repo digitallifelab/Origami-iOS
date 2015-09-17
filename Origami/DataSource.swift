@@ -126,6 +126,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     completion!()
                 })
             }
+            
+            let aFiler = FileHandler()
+            aFiler.deleteAvatars()
+            aFiler.deleteAttachedImages()
         })
     }
     
@@ -763,14 +767,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getDashboardElements( completion:([Int:[Element]]?)->() )
     {
-        NSLog("\r _________ Started gathering elements for Dashboard.....")
+        //NSLog("\r _________ Started gathering elements for Dashboard.....")
         let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
         dispatch_async(dispatchQueue,
         {
             if DataSource.sharedInstance.elements.isEmpty
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    NSLog("\r _________ Finished gathering elements for Dashboard..... Returning empty.")
+                    //NSLog("\r _________ Finished gathering elements for Dashboard..... Returning empty.")
                     completion(nil)
                 })
                 return
@@ -821,7 +825,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 _ in
                 let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
                 
-                 NSLog("\r _________ Finished gathering elements for Dashboard.....")
+                // NSLog("\r _________ Finished gathering elements for Dashboard.....")
                 completion(toReturn)
             })
         })
@@ -925,10 +929,21 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 for anElement in DataSource.sharedInstance.elements
                 {
                     bgOperationQueue.addOperationWithBlock({ () -> Void in
+                        // load connected userIDs for element
+                        println(" -> Loading Pass Whom IDs for element. >- \n")
+                        DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion:
+                            { (finished) -> () in
+                                //println(" loadPassWhomIdsForElement completion block.")
+                        })
+                    })
+                    
+                    
+                    bgOperationQueue.addOperationWithBlock({ () -> Void in
                         // load attach files info
                         if !anElement.attachIDs.isEmpty
                         {
-                            DataSource.sharedInstance.loadAttachesForElement(anElement, completion: { (attaches) -> () in
+                              println(" -> not IsEmpty: Loading attach info for element. >- \n")
+                            DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
                                 if let existAttaches = attaches
                                 {
                                     println("\n --> not empty IDS - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
@@ -937,24 +952,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                         else if anElement.hasAttaches.boolValue
                         {
-                            DataSource.sharedInstance.loadAttachesForElement(anElement, completion: { (attaches) -> () in
-//                                if let existAttaches = attaches
-//                                {
-//                                    
-//                                }
+                            println(" -> Has Attaches: Loading attach info for element. >- \n")
+                            DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
+                                if let existAttaches = attaches
+                                {
+                                    println("\n --> not empty IDS - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
+                                }
                             })
                         }
                     })
-                    
-                    bgOperationQueue.addOperationWithBlock({ () -> Void in
-                        // load connected userIDs for element
-                        DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion:
-                            { (finished) -> () in
-                            //println(" loadPassWhomIdsForElement completion block.")
-                        })
-                    })
                 }
-                
             }
             else
             {
@@ -1303,7 +1310,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
-    func loadAttachesForElement(element:Element, completion:attachesArrayClosure)
+    func loadAttachesInfoForElement(element:Element, completion:attachesArrayClosure)
     {
         if let localElementId = element.elementId
         {            
@@ -1475,14 +1482,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         if let cachedData = DataSource.sharedInstance.getAttachFileDataFromCache(file)
         {
+        
+            println(" ->returning attach snapshot from cache..")
             return [file:cachedData]
         }
         else
         {
             if let fileSystemData = DataSource.sharedInstance.getAttachFileDataFromFileSystem(file)
             {
+                println(" ->returning attach snapshot from disc..")
                 return [file:fileSystemData]
             }
+            println(" ->returning nil attach snapshot")
             return nil
         }
     }
@@ -1569,59 +1580,141 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return
         }
         
-        let dispatchGroup = dispatch_group_create()
-        let fileManager = FileHandler()
+     
+        let recievedAttachesCount = attaches.count
+        println("\n -> Starting to filter pending attaches..")
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+     
+        var localAttaches = [AttachFile]()
         
-        for lvRttachFileLoading in attaches
+        for lvAttachFileLoading in attaches
         {
-            DataSource.sharedInstance.pendingAttachFileDataDownloads[lvRttachFileLoading.attachID!] = true
-        }
-        
-        let attachesCount = attaches.count
-        
-        let lvQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
-        dispatch_apply(attachesCount, lvQueue) { (currentIteration) -> Void in
-            
-            dispatch_group_enter(dispatchGroup)
-            let lvAttach = attaches[currentIteration]
-            
-            DataSource.sharedInstance.serverRequester.loadDataForAttach(lvAttach.attachID!, completion: { (attachFileData, error) -> () in
-                if attachFileData != nil
+            if let pending = DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttachFileLoading.attachID!]
+            {
+                if pending
                 {
-                    fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
-                        if path != nil
-                        {
-                            //println("\n -> Saved a file")
-                        }
-                        
-                        if saveError != nil
-                        {
-                            println("\n ->Failed to save data to disc: \n \(saveError?.localizedDescription)")
-                        }
-                        DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = nil
-                        dispatch_group_leave(dispatchGroup)
-                    })
+                    println("is pending")
+                    continue
                 }
                 else
                 {
-                    println(" \n ->Failed to load attach file data: \n \(error?.localizedDescription)")
-                     DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = nil
-                    dispatch_group_leave(dispatchGroup)
+                    println("pending is waiting to be cleared")
+                    continue
                 }
-            })
+            }
+            else
+            {
+                DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttachFileLoading.attachID!] = true
+                localAttaches.append(lvAttachFileLoading)
+            }
         }
         
-        dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), { () -> Void in
-            print("\n ....finished loading all \(attaches.count) attachment file datas. >>>>>\n")
+        if !localAttaches.isEmpty
+        {
+            let dispatchGroup = dispatch_group_create()
+            let fileManager = FileHandler()
             
+            var localAttachesCount = localAttaches.count
+            
+            println("\n -> Processing \(localAttachesCount) out of \(recievedAttachesCount) atatches...")
+            
+            let lvQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+            dispatch_apply(localAttachesCount, lvQueue) { (currentIteration) -> Void in
+                
+                dispatch_group_enter(dispatchGroup)
+                let lvAttach = localAttaches[currentIteration]
+                
+                if let attachData = fileManager.synchronouslyLoadFileNamed(lvAttach.fileName)
+                {
+                    println("\n -> DataSource Will not load existing attach file several times. Attach File: \(lvAttach.fileName!)\n")
+                    
+                    if let name = lvAttach.fileName
+                    {
+                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
+                        dispatch_after(timeout, lvQueue, { () -> Void in
+                            NSNotificationCenter.defaultCenter().postNotificationName(kAttachDataDidFinishLoadingNotification, object: nil, userInfo: ["fileName" : name])
+                        })
+                    }
+                    DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = false
+                    
+                    dispatch_group_leave(dispatchGroup)
+                }
+                else
+                {
+                    let attachFileName = lvAttach.fileName
+                    println("\n -> DataSource Will  load  attach file . Attach File: \(lvAttach.fileName!)\n")
+                    DataSource.sharedInstance.serverRequester.loadDataForAttach(lvAttach.attachID!, completion: { (attachFileData, error) -> () in
+                        if attachFileData != nil
+                        {
+                            fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
+                                if path != nil
+                                {
+                                    //println("\n -> Saved a file")
+                                    if let name = attachFileName
+                                    {
+                                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
+                                        dispatch_after(timeout, lvQueue, { () -> Void in
+                                            NSNotificationCenter.defaultCenter().postNotificationName(kAttachDataDidFinishLoadingNotification, object: nil, userInfo: ["fileName" : name])
+                                        })
+                                    }
+                                }
+                                
+                                if saveError != nil
+                                {
+                                    println("\n ->Failed to save data to disc: \n \(saveError?.localizedDescription)")
+                                }
+                                DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = false
+                                dispatch_group_leave(dispatchGroup)
+                            })
+                        }
+                        else
+                        {
+                            println(" \n ->Failed to load attach file data: \n \(error?.localizedDescription)")
+                            DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = false
+                            dispatch_group_leave(dispatchGroup)
+                        }
+                    })
+                }
+            }
+            
+            dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), { () -> Void in
+                print("\n ....finished loading all \(recievedAttachesCount) attachment file datas. >>>>>\n")
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                if let completionBlock = completionClosure
+                {
+                    completionBlock()
+                }
+                
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
+                dispatch_after(timeout, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
+                    
+                    for anAttach in localAttaches
+                    {
+                        if let number = anAttach.attachID
+                        {
+                            DataSource.sharedInstance.pendingAttachFileDataDownloads[number] = nil
+                            println("\n Cleared pending \(number.integerValue)\n")
+                        }
+                    }
+                })
+                
+            })
+
+        }
+        else
+        {
+            println("\n -> Will not process queried attach files - all are currently pending..")
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if let completionBlock = completionClosure
             {
                 completionBlock()
             }
-        })
+        }
+        
     }
+    
+    
     
     //MARK: Contact
     func addNewContacts(contacts:[Contact], completion:voidClosure?)
@@ -1660,7 +1753,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             dispatch_group_enter(group)
                             if let contactUserName = aContact.userName as? String
                             {
-                                println("loading avatar for \(contactUserName)")
+                                //println(" ->Started loading avatar for \(contactUserName)")
                                 DataSource.sharedInstance.loadAvatarForLoginName(contactUserName, completion: { (image) -> () in
                                     //println(" finishd loading avatar for contact \(aContact.userName)")
                                     dispatch_group_leave(group)

@@ -35,10 +35,36 @@
     return countryPath;
 }
 
--(NSString *)pathForUserAvatar
+-(NSString *) pathToAttachesFolder
 {
-    NSString *avatarPath = [[self rootDocumentsDirectory] stringByAppendingPathComponent:@"avatar.png"];
-    return avatarPath;
+    NSString *attachesFolder = [[self rootDocumentsDirectory] stringByAppendingPathComponent:@"/Origami/Attaches/"];
+    
+    //check for current directory
+    BOOL isDirectory = YES;
+    if (! [[NSFileManager defaultManager] fileExistsAtPath:attachesFolder isDirectory:&isDirectory])
+    {
+        NSError *lvFolderError;
+        BOOL didCreateDicertory = [[NSFileManager defaultManager] createDirectoryAtPath:attachesFolder withIntermediateDirectories:YES attributes:nil error:&lvFolderError];
+        if (!didCreateDicertory)
+        {
+            if(lvFolderError)
+            {
+                NSLog(@"... Error Creating Origami  Attaches folder: \n %@", lvFolderError.description);
+                return nil;
+            }
+            else
+            {
+                NSLog(@"... Error Creating Origami  Attaches folder: \n Unknown Error");
+                return nil;
+            }
+        }
+        else
+        {
+            //NSLog(@"\n..Created Attaches Folder..\n");
+        }
+    }
+    
+    return attachesFolder;
 }
 
 -(NSArray *)getCountriesFromDisk
@@ -105,7 +131,10 @@
                 return nil;
             }
         }
-        
+        else
+        {
+            //NSLog(@"\n ...Did Create Avatars Folder... \n");
+        }
     }
     return pathToDirectory;
 }
@@ -118,7 +147,7 @@
         
         if (avatarsFolderDirectory != nil)
         {
-            NSString *fileName = [loginName stringByAppendingString:@".png"];
+            NSString *fileName = [loginName stringByAppendingString:@".jpg"];
             NSString *filePath = [avatarsFolderDirectory stringByAppendingString:fileName];
             
             NSError *writingError = nil;
@@ -152,7 +181,7 @@
     NSString *pathToFolder = [self pathToAvatarFolder];
     if (pathToFolder != nil)
     {
-        NSString *fileName = [loginName stringByAppendingString:@".png"];
+        NSString *fileName = [loginName stringByAppendingString:@".jpg"];
         NSString *filePath = [pathToFolder stringByAppendingString:fileName];
         if ([[NSFileManager defaultManager] fileExistsAtPath: filePath])
         {
@@ -301,32 +330,12 @@
 #pragma mark MediaFiles
 -(NSString *) pathToFileNamed:(NSString *) fileName
 {
-    NSString *pathToDocs = [self rootDocumentsDirectory];
-    NSString *pathToDirectory = [pathToDocs stringByAppendingString:@"/Origami/Attaches/"];
+    //NSString *pathToDocs = [self rootDocumentsDirectory];
+    NSString *pathToDirectory = [self pathToAttachesFolder]; //[pathToDocs stringByAppendingString:@"/Origami/Attaches/"];
     
-    //check for current directory
-    BOOL isDirectory = YES;
-    if (! [[NSFileManager defaultManager] fileExistsAtPath:pathToDirectory isDirectory:&isDirectory])
-    {
-        NSError *lvFolderError;
-        BOOL didCreateDicertory = [[NSFileManager defaultManager] createDirectoryAtPath:pathToDirectory withIntermediateDirectories:YES attributes:nil error:&lvFolderError];
-        if (!didCreateDicertory)
-        {
-            if(lvFolderError)
-            {
-                NSLog(@"... Error Creating Origami  Attaches folder: \n %@", lvFolderError.description);
-                return nil;
-            }
-            else
-            {
-                NSLog(@"... Error Creating Origami  Attaches folder: \n Unknown Error");
-                return nil;
-            }
-        }
-        
-    }
+  
     
-    NSString *pathToFile = [pathToDirectory stringByAppendingString:[NSString stringWithFormat:@"%@", fileName]];
+    NSString *pathToFile = [pathToDirectory stringByAppendingString:[NSString stringWithFormat:@"/%@", fileName]];
     
     return pathToFile;
 }
@@ -348,6 +357,43 @@
     completionBlock(nil, lvError);
 }
 
+-(NSData *) synchronouslyLoadFileNamed:(NSString *)fileName
+{
+    if (fileName == nil)
+    {
+        NSLog(@"\n ->  Error while trying to read attach file data for NIL file name.\n");
+        return nil;
+    }
+    NSString *filePath = [self pathToFileNamed:fileName];
+    
+    //check for current file
+    BOOL isDirectory = NO;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory])
+    {
+        NSLog(@" ... Synchron . Error. File \" %@ \"does not exist at Attaches directory.", fileName);
+        
+        return nil;
+    }
+    if (filePath == nil)
+    {
+        return nil;
+    }
+    NSError *lvError;
+    NSData *fileData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&lvError];
+    
+    if (fileData && fileData.length > 0)
+    {
+        return fileData;
+    }
+    
+    if (lvError)
+    {
+        NSLog(@" \n Attach File Reading Error: %@\n", lvError);
+    }
+    return nil;
+    
+}
+
 -(void) loadFileNamed:(NSString *)fileName completion:(void(^)(NSData *fileData, NSError *readingError)) completionBlock
 {
     NSString *filePath = [self pathToFileNamed:fileName];
@@ -356,7 +402,7 @@
     BOOL isDirectory = NO;
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory])
     {
-        NSLog(@" ... Error. File \" %@ \"does not exist at Attaches directory.", fileName);
+        NSLog(@" ... Asynchron . Error. File \" %@ \"does not exist at Attaches directory.", fileName);
         if (completionBlock)
         {
             NSError *noFileError = [NSError errorWithDomain:@"Origamy.File Reading Error." code:-1021 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"File not found: %@ .", fileName]}];
@@ -407,6 +453,54 @@
         }
         
     }
-    
 }
+
+-(void)deleteAvatars
+{
+    //NSLog(@"\n Starting to remove User Avatar....");
+    NSString *pathToUserAvatar = [self pathToAvatarFolder];
+    NSError *avatarEraseError;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:pathToUserAvatar])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:pathToUserAvatar error:&avatarEraseError];
+        if( avatarEraseError)
+        {
+            NSLog(@"\n Could not erase user avatar. Reason: %@", avatarEraseError.description);
+        }
+        else
+        {
+            //NSLog(@"\n Erased user avatars from disc.");
+        }
+    }
+    else
+    {
+        NSLog(@"\n Could not erase user avatar. Reason: No user avatar found...");
+    }
+    //NSLog(@"\n ... Finished removing User Avatar.");
+}
+
+-(void)deleteAttachedImages
+{
+   // NSLog(@"\n Starting to remove attached files...");
+    NSString *pathToAvatarsFolder = [self pathToAttachesFolder];
+    NSError *eraseError;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:pathToAvatarsFolder])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:pathToAvatarsFolder error:&eraseError];
+        if( eraseError)
+        {
+            NSLog(@"\n Could not erase attached files. Reason: %@", eraseError.description);
+        }
+        else
+        {
+            //NSLog(@"\n Erased user attached files from disc.");
+        }
+    }
+    else
+    {
+        NSLog(@"\n Could not erase attached files. Reason: No attached filesfound...");
+    }
+    //NSLog(@"\n ... Finished removing attached files.");
+}
+
 @end

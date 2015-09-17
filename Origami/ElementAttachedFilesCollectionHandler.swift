@@ -65,10 +65,6 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             
             if attachFile.attachID == nil
             {
-                if let delegate = self.collectionView?.delegate
-                {
-                    
-                }
                 cell.attachIcon.image = UIImage(named: "icon-addAttachment")
                 return
             }
@@ -87,16 +83,6 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                     {
                         cell.attachIcon.image = attachImage
                     }
-                    else if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attachFile)
-                    {
-                        var lvMediaFile = MediaFile()
-                        lvMediaFile.data = filePreviewData[attachFile]! // Attention! assigning small image data to MediaFile, not full size image data. !
-                        lvMediaFile.name = attachFile.fileName!
-                        lvMediaFile.type = .Image
-                        
-                        attachData[attachFile.attachID!] = lvMediaFile
-                        cell.attachIcon.image = UIImage(data: lvMediaFile.data)
-                    }
                 case .Document:
                     cell.attachIcon.image = attachIconDocument
                 case .Sound:
@@ -105,26 +91,14 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                     cell.attachIcon.image = attachIconVideo
                 }
             }
-            else
-            {
-                self.loadAttachFileDataForAttachFile(attachFile, atIndexPath: indexPath, completion: {[weak self] (hasData) -> () in
-                    if let aSelf = self
-                    {
-                        if hasData == true
-                        {
-                            aSelf.collectionView?.reloadItemsAtIndexPaths([indexPath])
-                        }
-                    }
-                })
-            }
         }
     }
     
-    func createMediaFileForAttachIfNotExist(attachFile:AttachFile)
+    func createMediaFileForAttachIfNotExist(attachFile:AttachFile) -> Bool
     {
         if let aMediaFile = attachData[attachFile.attachID!]
         {
-            return
+            return true
         }
         
         if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attachFile)
@@ -135,42 +109,56 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             lvMediaFile.type = .Image
             
             attachData[attachFile.attachID!] = lvMediaFile
+            
+            return true
         }
+        
+        return false
     }
     
-    private func loadAttachFileDataForAttachFile(attach:AttachFile, atIndexPath indexPath:NSIndexPath,
-        completion completionBlock:((hasData:Bool)->())?)
+    
+    func attachFileForFileName(name:String) -> (AttachFile, NSIndexPath)? //tuple
     {
-        DataSource.sharedInstance.loadAttachFileDataForAttaches([attach], completion: { [weak self] () -> () in
-            let backgroundQueue = dispatch_queue_create("attached file data queue", DISPATCH_QUEUE_SERIAL)
-            
-            dispatch_async(backgroundQueue, {[weak self] () -> Void in
-                if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attach)
-                {
+        if self.attachedItems.isEmpty
+        {
+            return nil
+        }
+        
+        let countAttaches = self.attachedItems.count
+        for var i = 0; i < countAttaches; i++
+        {
+            let attach = self.attachedItems[i]
+            if attach.fileName == name
+            {
+                let indexPath = NSIndexPath(forItem: i, inSection: 0)
+                return (attach,indexPath)
+            }
+        }
+       
+        
+        return nil
+    }
+    
+    //MARK: ---
+    
+    
+    func startLoadingAttachedFileSnapshot(fileName:String)
+    {
+        if let result:(AttachFile, NSIndexPath) = self.attachFileForFileName(fileName)
+        {
+            if self.createMediaFileForAttachIfNotExist(result.0)
+            {
+                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                     if let weakSelf = self
                     {
-                        weakSelf.createMediaFileForAttachIfNotExist(attach)
+                        weakSelf.collectionView?.reloadItemsAtIndexPaths([result.1])
                     }
-                        
-                    dispatch_async(dispatch_get_main_queue(), { ()->() in
-                            
-                        completionBlock?(hasData:true)
-                    })
-                    
-                    
-                }
-                else
-                {
-                    if let weakSelf = self, compBlock = completionBlock
-                    {
-                        dispatch_async(dispatch_get_main_queue(), { ()->() in
-                            
-                            compBlock(hasData:false)
-                        })
-                    }
-                }
-            })
-        })
+                })
+            }
+            return
+        }
+        
+        println("\n -> Error: current attach handler does not have attach named \(fileName)\n")
     }
     
     func reloadCollectionWithData(newData:[AttachFile:MediaFile])
