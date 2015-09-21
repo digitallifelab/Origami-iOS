@@ -109,7 +109,19 @@ class ObjectsConverter {
         var contacts = [Contact]()
         for lvDict in array
         {
-            let contact = Contact(info: lvDict)
+            var newDict = lvDict
+            var avatarDataToSave:NSData?
+            if let arrayOfInts = newDict.removeValueForKey("Photo") as? [Int], avatarData = NSData.dataFromIntegersArray(arrayOfInts)
+            {
+                avatarDataToSave = avatarData
+            }
+            
+            if let contactAvatarData = avatarDataToSave
+            {
+                newDict["Photo"] = contactAvatarData
+            }
+            
+            let contact = Contact(info: newDict)
             
             contacts.append(contact)
         }
@@ -130,6 +142,25 @@ class ObjectsConverter {
             if lvNewMessage.textBody == "User invited you!"
             {
                 continue
+            }
+            
+            /*
+            12 - changed user info,
+            13 - changed user photo
+            */
+            
+            switch lvNewMessage.typeId!.integerValue
+            {
+            case 0:
+                println(" - Chat message: \" \(lvNewMessage.textBody) \"")
+            case 1:
+                println(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
+            case 12:
+                println(" - service message - changed user info. \" \(lvNewMessage.textBody) \"")
+            case 13:
+                println(" - Sevrice Message - changed user photo. \" \(lvNewMessage.textBody) \".")
+            default:
+                break
             }
             toReturn.append(lvNewMessage)
         }

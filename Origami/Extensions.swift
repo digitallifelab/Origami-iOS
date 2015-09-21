@@ -214,6 +214,10 @@ extension NSData
 {
     class func dataFromIntegersArray(array:[Int]) -> NSData?
     {
+        if array.isEmpty
+        {
+            return nil
+        }
         var mutableData = NSMutableData(capacity: array.count)
         for integer in array
         {

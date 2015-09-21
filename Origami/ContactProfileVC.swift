@@ -24,9 +24,15 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         if let contactLoginName = self.contact?.userName as? String
         {
+            if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(contactLoginName)
+            {
+                self.avatarImage = UIImage(data: data)
+            }
+            
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                DataSource.sharedInstance.loadAvatarForLoginName(contactLoginName, completion: { [weak self](image) -> () in
+                
+                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(contactLoginName, completion: {[weak self] (image, error) -> () in
                     if let avatarImage = image, weakSelf = self
                     {
                         //println(" Loaded avatar for contact.")
@@ -42,7 +48,6 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 })
             })
-            
         }
         
         tableView?.delegate = self

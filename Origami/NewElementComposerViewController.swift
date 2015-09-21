@@ -668,6 +668,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func doneButtonTap(sender:AnyObject?)
     {
+        self.table.endEditing(false)
+        
         if let anElement = self.newElement, let currentTitle = newElement?.title as? String
         {
             if count(currentTitle) < 1

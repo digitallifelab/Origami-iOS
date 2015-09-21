@@ -58,21 +58,30 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             profileCollection.setCollectionViewLayout(layout, animated: false) //we are in view did load, so false
         }
      
-        let backGroundQueue = dispatch_queue_create("user_Avatar_queue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(backGroundQueue, { [weak self] () -> Void in
-            if let userName = DataSource.sharedInstance.user?.userName as? String
+        if let userName = DataSource.sharedInstance.user?.userName as? String
+        {
+            if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
             {
-                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {(image) -> () in
-                    if let avatar = image, weakSelf = self
-                    {
-                        weakSelf.currentAvatar = avatar
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                           weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                        })
-                    }
-                })
+                self.currentAvatar = UIImage(data: avatarData)
             }
-        })
+            let backGroundQueue = dispatch_queue_create("user_Avatar_queue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(backGroundQueue, { [weak self] () -> Void in
+                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(userName, completion: { (image, error) -> () in
+                        if let fullSizeAvatarImage = image, weakSelf = self
+                        {
+                            weakSelf.currentAvatar = fullSizeAvatarImage
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                            })
+                        }
+                        else if let errorImage = error
+                        {
+                            println(" - Error loading image drom disc: \(errorImage)")
+                        }
+                    })
+            })
+        }
+        
     }
     
     override func viewDidAppear(animated: Bool) {

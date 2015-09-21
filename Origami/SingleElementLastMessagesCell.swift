@@ -12,6 +12,16 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
 {
     var cellMessageTapDelegate:MessageTapDelegate?
     var messages:[Message]?
+        {
+        didSet{
+            if let messagesArray = messages
+            {
+                trytoGetContactsForLastMessages()
+            }
+        }
+    }
+    var contactsForLastMessages:[Contact]?
+   
     var displayMode:DisplayMode = .Day {
         didSet{
             switch displayMode{
@@ -25,13 +35,14 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             }
         }
     }
-    
+
     @IBOutlet var chatIcon:UILabel!
     @IBOutlet var messagesTable:UITableView!
     
     override func awakeFromNib() {
         self.backgroundColor = UIColor.clearColor()
         self.messagesTable.scrollsToTop = false
+        
     }
     
     override func prepareForReuse() {
@@ -40,7 +51,6 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     }
     
     override func layoutSubviews() {
-        
         super.layoutSubviews()
         
         let chatIconBounds = chatIcon.bounds
@@ -78,6 +88,23 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         //self.layer.shouldRasterize = true
     }
     
+    private func trytoGetContactsForLastMessages()
+    {
+        var contactIDs = Set<Int>()
+        if let messages = self.messages
+        {
+            for aMessage in messages
+            {
+                contactIDs.insert(aMessage.creatorId!.integerValue)
+            }
+        }
+        
+        if let contacts = DataSource.sharedInstance.getContactsByIds(contactIDs)
+        {
+            self.contactsForLastMessages = Array(contacts)
+        }
+    }
+    
     //MARK: UITableViewDataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if self.messages != nil
@@ -89,54 +116,87 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var messageCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
-        messageCell.selectionStyle = .None
-        messageCell.displayMode = self.displayMode
-        messageCell.backgroundColor = UIColor.clearColor()
+        var chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
+        chatCell.selectionStyle = .None
+        chatCell.displayMode = self.displayMode
+        chatCell.backgroundColor = UIColor.clearColor()
         if let lvMessages = self.messages
         {
             let message = lvMessages[indexPath.row]
-            messageCell.messageLabel.text = message.textBody
-            messageCell.avatarView.tintColor = kDayCellBackgroundColor
-            messageCell.avatarView.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            chatCell.messageLabel.text = message.textBody
+            chatCell.avatarView.tintColor = kDayCellBackgroundColor
+            chatCell.avatarView.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             
             if let messageDate = message.dateCreated
             {
                 var messageDateString = messageDate.timeDateStringShortStyle()
-                messageCell.dateLabel.text = messageDateString as String
+                chatCell.dateLabel.text = messageDateString as String
             }
             
-            if message.creatorId != nil
+            if let creatorId = message.creatorId
             {
-                if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+                if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
                 {
-                    DataSource.sharedInstance.loadAvatarForLoginName(DataSource.sharedInstance.user!.userName as! String, completion: {[weak messageCell] (image) -> () in
-                        if let cell = messageCell, avatarImage = image
+                    if let username = DataSource.sharedInstance.user!.userName as? String
+                    {
+                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(username)
                         {
-                            cell.avatarView.image = avatarImage
+                            chatCell.avatarView.image = UIImage(data: imageData)
                         }
-                    })
-                    
-                    messageCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
+                        else
+                        {
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(username, completion: {[weak self] (_, _) -> () in
+                                    if let weakSelf = self
+                                    {
+                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                            weakSelf.messagesTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+                                        })
+                                        
+                                    }
+                                 
+                                })
+                            })
+                          
+                        }
+                    }
+                    chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
                 }
                 else
                 {
-                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([message.creatorId!.integerValue]))
+                    if let contact = contactForMessage(message) , userName = contact.userName as? String
                     {
-                        var contact = contacts.first
-                        messageCell.nameLabel.text = contact?.firstName as? String ?? contact?.lastName as? String
+                        chatCell.nameLabel.text = (contact.firstName as? String ?? contact.lastName as? String) ?? "unknown"
+                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(contact.userName! as String)
+                        {
+                            chatCell.avatarView.image = UIImage(data: imageData)
+                        }
                     }
                 }
             }
         }
         else
         {
-            messageCell.messageLabel.text = "Type a message."
+            chatCell.messageLabel.text = "Type a message."
         }
         
-        return messageCell
+        return chatCell
     }
     
+    private func contactForMessage(message:Message) -> Contact?
+    {
+        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
+        {
+            for aContact in contacts
+            {
+                if aContact.contactId!.isEqualToNumber(creatorId)
+                {
+                    return aContact
+                }
+            }
+        }
+        return nil
+    }
    
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

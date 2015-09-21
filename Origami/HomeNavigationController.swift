@@ -29,16 +29,21 @@ class HomeNavigationController: UINavigationController {
             return 0
         }
         
-        if let vc = self.topViewController as? UserProfileVC
+        if let vc = self.topViewController as? ElementsSortedByUserVC
         {
             return 1
         }
         
-        if let vc = self.topViewController as? MyContactsListVC
+        if let vc = self.topViewController as? UserProfileVC
         {
             return 2
         }
-         //WARNING: to expand menu items add ather conditions here
+        
+        if let vc = self.topViewController as? MyContactsListVC
+        {
+            return 3
+        }
+        //WARNING: to expand menu items add other conditions here
         return NSIntegerMax
     }
 

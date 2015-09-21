@@ -15,8 +15,9 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     lazy var messageObjects:[Message] = [Message]()
     let noAvatarImage = UIImage(named: "icon-contacts")
-    //var imageFilterer:ImageFilter? = ImageFilter()
     var contactsForLastMessages:[Contact]?
+
+    weak var tableView:UITableView?
     
     override init()
     {
@@ -36,15 +37,14 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         }
         self.messageObjects = messages!
         self.trytoGetContactsForLastMessages()
+        println(" \n added Observer Dashboard messages table handler ..........")
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshTable:", name: "FinishedProcessingContactAvatars", object: nil)
     }
     
-    func reloadLastMessagesForElementId(elementId:NSNumber)
+    deinit
     {
-        if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId)
-        {
-            self.messageObjects = messages
-            trytoGetContactsForLastMessages()
-        }
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+        println("\n removed Observer Dashboard messages table handler- > \n")
     }
     
     private func trytoGetContactsForLastMessages()
@@ -69,6 +69,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
+        self.tableView = tableView
         var chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         chatCell.messageLabel.text = messageObjects[indexPath.row].textBody
         chatCell.backgroundColor = UIColor.clearColor()
@@ -91,37 +92,50 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             var messageDateString = messageDate.timeDateStringShortStyle()
             chatCell.dateLabel.text = messageDateString as String
         }
-        if message.creatorId != nil
+        if let creatorId = message.creatorId
         {
-            if message.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+            if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
             {
                 if let username = DataSource.sharedInstance.user!.userName as? String
                 {
-                    DataSource.sharedInstance.loadAvatarForLoginName(username, completion: {[weak chatCell] (image) -> () in
-                        if let cell = chatCell, avatarImage = image
-                        {
-                            cell.avatarView.image = avatarImage
-                        }
-                    })
+                    if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(username)
+                    {
+                        chatCell.avatarView.image = UIImage(data: imageData)
+                    }
+                    else
+                    {
+                        let row = indexPath.row
+                        
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                            DataSource.sharedInstance.loadAvatarFromDiscForLoginName(username, completion: {[weak self] (_, _) -> () in
+                                if let weakSelf = self
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), {[weak tableView] () -> Void in
+                                        if let table = tableView
+                                        {
+                                            table.reloadRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: 0)], withRowAnimation: .Fade)
+                                        }
+                                    })
+                                }
+                            })
+                        })
+                    }
                 }
                 chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
             }
             else
             {
-                if let contacts = self.contactsForLastMessages
+                if let contact = contactForMessage(message) , userName = contact.userName as? String
                 {
-                    for aContact in contacts
+                    chatCell.nameLabel.text = (contact.firstName as? String ?? contact.lastName as? String) ?? "unknown"
+                    if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(contact.userName! as String)
                     {
-                        if let userName = aContact.userName as? String
-                        {
-                            DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak chatCell] (image) -> () in
-                                if let cell = chatCell, avatarImage = image
-                                {
-                                    cell.avatarView.image = avatarImage
-                                }
-                            })
-                        }
+                        chatCell.avatarView.image = UIImage(data: imageData)
                     }
+                }
+                else
+                {
+                    println(" -> No CONTACT for message found..")
                 }
             }
         }
@@ -130,9 +144,54 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         return chatCell
     }
     
-    func messageForIndexPath(indexPath:NSIndexPath) -> Message?
+    func messageForIndexPath(indexPath:NSIndexPath) -> Message? //user also as external API
     {
         return messageObjects[indexPath.row] ?? nil
+    }
+    
+    private func contactForMessage(message:Message) -> Contact?
+    {
+        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
+        {
+            for aContact in contacts
+            {
+                if aContact.contactId!.isEqualToNumber(creatorId)
+                {
+                    return aContact
+                }
+            }
+        }
+        return nil
+    }
+    
+    func indexPathsForUserId(anId:NSNumber) -> [NSIndexPath]?
+    {
+        if self.messageObjects.isEmpty
+        {
+            return nil
+        }
+        
+        let messages = self.messageObjects
+        
+        var counter = 0
+        var indexPaths = [NSIndexPath]()
+        for aMessage in messages
+        {
+            if let creatorId = aMessage.creatorId
+            {
+                if creatorId.isEqualToNumber(anId)
+                {
+                    indexPaths.append(NSIndexPath(forRow: counter, inSection: 0))
+                }
+            }
+            counter++
+        }
+        if !indexPaths.isEmpty
+        {
+            return indexPaths
+        }
+        
+        return nil
     }
     
 //    //MARK: UITableViewDelegate
@@ -159,6 +218,17 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         }
     }
 
+    func refreshTable(note:NSNotification)
+    {
+        self.trytoGetContactsForLastMessages()
+        if let table = self.tableView, userInfo = note.userInfo, ownerId = userInfo["avatarOwnerId"] as? NSNumber, indexPaths = indexPathsForUserId(ownerId)
+        {
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                
+                table.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+            })
+        }
+    }
     
     
 }

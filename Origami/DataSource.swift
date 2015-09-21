@@ -930,7 +930,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     bgOperationQueue.addOperationWithBlock({ () -> Void in
                         // load connected userIDs for element
-                        println(" -> Loading Pass Whom IDs for element. >- \n")
+                       // println(" -> Loading Pass Whom IDs for element. >- \n")
                         DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion:
                             { (finished) -> () in
                                 //println(" loadPassWhomIdsForElement completion block.")
@@ -942,7 +942,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         // load attach files info
                         if !anElement.attachIDs.isEmpty
                         {
-                              println(" -> not IsEmpty: Loading attach info for element. >- \n")
+                              //println(" -> not IsEmpty: Loading attach info for element. >- \n")
                             DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
                                 if let existAttaches = attaches
                                 {
@@ -952,11 +952,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                         else if anElement.hasAttaches.boolValue
                         {
-                            println(" -> Has Attaches: Loading attach info for element. >- \n")
+                            //println(" -> Has Attaches: Loading attach info for element. >- \n")
                             DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
                                 if let existAttaches = attaches
                                 {
-                                    println("\n --> not empty IDS - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
+                                    println("\n --> Has Attaches: - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
                                 }
                             })
                         }
@@ -1156,7 +1156,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 //println(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
                 if let elementFromDataSource = DataSource.sharedInstance.getElementById(elementIdInt)
                 {
-                    elementFromDataSource.passWhomIDs = recievedIDs
+                    var ordered = Array(recievedIDs)
+                    
+                    ordered.sort {$0.integerValue < $1.integerValue}
+                    
+                    elementFromDataSource.passWhomIDs = ordered
                 }
                 //element.passWhomIDs = recievedIDs
                 completionClosure(finished: true)
@@ -1176,7 +1180,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func deleteElementFromLocalStorage(elementId:Int, shouldNotify:Bool)
     {
-        NSLog("   ->Started deleting element from local storage.")
         var index = -1
         var counter = 0
         for element in DataSource.sharedInstance.elements
@@ -1261,7 +1264,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         
         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        NSLog("   ->Finished deleting element from local storage.")
+        println("   ->Finished deleting element from local storage.")
         if shouldNotify
         {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1553,6 +1556,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         //let reduceTagretSize = CGSizeMake(180, 140) // 90x70 cell size x 2
         //NSLog(" -> Image Size Before reducing: \(image.size)")
+        
         let largestDimension:CGFloat = max(image.size.width, image.size.height)
         
         var ratio:CGFloat = 1.0
@@ -1746,29 +1750,57 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         println(" -> Loaded contacts: \(aContacts.count)")
                         DataSource.sharedInstance.contacts = aContacts
                         
-                        println(" -> Started loading contact avatars in background")
+                        //println(" -> Started saving and resizing MY contact avatars in background")
+                        
+                        //memory footprint
+                        var screenScale = UIScreen.mainScreen().scale
+                        if screenScale > 2.0
+                        {
+                            screenScale = 2.0
+                        }
+                        let sizeOfAvatar = CGSizeMake(50 * screenScale , 50 * screenScale)
+                        
+                        let aFiler = FileHandler()
+                        
                         let group = dispatch_group_create()
                         for aContact in aContacts
                         {
                             dispatch_group_enter(group)
-                            if let contactUserName = aContact.userName as? String
+
+                            
+                            if let avatarBigData = aContact.photo, userName = aContact.userName as? String
                             {
-                                //println(" ->Started loading avatar for \(contactUserName)")
-                                DataSource.sharedInstance.loadAvatarForLoginName(contactUserName, completion: { (image) -> () in
-                                    //println(" finishd loading avatar for contact \(aContact.userName)")
-                                    dispatch_group_leave(group)
+                                if let image = UIImage(data: avatarBigData)
+                                {
+                                    let smallImage = DataSource.sharedInstance.reduceImageSize(image, toSize: sizeOfAvatar)
+                                    let smallImageData = UIImageJPEGRepresentation(smallImage, 1.0)
+                                    println(" \n reduced avatar data size: \(smallImageData.length)  bytes")
+                                    DataSource.sharedInstance.addAvatarData(smallImageData, forContactUserName: userName)
+                                    if let anId = aContact.contactId
+                                    {
+                                        NSNotificationCenter.defaultCenter().postNotificationName("FinishedProcessingContactAvatars", object: nil, userInfo:["avatarOwnerId":anId])
+                                    }
+                                    
+                                }
+                                //println(" \n -> Saving Avatar to disc")
+                                aFiler.saveAvatar(avatarBigData, forLoginName: userName, completion: { (errorSaving) -> Void in
+                                    
                                 })
                             }
                             
                         }
                         dispatch_group_notify(group, dispatch_queue_create("bg-queue", DISPATCH_QUEUE_CONCURRENT), { () -> Void in
                             println(" finishd loading avatars for contacts")
+                            
                         })
                     }
                 }
             })
             return nil
         }
+        
+        println("returning existing contacts")
+        
         return DataSource.sharedInstance.contacts
     }
     
@@ -2139,20 +2171,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return response
     }
     
-    private func getAvatarDataForContactUserName(userName:String?) -> NSData?
+    func getAvatarDataForContactUserName(userName:String?) -> NSData?
     {
         if let lvName = userName
         {
             if let existingBytes = DataSource.sharedInstance.avatarsHolder[lvName]
             {
-                //println(" returning avatar Data from RAM")
+                //println(" returning avatar Data from avatarsHolder")
                 return existingBytes
             }
         }
         return nil
     }
     
-    private func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
+    func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
     {
         if let block = completionBlock
         {
@@ -2163,8 +2195,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     if let image = UIImage(data: avatarBytes)
                     {
+                        let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200))
+                        let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                        DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                     
                         block(image: image, error: nil)
-                        DataSource.sharedInstance.avatarsHolder[loginName] = avatarBytes //save to RAM also
                     }
                     else
                     {
@@ -2192,7 +2227,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     completionBlock?(image: toReturnImage)
                 })
                 
-                //println(" got avatar from RAM..")
+                println(" got avatar from RAM..")
                 return
             }
             

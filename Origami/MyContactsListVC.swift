@@ -28,8 +28,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         configureNavigationItems()
         configureNavigationControllerToolbarItems()
-        //myContactsTable.editing = true
         
+        myContacts = DataSource.sharedInstance.getMyContacts()
+        
+        #if SHEVCHENKO
         DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
             
             if let weakSelf = self
@@ -48,29 +50,29 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                         //set avatar image
                         if let userName = lvContact.userName as? String
                         {
-                            DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+            
+                            if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
+                            {
                                 if let weakSelf = self
                                 {
-                                    if let avatar = image
+                                    if let avatar = UIImage(data: contactAvatarData)
                                     {
                                         weakSelf.contactImages[userName] = avatar
                                     }
-                                  
-                                    
-                                    if !weakSelf.contactImages.isEmpty
-                                    {
-                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                            weakSelf.myContactsTable.reloadData()
-                                        })
-                                    }
                                 }
-                            })
+                            }
                         }
+                    }
+                    if !weakSelf.contactImages.isEmpty
+                    {
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            weakSelf.myContactsTable.reloadData()
+                            })
                     }
                 }
             }
         }
-        
+        #endif
         myContactsTable.estimatedRowHeight = 60
         myContactsTable.rowHeight = UITableViewAutomaticDimension
     }
@@ -81,36 +83,40 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     override func viewWillAppear(animated: Bool) {
-        myContacts = DataSource.sharedInstance.getMyContacts()
         
-        if myContacts != nil
+        
+        if let existContacts = myContacts
         {
-            for lvContact in myContacts!
-            {
-                //set avatar image
-                if let userName = lvContact.userName as? String
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { [weak self] () -> Void in
+                
+                for lvContact in existContacts
                 {
-                    DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
-                        if let weakSelf = self
+                    //set avatar image
+                    if let userName = lvContact.userName as? String
+                    {
+                        //set avatar image
+                        if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
                         {
-                            if let avatar = image
+                            if let weakSelf = self
                             {
-                                weakSelf.contactImages[userName] = avatar
-                            }
-                            
-                            
-                            if !weakSelf.contactImages.isEmpty
-                            {
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    weakSelf.myContactsTable.reloadData()
-                                })
-                                
+                                if let avatar = UIImage(data: contactAvatarData)
+                                {
+                                    weakSelf.contactImages[userName] = avatar
+                                }
                             }
                         }
-                        })
+                        
+                    }
                 }
-            }
-            //myContactsTable.reloadData()
+                
+                if let weakSelf = self
+                {
+                    if !weakSelf.contactImages.isEmpty
+                    {
+                        weakSelf.myContactsTable.reloadData()
+                    }
+                }
+            })
         }
         self.calculateFavouriteContacts { (favouriteContacts) -> () in
             if let fav = favouriteContacts

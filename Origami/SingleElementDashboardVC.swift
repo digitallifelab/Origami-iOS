@@ -64,6 +64,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             
             println("pass Whom IDs old: \(ourElement.passWhomIDs)")
             DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
+                // background queue here
                 if let aSelf = self
                 {
                     if finished
@@ -99,7 +100,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewWillAppear(animated)
         if afterViewDidLoad
         {
-            //prepareCollectionViewDataAndLayout()
+            prepareCollectionViewDataAndLayout()
             afterViewDidLoad = false
         }
         

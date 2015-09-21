@@ -274,7 +274,7 @@ class ServerRequester: NSObject
                         if let dictionary = responseObject as? [String:AnyObject],
                             elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
                         {
-                            println("Current User Id: \(testUserId)\n")
+                            //println("Current User Id: \(testUserId)\n")
                            
                             var elements = Set<Element>()
                             for lvElementDict in elementsArray
@@ -483,31 +483,38 @@ class ServerRequester: NSObject
     }
     
     
-    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:([NSNumber]?, NSError?)->() )
+    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:(Set<NSNumber>?, NSError?)->() )
     {
         if let userToken = DataSource.sharedInstance.user?.token as? String{
             
             let requestString = "\(serverURL)" + "\(passWhomelementUrlPart)" + "?elementId=" + "\(elementId)" + "&token=" + "\(userToken)"
             
             let requestIDsOperation = AFHTTPRequestOperationManager().GET(requestString, parameters: nil, success: { (operation, result) -> Void in
-                if let resultArray = result["GetPassWhomIdsResult"] as? [NSNumber]
-                {
-                    let idsSet = Set(resultArray)
-                    completionClosure(Array(idsSet), nil)
-                }
-                else
-                {
-                    completionClosure(nil, NSError(domain: "Connected Contacts Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Failed to load contacts for element with id \(elementId)"]))
-                }
+                let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+                dispatch_async(globalQueue, { () -> Void in
+                    if let resultArray = result["GetPassWhomIdsResult"] as? [NSNumber]
+                    {
+                        let idsSet = Set(resultArray)
+                        completionClosure(idsSet, nil)
+                    }
+                    else
+                    {
+                        completionClosure(nil, NSError(domain: "Connected Contacts Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Failed to load contacts for element with id \(elementId)"]))
+                    }
+                })
+               
             }, failure: { (operation, error) -> Void in
-                if let responseString = operation.responseString
-                {
-                    completionClosure(nil, NSError(domain: "Connected Contacts Error", code: -103, userInfo: [NSLocalizedDescriptionKey: responseString]))
-                }
-                else
-                {
-                    completionClosure(nil, error)
-                }
+                let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+                dispatch_async(globalQueue, { () -> Void in
+                    if let responseString = operation.responseString
+                    {
+                        completionClosure(nil, NSError(domain: "Connected Contacts Error", code: -103, userInfo: [NSLocalizedDescriptionKey: responseString]))
+                    }
+                    else
+                    {
+                        completionClosure(nil, error)
+                    }
+                })
             })
             
             requestIDsOperation?.start()
