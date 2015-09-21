@@ -35,7 +35,7 @@ class DataRefresher
     
     func loadElements()
     {
-        //println(" -->DataRefresher.loadElements() called")
+        println(" -->DataRefresher.loadElements() called")
         isInProgress = true
         
         serverRequester.loadAllElements { [weak self](objects, completionError) -> () in

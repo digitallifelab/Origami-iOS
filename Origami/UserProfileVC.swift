@@ -77,6 +77,22 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                         else if let errorImage = error
                         {
                             println(" - Error loading image drom disc: \(errorImage)")
+                            if errorImage.code == 406 // "No File For Avatar."
+                            {
+                                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
+                                    if let anImage = image
+                                    {
+                                        if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
+                                        {
+                                            if let weakerSelf = self
+                                            {
+                                                weakerSelf.currentAvatar = UIImage(data: avatarData)
+                                                weakerSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                            }
+                                        }
+                                    }
+                                })
+                            }
                         }
                     })
             })

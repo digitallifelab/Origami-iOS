@@ -27,7 +27,7 @@ struct ElementDetailsStruct
     var title:String
     var details:String?
     var messagesPreviewCell:Bool = false
-    var buttonsCell:Bool = false
+    //var buttonsCell:Bool = false
     var attachesCell:Bool = false
     var subordinates:[SubordinateItemLayoutWidth]?
     
@@ -42,7 +42,7 @@ struct ElementDetailsStruct
         self.hiddenDetailsText = !self.hiddenDetailsText
     }
     
-    init(title:String, details:String?, messagesCell:Bool?, buttonsCell:Bool?, attachesCell:Bool?, subordinateItems:[SubordinateItemLayoutWidth]?)
+    init(title:String, details:String?, messagesCell:Bool?, /*buttonsCell:Bool?,*/ attachesCell:Bool?, subordinateItems:[SubordinateItemLayoutWidth]?)
     {
         self.title = title
         self.details = details
@@ -50,10 +50,10 @@ struct ElementDetailsStruct
         {
             self.messagesPreviewCell = messagesCell!
         }
-        if buttonsCell != nil
-        {
-            self.buttonsCell = buttonsCell!
-        }
+//        if buttonsCell != nil
+//        {
+//            self.buttonsCell = buttonsCell!
+//        }
         if attachesCell != nil
         {
             self.attachesCell = attachesCell!

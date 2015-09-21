@@ -10,13 +10,14 @@ import UIKit
 
 class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableViewDataSource
 {
-    
     var displayMode:DisplayMode = .Day
     
     lazy var messageObjects:[Message] = [Message]()
-    let noAvatarImage = UIImage(named: "icon-contacts")
+    let noAvatarImage = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
     var contactsForLastMessages:[Contact]?
 
+    lazy var currentAvatars = [String:UIImage]()
+    
     weak var tableView:UITableView?
     
     override init()
@@ -85,7 +86,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         //chatCell.avatarView.image = ImageFilter().filterImageBlackAndWhite(UIImage(named: "testImageToFilter")!)
         
         //chatCell.avatarView.image = UIImage(named: "testImageToFilter")
-        chatCell.avatarView.tintColor = kDayCellBackgroundColor
+//        chatCell.avatarView.tintColor = kDayCellBackgroundColor
         let message = messageObjects[indexPath.row]
         if let messageDate = message.dateCreated
         {
@@ -96,41 +97,36 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         {
             if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
             {
+                chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
+                
                 if let username = DataSource.sharedInstance.user!.userName as? String
                 {
-                    if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(username)
+                    if let image = self.currentAvatars[username]
                     {
-                        chatCell.avatarView.image = UIImage(data: imageData)
+                        chatCell.avatarView.image = image
                     }
                     else
                     {
-                        let row = indexPath.row
-                        
-                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                            DataSource.sharedInstance.loadAvatarFromDiscForLoginName(username, completion: {[weak self] (_, _) -> () in
-                                if let weakSelf = self
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), {[weak tableView] () -> Void in
-                                        if let table = tableView
-                                        {
-                                            table.reloadRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: 0)], withRowAnimation: .Fade)
-                                        }
-                                    })
-                                }
-                            })
-                        })
+                        chatCell.avatarView.image = noAvatarImage
+                        startLoadingAvatarForUserName(username, andIndexPath:indexPath)
                     }
                 }
-                chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
+                
             }
             else
             {
-                if let contact = contactForMessage(message) , userName = contact.userName as? String
+                if let contact = contactForMessage(message) , contactName = contact.userName as? String
                 {
                     chatCell.nameLabel.text = (contact.firstName as? String ?? contact.lastName as? String) ?? "unknown"
-                    if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(contact.userName! as String)
+                    
+                    if let image = self.currentAvatars[contactName]
                     {
-                        chatCell.avatarView.image = UIImage(data: imageData)
+                        chatCell.avatarView.image = image
+                    }
+                    else
+                    {
+                        chatCell.avatarView.image = noAvatarImage
+                        startLoadingAvatarForUserName(contactName, andIndexPath:indexPath)
                     }
                 }
                 else
@@ -162,6 +158,50 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             }
         }
         return nil
+    }
+    
+    private func startLoadingAvatarForUserName(name:String , andIndexPath indexPath:NSIndexPath)
+    {
+        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(name)
+        {
+            if let avatar = UIImage(data: imageData)
+            {
+                self.currentAvatars[name] = avatar
+            }
+            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
+            dispatch_after(timeout, dispatch_get_main_queue(), { [weak self]() -> Void in
+                if let aSelf = self
+                {
+                    aSelf.tableView?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                }
+            })
+        }
+        else
+        {
+            let row = indexPath.row
+            
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(name, completion: {[weak self] (fullImage, error) -> () in
+                    
+                    if let weakSelf = self
+                    {
+                        if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(name)
+                        {
+                            if let avatar = UIImage(data: avatarData)
+                            {
+                                weakSelf.currentAvatars[name] = avatar
+                                dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                    if let aSelf = self, table = aSelf.tableView
+                                    {
+                                        table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                    }
+                                })
+                            }
+                        }
+                    }
+                })
+            })
+        }
     }
     
     func indexPathsForUserId(anId:NSNumber) -> [NSIndexPath]?

@@ -12,7 +12,7 @@ class RecentActivityTableCell: UITableViewCell {
 
     @IBOutlet weak var elementTitleLabel:UILabel?
     @IBOutlet weak var elementDetailsTextView:UITextView?
-    
+    @IBOutlet weak var elementCreatorAvatar:UIImageView?
     var aTextColor = kWhiteColor
     
     var displayMode:DisplayMode = .Day
@@ -22,8 +22,10 @@ class RecentActivityTableCell: UITableViewCell {
             {
             case .Day:
                 self.backgroundColor = kDayCellBackgroundColor
+                self.elementCreatorAvatar?.tintColor = kDayNavigationBarBackgroundColor
             case .Night:
                 self.backgroundColor = kBlackColor
+                self.elementCreatorAvatar?.tintColor = kWhiteColor
             }
             //self.setNeedsDisplay()
         }

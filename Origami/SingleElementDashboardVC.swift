@@ -562,6 +562,27 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func elementArchivePressed()
     {
         println("Archive element tapped.")
+        
+        if let element = self.currentElement
+        {
+            var copyElement = Element(info:element.toDictionary())
+            let currentDate = NSDate()
+            if let string = currentDate.dateForServer()
+            {
+                let elementId = copyElement.elementId?.integerValue
+                copyElement.archiveDate = string
+                DataSource.sharedInstance.editElement(copyElement,
+                    completionClosure:{[weak self] (edited) -> () in
+                    if edited
+                    {
+                        if let weakSelf = self
+                        {
+                            weakSelf.navigationController?.popViewControllerAnimated(true)
+                        }
+                    }
+                })
+            }
+        }
     }
     
     func elementDeletePressed()
@@ -578,18 +599,33 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         var editingElement = Element(info: self.currentElement!.toDictionary())
         editingElement.typeId = NSNumber(integer: newOptions)
         println("new element type id: \(editingElement.typeId)")
-        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     
     func elementTaskPressed()
     {
         println("CheckMark tapped.")
+        
         let anOptionsConverter = ElementOptionsConverter()
+        if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: 2)
+        {
+            //1 - detect if element is owned
+            //2 - if is owned prompt user to start creating signal with responsible user and remind date
+        }
+        else
+        {
+            //1 - detect if element is owned
+            //2 - if owned prompt owner to be sure to uncheck task
+            //3 - if is not owned, but current user is responsible for this task
+            //4- prompt to mark this task as finished with some result, or dismiss
+            //5 - if now owned and current user is not responsible - do nothing
+        }
+        
         let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
         var editingElement = Element(info: self.currentElement!.toDictionary())
         editingElement.typeId = NSNumber(integer: newOptions)
         println("new element type id: \(editingElement.typeId)")
-        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
         
     }
     
@@ -601,7 +637,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         var editingElement = Element(info: self.currentElement!.toDictionary())
         editingElement.typeId = NSNumber(integer: newOptions)
         println("new element type id: \(editingElement.typeId)")
-        self .handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
     }
     
     func toggleMoreDetails(notification:NSNotification?)

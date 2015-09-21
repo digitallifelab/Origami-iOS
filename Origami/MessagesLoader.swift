@@ -39,12 +39,11 @@ class MessagesLoader:NSObject
    
         if let source = self.dispatchSource
         {
-            
             // Attach the block you want to run on the timer fire
             dispatch_source_set_event_handler(source, {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    //println("Fired a timer.")
+                    println("Fired a timer.")
                     if let source = weakSelf.dispatchSource
                     {
                         dispatch_suspend(source)
@@ -64,7 +63,6 @@ class MessagesLoader:NSObject
                         }
                     })
                 }
-                
             })
             
             dispatch_source_set_cancel_handler(source, {[weak self] () -> Void in

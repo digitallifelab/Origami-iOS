@@ -11,8 +11,9 @@ import UIKit
 class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //var messagesLoader = MessagesLoader()
-    var dataRefresher:DataRefresher?
+    //var dataRefresher:DataRefresher?
     var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer()
+    var tapToDismissRecognizer:UITapGestureRecognizer = UITapGestureRecognizer()
     var leftMenuVC:MenuVC?
     var currentNavigationController:HomeNavigationController?
     
@@ -33,6 +34,13 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         //screenEdgePanRecognizer?.delegate = self
         screenEdgePanRecognizer.delaysTouchesBegan = false
         //self.view.addGestureRecognizer(screenEdgePanRecognizer!)
+        
+        tapToDismissRecognizer = UITapGestureRecognizer(target: self, action: "tapToDismiss:")
+        tapToDismissRecognizer.delegate = self;
+        tapToDismissRecognizer.numberOfTapsRequired = 1;
+        tapToDismissRecognizer.numberOfTouchesRequired = 1;
+
+        
         
         var appDelegate = UIApplication.sharedApplication().delegate
         var application = UIApplication.sharedApplication()
@@ -92,23 +100,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                     
                 }
             }
-         
-            let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
-            let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 20.0))
-            dispatch_after(time, bgQueue, {[weak self] () -> Void in
-                if let weakSelf = self
-                {
-                    if let userId = DataSource.sharedInstance.user?.userId
-                    {
-                        weakSelf.dataRefresher = DataRefresher()
-                        weakSelf.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
-                        
-                        DataSource.sharedInstance.messagesLoader = MessagesLoader()
-                        DataSource.sharedInstance.startRefreshingNewMessages()
-                    }
-                }
-            })
-            
             
             return
         }
@@ -122,8 +113,8 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     func handleLogoutNotification(notification:NSNotification?)
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
-        self.dataRefresher?.stopRefreshingElements()
-        dataRefresher = nil
+        DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
+        DataSource.sharedInstance.dataRefresher = nil
         isShowingMenu = false
         
         DataSource.sharedInstance.performLogout {[weak self] () -> () in
@@ -189,7 +180,14 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                     self.showContactsVC()
                 default:
                     break
+                
                 }
+            }
+            else
+            {
+                self.hideMenu(true, completion: { () -> () in
+                    
+                })
             }
         }
         else
@@ -221,6 +219,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                     //weakSelf.view.bringSubviewToFront(menu.view)
                     println("Menu Frame: \(menu.view.frame)")
                     weakSelf.isShowingMenu = true
+                    navController.topViewController.view.addGestureRecognizer(weakSelf.tapToDismissRecognizer)
                 }
                 completion?()
             })
@@ -229,9 +228,9 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     
     func hideMenu(animated:Bool, completion:(()->())?)
     {
-        
         if let navController = self.currentNavigationController
         {
+            navController.topViewController.view.removeGestureRecognizer(self.tapToDismissRecognizer)
             UIView.animateWithDuration(0.2,
                 delay: 0.0,
                 options: UIViewAnimationOptions.CurveEaseIn,
@@ -312,5 +311,15 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             })
         }
     }
+    
+    func tapToDismiss(recognizer:UITapGestureRecognizer)
+    {
+        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
+    }
+    
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
+    }
+    
     
 }

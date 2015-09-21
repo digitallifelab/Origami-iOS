@@ -274,19 +274,18 @@ class ServerRequester: NSObject
                         if let dictionary = responseObject as? [String:AnyObject],
                             elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
                         {
-                            //println("Current User Id: \(testUserId)\n")
-                           
                             var elements = Set<Element>()
                             for lvElementDict in elementsArray
                             {
-                                //let type = lvElementDict["TypeId"] as? Int
-                                //println(" -> element type: \(type) \n")
+//                                if let archDate = lvElementDict["ArchDate"] as? String, theDate = archDate.timeDateStringFromServerDateString()
+//                                {
+//                                    //NSLog("\n Archive date:  \(archDate) \n")
+//                                }
+                           
                                 let lvElement = Element(info: lvElementDict)
-                                //println(" creator: \(lvElement.creatorId)")
-                                //println(" elementId: \(lvElement.elementId!)")
                                 elements.insert(lvElement)
                             }
-                            //println("loaded \(elements.count) elements.. ")
+                            println("loaded \(elements.count) elements.. ")
                             
                             completion(Array(elements),nil)
                         }
@@ -295,8 +294,6 @@ class ServerRequester: NSObject
                             completion(nil,NSError())
                         }
                     })
-                    
-                    
             },
                 failure:
                 { (operation, responseError) -> Void in
@@ -309,6 +306,8 @@ class ServerRequester: NSObject
             completion(nil,noUserTokenError)
         }
     }
+    
+    
     
     func submitNewElement(element:Element, completion:networkResult)
     {
@@ -381,8 +380,7 @@ class ServerRequester: NSObject
             
             let bgQueue = dispatch_queue_create("edit_sueue", DISPATCH_QUEUE_SERIAL)
             dispatch_async(bgQueue, { () -> Void in
-            
-//            NSOperationQueue().addOperationWithBlock({ () -> Void in
+
                 let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
                 let elementDict = element.toDictionary()
                 let params = ["element":elementDict]
@@ -393,6 +391,7 @@ class ServerRequester: NSObject
                 requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
                 manager.requestSerializer = requestSerializer
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                
                 let editRequestOperation = manager.POST(editUrlString,
                     parameters: params,
                     success: { (operation, resultObject) -> Void in
@@ -1193,7 +1192,7 @@ class ServerRequester: NSObject
                                 
                                 if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
                                 {
-                                    //println("-> downloadAvatar response: \(jsonString) for userName: \(loginName)")
+                                    println("-> downloadAvatar response: \(jsonString) for userName: \(loginName)")
                                     toReturnCompletion(avatarData: nil, error: nil)
                                 }
                             }

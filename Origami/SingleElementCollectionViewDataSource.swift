@@ -146,7 +146,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return nil
         }
-        return subordinates
+        else
+        {
+            var unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates)
+            if unarchivedSubordinates.isEmpty
+            {
+                return nil
+            }
+            return unarchivedSubordinates
+        }
+        //return subordinates
     }
     
     func getLayoutInfo() -> ElementDetailsStruct?
@@ -174,7 +183,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             var messages:Bool = options.cellTypes.contains(.Chat)
             var attaches:Bool = options.cellTypes.contains(.Attaches)
-            var buttons = options.cellTypes.contains(.Buttons)
+            //var buttons = options.cellTypes.contains(.Buttons)
             
             
             var subordinatesInfo:[SubordinateItemLayoutWidth]?
@@ -210,7 +219,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
             //finally
-            let targetStruct = ElementDetailsStruct(title: elementTitle!, details: elementDetails, messagesCell: messages, buttonsCell: buttons, attachesCell: attaches, subordinateItems: subordinatesInfo)
+            let targetStruct = ElementDetailsStruct(title: elementTitle!,
+                details: elementDetails,
+                messagesCell: messages, /* buttonsCell: buttons,*/
+                attachesCell: attaches,
+                subordinateItems: subordinatesInfo)
+            
             return targetStruct
         }
         else
@@ -245,11 +259,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 cellTypes.append(.Attaches)
                 indexCount += 1
             }
-            if options.cellTypes.contains(.Buttons)
-            {
-                cellTypes.append(.Buttons)
-                indexCount += 1
-            }
+//            if options.cellTypes.contains(.Buttons)
+//            {
+//                cellTypes.append(.Buttons)
+//                indexCount += 1
+//            }
             if options.cellTypes.contains(.Subordinates)
             {
                 if let subordinates = getElementSubordinates()
@@ -416,21 +430,21 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
            
             
-        case .Buttons:
-            var buttonsHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementButtonsHolderCell", forIndexPath: indexPath) as! SingleElementButtonsCell
-            if let actionButtonsDataSource = ElementActionButtonsDataSource(buttonModels: createActionButtonModels())
-            {
-                var buttonTypes = [ActionButtonCellType]()
-
-                for model in actionButtonsDataSource.buttons!
-                {
-                    buttonTypes.append(model.type)
-                }
-                
-                buttonsHolderCell.dataSource = actionButtonsDataSource
-                buttonsHolderCell.buttonsLayout = ElementActionButtonsLayout(buttonTypes: buttonTypes)
-            }
-            return buttonsHolderCell
+//        case .Buttons:
+//            var buttonsHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementButtonsHolderCell", forIndexPath: indexPath) as! SingleElementButtonsCell
+//            if let actionButtonsDataSource = ElementActionButtonsDataSource(buttonModels: createActionButtonModels())
+//            {
+//                var buttonTypes = [ActionButtonCellType]()
+//
+//                for model in actionButtonsDataSource.buttons!
+//                {
+//                    buttonTypes.append(model.type)
+//                }
+//                
+//                buttonsHolderCell.dataSource = actionButtonsDataSource
+//                buttonsHolderCell.buttonsLayout = ElementActionButtonsLayout(buttonTypes: buttonTypes)
+//            }
+//            return buttonsHolderCell
             
         case .Subordinates:
             var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell

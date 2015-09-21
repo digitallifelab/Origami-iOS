@@ -26,7 +26,7 @@ enum ElementCellType:Int
     case Chat
     case Details
     case Attaches
-    case Buttons
+    //case Buttons
     case Subordinates
 }
 

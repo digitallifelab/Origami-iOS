@@ -251,24 +251,8 @@
                                                         <rect key="frame" x="0.0" y="21" width="15" height="1"/>
                                                     </variation>
                                                 </view>
-                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="248" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="249" text="Label" lineBreakMode="clip" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7az-Gp-NEg" userLabel="descriptionLabel">
-                                                    <rect key="frame" x="16" y="48" width="88" height="64"/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="88" id="nPQ-ZT-UPI"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
-                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                    <variation key="heightClass=regular" misplaced="YES">
-                                                        <rect key="frame" x="16" y="45" width="58" height="17"/>
-                                                    </variation>
-                                                    <variation key="widthClass=regular" misplaced="YES">
-                                                        <rect key="frame" x="0.0" y="83" width="100" height="17"/>
-                                                    </variation>
-                                                </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X69-zu-5f4" userLabel="signalsLabel">
-                                                    <rect key="frame" x="95" y="80" width="17" height="40"/>
+                                                    <rect key="frame" x="95" y="72" width="17" height="40"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI-SemiBold" family="Segoe UI" pointSize="30"/>
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -287,7 +271,7 @@
                                                         <constraint firstAttribute="width" constant="60" id="rsP-W7-5sJ"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="255" verticalCompressionResistancePriority="751" text="Label" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOH-i4-k5z" userLabel="titleLabel">
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="500" horizontalCompressionResistancePriority="100" verticalCompressionResistancePriority="500" text="Label" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOH-i4-k5z" userLabel="titleLabel">
                                                     <rect key="frame" x="16" y="8" width="88" height="23"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
@@ -301,6 +285,19 @@
                                                     </variation>
                                                     <variation key="widthClass=regular" misplaced="YES">
                                                         <rect key="frame" x="0.0" y="0.0" width="100" height="20"/>
+                                                    </variation>
+                                                </label>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="200" horizontalCompressionResistancePriority="100" verticalCompressionResistancePriority="240" text="Label" lineBreakMode="clip" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7az-Gp-NEg" userLabel="descriptionLabel">
+                                                    <rect key="frame" x="16" y="48" width="88" height="64"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                    <variation key="heightClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="16" y="45" width="58" height="17"/>
+                                                    </variation>
+                                                    <variation key="widthClass=regular" misplaced="YES">
+                                                        <rect key="frame" x="0.0" y="83" width="100" height="17"/>
                                                     </variation>
                                                 </label>
                                             </subviews>
@@ -318,7 +315,7 @@
                                             <constraint firstItem="X69-zu-5f4" firstAttribute="trailing" secondItem="mN6-SB-qvR" secondAttribute="trailingMargin" id="Rqq-7h-yVx"/>
                                             <constraint firstAttribute="bottom" secondItem="m80-QP-Ba5" secondAttribute="bottom" id="SbN-Dg-CHt"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="top" secondItem="mN6-SB-qvR" secondAttribute="topMargin" id="TFg-rt-KLH"/>
-                                            <constraint firstAttribute="bottomMargin" secondItem="X69-zu-5f4" secondAttribute="bottom" constant="-8" id="W7M-za-mMh"/>
+                                            <constraint firstAttribute="bottom" secondItem="X69-zu-5f4" secondAttribute="bottom" constant="8" id="W7M-za-mMh"/>
                                             <constraint firstItem="m80-QP-Ba5" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" id="bRH-Uh-E1f"/>
                                             <constraint firstAttribute="centerX" secondItem="XNK-cf-nC7" secondAttribute="centerX" id="dEq-nY-Y8t"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" constant="16" id="fpY-u9-xwz"/>
@@ -369,9 +366,6 @@
                                                                     <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="251" text="Message text" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D09-U6-0Jc" userLabel="messageLabel">
                                                                         <rect key="frame" x="43" y="22" width="149" height="13"/>
                                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                                        <constraints>
-                                                                            <constraint firstAttribute="height" constant="13" id="ngy-MQ-fKA"/>
-                                                                        </constraints>
                                                                         <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
                                                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -803,7 +797,7 @@
                                                         <action selector="favoutireButtonTap:" destination="gaw-RK-O0B" eventType="touchUpInside" id="XRp-Cn-bbb"/>
                                                     </connections>
                                                 </button>
-                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="100" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" placeholderIntrinsicWidth="350" placeholderIntrinsicHeight="109" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adip" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWq-EV-t1H" userLabel="titleCellTitleTextView">
+                                                <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="200" verticalHuggingPriority="100" horizontalCompressionResistancePriority="200" verticalCompressionResistancePriority="200" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" bouncesZoom="NO" editable="NO" text="Lorem ipsum dolor sit er elit lamet, consectetaur cillium adip" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RWq-EV-t1H" userLabel="titleCellTitleTextView">
                                                     <rect key="frame" x="50" y="28" width="372" height="104"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -1713,7 +1707,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="element title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jH3-cQ-fuf">
-                                                    <rect key="frame" x="8" y="8" width="551" height="27"/>
+                                                    <rect key="frame" x="100" y="8" width="459" height="27"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="27" id="fe3-QU-GZc"/>
@@ -1723,7 +1717,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <textView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" text="element details text view. element details text view. element details text view. element details text view." selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Byz-Ko-oBd">
-                                                    <rect key="frame" x="8" y="43" width="551" height="40"/>
+                                                    <rect key="frame" x="100" y="43" width="459" height="40"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="40" id="fro-GM-NNX"/>
@@ -1736,6 +1730,13 @@
                                                         </mask>
                                                     </variation>
                                                 </textView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="22u-je-9WA">
+                                                    <rect key="frame" x="8" y="12" width="75" height="75"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="75" id="FPz-Yp-6SP"/>
+                                                        <constraint firstAttribute="width" constant="75" id="Ogj-C8-3NW"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -1743,10 +1744,18 @@
                                                 <constraint firstItem="Byz-Ko-oBd" firstAttribute="top" secondItem="jH3-cQ-fuf" secondAttribute="bottom" constant="8" id="3t3-o0-fPt"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="Byz-Ko-oBd" secondAttribute="bottom" constant="8" id="DTv-Q8-yGq"/>
                                                 <constraint firstItem="jH3-cQ-fuf" firstAttribute="leading" secondItem="g0R-C7-i5y" secondAttribute="leadingMargin" id="Eul-Ar-lo3"/>
+                                                <constraint firstItem="jH3-cQ-fuf" firstAttribute="leading" secondItem="22u-je-9WA" secondAttribute="trailing" constant="17" id="VRG-ff-k9u"/>
                                                 <constraint firstItem="Byz-Ko-oBd" firstAttribute="width" secondItem="jH3-cQ-fuf" secondAttribute="width" id="gf6-jz-RWL"/>
+                                                <constraint firstItem="22u-je-9WA" firstAttribute="leading" secondItem="g0R-C7-i5y" secondAttribute="leadingMargin" id="jMt-Da-Cha"/>
                                                 <constraint firstItem="jH3-cQ-fuf" firstAttribute="top" secondItem="g0R-C7-i5y" secondAttribute="topMargin" id="pDq-9O-ehT"/>
+                                                <constraint firstAttribute="centerY" secondItem="22u-je-9WA" secondAttribute="centerY" id="rbF-sK-Jql"/>
                                                 <constraint firstItem="Byz-Ko-oBd" firstAttribute="leading" secondItem="jH3-cQ-fuf" secondAttribute="leading" id="zn7-ho-Leu"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="Eul-Ar-lo3"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>

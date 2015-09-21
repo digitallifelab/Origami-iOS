@@ -8,7 +8,7 @@
 
 import UIKit
 
-class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate
+class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate/*, MessageObserver*/
 {
 
     @IBOutlet var collectionDashboard:UICollectionView!
@@ -37,51 +37,80 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
         self.collectionSource = HomeCollectionHandler()
         self.collectionDashboard.dataSource = self.collectionSource
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        loadingAllElementsInProgress = true
-        DataSource.sharedInstance.loadAllElementsInfo {[weak self] (success, failure) -> () in
-            if let wSelf = self
-            {
-                if success
-                {
-                   // wSelf.reloadDashboardView()
-                    
-                    if let wSelf = self
-                    {
-                        //println(" \(wSelf) Loaded elements")
-                        wSelf.shouldReloadCollection = true
-                        println("reloadDashboardView from viewDidLoad - success TRUE")
-                        wSelf.reloadDashboardView()
-                    }
-                }
-                else
-                {
-                 
-                    println("reloadDashboardView from viewDidLoad - success FALSE")
-                    wSelf.reloadDashboardView()
-                }
-                wSelf.loadingAllElementsInProgress = false
-            }
-            else
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                if let wSelf = self
-                {
-                    
-                   // #if DEBUG
-                    wSelf.showAlertWithTitle("Failed", message: " this is a non production error message. \n Did not load Elements for dashboard.", cancelButtonTitle: "Ok")
-                    //#endif
-                    wSelf.loadingAllElementsInProgress = false
-                }
-            }
-           
-        }
         
         
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
-        configureNavigationControllerToolbarItems()        
+        configureNavigationControllerToolbarItems()
+        
+        if let refresher = DataSource.sharedInstance.dataRefresher
+        {
+            
+        }
+        else
+        {
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            loadingAllElementsInProgress = true
+            DataSource.sharedInstance.loadAllElementsInfo {[weak self] (success, failure) -> () in
+                if let wSelf = self
+                {
+                    if success
+                    {
+                        // wSelf.reloadDashboardView()
+                        
+                        if let wSelf = self
+                        {
+                            //println(" \(wSelf) Loaded elements")
+                            wSelf.shouldReloadCollection = true
+                            println("reloadDashboardView from viewDidLoad - success TRUE")
+                            wSelf.reloadDashboardView()
+                        }
+                    }
+                    else
+                    {
+                        
+                        println("reloadDashboardView from viewDidLoad - success FALSE")
+                        wSelf.reloadDashboardView()
+                    }
+                    wSelf.loadingAllElementsInProgress = false
+                    
+                    let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
+                    let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+                    dispatch_after(time, bgQueue, {[weak self] () -> Void in
+                        
+                        if let userId = DataSource.sharedInstance.user?.userId
+                        {
+                            DataSource.sharedInstance.dataRefresher = DataRefresher()
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                            if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
+                            {
+//                                if let aSelf = self
+//                                {
+//                                    DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
+//                                }
+                                
+                                DataSource.sharedInstance.loadAllMessagesFromServer()
+                            }
+                        }
+                    })
+                    
+                    
+                }
+                else
+                {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    if let wSelf = self
+                    {
+                        
+                        // #if DEBUG
+                        wSelf.showAlertWithTitle("Failed", message: " this is a non production error message. \n Did not load Elements for dashboard.", cancelButtonTitle: "Ok")
+                        //#endif
+                        wSelf.loadingAllElementsInProgress = false
+                    }
+                }
+                
+            }
+        }
     }
 
     override func didReceiveMemoryWarning()
@@ -112,11 +141,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
-            
-            if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
-            {
-                DataSource.sharedInstance.loadAllMessagesFromServer()
-            }
             
             if !loadingAllElementsInProgress
             {
@@ -365,28 +389,17 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
                                     }, completion: { (finished) -> Void in
-                                        //                                    if shouldReloadCollection
-                                        //                                    {
+                                        
                                         aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
                                         aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
-//                                        let aRange:NSRange = NSMakeRange(0, 2)
-//                                        aSelf.collectionDashboard.reloadSections(NSIndexSet(indexesInRange: aRange))
-//                                        aSelf.loadingAllElementsInProgress = false
-                                        //                                    }
+
                                 })
-                                
-                                
                             }
                             
-                            //dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0)), dispatch_get_main_queue(), { [weak self]() -> Void in
-                               // if let aSelf = self
-                                //{
-                                    aSelf.loadingAllElementsInProgress = false
-                                    aSelf.shouldReloadCollection = false
-                               // }
-                                
-                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                           // })
+                            aSelf.loadingAllElementsInProgress = false
+                            aSelf.shouldReloadCollection = false
+                        
+                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                           
                         }
                         else
@@ -399,6 +412,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                             {
                                 self?.showAlertWithTitle("Error", message: "Please relogin.", cancelButtonTitle: "Close")
                             }
+                             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         }
                     }
                 }
@@ -515,6 +529,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
     }
 
+    //MARK: MessageObserver
+//    func newMessagesAdded(messages:[Message])
+//    {
+//        self.collectionDashboard.reloadSections(NSIndexSet(index:0))
+//    }
   
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)

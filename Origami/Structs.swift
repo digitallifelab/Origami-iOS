@@ -35,7 +35,7 @@ struct ElementCellsOptions
     
     init()
     {
-        self.cellTypes = Set([.Title, .Buttons]) //default value
+        self.cellTypes = Set([.Title])//, .Buttons]) //default value
     }
     
     init(types:Set<ElementCellType>)

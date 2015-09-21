@@ -21,11 +21,13 @@ class ChatPreviewCell: UITableViewCell {
             {
                 self.messageLabel.textColor = UIColor.whiteColor()
                 self.nameLabel.textColor = UIColor.lightGrayColor()
+                self.avatarView.tintColor = kWhiteColor
             }
             else
             {
                 self.messageLabel.textColor = UIColor.blackColor()
                 self.nameLabel.textColor = kDayNavigationBarBackgroundColor
+                self.avatarView.tintColor = kDayNavigationBarBackgroundColor
             }
         }
     }

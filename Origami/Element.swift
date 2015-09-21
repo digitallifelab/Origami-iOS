@@ -15,6 +15,7 @@ class Element:NSObject
     var title:NSString?
     var details:NSString?
     var attachIDs:[NSNumber] = [NSNumber]()
+    var responsible:NSNumber = NSNumber(integer: 0)
     var passWhomIDs:[NSNumber] = [NSNumber]()
     var isSignal:NSNumber = NSNumber(integer: 0)
     var isFavourite:NSNumber = NSNumber(integer: 0)
@@ -86,6 +87,10 @@ class Element:NSObject
         if let creator = info["CreatorId"] as? NSNumber
         {
             self.creatorId = creator
+        }
+        if let responsibleD = info["Responsible"] as? NSNumber
+        {
+            self.responsible = responsibleD
         }
         if let creationDate = info["CreateDate"] as? NSString
         {

@@ -22,8 +22,6 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
             {
                 currentMessages = [Message]()
             }
-            
-            getLastMessages()
         }
     override func prepareForReuse()
     {
@@ -34,8 +32,6 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
         {
             currentMessages = [Message]()
         }
-        
-        getLastMessages()
     }
     
     //MARK: UITableViewDelegate
@@ -63,14 +59,6 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                 {
                     aSelf.reloadChatTableWithNewMessages(messages)
                     let resultAddingObserver = DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
-                    
-//                    switch resultAddingObserver
-//                    {
-//                    case .Added:
-//                       // println(" _Started observing DATASOURCE inserting new messages..._ Added ")
-//                    case .Replaced:
-//                       // println(" _Started observing DATASOURCE inserting new messages..._ Replaced ")
-//                    }
                 }
                 else
                 {
@@ -78,7 +66,7 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                     //println(" __  NSNotificationCenter   Added__ Cell for observing messages")
                 }
             }
-            })
+        })
     }
     
     func reloadChatTableWithNewMessages(messages:[Message]?)

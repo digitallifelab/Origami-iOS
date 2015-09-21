@@ -67,9 +67,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var shouldLoadAllMessages = true
     
     var messagesLoader:MessagesLoader?
+    var dataRefresher:DataRefresher?
     
     private lazy var dataCache:NSCache = NSCache()
     lazy var pendingAttachFileDataDownloads = [NSNumber:Bool]()
+    lazy var pendingUserAvatarsDownolads = [String:Int]()
     //private stuff
     private func getMessagesObserverForElementId(elementId:NSNumber) -> MessageObserver?
     {
@@ -231,6 +233,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    
+                    DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                    DataSource.sharedInstance.startRefreshingNewMessages()
+                    
                 }
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
@@ -705,34 +711,38 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
         
-        elementsToReturn.sort({ (elt1, elt2) -> Bool in
-            if elt1.createDate != nil && elt2.createDate != nil
-            {
-                if let
-                    date1 = elt1.createDate!.dateFromServerDateString()
-                    ,date2 = elt2.createDate!.dateFromServerDateString()
-                {
-                    if let changeDate1 = elt1.changeDate?.dateFromServerDateString() , changeDate2 = elt2.changeDate?.dateFromServerDateString()
-                    {
-                        let changedComparing = changeDate1.compare(changeDate2)
-                        return changedComparing == .OrderedDescending
-                    }
-                    else
-                    {
-                        let result = date1.compare(date2)
-                        return result == NSComparisonResult.OrderedDescending
-                    }
-                }
-                else
-                {
-                    return true
-                }
-            }
-            else
-            {
-                return true
-            }
-        })
+        //var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
+        
+        ObjectsConverter.sortElementsByDate(&elementsToReturn)
+        
+//        elementsToReturn.sort({ (elt1, elt2) -> Bool in
+//            if elt1.createDate != nil && elt2.createDate != nil
+//            {
+//                if let
+//                    date1 = elt1.createDate!.dateFromServerDateString()
+//                    ,date2 = elt2.createDate!.dateFromServerDateString()
+//                {
+//                    if let changeDate1 = elt1.changeDate?.dateFromServerDateString() , changeDate2 = elt2.changeDate?.dateFromServerDateString()
+//                    {
+//                        let changedComparing = changeDate1.compare(changeDate2)
+//                        return changedComparing == .OrderedDescending
+//                    }
+//                    else
+//                    {
+//                        let result = date1.compare(date2)
+//                        return result == NSComparisonResult.OrderedDescending
+//                    }
+//                }
+//                else
+//                {
+//                    return true
+//                }
+//            }
+//            else
+//            {
+//                return true
+//            }
+//        })
 
         
         return elementsToReturn
@@ -779,12 +789,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 })
                 return
             }
-            var favouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
+            var preFavouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
                 return checkedElement.isFavourite.boolValue
             })
             
-            ObjectsConverter.sortElementsByDate(&favouriteElements)
+            var favouriteElements =  ObjectsConverter.filterArchiveElements(false, elements: preFavouriteElements)
             
+            ObjectsConverter.sortElementsByDate(&favouriteElements)
+        
+            
+            
+        
+            // ----
             var otherElementsSet = Set<Element>()//[Element]()
             
             let filteredMainElements = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
@@ -798,9 +814,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 otherElementsSet.insert(lvElement)
             }
             
-            var otherElementsArray = Array(otherElementsSet)
+            var preOtherElementsArray = Array(otherElementsSet)
+            var otherElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preOtherElementsArray)
             ObjectsConverter.sortElementsByDate(&otherElementsArray)
-            
             
             // get all signals
             var filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
@@ -811,14 +827,19 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return (signalValue )
             })
             
-            
-            
-            
             var signalElementsSet = Set(filteredSignals)
-            var signalElementsArray = Array(signalElementsSet)
+            var preSignalElementsArray = Array(signalElementsSet)
+            
+            //filter out archiveElements
+            
+            
+            var signalElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preSignalElementsArray)
+            for aSignal in signalElementsArray
+            {
+                println(" -->signal archive date: \(aSignal.archiveDate)\n")
+            }
             
             ObjectsConverter.sortElementsByDate(&signalElementsArray)
-            
             
             dispatch_async(dispatch_get_main_queue(),
             {
@@ -839,11 +860,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         dispatch_async(bgQueue, { () -> Void in
             
             var elementsToSort = DataSource.sharedInstance.elements
-            
-            ObjectsConverter.sortElementsByDate(&elementsToSort)
+            var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToSort)
+            ObjectsConverter.sortElementsByDate(&newElements)
             NSLog("_________ Finished gathering elements for RecentActivityTableVC.....")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion?(elements: elementsToSort)
+                completion?(elements: newElements)
             })
         })
     }
@@ -895,6 +916,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     
                     var elementsSet = Set(allElements)
                     var elementsArrayFromSet = Array(elementsSet)
+                    
                     ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
                     
                     DataSource.sharedInstance.elements += elementsArrayFromSet
@@ -1081,6 +1103,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         {
                             existingElement.changeDate = dateForServer
                         }
+                        existingElement.archiveDate = element.archiveDate
+                        
                         if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
                         {
                             for aParent in rootTree
@@ -1088,6 +1112,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 aParent.changeDate = existingElement.changeDate
                             }
                         }
+                        
+                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId)
+                        for aSubElement in subordinates
+                        {
+                            aSubElement.archiveDate = element.archiveDate
+                        }
+                        
                         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
                 }
@@ -2210,6 +2241,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 else
                 {
                     block(image: nil, error: error)
+                    if error.code == 406
+                    {
+                        
+                        DataSource.sharedInstance.startLoadingAvatarForUserName(loginName)
+                    }
+                    
                 }
             })
         }
@@ -2245,89 +2282,60 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     return
                 }
                 //step 3 try to load from server
-                DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(loginName, completion: { (avatarData, error) -> () in
-                    if let avatarBytes = avatarData
-                    {
-                        if let avatar = UIImage(data: avatarBytes)
-                        {
-                            let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200))
-                            let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                            println(" got avatar from Server..")
-                            DataSource.sharedInstance.avatarsHolder[loginName] = avatarData //save to RAM also
-                            
-                            //save to disc
-                            let fileHandler = FileHandler()
-                            
-                            fileHandler.saveAvatar(avatarBytes, forLoginName: loginName, completion: { (errorSaving) -> Void in
-                                if let error = errorSaving
-                                {
-                                    println(" Did not save currently loaded avatar for user name: \(loginName)")
-                                    
-                                    if let completionClosure = completionBlock
-                                    {
-                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                            completionClosure(image: nil)
-                                        })
-                                        
-                                    }
-                                }
-                                
-                                //again
-                                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(loginName, completion: { (image, error) -> () in
-                                    if let toReturnImage = image
-                                    {
-                                        if let completionClosure = completionBlock
-                                        {
-                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                                completionClosure(image: toReturnImage)
-                                            })
-                                            
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if let completionClosure = completionBlock
-                                        {
-                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                                completionClosure(image: nil)
-                                            })
-                                        }
-                                    }
-                                })
-                            })
-                        }
-                        else
-                        {
-                            println(" Did not recieve avatar image bytes.")
-                            if let completionClosure = completionBlock
-                            {
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    completionClosure(image: nil)
-                                })
-                            }
-                        }
-                        return
-                    }
-                    if let anError = error
-                    {
-                        println(" Error while downloading avatar for userName: \(loginName): \n \(anError.description) ")
-                        completionBlock?(image: nil)
-                    }
-                    else
-                    {
-                        if let completionClosure = completionBlock
-                        {
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                completionClosure(image: nil)
-                            })
-                        }
-                    }
-                    
-                })
                 
             })
 
         })
+    }
+    
+    func startLoadingAvatarForUserName(name:String)
+    {
+        if let existValue = DataSource.sharedInstance.pendingUserAvatarsDownolads[name]
+        {
+            println(" - Current avatar is pending. Will not try to load in again...")
+            return
+        }
+        
+        println(" Loading Avatar: \(name)")
+        DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = Int(1)
+        
+        DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(name, completion: { (avatarData, error) -> () in
+            if let avatarBytes = avatarData
+            {
+                if let avatar = UIImage(data: avatarBytes)
+                {
+                    let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200))
+                    let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                    println(" got avatar from Server..")
+                    DataSource.sharedInstance.avatarsHolder[name] = avatarData //save to RAM also
+                    
+                    //save to disc
+                    let fileHandler = FileHandler()
+                    
+                    fileHandler.saveAvatar(avatarBytes, forLoginName: name, completion: { (errorSaving) -> Void in
+                        if let error = errorSaving
+                        {
+                            println(" Did not save currently loaded avatar for user name: \(name)")
+                        }
+                        DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
+                    })
+                }
+                else
+                {
+                    println(" Did not recieve avatar image bytes.")
+                    DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
+                }
+             
+                return
+            }
+            
+            if let anError = error
+            {
+                println(" Error while downloading avatar for userName: \(name): \n \(anError.description) ")
+            }
+            DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
+        })
+
     }
     
     func uploadAvatarForCurrentUser(data:NSData, completion completionBlock:((success:Bool, error:NSError?)->())?)

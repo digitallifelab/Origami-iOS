@@ -152,7 +152,7 @@ class ObjectsConverter {
             switch lvNewMessage.typeId!.integerValue
             {
             case 0:
-                println(" - Chat message: \" \(lvNewMessage.textBody) \"")
+                break//println(" - Chat message: \" \(lvNewMessage.textBody) \"")
             case 1:
                 println(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
             case 12:
@@ -214,6 +214,34 @@ class ObjectsConverter {
                 return false
             })
         }
+    }
+    
+    class func filterArchiveElements(archive:Bool, elements:[Element]) -> [Element]
+    {
+        var newElements = [Element]()
+        for anElement in elements
+        {
+            if archive
+            {
+                if let dateString = anElement.archiveDate as? String, let archDate = dateString.dateFromServerDateString()
+                {
+                    newElements.append(anElement)
+                }
+                continue
+            }
+            else
+            {// non archive
+                if let dateString = anElement.archiveDate as? String, let archDate = dateString.dateFromServerDateString()
+                {
+                    println("\(archDate)")
+                    continue
+                }
+                newElements.append(anElement)
+            }
+            
+        }
+        
+        return newElements
     }
     
     class func sortMessagesByDate(inout messages:[Message])

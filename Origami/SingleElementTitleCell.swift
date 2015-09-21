@@ -119,6 +119,13 @@ class SingleElementTitleCell: UICollectionViewCell {
         {
             addActionToButtons()
         }
+        else
+        {
+            if let taskButton = self.viewWithTag(5) as? UIButton
+            {
+                taskButton.addTarget(self, action: "actionButtonTapped:", forControlEvents: .TouchUpInside)
+            }
+        }
     }
     
     //MARK: element is owned

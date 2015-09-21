@@ -780,6 +780,14 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func archiveElementToolBarButtonTapped(sender:UIButton?)
     {
+        sender?.enabled = false
+        
+        self.navigationController?.popViewControllerAnimated(true)
+        
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+        dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : ActionButtonCellType.Archive.rawValue])
+        })
         
     }
     

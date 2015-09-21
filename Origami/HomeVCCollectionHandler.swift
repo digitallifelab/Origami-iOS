@@ -73,6 +73,8 @@ class HomeVCCollectionHandler: NSObject, UICollectionViewDataSource {
         {
             var messagesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("LastMessagesHolderCollectionCell", forIndexPath: indexPath) as! DashboardMessagesCell
             messagesHolderCell.displayMode = (nightModeEnabled) ? .Night : .Day
+            messagesHolderCell.getLastMessages()
+            
             return messagesHolderCell
         }
         else
