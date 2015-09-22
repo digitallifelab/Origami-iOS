@@ -140,7 +140,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementSubordinates() -> [Element]?
     {
-        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId?.integerValue)
+        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId?.integerValue, shouldIncludeArchived: false)
         
         if subordinates.isEmpty
         {
@@ -203,7 +203,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     let value = allValues[i] //again tuple
                     let lvElement = value.1
-                    if DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue).count > 0
+                    if DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue, shouldIncludeArchived: false).count > 0
                     {
                         lvSubordinatesInfo.append(.Wide)
                     }

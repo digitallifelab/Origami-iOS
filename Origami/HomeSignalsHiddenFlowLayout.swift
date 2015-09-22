@@ -283,7 +283,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                     {
                         if let currentElement = privOther?[currentItem]
                         {
-                            if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId?.integerValue).isEmpty
+                            if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId?.integerValue, shouldIncludeArchived: false).isEmpty
                             {
                                 elementWidth = HomeCellWideDimension
                             }
@@ -293,7 +293,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                     {
                         if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem]
                         {
-                            if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId?.integerValue).isEmpty
+                            if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId?.integerValue, shouldIncludeArchived: false).isEmpty
                             {
                                 elementWidth = HomeCellWideDimension
                             }

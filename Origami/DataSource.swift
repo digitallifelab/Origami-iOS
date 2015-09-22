@@ -694,7 +694,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func getSubordinateElementsForElement(elementId:Int?) -> [Element]
+    func getSubordinateElementsForElement(elementId:Int?, shouldIncludeArchived:Bool) -> [Element]
     {
        
         var elementsToReturn:[Element] = [Element]()
@@ -711,40 +711,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
         
-        //var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
-        
         ObjectsConverter.sortElementsByDate(&elementsToReturn)
-        
-//        elementsToReturn.sort({ (elt1, elt2) -> Bool in
-//            if elt1.createDate != nil && elt2.createDate != nil
-//            {
-//                if let
-//                    date1 = elt1.createDate!.dateFromServerDateString()
-//                    ,date2 = elt2.createDate!.dateFromServerDateString()
-//                {
-//                    if let changeDate1 = elt1.changeDate?.dateFromServerDateString() , changeDate2 = elt2.changeDate?.dateFromServerDateString()
-//                    {
-//                        let changedComparing = changeDate1.compare(changeDate2)
-//                        return changedComparing == .OrderedDescending
-//                    }
-//                    else
-//                    {
-//                        let result = date1.compare(date2)
-//                        return result == NSComparisonResult.OrderedDescending
-//                    }
-//                }
-//                else
-//                {
-//                    return true
-//                }
-//            }
-//            else
-//            {
-//                return true
-//            }
-//        })
-
-        
+        if !shouldIncludeArchived
+        {
+            var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
+            return newElements
+        }
         return elementsToReturn
     }
     
@@ -752,7 +724,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         var treeToReturn = [Element]()
         
-        let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId?.integerValue)
+        let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId?.integerValue, shouldIncludeArchived:false)
         if currentSubordinates.isEmpty
         {
             return nil
@@ -763,7 +735,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         for lvElement in currentSubordinates
         {
-            let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue)
+            let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue, shouldIncludeArchived:false)
             if !subordinatesFirst.isEmpty
             {
                 let subSetFirst = Set(subordinatesFirst)
@@ -1113,7 +1085,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             }
                         }
                         
-                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId)
+                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
                         for aSubElement in subordinates
                         {
                             aSubElement.archiveDate = element.archiveDate
@@ -1285,7 +1257,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 DataSource.sharedInstance.elements = remainingElements
                 //Recheck after deleting
-                let reCheckSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId)
+                let reCheckSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
                 if !reCheckSubordinates.isEmpty
                 {
                     // assert(false, "Check properly deleted subordinates....")
