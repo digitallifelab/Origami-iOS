@@ -154,6 +154,15 @@ class Element:NSObject
         return copyOfSelf
     }
     
+    func isArchived() -> Bool
+    {
+        if let archiveDateString = self.archiveDate as? String, let archiveDate = archiveDateString.dateFromServerDateString()
+        {
+            return true
+        }
+        return false
+    }
+    
     override var hash:Int
         {
             let integer = self.title!.hashValue ^ self.elementId!.hashValue

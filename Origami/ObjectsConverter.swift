@@ -223,7 +223,7 @@ class ObjectsConverter {
         {
             if archive
             {
-                if let dateString = anElement.archiveDate as? String, let archDate = dateString.dateFromServerDateString()
+                if anElement.isArchived()
                 {
                     newElements.append(anElement)
                 }
@@ -231,14 +231,12 @@ class ObjectsConverter {
             }
             else
             {// non archive
-                if let dateString = anElement.archiveDate as? String, let archDate = dateString.dateFromServerDateString()
+                if anElement.isArchived()
                 {
-                    println("\(archDate)")
                     continue
                 }
                 newElements.append(anElement)
             }
-            
         }
         
         return newElements

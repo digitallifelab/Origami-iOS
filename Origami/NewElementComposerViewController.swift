@@ -179,8 +179,15 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 fixedSpace.width = 40.0
             }
-            
-            var archiveBarButton = UIBarButtonItem(title: "Archive".localizedWithComment(""), style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
+            var archiveButtonTitle = "Archive".localizedWithComment("")
+            if let element = self.newElement
+            {
+                if element.isArchived()
+                {
+                    archiveButtonTitle = "Unarchive".localizedWithComment("")
+                }
+            }
+            var archiveBarButton = UIBarButtonItem(title: archiveButtonTitle , style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
             var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
             var deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
             
@@ -786,7 +793,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
         let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : ActionButtonCellType.Archive.rawValue])
+            let rawArchiveValue = ActionButtonCellType.Archive.rawValue
+            NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : rawArchiveValue])
         })
         
     }

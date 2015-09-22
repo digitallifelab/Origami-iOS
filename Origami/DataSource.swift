@@ -808,7 +808,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             var signalElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preSignalElementsArray)
             for aSignal in signalElementsArray
             {
-                println(" -->signal archive date: \(aSignal.archiveDate)\n")
+                assert(!aSignal.isArchived(), "\n Tried to insert archived element to main dashboard.")
             }
             
             ObjectsConverter.sortElementsByDate(&signalElementsArray)
@@ -832,11 +832,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         dispatch_async(bgQueue, { () -> Void in
             
             var elementsToSort = DataSource.sharedInstance.elements
-            var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToSort)
-            ObjectsConverter.sortElementsByDate(&newElements)
+            
+            ObjectsConverter.sortElementsByDate(&elementsToSort)
             NSLog("_________ Finished gathering elements for RecentActivityTableVC.....")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion?(elements: newElements)
+                completion?(elements: elementsToSort)
             })
         })
     }

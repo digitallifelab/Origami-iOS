@@ -74,14 +74,37 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     func startLoadingElementsByActivity()
     {
         DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
-            if let weakSelf = self
-            {
-                weakSelf.elements = elements
-                if !weakSelf.isReloadingTable
+            let bgQueue = dispatch_queue_create("filter.queue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgQueue, { () -> Void in
+                if let elementsToFilter = elements
                 {
-                    weakSelf.reloadTableView()
+                    var withoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsToFilter)
+                    if let weakSelf = self
+                    {
+                        if !weakSelf.isReloadingTable
+                        {
+                            weakSelf.elements = withoutArchived
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let weakerSelf = self
+                                {
+                                    weakerSelf.reloadTableView()
+                                }
+                            })
+                        }
+                        else
+                        {
+                            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+                            dispatch_after(timeout, dispatch_get_main_queue(), { [weak self]() -> Void in
+                                if let weakSelf = self
+                                {
+                                    weakSelf.elements = withoutArchived
+                                    weakSelf.reloadTableView()
+                                }
+                            })
+                        }
+                    }
                 }
-            }
+            })
         }
     }
     
@@ -187,15 +210,16 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         
         if let activityCell = tableView.dequeueReusableCellWithIdentifier(kElementCellIdentifier, forIndexPath: indexPath) as? RecentActivityTableCell
         {
-            //activityCell.elementTitleLabel?.text = nil
-            //activityCell.elementDetailsTextView?.text = nil
-            
             if let element = elementForIndexPath(indexPath)
             {
                 activityCell.elementTitleLabel?.text = element.title as? String
                 //println(" -> Cell Element Title: \(activityCell.elementTitleLabel!.text) ")
                 activityCell.elementDetailsTextView?.text = element.details as? String
                 activityCell.displayMode = self.displayMode
+                if element.isArchived()
+                {
+                    activityCell.backgroundColor = UIColor.lightGrayColor()
+                }
                 return activityCell
             }
         }

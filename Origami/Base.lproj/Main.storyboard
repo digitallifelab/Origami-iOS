@@ -1700,7 +1700,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ElementTableCell" rowHeight="100" id="elT-jH-sTF" customClass="RecentActivityTableCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ElementTableCell" rowHeight="100" id="elT-jH-sTF" userLabel="RecentActivityTableCell" customClass="RecentActivityTableCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="elT-jH-sTF" id="g0R-C7-i5y">
@@ -1759,6 +1759,7 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
+                                            <outlet property="elementCreatorAvatar" destination="22u-je-9WA" id="seY-UI-vNq"/>
                                             <outlet property="elementDetailsTextView" destination="Byz-Ko-oBd" id="acG-fi-R32"/>
                                             <outlet property="elementTitleLabel" destination="jH3-cQ-fuf" id="kaj-tI-Hbt"/>
                                         </connections>
@@ -2876,11 +2877,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9On-ND-kI9">
+                                <rect key="frame" x="0.0" y="64" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem tag="4" image="icon-flag" id="rtq-OF-q4o"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="bi5-H8-q8P"/>
+                                    <barButtonItem tag="6" image="icon-idea" id="ZIW-MJ-89Z"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="d2i-b4-0zq"/>
+                                    <barButtonItem tag="5" image="icon-okey" id="n1e-ni-ty0"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="1yW-nE-CbD"/>
+                                    <barButtonItem tag="7" image="icon-solution" id="1ow-Xp-k7J"/>
+                                </items>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </toolbar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="101" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="01A-7P-eGn">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="108" width="600" height="448"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ElementTableCell" rowHeight="100" id="DWE-mI-zng" customClass="RecentActivityTableCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ElementTableCell" rowHeight="100" id="DWE-mI-zng" userLabel="RecentActivityTableCell" customClass="RecentActivityTableCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DWE-mI-zng" id="lej-34-5yK">
@@ -2934,14 +2948,38 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="01A-7P-eGn" firstAttribute="top" secondItem="rsN-Dm-FAF" secondAttribute="top" id="2Ba-oK-3w4"/>
+                            <constraint firstItem="01A-7P-eGn" firstAttribute="top" secondItem="9On-ND-kI9" secondAttribute="bottom" id="2a6-yt-Khh"/>
+                            <constraint firstItem="9On-ND-kI9" firstAttribute="top" secondItem="6AM-X7-xbC" secondAttribute="bottom" id="9lb-ik-Kzu"/>
                             <constraint firstAttribute="trailing" secondItem="01A-7P-eGn" secondAttribute="trailing" id="LeP-PE-5Hn"/>
                             <constraint firstItem="01A-7P-eGn" firstAttribute="leading" secondItem="rsN-Dm-FAF" secondAttribute="leading" id="OKR-aR-e2b"/>
+                            <constraint firstItem="9On-ND-kI9" firstAttribute="trailing" secondItem="01A-7P-eGn" secondAttribute="trailing" id="ZII-GN-wlH"/>
                             <constraint firstItem="01A-7P-eGn" firstAttribute="bottom" secondItem="jLo-Kg-eUM" secondAttribute="top" id="k2s-65-9Cn"/>
+                            <constraint firstItem="9On-ND-kI9" firstAttribute="leading" secondItem="01A-7P-eGn" secondAttribute="leading" id="qOA-rE-PcV"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="2Ba-oK-3w4"/>
+                            </mask>
+                        </variation>
                     </view>
-                    <navigationItem key="navigationItem" id="SnN-Kp-EAe"/>
+                    <navigationItem key="navigationItem" id="SnN-Kp-EAe">
+                        <nil key="title"/>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="MHy-Gy-Yry">
+                            <rect key="frame" x="180" y="7" width="240" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="All"/>
+                                <segment title="" image="icon-arch"/>
+                            </segments>
+                            <connections>
+                                <action selector="segmentedControlDidChange:" destination="C5Y-Ay-Vc7" eventType="valueChanged" id="Vcx-XX-duv"/>
+                            </connections>
+                        </segmentedControl>
+                    </navigationItem>
                     <connections>
+                        <outlet property="segmentedConteol" destination="MHy-Gy-Yry" id="oZE-tJ-4dx"/>
                         <outlet property="tableView" destination="01A-7P-eGn" id="n6m-5R-GUF"/>
+                        <outlet property="topToolbar" destination="9On-ND-kI9" id="k4L-Wg-gVr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CKv-dd-3Yu" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -3027,6 +3065,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="icon-arch" width="50" height="50"/>
         <image name="icon-attach" width="50" height="50"/>
         <image name="icon-contacts" width="50" height="50"/>
         <image name="icon-edit" width="50" height="50"/>
@@ -3040,7 +3079,7 @@
         <image name="icon-star" width="128" height="128"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="2Og-vg-MiQ"/>
         <segue reference="U7u-GC-E0t"/>
+        <segue reference="W7P-5v-EqO"/>
     </inferredMetricsTieBreakers>
 </document>

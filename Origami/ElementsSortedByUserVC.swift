@@ -10,17 +10,34 @@ import UIKit
 
 class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
 
-    @IBOutlet weak var filterButtonsHolderView:UIView?
+   
     /*
     //for showing current selected user 
     
     is subject to change if subclassing
     */
     var currentTopRightButton:UIButton?
+   
     var currentSelectedUserAvatar:UIImage? = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
     var elementsCreatedByUser:[Element]?
     var elementsUserParticipatesIn:[Element]?
     var selectedUserId:NSNumber = NSNumber(integer: 0)
+    
+    @IBOutlet weak var segmentedConteol:UISegmentedControl?
+    @IBOutlet weak var topToolbar:UIToolbar?
+    
+    var archivedVisible = false{
+        didSet{
+            if archivedVisible
+            {
+                
+            }
+            else
+            {
+                
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +58,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         })
         
         configureCurrentRightTopButton()
+        configureTopToolbarItems()
     }
 
     override func didReceiveMemoryWarning() {
@@ -77,26 +95,47 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
                 if let weakSelf = self
                 {
-                    let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-                    dispatch_async(bgQueue, {[weak self] () -> Void in
-                        if let weakerSelf = self
-                        {
-                            weakerSelf.elements = elements
-                            if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
+                    if let elementsPresent = elements
+                    {
+                            let archVisibleLocal = weakSelf.archivedVisible
+                        let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+                        dispatch_async(bgQueue, {[weak self] () -> Void in
+                            var allCurrentElements = [Element]()
+                            if archVisibleLocal
                             {
-                                println(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
-                                weakSelf.sortCurrentElementsForNewUserId()
+                                let archived = ObjectsConverter.filterArchiveElements(true, elements: elementsPresent)
+                                if !archived.isEmpty
+                                {
+                                    allCurrentElements += archived
+                                }
                             }
-                        }
-                        
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            if !weakSelf.isReloadingTable
+                            else
                             {
-                                //println(" -> reloading tableView.")
-                                weakSelf.reloadTableView()
+                                let allWithoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsPresent)
+                                if !allWithoutArchived.isEmpty
+                                {
+                                    allCurrentElements += allWithoutArchived
+                                }
                             }
-                        })//end of main_queue
-                        }) //end of bgQueue
+                            if let weakerSelf = self
+                            {
+                                weakerSelf.elements = allCurrentElements
+                                if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
+                                {
+                                    println(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
+                                    weakSelf.sortCurrentElementsForNewUserId()
+                                }
+                            }
+                            
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                if !weakSelf.isReloadingTable
+                                {
+                                    //println(" -> reloading tableView.")
+                                    weakSelf.reloadTableView()
+                                }
+                            })//end of main_queue
+                        }) //end of bgQue
+                    }
                 }
             }
         }
@@ -109,10 +148,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.elementsCreatedByUser?.removeAll(keepCapacity: false)
         self.elementsUserParticipatesIn?.removeAll(keepCapacity: false)
         self.elementsCreatedByUser = nil
-        self.elementsUserParticipatesIn = nil
-        
-        println(" -> Reloading tableview..")
-        self.tableView?.deleteSections(NSIndexSet(indexesInRange: NSMakeRange(0, numberOfSectionsBeforeDeleting)), withRowAnimation: .None)
+        self.elementsUserParticipatesIn = nil      
         
         if let allElements = self.elements
         {
@@ -172,6 +208,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     override func configureNavigationControllerToolbarItems() {
         super.configureNavigationControllerToolbarItems()
         configureNavigationControllerNavigationBarButtonItems()
+    }
+    
+    func configureTopToolbarItems()
+    {
+        
     }
     
     
@@ -476,5 +517,38 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         }
         
         self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    @IBAction func segmentedControlDidChange(sender:UISegmentedControl)
+    {
+        let currentIndex = sender.selectedSegmentIndex
+        //filter archive or non archive elements to show
+        if currentIndex == 1
+        {
+            archivedVisible = true
+        }
+        else if currentIndex == 0
+        {
+            archivedVisible = false
+        }
+        else
+        {
+            archivedVisible = false
+        }
+        
+        self.elements?.removeAll(keepCapacity: false)
+        self.elements = nil
+        self.startLoadingElementsByActivity() // will reload tableView
+        
+    }
+    
+    @IBAction func toolbarItemTapped(sender:UIBarButtonItem)
+    {
+        let currentTag = sender.tag
+        
+        if currentTag > 0
+        {
+            
+        }
     }
 }

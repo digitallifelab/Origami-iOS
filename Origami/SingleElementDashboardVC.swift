@@ -147,13 +147,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 
             }
         })
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
+      
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
@@ -565,12 +566,21 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         if let element = self.currentElement
         {
-            var copyElement = Element(info:element.toDictionary())
+            var copyElement = element.createCopy()
             let currentDate = NSDate()
             if let string = currentDate.dateForServer()
             {
                 let elementId = copyElement.elementId?.integerValue
-                copyElement.archiveDate = string
+                if element.isArchived()
+                {
+                    //will unarchve
+                    copyElement.archiveDate = NSDate.dummyDate()
+                }
+                else
+                {
+                    //will archive
+                    copyElement.archiveDate = string
+                }
                 DataSource.sharedInstance.editElement(copyElement,
                     completionClosure:{[weak self] (edited) -> () in
                     if edited
@@ -578,6 +588,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         if let weakSelf = self
                         {
                             weakSelf.navigationController?.popViewControllerAnimated(true)
+                            if let int = elementId
+                            {
+                                NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
+                            }
                         }
                     }
                 })
