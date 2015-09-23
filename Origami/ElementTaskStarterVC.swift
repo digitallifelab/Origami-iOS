@@ -45,7 +45,6 @@ class ElementTaskStarterVC: UIViewController , UITableViewDelegate, UITableViewD
                 participantsTable?.reloadData()
             }
         }
-        
     }
     
 
@@ -80,6 +79,4 @@ class ElementTaskStarterVC: UIViewController , UITableViewDelegate, UITableViewD
     {
         
     }
-   
-
 }

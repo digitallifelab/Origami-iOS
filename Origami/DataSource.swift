@@ -710,13 +710,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 elementsToReturn.append(lvElement)
             }
         }
-        
-        ObjectsConverter.sortElementsByDate(&elementsToReturn)
-        if !shouldIncludeArchived
+        if !elementsToReturn.isEmpty
         {
-            var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
-            return newElements
+            ObjectsConverter.sortElementsByDate(&elementsToReturn)
+            if !shouldIncludeArchived
+            {
+                var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
+                return newElements
+            }
         }
+    
         return elementsToReturn
     }
     
@@ -1056,79 +1059,93 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func editElement(element:Element, completionClosure completion:(edited:Bool) -> () )
     {
-       DataSource.sharedInstance.serverRequester.editElement(element, completion: { (success, error) -> () in
-       NSOperationQueue().addOperationWithBlock({ () -> Void in
-        
-            if success
-            {
-                if let elementId = element.elementId?.integerValue
-                {
-                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
-                    {
-                        existingElement.title = element.title
-                        existingElement.details = element.details
-                        existingElement.isFavourite = element.isFavourite
-                        existingElement.isSignal = element.isSignal
-                        existingElement.typeId = element.typeId
-                        let currentDate = NSDate()
-                        if let dateForServer = currentDate.dateForServer()
-                        {
-                            existingElement.changeDate = dateForServer
-                        }
-                        existingElement.archiveDate = element.archiveDate
-                        
-                        if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
-                        {
-                            for aParent in rootTree
-                            {
-                                aParent.changeDate = existingElement.changeDate
-                            }
-                        }
-                        
-                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
-                        for aSubElement in subordinates
-                        {
-                            aSubElement.archiveDate = element.archiveDate
-                        }
-                        
-                        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-                    }
-                }
-            }
-        
-            NSOperationQueue.mainQueue().addOperationWithBlock()
-                { () -> Void in
+        if let elementId = element.elementId?.integerValue
+        {
+            DataSource.sharedInstance.serverRequester.editElement(element, completion: { (success, error) -> () in
+                NSOperationQueue().addOperationWithBlock({ () -> Void in
+                    
                     if success
                     {
-                        //println("\r - Edit successfull")
-                        
-                        completion(edited: true)
-                    }
-                    else
-                    {
-                        println("! Warning ! Could not edit element.")
-                        if let errorDict = error?.userInfo
+                        if let existingElement = DataSource.sharedInstance.getElementById(elementId)
                         {
-                            println("Reason : \(errorDict[NSLocalizedDescriptionKey])")
+                            existingElement.title = element.title
+                            existingElement.details = element.details
+                            existingElement.isFavourite = element.isFavourite
+                            existingElement.isSignal = element.isSignal
+                            existingElement.typeId = element.typeId
+                            
+                            let currentDate = NSDate()
+                            if let dateForServer = currentDate.dateForServer()
+                            {
+                                existingElement.changeDate = dateForServer
+                            }
+                            
+                            existingElement.responsible = element.responsible
+                            existingElement.finishState = element.finishState
+                            
+                            if let remindDate = element.remindDate
+                            {
+                                existingElement.remindDate = remindDate
+                            }
+                            
+                            if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
+                            {
+                                for aParent in rootTree
+                                {
+                                    aParent.changeDate = existingElement.changeDate
+                                }
+                            }
+                            
+                            existingElement.archiveDate = element.archiveDate
+                            if existingElement.isArchived()
+                            {
+                                let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
+                                for aSubElement in subordinates
+                                {
+                                    aSubElement.archiveDate = element.archiveDate
+                                }
+                            }
+                            
+                            
+                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                         }
-                        completion(edited: false)
                     }
-            }
-           })
-       })
-       
+                    
+                    NSOperationQueue.mainQueue().addOperationWithBlock()
+                        { () -> Void in
+                            if success
+                            {
+                                //println("\r - Edit successfull")
+                                
+                                completion(edited: true)
+                            }
+                            else
+                            {
+                                println("! Warning ! Could not edit element.")
+                                if let errorDict = error?.userInfo
+                                {
+                                    println("Reason : \(errorDict[NSLocalizedDescriptionKey])")
+                                }
+                                completion(edited: false)
+                            }
+                    }
+                })
+            })
+        }
     }
     
     func updateElement(element:Element, isFavourite favourite:Bool, completion completionClosure:(edited:Bool)->() )
     {
-        let elementId = element.elementId!.integerValue
+        let elementId = element.elementId?.integerValue
+       
         
         serverRequester.setElementWithId(element.elementId!, favourite: favourite) { (success, error) -> () in
             
             if success{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                    if let anId = elementId, existingElement = DataSource.sharedInstance.getElementById(anId)
                     {
+                        existingElement.isFavourite = NSNumber(bool: favourite)
                         let date = NSDate()
                         if let currentStringDate = date.dateForServer()
                         {
@@ -2215,7 +2232,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     block(image: nil, error: error)
                     if error.code == 406
                     {
-                        
                         DataSource.sharedInstance.startLoadingAvatarForUserName(loginName)
                     }
                     
@@ -2244,14 +2260,22 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             //step 2 try to get from disc
             DataSource.sharedInstance.loadAvatarFromDiscForLoginName(loginName, completion: { (image, error) -> () in
                 
-                if let avatarImage = image
+                if let anError = error
                 {
-                    let toReturnImage = DataSource.sharedInstance.reduceImageSize(avatarImage, toSize: CGSizeMake(200, 200))
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completionBlock?(image: toReturnImage)
+                        completionBlock?(image: nil)
                     })
-                    println(" got avatar from Disc..")
-                    return
+                }
+                else
+                {
+                    if let avatarReducedImageData = DataSource.sharedInstance.getAvatarDataForContactUserName(loginName), image = UIImage(data: avatarReducedImageData)
+                    {
+                        completionBlock?(image:image)
+                    }
+                    else
+                    {
+                        completionBlock?(image:nil)
+                    }
                 }
                 //step 3 try to load from server
                 

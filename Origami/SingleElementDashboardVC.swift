@@ -8,9 +8,9 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate {
 
-    weak var currentElement:Element?
+    var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
     var fadeViewControllerAnimator:FadeOpaqueAnimator?
     
@@ -163,20 +163,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         let chatPath = NSIndexPath(forItem: 1, inSection: 0)
         var chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
-        
-        var currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.currentElement!.elementId!.integerValue)
-        if chatCell == nil && currentLastMessages != nil
+        if let elementId = self.currentElement?.elementId?.integerValue
         {
-            prepareCollectionViewDataAndLayout()
-        }
-        else if chatCell != nil && currentLastMessages != nil
-        {
-            if currentLastMessages!.last !== chatCell!.messages?.last
+            var currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId)
+            if chatCell == nil && currentLastMessages != nil
             {
-                chatCell!.messages = currentLastMessages
-                self.collectionView.reloadItemsAtIndexPaths([chatPath])
+                prepareCollectionViewDataAndLayout()
+            }
+            else if chatCell != nil && currentLastMessages != nil
+            {
+                if currentLastMessages!.last !== chatCell!.messages?.last
+                {
+                    chatCell!.messages = currentLastMessages
+                    self.collectionView.reloadItemsAtIndexPaths([chatPath])
+                }
             }
         }
+        
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -438,7 +441,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     func elementFavouriteToggled(notification:NSNotification)
     {
-        if let element = currentElement
+        if let element = currentElement, elementIdInt = element.elementId?.integerValue
         {
             let favourite = element.isFavourite.boolValue
             var isFavourite = !favourite
@@ -454,8 +457,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     if edited
                     {
-                        weakSelf.currentElement!.isFavourite = isFavourite
-                        titleCell?.favourite = isFavourite
+                        //weakSelf.currentElement?.isFavourite = isFavourite
+                       //titleCell?.favourite = isFavourite
+//                        if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
+//                        {
+                            //weakSelf.currentElement = existElement
+                            weakSelf.collectionView?.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+//                        }
                     }
                 }
             }
@@ -623,23 +631,74 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         let anOptionsConverter = ElementOptionsConverter()
         if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: 2)
         {
+            if let element = self.currentElement
+            {
+                if !element.isArchived()
+                {
+                    if element.isOwnedByCurrentUser()
+                    {
+                        
+                    }
+                    else if element.isTaskForCurrentUser()
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    println("\n Error: element is archived. Unarchive first.")
+                }
+            }
             //1 - detect if element is owned
-            //2 - if is owned prompt user to start creating signal with responsible user and remind date
+            //2 - if owned prompt owner to be sure to uncheck TASK
+            //3 - if is not owned, but current user is responsible for this TASK
+            //4- prompt to mark this TASK as finished with some result, or dismiss
+            //5 - if now owned and current user is not responsible - do nothing
         }
         else
         {
-            //1 - detect if element is owned
-            //2 - if owned prompt owner to be sure to uncheck task
-            //3 - if is not owned, but current user is responsible for this task
-            //4- prompt to mark this task as finished with some result, or dismiss
-            //5 - if now owned and current user is not responsible - do nothing
+            if let element = self.currentElement
+            {
+                if !element.isArchived()
+                {
+                    //1 - detect if element is owned
+                    if element.isOwnedByCurrentUser()
+                    {
+                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
+                        if let currentFinishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                        {
+                            switch currentFinishState
+                            {
+                            case .Default:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
+                            case .FinishedBad:
+                                fallthrough
+                            case .FinishedGood:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
+                            case .InProcess:
+                                println(" Element is in process..")
+                                showFinishTaskPrompt()
+                            }
+                        }
+                        
+                        return
+                    }
+                    println("\n Error: Element is not owned by current user.")
+                }
+                else
+                {
+                    println("\n Error: element is archived. Unarchive first.")
+                }
+            }
+            
+            
         }
         
-        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
-        var editingElement = Element(info: self.currentElement!.toDictionary())
-        editingElement.typeId = NSNumber(integer: newOptions)
-        println("new element type id: \(editingElement.typeId)")
-        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+//        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
+//        var editingElement = Element(info: self.currentElement!.toDictionary())
+//        editingElement.typeId = NSNumber(integer: newOptions)
+//        println("new element type id: \(editingElement.typeId)")
+//        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
         
     }
     
@@ -1215,7 +1274,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                     
                                     aSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
                                 })
-                                
                             }
                         }
                     })
@@ -1243,9 +1301,133 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
-    //MARK: MessageTapDelegate
+    //MARK: - MessageTapDelegate
     func chatMessageWasTapped(message: Message?) {
         showChatForCurrentElement()
     }
-
+    
+    //MARK: - Element Task workflow START
+    private func showPromptForBeginingAssigningTaskToSomebodyOrSelf(shouldRestart:Bool)
+    {
+        var alertTitle = "startTaskPrompt".localizedWithComment("")
+        var alertMessage = "startTaskMessage".localizedWithComment("")
+        var okButtonTitle = "start".localizedWithComment("")
+        if shouldRestart
+        {
+            alertTitle = "restartTaskPrompt".localizedWithComment("")
+            alertMessage = "restartTaskMessage".localizedWithComment("")
+        }
+        let cancelButtonTitle = "cancel".localizedWithComment("")
+        if FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            let alertView = UIAlertView(title: alertTitle, message: alertMessage, delegate: self, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: okButtonTitle)
+            alertView.tag = 0x7AF1
+            alertView.show()
+        }
+        else
+        {
+            let cancelAction = UIAlertAction(title: cancelButtonTitle, style: .Cancel, handler: { (alertAction) -> Void in
+                
+            })
+            
+            let startTaskAction = UIAlertAction(title: okButtonTitle, style: .Default, handler: {[weak self] (alertAction) -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.showStartTaskVC()
+                }
+            })
+            let alertController = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+            alertController.addAction(cancelAction)
+            alertController.addAction(startTaskAction)
+            
+            self.presentViewController(alertController, animated: false, completion: { () -> Void in
+                
+            })
+        }
+    }
+    
+    private func alertView(alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int) {
+        
+        let alertViewTag = alertView.tag
+        if alertViewTag == 0x7AF1
+        {
+            if alertView.cancelButtonIndex != buttonIndex
+            {
+                showStartTaskVC()
+            }
+        }
+    }
+    
+    private func showStartTaskVC()
+    {
+        // when current user is owner of currentElement
+        if let element = self.currentElement
+        {
+            if let contactsPicker = self.storyboard?.instantiateViewControllerWithIdentifier("ContactsPickerVC") as? ContactsPickerVC
+            {
+        
+                contactsPicker.delegate = self
+            
+                contactsPicker.shouldShowDatePicker = true
+                
+                contactsPicker.contactsToSelectFrom = DataSource.sharedInstance.getMyContacts()
+                
+                self.navigationController?.pushViewController(contactsPicker, animated: true)
+            }
+        }
+    }
+    
+    private func showFinishTaskPrompt()
+    {
+        //when current user is responsible for TASK finishing (either he is owner of currentElement or not)
+        
+        //show popup with dismiss button and "good"-"bad" buttons
+        
+    }
+    //MARK: TableItemPickerDelegate
+    func itemPickerDidCancel(itemPicker: AnyObject) {
+        //did
+        
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, remindDate = contactsPickerVC.datePicker?.date
+        {
+            sendElementTaskNewResponsiblePerson(aNumber.integerValue, remindDate:remindDate)
+        }
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? Contact, remindDate = contactsPickerVC.datePicker?.date, contactId = contactPicked.contactId
+        {
+            self.navigationController?.popViewControllerAnimated(true)
+            
+            sendElementTaskNewResponsiblePerson(contactId.integerValue, remindDate:remindDate)
+        }
+        else
+        {
+            self.navigationController?.popViewControllerAnimated(true)
+        }
+    }
+    
+    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, remindDate:NSDate)
+    {
+        if let element = self.currentElement
+        {
+            let copy = element.createCopy()
+            copy.responsible = NSNumber(integer: responsiblePersonId)
+            copy.finishState = NSNumber(integer: ElementFinishState.InProcess.rawValue)
+            copy.remindDate = remindDate
+            let optionsConverter = ElementOptionsConverter()
+            let newOptions = optionsConverter.toggleOptionChange(copy.typeId.integerValue, selectedOption: 2)
+            copy.typeId = NSNumber(integer: newOptions)
+            
+            DataSource.sharedInstance.editElement(copy, completionClosure: {[weak self] (edited) -> () in
+                if let weakSelf = self
+                {
+                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)])
+                }
+            })
+        }
+    }
+    
+    //MARK: Element Task workflow FINISH -
 }

@@ -96,6 +96,14 @@ extension NSDate
     }
 }
 
+extension Int {
+    var days: NSTimeInterval {
+        let DAY_IN_SECONDS = 60 * 60 * 24
+        var days:Double = Double(DAY_IN_SECONDS) * Double(self)
+        return days
+    }
+}
+
 extension NSString
 {
     func dateFromServerDateString() -> NSDate?

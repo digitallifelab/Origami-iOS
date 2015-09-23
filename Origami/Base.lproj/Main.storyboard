@@ -2986,61 +2986,89 @@
             </objects>
             <point key="canvasLocation" x="3346" y="2166"/>
         </scene>
-        <!--Pick Contact-->
-        <scene sceneID="ljH-DZ-KIv">
+        <!--Contacts PickerVC-->
+        <scene sceneID="Bri-FW-TSM">
             <objects>
-                <tableViewController storyboardIdentifier="ConfigurableContactsVC" title="Pick Contact" useStoryboardIdentifierAsRestorationIdentifier="YES" id="1pq-2Y-8GN" customClass="ConfigurableContactsVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="22" sectionFooterHeight="22" id="KLT-dV-SFK">
+                <viewController storyboardIdentifier="ContactsPickerVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3nB-Gt-7O6" customClass="ContactsPickerVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="oxV-V2-vWQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="LZS-EY-IHP"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="V2z-OC-zeK">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="74F-Q8-UHh">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="SelectableContactCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="SelectableContactCell" rowHeight="65" id="ZtG-yD-HDg" customClass="SelectableContactCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                        <rect key="frame" x="10" y="10" width="600" height="65"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ZtG-yD-HDg" id="MPN-0W-w41">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="f9f-LH-uVw">
+                                                    <rect key="frame" x="8" y="2" width="60" height="60"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="60" id="3xh-cl-nMP"/>
+                                                        <constraint firstAttribute="width" constant="60" id="jXE-Br-WzS"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name Lastname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kyu-Lb-nDW">
+                                                    <rect key="frame" x="76" y="20" width="480" height="23"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="23" id="BCs-tz-5EH"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-checked" translatesAutoresizingMaskIntoConstraints="NO" id="chE-D3-ulw">
+                                                    <rect key="frame" x="562" y="16" width="30" height="30"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="yYP-Ii-JM4"/>
+                                                        <constraint firstAttribute="width" constant="30" id="zdQ-hh-O19"/>
+                                                    </constraints>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="kyu-Lb-nDW" firstAttribute="leading" secondItem="f9f-LH-uVw" secondAttribute="trailing" constant="8" id="2uO-WY-Qpn"/>
+                                                <constraint firstAttribute="trailing" secondItem="kyu-Lb-nDW" secondAttribute="trailing" constant="44" id="6m4-nP-xEe"/>
+                                                <constraint firstAttribute="trailing" secondItem="chE-D3-ulw" secondAttribute="trailing" constant="8" id="Rm6-Mu-86H"/>
+                                                <constraint firstAttribute="centerY" secondItem="chE-D3-ulw" secondAttribute="centerY" constant="1" id="UDV-TC-kSZ"/>
+                                                <constraint firstItem="kyu-Lb-nDW" firstAttribute="centerY" secondItem="f9f-LH-uVw" secondAttribute="centerY" id="c7M-ta-LGy"/>
+                                                <constraint firstAttribute="centerY" secondItem="f9f-LH-uVw" secondAttribute="centerY" id="cpz-W7-s53"/>
+                                                <constraint firstItem="f9f-LH-uVw" firstAttribute="leading" secondItem="MPN-0W-w41" secondAttribute="leadingMargin" id="zmH-Hk-yan"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="avatarImageView" destination="f9f-LH-uVw" id="Siy-q9-i0X"/>
+                                            <outlet property="contactNameLabel" destination="kyu-Lb-nDW" id="dt3-gx-qss"/>
+                                            <outlet property="selectionIndicator" destination="chE-D3-ulw" id="KC7-8W-rOF"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" restorationIdentifier="SelectableContactCell" selectionStyle="default" indentationWidth="10" reuseIdentifier="SelectableContactCell" rowHeight="65" id="U2W-Ki-yQy" customClass="SelectableContactCell" customModule="Origami_task_manager" customModuleProvider="target">
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="U2W-Ki-yQy" id="Qxu-dm-CB6">
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1DG-H1-idx">
-                                            <rect key="frame" x="8" y="2" width="60" height="60"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="60" id="phv-T4-cE1"/>
-                                                <constraint firstAttribute="width" constant="60" id="rpx-8N-T75"/>
-                                            </constraints>
-                                        </imageView>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name Lastname" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="igC-pA-iQH">
-                                            <rect key="frame" x="76" y="20" width="516" height="23"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="23" id="gLi-hX-eyp"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="centerY" secondItem="1DG-H1-idx" secondAttribute="centerY" id="01V-C9-Jq8"/>
-                                        <constraint firstItem="igC-pA-iQH" firstAttribute="trailing" secondItem="Qxu-dm-CB6" secondAttribute="trailingMargin" id="6tS-Ht-ugb"/>
-                                        <constraint firstItem="igC-pA-iQH" firstAttribute="centerY" secondItem="1DG-H1-idx" secondAttribute="centerY" constant="-0.5" id="dUh-Ut-M1d"/>
-                                        <constraint firstItem="igC-pA-iQH" firstAttribute="leading" secondItem="1DG-H1-idx" secondAttribute="trailing" constant="8" id="eQw-GV-0U8"/>
-                                        <constraint firstItem="1DG-H1-idx" firstAttribute="leading" secondItem="Qxu-dm-CB6" secondAttribute="leadingMargin" id="sWs-ij-ayG"/>
-                                    </constraints>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <outlet property="avatarImageView" destination="1DG-H1-idx" id="j2k-id-sao"/>
-                                    <outlet property="contactNameLabel" destination="igC-pA-iQH" id="fzC-0V-Kf1"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="1pq-2Y-8GN" id="IFC-Mm-43J"/>
-                            <outlet property="delegate" destination="1pq-2Y-8GN" id="QMd-tN-m7L"/>
-                        </connections>
-                    </tableView>
-                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="qEC-gP-P7n" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <constraints>
+                            <constraint firstItem="74F-Q8-UHh" firstAttribute="top" secondItem="V2z-OC-zeK" secondAttribute="top" id="2Ir-4S-dC9"/>
+                            <constraint firstAttribute="trailing" secondItem="74F-Q8-UHh" secondAttribute="trailing" id="TfM-fQ-w5N"/>
+                            <constraint firstItem="74F-Q8-UHh" firstAttribute="leading" secondItem="V2z-OC-zeK" secondAttribute="leading" id="ZNO-R0-xvD"/>
+                            <constraint firstItem="74F-Q8-UHh" firstAttribute="bottom" secondItem="LZS-EY-IHP" secondAttribute="top" id="gXP-eb-d9I"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="74F-Q8-UHh" id="oXp-bl-fWU"/>
+                        <outlet property="view" destination="V2z-OC-zeK" id="fHr-h2-tXv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="VmC-G4-xNd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4122" y="2022"/>
+            <point key="canvasLocation" x="4334" y="2032"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="DVC-Xg-M5w">
@@ -3067,6 +3095,7 @@
     <resources>
         <image name="icon-arch" width="50" height="50"/>
         <image name="icon-attach" width="50" height="50"/>
+        <image name="icon-checked" width="50" height="50"/>
         <image name="icon-contacts" width="50" height="50"/>
         <image name="icon-edit" width="50" height="50"/>
         <image name="icon-favourite" width="50" height="50"/>

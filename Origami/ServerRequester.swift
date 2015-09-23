@@ -382,8 +382,22 @@ class ServerRequester: NSObject
             dispatch_async(bgQueue, { () -> Void in
 
                 let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
-                let elementDict = element.toDictionary()
+                var elementDict = element.toDictionary()
+                if let archDateString = elementDict["ArchDate"] as? String
+                {
+                    if archDateString == kWrongEmptyDate
+                    {
+                        NSLog(" -> Archive date of element to pass: \n \(archDateString)\n <---<")
+                        elementDict["ArchDate"] = "/Date(0)/"
+                    }
+                    else if archDateString == "/Date(0)/"
+                    {
+                        elementDict["ArchDate"] = nil
+                    }
+                }
                 let params = ["element":elementDict]
+                let debugDescription = params.description
+                NSLog("Sending editElement params: \n \(debugDescription) \n")
                 let manager = AFHTTPRequestOperationManager()
                 let requestSerializer = AFJSONRequestSerializer()
                 requestSerializer.timeoutInterval = 15.0

@@ -145,18 +145,18 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                         }
                         else
                         {
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(username, completion: {[weak self] (_, _) -> () in
-                                    if let weakSelf = self
-                                    {
-                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                            weakSelf.messagesTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-                                        })
-                                        
-                                    }
-                                 
-                                })
-                            })
+//                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+//                                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(username, completion: {[weak self] (_, _) -> () in
+//                                    if let weakSelf = self
+//                                    {
+//                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                            weakSelf.messagesTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+//                                        })
+//                                        
+//                                    }
+//                                 
+//                                })
+//                            })
                           
                         }
                     }

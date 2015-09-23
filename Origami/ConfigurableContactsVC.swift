@@ -14,6 +14,7 @@ class ConfigurableContactsVC: UITableViewController {
     var contactsToSelectFrom:[Contact]?
     var delegate:TableItemPickerDelegate?
     var avatarsHolder:[NSIndexPath:UIImage] = [NSIndexPath:UIImage]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -43,12 +44,15 @@ class ConfigurableContactsVC: UITableViewController {
                 }
             }
         }
-        
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     }
 
     // MARK: - Table view data source
@@ -154,7 +158,6 @@ class ConfigurableContactsVC: UITableViewController {
     }
     
     
-
    
 
 }

@@ -42,6 +42,9 @@
 "delete" = "Delete";
 "done" = "Done";
 "change" = "Change";
+"start" = "Start";
+"startTaskPrompt" = "New task";
+"startTaskMessage" = "Assign responsible for new task, and set remind date.";
 "sureToChangePassword" = "Are you sure to change password?";
 "attention" = "Attention";
 

@@ -8,6 +8,7 @@
 
 import Foundation
 
+let kWrongEmptyDate = "/Date(0+0000)/"
 
 let currentLogin = "CurrentUser"
 let currentPassword = "CurrentPassword"

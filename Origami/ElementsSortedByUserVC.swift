@@ -460,7 +460,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func selectElementsOwnerTapped(sender:AnyObject)
     {
-        if let contactsPicker = self.storyboard?.instantiateViewControllerWithIdentifier("ConfigurableContactsVC") as? ConfigurableContactsVC
+        if let contactsPicker = self.storyboard?.instantiateViewControllerWithIdentifier("ContactsPickerVC") as? ContactsPickerVC
         {
             contactsPicker.delegate = self
             

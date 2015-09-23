@@ -140,7 +140,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementSubordinates() -> [Element]?
     {
-        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId?.integerValue, shouldIncludeArchived: false)
+        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId?.integerValue, shouldIncludeArchived: true)
         
         if subordinates.isEmpty
         {

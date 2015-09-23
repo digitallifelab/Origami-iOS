@@ -111,8 +111,6 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     func setupActionButtons(active:Bool)
     {
-        //buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
-
         colorizeButtons()
         
         if active
@@ -166,7 +164,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue) as? UIButton
         {
             signalButton.setImage((UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
-            signalButton.backgroundColor = (currentElement.isSignal.boolValue) ? kDaySignalColor : UIColor.clearColor()
+            signalButton.tintColor = (currentElement.isSignal.boolValue) ? kDaySignalColor : kWhiteColor
         }
     }
     
@@ -174,32 +172,106 @@ class SingleElementTitleCell: UICollectionViewCell {
     {
         if let currentElement = self.handledElement, ideaButton = self.viewWithTag(ActionButtonCellType.Idea.rawValue)
         {
-            let enabled = (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
-            if enabled
+//            let enabled = (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
+//            if enabled
+//            {
+//                ideaButton.backgroundColor = kDaySignalColor
+//            }
+//            else
+//            {
+//                ideaButton.backgroundColor = UIColor.clearColor()
+//            }
+//            
+            
+            if (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
             {
-                ideaButton.backgroundColor = kDaySignalColor
+                ideaButton.tintColor = kDaySignalColor
             }
             else
             {
-                ideaButton.backgroundColor = UIColor.clearColor()
+                if currentElement.isOwnedByCurrentUser()
+                {
+                    ideaButton.tintColor = kWhiteColor
+                }
+                else
+                {
+                    ideaButton.hidden = true
+                }
             }
-            
         }
     
     }
     
-    private func setupCheckMarkButton()
+    private func setupCheckMarkButton() //task
     {
-        if let currentElement = self.handledElement, checkmarkButton = self.viewWithTag(ActionButtonCellType.CheckMark.rawValue)
+        if let currentElement = self.handledElement, checkmarkButton = self.viewWithTag(ActionButtonCellType.CheckMark.rawValue) as? UIButton
         {
-            if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
+            if currentElement.isOwnedByCurrentUser()
             {
-                checkmarkButton.backgroundColor = kDaySignalColor
+                if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
+                {
+                    checkmarkButton.tintColor = kWhiteColor
+                    if currentElement.isFinished()
+                    {
+                        if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                        {
+                            switch finishState
+                            {
+                            case .Default:
+                                checkmarkButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                            case .InProcess:
+                                checkmarkButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                            case .FinishedGood:
+                                checkmarkButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                            case .FinishedBad:
+                                checkmarkButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        checkmarkButton.tintColor = kDaySignalColor
+                        checkmarkButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                    }
+                }
+                else
+                {
+                    checkmarkButton.tintColor = kWhiteColor
+                    checkmarkButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                }
+            }
+            else if currentElement.isTaskForCurrentUser()
+            {
+                if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
+                {
+                    if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                    {
+                        switch finishState
+                        {
+                        case .Default:
+                            checkmarkButton.hidden = true
+                        case .InProcess:
+                            checkmarkButton.tintColor = kDaySignalColor
+                            checkmarkButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                        case .FinishedGood:
+                            checkmarkButton.tintColor = kWhiteColor
+                            checkmarkButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                        case .FinishedBad:
+                            checkmarkButton.tintColor = kWhiteColor
+                            checkmarkButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                        }
+                    }
+                }
+                else
+                {
+                    
+                }
             }
             else
             {
-                checkmarkButton.backgroundColor = UIColor.clearColor()
+                checkmarkButton.hidden = true
             }
+            
         }
     }
     
@@ -209,11 +281,18 @@ class SingleElementTitleCell: UICollectionViewCell {
         {
             if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue))
             {
-                decisionButton.backgroundColor = kDaySignalColor
+                decisionButton.tintColor = kDaySignalColor
             }
             else
             {
-                decisionButton.backgroundColor = UIColor.clearColor()
+                if currentElement.isOwnedByCurrentUser()
+                {
+                    decisionButton.tintColor = kWhiteColor
+                }
+                else
+                {
+                    decisionButton.hidden = true
+                }
             }
         }
     }

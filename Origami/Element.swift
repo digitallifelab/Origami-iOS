@@ -20,14 +20,21 @@ class Element:NSObject
     var isSignal:NSNumber = NSNumber(integer: 0)
     var isFavourite:NSNumber = NSNumber(integer: 0)
     var hasAttaches:NSNumber = NSNumber(integer: 0)
-    var finishState:NSNumber?
+    var finishState:NSNumber = NSNumber(integer: 10)
     var finishDate:NSDate?
     var remindDate:NSDate?
     var creatorId:NSNumber = NSNumber(integer: 0)
     var createDate:NSString?
     var changerId:NSNumber?
     var changeDate:NSString?
-    var archiveDate:NSString?
+    var archiveDate:NSString? {
+        didSet{
+            if archiveDate as! String == kWrongEmptyDate
+            {
+                
+            }
+        }
+    }
     
     convenience init(info:[String:AnyObject])
     {
@@ -76,7 +83,7 @@ class Element:NSObject
         {
             self.finishState = finish
         }
-        if let finishDate = info["FinishDate"] as? NSString
+        if let finishDate = info["FinishDate"] as? String
         {
             self.finishDate = finishDate.dateFromServerDateString() //still optional
         }
@@ -104,9 +111,18 @@ class Element:NSObject
         {
             self.changeDate = lvChangeDate
         }
-        if let archDate = info["ArchDate"] as? NSString
+        if let archDate = info["ArchDate"] as? String
         {
-            self.archiveDate = archDate
+            if archDate == kWrongEmptyDate
+            {
+                NSLog(" \n Element archive date recieved : \"\(archDate)\" \n")
+                self.archiveDate = "/Date(0)/"
+            }
+            else
+            {
+                self.archiveDate = archDate
+            }
+           
         }
         if info["PassWhomIds"] !== NSNull()
         {
@@ -137,8 +153,16 @@ class Element:NSObject
         toReturn["IsSignal"] = self.isSignal //?? NSNull()
         toReturn["IsFavorite"] = self.isFavourite //?? NSNull()
         toReturn["FinishState"] = self.finishState //?? NSNull()
-        toReturn["FinishDate"] = self.finishDate?.dateForServer() //?? NSDate.dummyDate() //extension on NSDate
-        toReturn["RemindDate"] = self.remindDate?.dateForServer() //?? NSDate.dummyDate()
+        toReturn["FinishDate"] = self.finishDate?.dateForServer() ?? NSDate.dummyDate() //extension on NSDate
+        toReturn["RemindDate"] = self.remindDate?.dateForServer() ?? NSDate.dummyDate()
+        if let archDateString = self.archiveDate as? String
+        {
+            if archDateString == kWrongEmptyDate
+            {
+                self.archiveDate = NSDate.dummyDate()
+            }
+        }
+        
         toReturn["ArchDate"] = self.archiveDate //?? NSNull()
         toReturn["CreateDate"] = self.createDate //?? NSNull()
         toReturn["CreatorId"] = self.creatorId //?? NSNull()
@@ -158,11 +182,46 @@ class Element:NSObject
     {
         if let archiveDateString = self.archiveDate as? String, let archiveDate = archiveDateString.dateFromServerDateString()
         {
+            println("\n ->Element IS ARCHIVED: \" \(self.title!) , , ElementId: \(self.elementId!.integerValue), \" \(archiveDateString) =  \(archiveDate) \n")
             return true
+        }
+        println("\n -> Element NOT ARCHIVED:  \(self.title!) , ElementId: \(self.elementId!.integerValue) , archiveDate: \(self.archiveDate!) \n")
+        return false
+    }
+    
+    func isOwnedByCurrentUser() -> Bool
+    {
+        if let user = DataSource.sharedInstance.user, userIdInt = user.userId?.integerValue
+        {
+            if userIdInt == self.creatorId.integerValue
+            {
+                return true
+            }
         }
         return false
     }
     
+    func isTaskForCurrentUser() -> Bool
+    {
+        if let user = DataSource.sharedInstance.user, userIdInt = user.userId?.integerValue
+        {
+            if userIdInt == self.responsible.integerValue
+            {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func isFinished() -> Bool
+    {
+        if let finishDateString = self.finishDate
+        {
+            return true
+        }
+        return false
+    }
+        
     override var hash:Int
         {
             let integer = self.title!.hashValue ^ self.elementId!.hashValue
@@ -177,6 +236,8 @@ class Element:NSObject
             var elementIdIsEqual = false
             var typeIdsEqual = false
             var isSignalEqual = false
+            var finishStateIsEqual = false
+            var remindDateIsEqual = false
             
             if self.elementId != nil && lvElement.elementId != nil
             {
@@ -217,7 +278,13 @@ class Element:NSObject
                 isSignalEqual = true
             }
             
-            let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual
+            if self.finishState.isEqualToNumber(lvElement.finishState)
+            {
+                finishStateIsEqual = true
+            }
+            
+            
+            let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual && finishStateIsEqual
             return equal
             
         }

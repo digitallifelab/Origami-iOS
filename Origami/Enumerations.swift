@@ -98,6 +98,13 @@ enum ActionButtonCellType:Int
     case Solution //7
 }
 
+enum ElementFinishState:Int{
+    case Default = 10
+    case InProcess = 20
+    case FinishedGood = 30
+    case FinishedBad = 40
+}
+
 enum FadedTransitionDirection:String {
     case FadeIn = "FadeIn"
     case FadeOut = "FadeOut"
