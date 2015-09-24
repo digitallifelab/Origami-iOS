@@ -80,8 +80,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         
                         if let userId = DataSource.sharedInstance.user?.userId
                         {
-                           // DataSource.sharedInstance.dataRefresher = DataRefresher()
-                           // DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                            DataSource.sharedInstance.dataRefresher = DataRefresher()
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                             if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
                             {
 //                                if let aSelf = self
@@ -154,6 +154,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
             }
         }
+        
+        self.collectionDashboard.layer.borderColor = UIColor.brownColor().CGColor
+        self.collectionDashboard.layer.borderWidth = 2.0
     }
     
     override func viewWillDisappear(animated: Bool)

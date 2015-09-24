@@ -11,7 +11,7 @@ import UIKit
 class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     
     //var messagesLoader = MessagesLoader()
-    //var dataRefresher:DataRefresher?
+    var dataRefresher:DataRefresher?
     var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer()
     var tapToDismissRecognizer:UITapGestureRecognizer = UITapGestureRecognizer()
     var leftMenuVC:MenuVC?
@@ -95,9 +95,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                         self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
                     }
                     navController.setViewControllers([homeVC], animated: true)
-                    //self.presentViewController(navController, animated: true, completion: nil)
-                    
-                    
                 }
             }
             

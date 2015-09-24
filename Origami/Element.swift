@@ -85,7 +85,16 @@ class Element:NSObject
         }
         if let finishDate = info["FinishDate"] as? String
         {
-            self.finishDate = finishDate.dateFromServerDateString() //still optional
+            if let date = finishDate.dateFromServerDateString() //still optional
+            {
+                println("_finish date string_: \(finishDate) ")
+                self.finishDate = date
+                println("_finish date_ : \(self.finishDate!)")
+            }
+//            else
+//            {
+//                println("_finish date_ : could not be converted")
+//            }
         }
         if let remind = info["RemindDate"] as? NSString
         {
@@ -141,7 +150,7 @@ class Element:NSObject
     func toDictionary() -> [String:AnyObject]
     {
         var toReturn = [String:AnyObject]()
-        
+        toReturn["Responsible"] = self.responsible
         toReturn["ElementId"] = self.elementId //?? NSNull()
         toReturn["RootElementId"] = self.rootElementId //?? NSNull()
         toReturn["TypeId"] = self.typeId //?? NSNull()
@@ -168,7 +177,10 @@ class Element:NSObject
         toReturn["CreatorId"] = self.creatorId //?? NSNull()
         toReturn["ChangeDate"] = self.changeDate //?? NSNull()
         toReturn["ChangerId"] = self.changerId //?? NSNull()
-        
+        if let finishString = toReturn["FinishDate"] as? String
+        {
+            println(" \n-> Returning description of element: [ArchDate] = [\(self.archiveDate!)] , [FinishDate] = [\(finishString)]\n ")
+        }
         return toReturn
     }
     
@@ -182,10 +194,10 @@ class Element:NSObject
     {
         if let archiveDateString = self.archiveDate as? String, let archiveDate = archiveDateString.dateFromServerDateString()
         {
-            println("\n ->Element IS ARCHIVED: \" \(self.title!) , , ElementId: \(self.elementId!.integerValue), \" \(archiveDateString) =  \(archiveDate) \n")
+            //println("\n ->Element IS ARCHIVED: \" \(self.title!) , , ElementId: \(self.elementId!.integerValue), \" \(archiveDateString) =  \(archiveDate) \n")
             return true
         }
-        println("\n -> Element NOT ARCHIVED:  \(self.title!) , ElementId: \(self.elementId!.integerValue) , archiveDate: \(self.archiveDate!) \n")
+        //println("\n -> Element NOT ARCHIVED:  \(self.title!) , ElementId: \(self.elementId!.integerValue) , archiveDate: \(self.archiveDate!) \n")
         return false
     }
     
@@ -237,7 +249,6 @@ class Element:NSObject
             var typeIdsEqual = false
             var isSignalEqual = false
             var finishStateIsEqual = false
-            var remindDateIsEqual = false
             
             if self.elementId != nil && lvElement.elementId != nil
             {

@@ -44,7 +44,11 @@
 "change" = "Change";
 "start" = "Start";
 "startTaskPrompt" = "New task";
-"startTaskMessage" = "Assign responsible for new task, and set remind date.";
+"startTaskMessage" = "Assign responsible for new task, and set finish date.";
+"restartTaskPrompt" = "Restart task";
+"restartTaskMessage" = "Assign new responsible for task and set new finish date.";
+"FinishTaskPromptText" = "Shoose result for finishing current task.";
+
 "sureToChangePassword" = "Are you sure to change password?";
 "attention" = "Attention";
 

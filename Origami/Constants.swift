@@ -48,6 +48,8 @@ let passWhomelementUrlPart = "GetPassWhomIds"
 let passElementUrlPart = "PassElement"
 let passElementUserUrlPart = "userPassTo"
 let deleteElementUrlPart = "DeleteElement"
+let finishDateUrlPart = "SetFinished"
+let finishStateUrlPart = "SetFinishState"
 
 //Attaches
 let getAttachFileUrlPart = "GetAttachedFile"

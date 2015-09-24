@@ -362,30 +362,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 
                 //println("\n-----------Layout for attach file collection holder cell-----------\n")
             }
-            
-//            if privateStruct.buttonsCell
-//            {
-//                let buttonsIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-//                var buttonsFrame = CGRectMake(offsetX, offsetY, mainFrameWidth, 110.0)
-//                if CGRectGetMaxX(buttonsFrame) > mainFrameWidth
-//                {
-//                    offsetX = mainFrame.origin.x
-//                    buttonsFrame.origin.x = offsetX
-//                }
-//                var buttonsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: buttonsIndexPath)
-//                buttonsAttribute.frame = buttonsFrame
-//                cellLayoutAttributes[buttonsIndexPath] = buttonsAttribute
-//                itemIndex += 1
-//                
-//
-//                let checkOffsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
-//                
-//                if checkOffsetX < offsetX
-//                {
-//                    offsetX = checkOffsetX
-//                    offsetY += CGRectGetHeight(buttonsFrame); //println("moved down left after BUTTONS cell")
-//                }
-//            }
+
             
             if let subordinateData = privateStruct.subordinates
             {

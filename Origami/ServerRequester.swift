@@ -285,7 +285,7 @@ class ServerRequester: NSObject
                                 let lvElement = Element(info: lvElementDict)
                                 elements.insert(lvElement)
                             }
-                            println("loaded \(elements.count) elements.. ")
+                            println("\n -> loaded \(elements.count) elements.. ")
                             
                             completion(Array(elements),nil)
                         }
@@ -390,10 +390,11 @@ class ServerRequester: NSObject
                         NSLog(" -> Archive date of element to pass: \n \(archDateString)\n <---<")
                         elementDict["ArchDate"] = "/Date(0)/"
                     }
-                    else if archDateString == "/Date(0)/"
-                    {
-                        elementDict["ArchDate"] = nil
-                    }
+                    
+//                    if archDateString == "/Date(0)/"
+//                    {
+//                        elementDict["ArchDate"] = nil
+//                    }
                 }
                 let params = ["element":elementDict]
                 let debugDescription = params.description
@@ -569,6 +570,144 @@ class ServerRequester: NSObject
         }
         
         deleteOperation?.start()
+    }
+    
+    func setElementFinished(elementId:Int, finishDate:String, completion:((success:Bool)->())?)
+    {
+        //SetFinished
+        if let userToken = DataSource.sharedInstance.user?.token as? String
+        {
+            let requestString = serverURL + finishDateUrlPart + "?token=" + userToken + "&elementId=" + "\(elementId)" //+ "&date=" + "\(finishDate)"
+            if let url = NSURL(string: requestString)
+            {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                var finishStateRequest = NSMutableURLRequest(URL: url)
+                finishStateRequest.HTTPMethod = "POST"
+                finishStateRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+                finishStateRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                finishStateRequest.setValue(finishDate, forHTTPHeaderField: "date")
+                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void in
+                    
+                    if let error = responseError
+                    {
+                        NSLog(" Error Setting finish Date for element:   \n \(error.description)")
+                        completion?(success:false)
+                    }
+                    if let data = responseData
+                    {
+                        if data.length == 0
+                        {
+                            
+                        }
+                        else
+                        {
+                            var errorParsing:NSError?
+                            if let jsonResponse = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &errorParsing) as? [String:AnyObject]
+                            {
+                                if jsonResponse.isEmpty
+                                {
+                                    completion?(success:true)
+                                }
+                                println("\n Set Finish Date response: \(jsonResponse)")
+                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                                return
+                            }
+                            
+                            if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
+                            {
+                                let range =  stringFromData.rangeOfString("String was not recognized as a valid DateTime.")
+                                println("\(range)")
+                                if range.location != Int.max
+                                {
+                                    completion?(success:false)
+                                }
+                                else
+                                {
+                                    completion?(success: true)
+                                }
+                                
+                            }
+
+                        }
+                    }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+
+
+                
+                })
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                    postFinishStateTask.resume()
+                })
+            
+                
+                
+                //                    let params = ["token":userToken, "date":finishDate, "elementId":elementId] as [String:AnyObject]
+                //
+                //                    let finishDateOparetion = self.httpManager.POST(requestString, parameters: params, success: { (operation, responseObject) -> Void in
+                //
+                //                    }, failure: { (operation, responseError) -> Void in
+                //
+                //                    })
+                //                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                //                    finishDateOparetion.start()
+                //                }
+            }
+            else
+            {
+                completion?(success: false)
+            }
+        }
+        else
+        {
+            completion?(success:false)
+        }
+    }
+    
+    func setElementFinishState(elementId:Int, finishState:Int, completion:((success:Bool)->())?)
+    {
+        //SetFinishState
+        
+        if let userToken = DataSource.sharedInstance.user?.token as? String
+        {
+            let requestString = serverURL + finishStateUrlPart + "?token=" + userToken + "&elementId=" + "\(elementId)" + "&finishState=" + "\(finishState)"
+            if let url = NSURL(string: requestString)
+            {
+             
+                var finishStateRequest = NSMutableURLRequest(URL: url)
+                finishStateRequest.HTTPMethod = "POST"
+                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, pesponseError) -> Void in
+                    var errorParsing:NSError?
+                    if let jsonResponse = NSJSONSerialization.JSONObjectWithData(responseData, options: NSJSONReadingOptions.AllowFragments, error: &errorParsing) as? [String:AnyObject]
+                    {
+                        if jsonResponse.isEmpty
+                        {
+                            completion?(success:true)
+                        }
+                    }
+                    if let jsonResponse =  NSJSONSerialization.JSONObjectWithData(responseData, options: NSJSONReadingOptions.AllowFragments, error: &errorParsing) as? String
+                    {
+                        if jsonResponse.isEmpty
+                        {
+                            //completion?(success:true)
+                        }
+                    }
+                    
+                })
+                
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                   postFinishStateTask.resume()
+                })
+            }
+            else
+            {
+                completion?(success: false)
+            }
+        }
+        else
+        {
+            completion?(success:false)
+        }
     }
     
     //MARK: Messages

@@ -210,7 +210,7 @@
                         <viewControllerLayoutGuide type="bottom" id="WBg-rL-2c0"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="dTD-fZ-POl">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Yi0-Xo-9bL">
@@ -223,11 +223,11 @@
                                     <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" horizontalCompressionResistancePriority="751" reuseIdentifier="DashCell" id="mN6-SB-qvR" customClass="DashCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" horizontalCompressionResistancePriority="751" reuseIdentifier="DashCell" id="mN6-SB-qvR" customClass="DashCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="120" height="120"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="206" height="120"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m80-QP-Ba5" userLabel="signalDetectorView">
@@ -252,7 +252,7 @@
                                                     </variation>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X69-zu-5f4" userLabel="signalsLabel">
-                                                    <rect key="frame" x="95" y="72" width="17" height="40"/>
+                                                    <rect key="frame" x="181" y="72" width="17" height="40"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI-SemiBold" family="Segoe UI" pointSize="30"/>
                                                     <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
@@ -264,7 +264,7 @@
                                                     </variation>
                                                 </label>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-flag" translatesAutoresizingMaskIntoConstraints="NO" id="XNK-cf-nC7" userLabel="flagIconImageView">
-                                                    <rect key="frame" x="30" y="30" width="60" height="60"/>
+                                                    <rect key="frame" x="73" y="30" width="60" height="60"/>
                                                     <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="60" id="pT4-a5-CtG"/>
@@ -272,14 +272,19 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="500" horizontalCompressionResistancePriority="100" verticalCompressionResistancePriority="500" text="Label" lineBreakMode="clip" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DOH-i4-k5z" userLabel="titleLabel">
-                                                    <rect key="frame" x="16" y="8" width="88" height="23"/>
+                                                    <rect key="frame" x="16" y="8" width="174" height="23"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="88" id="7sr-JM-mL7"/>
-                                                        <constraint firstAttribute="height" constant="23" id="GOn-2y-Qzd"/>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="88" id="7sr-JM-mL7"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" name="SegoeUI-SemiBold" family="Segoe UI" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
+                                                    <size key="shadowOffset" width="0.0" height="0.0"/>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="7sr-JM-mL7"/>
+                                                        </mask>
+                                                    </variation>
                                                     <variation key="heightClass=regular" misplaced="YES">
                                                         <rect key="frame" x="16" y="8" width="58" height="20"/>
                                                     </variation>
@@ -288,7 +293,7 @@
                                                     </variation>
                                                 </label>
                                                 <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="100" verticalHuggingPriority="200" horizontalCompressionResistancePriority="100" verticalCompressionResistancePriority="240" text="Label" lineBreakMode="clip" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7az-Gp-NEg" userLabel="descriptionLabel">
-                                                    <rect key="frame" x="16" y="48" width="88" height="64"/>
+                                                    <rect key="frame" x="16" y="48" width="182" height="64"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -303,12 +308,12 @@
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="c3m-Jd-F3G" firstAttribute="top" secondItem="DOH-i4-k5z" secondAttribute="bottom" constant="8" id="BIa-Xj-fPR"/>
                                             <constraint firstItem="7az-Gp-NEg" firstAttribute="top" secondItem="c3m-Jd-F3G" secondAttribute="bottom" constant="8" id="DPX-ly-tYS"/>
                                             <constraint firstItem="m80-QP-Ba5" firstAttribute="top" secondItem="mN6-SB-qvR" secondAttribute="top" id="EVa-QE-ezw"/>
                                             <constraint firstAttribute="bottom" secondItem="7az-Gp-NEg" secondAttribute="bottom" constant="8" id="I1K-te-5KD"/>
-                                            <constraint firstAttribute="trailing" secondItem="7az-Gp-NEg" secondAttribute="trailing" constant="16" id="J3a-ZN-hIA"/>
                                             <constraint firstAttribute="centerY" secondItem="XNK-cf-nC7" secondAttribute="centerY" id="MNa-cq-Xa6"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="leading" secondItem="c3m-Jd-F3G" secondAttribute="leading" id="NaF-WU-kT1"/>
                                             <constraint firstAttribute="trailing" secondItem="DOH-i4-k5z" secondAttribute="trailing" constant="16" id="PaY-m4-XbE"/>
@@ -320,7 +325,9 @@
                                             <constraint firstAttribute="centerX" secondItem="XNK-cf-nC7" secondAttribute="centerX" id="dEq-nY-Y8t"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" constant="16" id="fpY-u9-xwz"/>
                                             <constraint firstItem="7az-Gp-NEg" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" constant="16" id="kJ5-ut-l7y"/>
+                                            <constraint firstItem="7az-Gp-NEg" firstAttribute="trailing" secondItem="mN6-SB-qvR" secondAttribute="trailingMargin" id="mUk-W3-2xt"/>
                                         </constraints>
+                                        <size key="customSize" width="206" height="120"/>
                                         <connections>
                                             <outlet property="descriptionLabel" destination="7az-Gp-NEg" id="12S-eP-pUr"/>
                                             <outlet property="flagIcon" destination="XNK-cf-nC7" id="fm0-MK-YdB"/>
@@ -329,15 +336,15 @@
                                             <outlet property="titleLabel" destination="DOH-i4-k5z" id="fid-n6-fWu"/>
                                         </connections>
                                     </collectionViewCell>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="LastMessagesHolderCollectionCell" id="Uhw-b7-NBz" customClass="DashboardMessagesCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                    <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="LastMessagesHolderCollectionCell" id="Uhw-b7-NBz" customClass="DashboardMessagesCell" customModule="Origami_task_manager" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="200" height="90"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="200" height="119"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" delaysContentTouches="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="2So-OB-etX">
-                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="90"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="119"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <prototypes>
                                                         <tableViewCell contentMode="scaleToFill" selectionStyle="gray" indentationWidth="10" reuseIdentifier="PreviewCell" id="j2K-Zd-8Kr" customClass="ChatPreviewCell" customModule="Origami_task_manager" customModuleProvider="target">
@@ -426,7 +433,7 @@
                                             <constraint firstAttribute="trailing" secondItem="2So-OB-etX" secondAttribute="trailing" id="WzW-4U-dOM"/>
                                             <constraint firstAttribute="bottom" secondItem="2So-OB-etX" secondAttribute="bottom" id="iPB-Ub-EXq"/>
                                         </constraints>
-                                        <size key="customSize" width="200" height="90"/>
+                                        <size key="customSize" width="200" height="119"/>
                                         <connections>
                                             <outlet property="messagesTable" destination="2So-OB-etX" id="Bwj-Xz-fis"/>
                                         </connections>
@@ -460,16 +467,16 @@
                                 </collectionReusableView>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="Yi0-Xo-9bL" firstAttribute="leading" secondItem="dTD-fZ-POl" secondAttribute="leading" id="3tC-nM-OaW"/>
-                            <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="dTD-fZ-POl" secondAttribute="top" id="7T2-Ju-ALV"/>
-                            <constraint firstAttribute="trailing" secondItem="Yi0-Xo-9bL" secondAttribute="trailing" id="EUS-fJ-5vC"/>
+                            <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="dTD-fZ-POl" secondAttribute="top" id="2UY-jk-Z1B"/>
+                            <constraint firstAttribute="trailing" secondItem="Yi0-Xo-9bL" secondAttribute="trailing" id="7Lj-HC-jG5"/>
                             <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="IgO-A8-ay8" secondAttribute="bottom" constant="-64" id="M83-Ft-EHs"/>
                             <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="IgO-A8-ay8" secondAttribute="bottom" priority="250" constant="-64" id="MmT-gc-SKw" userLabel="toSicenceWarningConstraint"/>
+                            <constraint firstItem="Yi0-Xo-9bL" firstAttribute="leading" secondItem="dTD-fZ-POl" secondAttribute="leading" id="SB9-es-w9w"/>
+                            <constraint firstItem="Yi0-Xo-9bL" firstAttribute="bottom" secondItem="WBg-rL-2c0" secondAttribute="top" id="leM-Jp-hD3"/>
                             <constraint firstItem="Yi0-Xo-9bL" firstAttribute="top" secondItem="IgO-A8-ay8" secondAttribute="bottom" constant="-44" id="pEo-w0-Y7D"/>
-                            <constraint firstItem="Yi0-Xo-9bL" firstAttribute="bottom" secondItem="WBg-rL-2c0" secondAttribute="top" id="q3j-Yh-BEC"/>
                             <constraint firstItem="WBg-rL-2c0" firstAttribute="top" secondItem="Yi0-Xo-9bL" secondAttribute="bottom" constant="-48" id="xhw-zX-f5C"/>
                         </constraints>
                         <variation key="default">
@@ -2459,7 +2466,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5on-pj-Vxt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1845" y="1255"/>
+            <point key="canvasLocation" x="1667" y="1199"/>
         </scene>
         <!--Attach Image ViewerVC-->
         <scene sceneID="8ML-Ub-qk4">
@@ -3109,6 +3116,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="U7u-GC-E0t"/>
-        <segue reference="W7P-5v-EqO"/>
+        <segue reference="2Og-vg-MiQ"/>
     </inferredMetricsTieBreakers>
 </document>

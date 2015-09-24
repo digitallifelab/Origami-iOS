@@ -26,6 +26,10 @@
 		F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */; };
 		F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */; };
 		F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */; };
+		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
+		F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
+		F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
+		F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F84D61E51B9DB164001DB163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
 		F84D61E61B9DB175001DB163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
@@ -60,8 +64,6 @@
 		F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
 		F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */; };
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
-		F878153B1BB0455B002B5F63 /* ElementTaskStarterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F878153A1BB0455B002B5F63 /* ElementTaskStarterVC.swift */; };
-		F878153C1BB0455B002B5F63 /* ElementTaskStarterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F878153A1BB0455B002B5F63 /* ElementTaskStarterVC.swift */; };
 		F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
@@ -265,6 +267,9 @@
 		F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementTitleCell.swift; sourceTree = "<group>"; };
 		F81BAD701B5F992500DB50F8 /* SingleElementLastMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementLastMessagesCell.swift; sourceTree = "<group>"; };
 		F81BAD721B5F993900DB50F8 /* SingleElementDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDetailsCell.swift; sourceTree = "<group>"; };
+		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
+		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
+		F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinishTaskResultView.xib; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPickerVC.swift; sourceTree = "<group>"; };
 		F84DB3701B7CBBB1004E55F7 /* ElementOptionsConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ElementOptionsConverter.h; sourceTree = "<group>"; };
@@ -307,7 +312,6 @@
 		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementAttachedFilesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
-		F878153A1BB0455B002B5F63 /* ElementTaskStarterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementTaskStarterVC.swift; sourceTree = "<group>"; };
 		F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableItemPickerVC.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
@@ -475,7 +479,9 @@
 				F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */,
 				F81BAD6B1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift */,
 				F81BAD691B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift */,
-				F878153A1BB0455B002B5F63 /* ElementTaskStarterVC.swift */,
+				F82631841BB2C44500077B1D /* FinishTaskResultView.h */,
+				F82631851BB2C44500077B1D /* FinishTaskResultView.m */,
+				F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */,
 				F81BAD6D1B5F98A200DB50F8 /* ElementCollectionCells */,
 			);
 			name = SingleElementDashboard;
@@ -1015,6 +1021,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C93B251B861B94009D890E /* Main.storyboard in Resources */,
+				F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */,
 				F84D61E61B9DB175001DB163 /* Images.xcassets in Resources */,
 				F8C93B261B861B94009D890E /* seguisb.ttf in Resources */,
 				F8C93B271B861B94009D890E /* LaunchScreen.xib in Resources */,
@@ -1030,6 +1037,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8D456A81B1DEFA100172667 /* Main.storyboard in Resources */,
+				F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */,
 				F84D61E51B9DB164001DB163 /* Images.xcassets in Resources */,
 				F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */,
 				F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */,
@@ -1064,6 +1072,7 @@
 				F8C93ACA1B861B94009D890E /* SingleElementLastMessagesCell.swift in Sources */,
 				F8C93ACB1B861B94009D890E /* AttachVideoPlayerVC.swift in Sources */,
 				F8C93ACD1B861B94009D890E /* AttachImageViewerVC.swift in Sources */,
+				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */,
 				F8C93B3D1B862873009D890E /* DatabaseHandler.m in Sources */,
 				F8C93ACF1B861B94009D890E /* ChatMessageRecievedCell.swift in Sources */,
@@ -1095,7 +1104,6 @@
 				F8C93AEA1B861B94009D890E /* ElementAttachedFilesCollectionHandler.swift in Sources */,
 				F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */,
 				F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */,
-				F878153C1BB0455B002B5F63 /* ElementTaskStarterVC.swift in Sources */,
 				F8C93AED1B861B94009D890E /* ElementDashboardAttachedFileCell.swift in Sources */,
 				F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */,
 				F8C93AEF1B861B94009D890E /* Language.swift in Sources */,
@@ -1195,6 +1203,7 @@
 				F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */,
 				F8A1DFCF1B7B738200A66692 /* User.swift in Sources */,
 				F855BBCD1B74ED1500EC114C /* DBMessage.m in Sources */,
+				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F891BBE81B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
 				F87FE6C51B6126BC004CA576 /* ElementActionButtonsDataSource.swift in Sources */,
@@ -1230,7 +1239,6 @@
 				F8C65F3F1B98AA5A001EDEA6 /* AFNetworkReachabilityManager.m in Sources */,
 				F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */,
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
-				F878153B1BB0455B002B5F63 /* ElementTaskStarterVC.swift in Sources */,
 				F8C65F391B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.m in Sources */,
 				F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,

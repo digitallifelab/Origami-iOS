@@ -953,7 +953,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
                                 if let existAttaches = attaches
                                 {
-                                    println("\n --> Has Attaches: - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
+                                    //println("\n --> Has Attaches: - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
                                 }
                             })
                         }
@@ -1131,6 +1131,34 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     }
                 })
             })
+        }
+    }
+    
+    func setElementFinishDate(elementId:Int, date:String, completion:((success:Bool)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: date) { (success) -> () in
+            if success
+            {
+                if let existElement = DataSource.sharedInstance.getElementById(elementId)
+                {
+                    existElement.finishDate = date.dateFromServerDateString()
+                }
+            }
+            completion?(success:success)
+        }
+    }
+    
+    func setElementFinishState(elementId:Int, newFinishState:Int, completion:((success:Bool)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.setElementFinishState(elementId, finishState: newFinishState) { (success) -> () in
+            if success
+            {
+                if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                {
+                    existingElement.finishState = NSNumber(integer: newFinishState)
+                }
+            }
+            completion?(success: success)
         }
     }
     

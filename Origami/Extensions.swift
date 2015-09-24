@@ -446,7 +446,7 @@ extension UIViewController
             self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor
             self.view.backgroundColor = kWhiteColor
             self.navigationController?.toolbar.tintColor = kWhiteColor
-            self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor
+            self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.5)
         }
     }
     

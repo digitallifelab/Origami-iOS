@@ -158,9 +158,14 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
             let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
+            
             if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
             {
                 offsetY += 40.0
+            }
+            else if currentTraitCollectionWidth == .Regular && currentTraitCollectionHeight == .Compact
+            {
+                offsetY += 20.0
             }
         case .OrderedAscending:
             offsetY += 0.0

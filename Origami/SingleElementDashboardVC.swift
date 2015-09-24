@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate , FinishTaskResultViewDelegate {
 
     var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
@@ -443,6 +443,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         if let element = currentElement, elementIdInt = element.elementId?.integerValue
         {
+            if element.isArchived()
+            {
+                self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+                return
+            }
             let favourite = element.isFavourite.boolValue
             var isFavourite = !favourite
             var elementCopy = Element(info: element.toDictionary())
@@ -509,6 +514,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         if let theElement = currentElement
         {
+            if !theElement.isOwnedByCurrentUser()
+            {
+                return // Important
+            }
+            if theElement.isArchived()
+            {
+                self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+                return
+            }
+            
             let isSignal = theElement.isSignal.boolValue
             var elementCopy = Element(info: theElement.toDictionary())
             let isCurrentlySignal = !isSignal
@@ -616,12 +631,24 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func elementIdeaPressed()
     {
         println("Idea tapped.")
-        let anOptionsConverter = ElementOptionsConverter()
-        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
-        var editingElement = Element(info: self.currentElement!.toDictionary())
-        editingElement.typeId = NSNumber(integer: newOptions)
-        println("new element type id: \(editingElement.typeId)")
-        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        if let current = self.currentElement
+        {
+            if !current.isArchived()
+            {
+                
+                let anOptionsConverter = ElementOptionsConverter()
+                let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
+                var editingElement = Element(info: self.currentElement!.toDictionary())
+                editingElement.typeId = NSNumber(integer: newOptions)
+                println("new element type id: \(editingElement.typeId)")
+                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+            }
+            else
+            {
+                self.showAlertWithTitle("Unauthorized.", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+            }
+        }
+        
     }
     
     func elementTaskPressed()
@@ -629,35 +656,61 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         println("CheckMark tapped.")
         
         let anOptionsConverter = ElementOptionsConverter()
-        if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: 2)
+       
+        if let element = self.currentElement
         {
-            if let element = self.currentElement
+            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: element.typeId.integerValue)
             {
+                
+                //1 - detect if element is owned
+                //2 - if owned prompt owner to be sure to uncheck TASK
+                //3 - if is not owned, but current user is responsible for this TASK
+                //4- prompt to mark this TASK as finished with some result, or dismiss
+                //5 - if now owned and current user is not responsible - do nothing
                 if !element.isArchived()
                 {
                     if element.isOwnedByCurrentUser()
                     {
-                        
+                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
+                        if let currentFinishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                        {
+                            switch currentFinishState
+                            {
+                            case .Default:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
+                            case .FinishedBad, .FinishedGood:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
+                            case .InProcess:
+                                println(" Element is in process..\n")
+                                showFinishTaskPrompt()
+                            }
+                        } 
                     }
                     else if element.isTaskForCurrentUser()
                     {
-                        
+                        if let currentFinishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                        {
+                            switch currentFinishState
+                            {
+                            case .Default:
+                                println("element is not owned. current user cannot assign task.")
+                            case .FinishedBad , .FinishedGood:
+                                println("element is already finished. current user cannot update task.")
+                            case .InProcess:
+                                showFinishTaskPrompt()
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    println("\n Error: element is archived. Unarchive first.")
+                    if element.isOwnedByCurrentUser()
+                    {
+                        self.showAlertWithTitle("Unauthorized.", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+                    }
                 }
             }
-            //1 - detect if element is owned
-            //2 - if owned prompt owner to be sure to uncheck TASK
-            //3 - if is not owned, but current user is responsible for this TASK
-            //4- prompt to mark this TASK as finished with some result, or dismiss
-            //5 - if now owned and current user is not responsible - do nothing
-        }
-        else
-        {
-            if let element = self.currentElement
+            else
             {
                 if !element.isArchived()
                 {
@@ -671,9 +724,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                             {
                             case .Default:
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-                            case .FinishedBad:
-                                fallthrough
-                            case .FinishedGood:
+                            case .FinishedBad , .FinishedGood :
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
                             case .InProcess:
                                 println(" Element is in process..")
@@ -687,30 +738,36 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
                 else
                 {
-                    println("\n Error: element is archived. Unarchive first.")
+                    if element.isOwnedByCurrentUser()
+                    {
+                         self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+                    }
                 }
             }
-            
-            
         }
-        
-//        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 2)
-//        var editingElement = Element(info: self.currentElement!.toDictionary())
-//        editingElement.typeId = NSNumber(integer: newOptions)
-//        println("new element type id: \(editingElement.typeId)")
-//        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
-        
+     
     }
     
     func elementDecisionPressed()
     {
         println("Decision tapped.")
-        let anOptionsConverter = ElementOptionsConverter()
-        let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 3)
-        var editingElement = Element(info: self.currentElement!.toDictionary())
-        editingElement.typeId = NSNumber(integer: newOptions)
-        println("new element type id: \(editingElement.typeId)")
-        self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+        if let current = self.currentElement
+        {
+            if !current.isArchived()
+            {
+                let anOptionsConverter = ElementOptionsConverter()
+                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId.integerValue, selectedOption: 3)
+                var editingElement = current.createCopy()
+                editingElement.typeId = NSNumber(integer: newOptions)
+                println("new element type id: \(editingElement.typeId)")
+                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+            }
+            else
+            {
+                self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "cancel".localizedWithComment(""))
+            }
+        }
+        
     }
     
     func toggleMoreDetails(notification:NSNotification?)
@@ -917,9 +974,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 if edited
                 {
-                    aSelf.currentElement?.typeId = newOptions //the options target
-                    aSelf.collectionDataSource?.handledElement = aSelf.currentElement
-                    aSelf.collectionView.reloadData()
+                    aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                 }
                 else
                 {
@@ -1383,49 +1438,205 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         //show popup with dismiss button and "good"-"bad" buttons
         
+//        if let prompt = NSBundle.mainBundle().loadNibNamed("FinishTaskResultView", owner: nil, options: nil).first as? FinishTaskResultView
+//        {
+//            
+//        }
+        //let prompt = FinishTaskResultView.instance()
+        let prompt = FinishTaskResultView(frame: CGRectMake(0, 0, 300.0, 200.0))
+        prompt.center = CGPointMake( CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds) )
+        prompt.delegate = self
+        prompt.titleLabel.text = "FinishTaskPromptText".localizedWithComment("")
+        
+        self.view.addSubview(prompt)
+        prompt.showAnimated(true)
     }
+    
+    //MARK: FinishTaskResultViewDelegate
+    func finishTaskResultViewDidCancel(resultView: FinishTaskResultView!) {
+        resultView.hideAnimated(true)
+    }
+    
+    func finishTaskResultViewDidPressBadButton(resultView: FinishTaskResultView!) {
+        resultView.hideAnimated(true)
+        
+        self.finishElementWithFinishState(.FinishedBad)
+        
+//        if let current = self.currentElement
+//        {
+//            if let elementIdInt = current.elementId?.integerValue, dateString = NSDate().dateForServer() as? String
+//            {
+//                let finishState = ElementFinishState.FinishedBad.rawValue
+//                DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
+//                    if edited
+//                    {
+//                        DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: {[weak self] (success) -> () in
+//                            if let weakSelf = self
+//                            {
+//                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+//                                })
+//                                if !success
+//                                {
+//                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                        weakSelf.showAlertWithTitle("Warning", message:" Finish date was not set", cancelButtonTitle: "close".localizedWithComment(""))
+//                                    })
+//                                }
+//                            }
+//                            
+//                        })
+//                    }
+//                })
+//            }
+//        }
+    }
+    
+    func finishTaskResultViewDidPressGoodButton(resultView: FinishTaskResultView!) {
+        resultView.hideAnimated(true)
+        
+        self.finishElementWithFinishState(.FinishedGood)
+//        if let current = self.currentElement
+//        {
+//            if let current = self.currentElement
+//            {
+//                if let elementIdInt = current.elementId?.integerValue
+//                {
+//                    let finishState = ElementFinishState.FinishedGood.rawValue
+//                    DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
+//                        if edited
+//                        {
+//                            if let weakSelf = self
+//                            {
+//                                weakSelf.currentElement?.finishState = NSNumber(integer: finishState)
+//                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+//                                })
+//                                
+//                            }
+//                        }
+//                    })
+//                }
+//            }
+//        }
+    }
+    
+    func finishElementWithFinishState(state:ElementFinishState)
+    {
+        if let current = self.currentElement, elementIdInt = current.elementId?.integerValue, dateString = NSDate().dateForServer() as? String
+        {
+            let finishState = state.rawValue
+            
+            DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
+                if edited
+                {
+                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: {[weak self] (success) -> () in
+                        if let weakSelf = self
+                        {
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                            })
+                            if !success
+                            {
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    weakSelf.showAlertWithTitle("Warning", message:" Finish date was not set", cancelButtonTitle: "close".localizedWithComment(""))
+                                })
+                            }
+                        }
+                    })
+                }
+            })
+        }
+    }
+    
+    
+    
     //MARK: TableItemPickerDelegate
     func itemPickerDidCancel(itemPicker: AnyObject) {
         //did
         
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, remindDate = contactsPickerVC.datePicker?.date
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, finishDate = contactsPickerVC.datePicker?.date
         {
-            sendElementTaskNewResponsiblePerson(aNumber.integerValue, remindDate:remindDate)
+            sendElementTaskNewResponsiblePerson(aNumber.integerValue, finishDate:finishDate)
         }
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? Contact, remindDate = contactsPickerVC.datePicker?.date, contactId = contactPicked.contactId
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? Contact, finishDate = contactsPickerVC.datePicker?.date, contactId = contactPicked.contactId
         {
-            self.navigationController?.popViewControllerAnimated(true)
-            
-            sendElementTaskNewResponsiblePerson(contactId.integerValue, remindDate:remindDate)
+           
+            sendElementTaskNewResponsiblePerson(contactId.integerValue, finishDate:finishDate)
         }
-        else
-        {
-            self.navigationController?.popViewControllerAnimated(true)
-        }
+       
+        self.navigationController?.popViewControllerAnimated(true)
+        
     }
     
-    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, remindDate:NSDate)
+    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate)
     {
         if let element = self.currentElement
         {
             let copy = element.createCopy()
             copy.responsible = NSNumber(integer: responsiblePersonId)
-            copy.finishState = NSNumber(integer: ElementFinishState.InProcess.rawValue)
-            copy.remindDate = remindDate
-            let optionsConverter = ElementOptionsConverter()
-            let newOptions = optionsConverter.toggleOptionChange(copy.typeId.integerValue, selectedOption: 2)
-            copy.typeId = NSNumber(integer: newOptions)
             
-            DataSource.sharedInstance.editElement(copy, completionClosure: {[weak self] (edited) -> () in
-                if let weakSelf = self
+            copy.finishDate = finishDate
+            let optionsConverter = ElementOptionsConverter()
+            if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId.integerValue)
+            {
+                let newOptions = optionsConverter.toggleOptionChange(copy.typeId.integerValue, selectedOption: 2)
+                copy.typeId = NSNumber(integer: newOptions)
+            }
+            
+            if let elementIdInt = copy.elementId?.integerValue
+            {
+                let newState = ElementFinishState.InProcess.rawValue
+                
+                DataSource.sharedInstance.editElement(copy, completionClosure: {[weak self] (edited) -> () in
+                    if edited
+                    {
+                        DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: newState, completion: {[weak self] (success) -> () in
+                            if success
+                            {
+                                if let weakSelf = self
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { [weak weakSelf]() -> Void in
+                                       
+                                        if let weakerSelf = weakSelf
+                                        {
+                                            weakerSelf.collectionDataSource?.handledElement?.finishState = NSNumber(integer: newState)
+                                            weakerSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                        }
+                                    })
+                                }
+                            }
+                        })
+                    }
+                })
+            
+                if let dateString = copy.finishDate?.dateForServer() as? String
                 {
-                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)])
+                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
+                    
+                        if let weakSelf = self
+                        {
+                            if success
+                            {
+                                println("\n -> Element finish date WAS updated.\n")
+                                if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
+                                {
+                                    println("\n exist element finish date : \(existElement.finishDate)")
+                                    println(" current element finish date : \(weakSelf.currentElement?.finishDate)")
+                                    println(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
+                                }
+                            }
+                            else
+                            {
+                                println("\n -> Element finish date WAS NOT updated.\n")
+                            }
+                        }
+                    })
                 }
-            })
+            }
         }
     }
     

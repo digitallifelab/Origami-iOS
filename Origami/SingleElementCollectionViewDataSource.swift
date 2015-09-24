@@ -24,7 +24,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     var attachesHandler:ElementAttachedFilesCollectionHandler?
     var subordinatesByIndexPath:[NSIndexPath : Element]?
     
-    var handledElement:Element? {
+    weak var handledElement:Element? {
         didSet {
             // detect visible cells by checking options
             var options:[ElementCellType] = [ElementCellType]()
@@ -559,21 +559,26 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func elementIsOwned() -> Bool
     {
-        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId.integerValue
+//        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId.integerValue
+//        {
+//            return true
+//        }
+//        else if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(handledElement!)
+//        {
+//            for anElement in elementsTree
+//            {
+//                if anElement.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+//                {
+//                    return true
+//                }
+//            }
+//        }
+//        
+//        return false
+        if let element = self.handledElement
         {
-            return true
+            return element.isOwnedByCurrentUser()
         }
-        else if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(handledElement!)
-        {
-            for anElement in elementsTree
-            {
-                if anElement.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
-                {
-                    return true
-                }
-            }
-        }
-        
         return false
     }
     
