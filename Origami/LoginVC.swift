@@ -75,7 +75,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
         
         self.dismissViewControllerAnimated(true, completion: nil)
         NSOperationQueue().addOperationWithBlock { () -> Void in
-            DataSource.sharedInstance.getMyContacts()
+            DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
         }
     }
 

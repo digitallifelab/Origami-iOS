@@ -44,8 +44,7 @@ class AttachFile :NSObject
             
             if let lvName = info["FileName"] as? NSString
             {
-                let name = lvName.stringByReplacingOccurrencesOfString("/", withString: "-")
-                self.fileName = name
+                self.fileName = lvName.stringByReplacingOccurrencesOfString("/", withString: "-")
             }
             
             if let lvDate = info["CreateDate"] as? String

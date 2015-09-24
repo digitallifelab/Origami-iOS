@@ -12,39 +12,39 @@
 
 @interface FileHandler : NSObject
 
--(NSArray *) getCountriesFromDisk;
+-(nullable NSArray *) getCountriesFromDisk;
 
--(NSArray *) getLanguagesFromDisk;
+-(nullable NSArray *) getLanguagesFromDisk;
 
--(void) saveCountriesToDisk:(NSArray *)countries;
+-(void) saveCountriesToDisk:(nonnull NSArray *)countries;
 
--(void) saveLanguagesToDisk:(NSArray *)languages;
+-(void) saveLanguagesToDisk:(nonnull NSArray *)languages;
 
--(NSURL *) urlForAmbience;
--(NSURL *) urlForEmotionAtIndex:(NSInteger)emotionIndex;
+//-(nullable NSURL *) urlForAmbience;
+//-(nullable NSURL *) urlForEmotionAtIndex:(NSInteger)emotionIndex;
 
--(void) saveCurrentUserToDisk:(NSDictionary *)userInfo;
--(NSDictionary *)getSavedUser;
+-(void) saveCurrentUserToDisk:(nonnull NSDictionary *)userInfo;
+-(nullable NSDictionary *)getSavedUser;
 -(void) deleteSavedUser;
 
--(void) saveCurrentMessagesToDisk:(NSArray *)messages;
--(NSArray *)getSavedMessages;
+-(void) saveCurrentMessagesToDisk:(nonnull NSArray *)messages;
+-(nullable NSArray *)getSavedMessages;
 -(void) deleteSavedMessages;
 
--(NSString *) saveTempVideoToDisk:(NSData *)videoData completionPath:(void(^)(NSString *path)) completion;
+//-(NSString *) saveTempVideoToDisk:(NSData *)videoData completionPath:(void(^)(NSString *path)) completion;
 
--(void)deleteTempVideo;
+//-(void)deleteTempVideo;
 
 
--(void) saveFileToDisc:(NSData *)file fileName:(NSString *)fileName completion:(void(^)(NSString *filePath, NSError *error)) completionBlock;
+-(void) saveFileToDisc:(nonnull NSData *)file fileName:(nonnull NSString *)fileName completion:( nullable void(^)(NSString * __nullable filePath,  NSError * __nullable error)) completionBlock;
 
--(void) loadFileNamed:(NSString *)fileName completion:(void(^)(NSData *fileData, NSError *readingError)) completionBlock;
--(NSData *) synchronouslyLoadFileNamed:(NSString *)fileName;
--(void) eraseFileNamed:(NSString *) fileName completion:(void(^) (BOOL succes, NSError *eraseError)) completionBlock;
+-(void) loadFileNamed:(nonnull NSString *)fileName completion:(nullable void(^)(NSData * __nullable fileData, NSError * __nullable readingError)) completionBlock;
+-(nullable NSData * ) synchronouslyLoadFileNamed:(nonnull NSString *)fileName;
+-(void) eraseFileNamed:(nonnull NSString *) fileName completion:(nullable void(^) (BOOL succes, NSError * __nullable eraseError)) completionBlock;
 
 ///  AVATARS
--(void) saveAvatar:(NSData *)imageData forLoginName:(NSString *)loginName completion:(void(^)(NSError* saveError)) completionBlock;
--(void) loadAvatarDataForLoginName:(NSString *)loginName completion:(void(^)(NSData* avatarData, NSError* saveError)) completionBlock;
+-(void) saveAvatar:(nonnull NSData *)imageData forLoginName:(nonnull NSString *)loginName completion:(nullable void(^)(NSError * __nullable saveError)) completionBlock;
+-(void) loadAvatarDataForLoginName:(nonnull NSString *)loginName completion:(nullable void(^)(NSData * __nullable avatarData, NSError * __nullable saveError)) completionBlock;
 
 -(void)deleteAvatars;
 -(void)deleteAttachedImages;

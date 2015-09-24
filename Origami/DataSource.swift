@@ -1367,7 +1367,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {            
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
           
-            serverRequester.loadAttachesListForElementId(localElementId,
+            DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(localElementId,
             completion:
             { (result, error) -> ()
                 in
@@ -1395,7 +1395,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
-            serverRequester.loadAttachesListForElementId(localElementId,
+            DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(localElementId,
                 completion:
                 { (result, error) -> ()
                     in
@@ -1499,8 +1499,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func eraseFileFromDiscForAttach(attach:AttachFile)
     {
-        let fileHandler = FileHandler()
-        fileHandler.eraseFileNamed(attach.fileName, completion: nil)
+        if let fileName = attach.fileName
+        {
+            let fileHandler = FileHandler()
+            fileHandler.eraseFileNamed(fileName, completion: nil)
+        }
     }
     
     func getSnapshotsArrayForAttaches(attaches:[AttachFile]) -> [[AttachFile:NSData]]?
@@ -1552,20 +1555,15 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     private func getAttachFileDataFromFileSystem(attachFile:AttachFile) -> NSData?
     {
         let lvFileHandler = FileHandler()
-        //let waiterGroup = dispatch_group_create()
-        //dispatch_group_enter(waiterGroup)
         var outerFileData:NSData? = nil
-        //let bgQueue:dispatch_queue_t = dispatch_queue_create("Origami.DataReading.Queue", DISPATCH_QUEUE_SERIAL)
-        //dispatch_sync(bgQueue, { () -> Void in
-            
+        
             lvFileHandler.loadFileNamed(attachFile.fileName!, completion: {
                 (fileData, readingError) -> Void in
-                if fileData != nil
+                if let attachData = fileData
                 {
                     //reduce image size, and insert into cache already reduced image data
                     
-                    
-                    if let fullImage = UIImage(data: fileData!)
+                    if let fullImage = UIImage(data: attachData)
                     {
                         var scaledToSizeImage = DataSource.sharedInstance.reduceImageSize( fullImage, toSize: CGSizeMake(180, 140))
                         
@@ -1581,16 +1579,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         assert(false, "Check image preview data.")
                     }
                 }
-                else
+                else if let error = readingError
                 {
-                    println(" ->FileReadingError: \n\(readingError.localizedDescription)")
+                    println(" ->FileReadingError: \n\(error.localizedDescription)")
                 }
-                //dispatch_group_leave(waiterGroup)
+                
             })
-        //})
-        
-        
-        //dispatch_group_wait(waiterGroup, DISPATCH_TIME_FOREVER)
         
         return outerFileData
     }
@@ -1676,7 +1670,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 dispatch_group_enter(dispatchGroup)
                 let lvAttach = localAttaches[currentIteration]
                 
-                if let attachData = fileManager.synchronouslyLoadFileNamed(lvAttach.fileName)
+                if let name = lvAttach.fileName, attachData = fileManager.synchronouslyLoadFileNamed(name)
                 {
                     println("\n -> DataSource Will not load existing attach file several times. Attach File: \(lvAttach.fileName!)\n")
                     
@@ -1797,53 +1791,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         println(" -> Loaded contacts: \(aContacts.count)")
                         DataSource.sharedInstance.contacts = aContacts
-                        
-                        //println(" -> Started saving and resizing MY contact avatars in background")
-                        
-                        //memory footprint
-                        var screenScale = UIScreen.mainScreen().scale
-                        if screenScale > 2.0
-                        {
-                            screenScale = 2.0
-                        }
-                        let sizeOfAvatar = CGSizeMake(50 * screenScale , 50 * screenScale)
-                        
-                        let aFiler = FileHandler()
-                        
-                        let group = dispatch_group_create()
-                        for aContact in aContacts
-                        {
-                            dispatch_group_enter(group)
-
-                            
-                            if let avatarBigData = aContact.photo, userName = aContact.userName as? String
-                            {
-                                if let image = UIImage(data: avatarBigData)
-                                {
-                                    let smallImage = DataSource.sharedInstance.reduceImageSize(image, toSize: sizeOfAvatar)
-                                    let smallImageData = UIImageJPEGRepresentation(smallImage, 1.0)
-                                    println(" \n reduced avatar data size: \(smallImageData.length)  bytes")
-                                    DataSource.sharedInstance.addAvatarData(smallImageData, forContactUserName: userName)
-                                    if let anId = aContact.contactId
-                                    {
-                                        NSNotificationCenter.defaultCenter().postNotificationName("FinishedProcessingContactAvatars", object: nil, userInfo:["avatarOwnerId":anId])
-                                    }
-                                    
-                                }
-                                //println(" \n -> Saving Avatar to disc")
-                                aFiler.saveAvatar(avatarBigData, forLoginName: userName, completion: { (errorSaving) -> Void in
-                                    
-                                })
-                            }
-                            
-                        }
-                        dispatch_group_notify(group, dispatch_queue_create("bg-queue", DISPATCH_QUEUE_CONCURRENT), { () -> Void in
-                            println(" finishd loading avatars for contacts")
-                            
-                        })
                     }
                 }
             })
+            
             return nil
         }
         
@@ -2255,14 +2206,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         block(image: nil, error: imageCreatingError)
                     }
                 }
-                else
+                else if let anError = error
                 {
                     block(image: nil, error: error)
-                    if error.code == 406
+                    if anError.code == 406
                     {
                         DataSource.sharedInstance.startLoadingAvatarForUserName(loginName)
                     }
-                    
                 }
             })
         }

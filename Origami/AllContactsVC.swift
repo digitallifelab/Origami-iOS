@@ -65,7 +65,9 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
             
             
-                dispatch_group_wait(bgGroup, DISPATCH_TIME_FOREVER)
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 30.0))
+                
+                dispatch_group_wait(bgGroup, timeout)
            
                 if shouldReloadAfterRealAvatarLoaded
                 {

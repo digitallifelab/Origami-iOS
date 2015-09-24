@@ -146,7 +146,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 println("-> reload collection view from viewDidAppear")
-                reloadDashboardView()
+                
+                //if DataSource.sharedInstance.shouldReloadAfterElementChanged
+                //{
+                    reloadDashboardView()
+                //}
             }
             
             if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
@@ -154,9 +158,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
             }
         }
-        
-        self.collectionDashboard.layer.borderColor = UIColor.brownColor().CGColor
-        self.collectionDashboard.layer.borderWidth = 2.0
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -712,7 +713,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
             setAppearanceForNightModeToggled(nightModeOn)
             self.collectionSource?.turnNightModeOn(nightModeOn)
-            self.collectionDashboard.reloadData()
+            //self.collectionDashboard.reloadData()
         }
     }
     

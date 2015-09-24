@@ -176,7 +176,7 @@
     
 }
 
--(void) loadAvatarDataForLoginName:(NSString *)loginName completion:(void(^)(NSData* avatarData, NSError* saveError)) completionBlock
+-(void) loadAvatarDataForLoginName:(nonnull NSString *)loginName completion:(nullable void(^)(NSData * __nullable avatarData, NSError * __nullable saveError)) completionBlock
 {
     NSString *pathToFolder = [self pathToAvatarFolder];
     if (pathToFolder != nil)
@@ -209,19 +209,7 @@
     }
 }
 
-#pragma mark EmotionsSound
--(NSURL *)urlForAmbience
-{
-    NSURL *lvAudioURL = [[NSBundle mainBundle] URLForResource:@"AmbienceSound" withExtension:@"mp3"];
-    
-    return lvAudioURL;
-}
 
--(NSURL *)urlForEmotionAtIndex:(NSInteger)emotionIndex
-{
-    //TODO: return the right audio file path
-    return nil;
-}
 
 #pragma mark User
 -(NSString *) pathToUser
@@ -301,32 +289,32 @@
     NSString *pathToVideo = [pathToDocs stringByAppendingString:@"/video.mov"];
     return pathToVideo;
 }
--(NSString *) saveTempVideoToDisk:(NSData *)videoData completionPath:(void(^)(NSString *path)) completion
-{
-    NSString *savePath = [self pathToTempVideo];
-    NSError *lvError;
-    [videoData writeToFile:savePath options:NSDataWritingAtomic error:&lvError];
-    
-    if (!lvError)
-    {
-        completion(savePath);
-        return savePath;
-    }
-    
-    completion(nil);
-    
-    return nil;
-}
+//-(NSString *) saveTempVideoToDisk:(NSData *)videoData completionPath:(void(^)(NSString *path)) completion
+//{
+//    NSString *savePath = [self pathToTempVideo];
+//    NSError *lvError;
+//    [videoData writeToFile:savePath options:NSDataWritingAtomic error:&lvError];
+//    
+//    if (!lvError)
+//    {
+//        completion(savePath);
+//        return savePath;
+//    }
+//    
+//    completion(nil);
+//    
+//    return nil;
+//}
 
--(void)deleteTempVideo
-{
-    NSString *videoPath = [self pathToTempVideo];
-    NSFileManager *lvManager = [[NSFileManager alloc] init];
-    if ([lvManager fileExistsAtPath:videoPath])
-    {
-        [lvManager removeItemAtPath:videoPath error:nil];
-    }
-}
+//-(void)deleteTempVideo
+//{
+//    NSString *videoPath = [self pathToTempVideo];
+//    NSFileManager *lvManager = [[NSFileManager alloc] init];
+//    if ([lvManager fileExistsAtPath:videoPath])
+//    {
+//        [lvManager removeItemAtPath:videoPath error:nil];
+//    }
+//}
 #pragma mark MediaFiles
 -(NSString *) pathToFileNamed:(NSString *) fileName
 {
@@ -340,7 +328,8 @@
     return pathToFile;
 }
 
--(void) saveFileToDisc:(NSData *)file fileName:(NSString *)fileName completion:(void(^)(NSString *filePath, NSError *error)) completionBlock
+//-(void) saveFileToDisc:(NSData *)file fileName:(NSString *)fileName completion:(void(^)(NSString *filePath, NSError *error)) completionBlock
+- (void)saveFileToDisc:(nonnull NSData *)file fileName:(nonnull NSString *)fileName completion:(nullable void (^)(NSString * __nullable, NSError * __nullable))completionBlock
 {
     NSString *savePath = [self pathToFileNamed:fileName];
     NSError *lvError;
@@ -357,13 +346,13 @@
     completionBlock(nil, lvError);
 }
 
--(NSData *) synchronouslyLoadFileNamed:(NSString *)fileName
+- (nullable NSData *)synchronouslyLoadFileNamed:(nonnull NSString *)fileName
 {
-    if (fileName == nil)
-    {
-        NSLog(@"\n ->  Error while trying to read attach file data for NIL file name.\n");
-        return nil;
-    }
+//    if (fileName == nil)
+//    {
+//        NSLog(@"\n ->  Error while trying to read attach file data for NIL file name.\n");
+//        return nil;
+//    }
     NSString *filePath = [self pathToFileNamed:fileName];
     
     //check for current file

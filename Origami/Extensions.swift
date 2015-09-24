@@ -117,14 +117,14 @@ extension NSString
             return nil
         }
         
-        var dateValueString = dateUTCstring.substringToIndex(lettersCount - 5) as NSString
-        let newCount = dateValueString.length
+        let preDateValueString = dateUTCstring.substringToIndex(lettersCount - 5) as NSString
+        let newCount = preDateValueString.length
         if newCount < 3
         {
             return nil
         }
         
-        dateValueString = dateValueString.substringToIndex(newCount - 3) as NSString
+        let dateValueString = preDateValueString.substringToIndex(newCount - 3) as NSString
         
         let timeInterval = dateValueString.doubleValue as NSTimeInterval
         let date = NSDate(timeIntervalSince1970: timeInterval)
@@ -174,15 +174,18 @@ extension String
             return nil
         }
         let stringIndex = advance(dateUTCstring.endIndex, -5)
-        var dateValueString = dateUTCstring.substringToIndex(stringIndex)
-        let newCount = count(dateValueString)
+        
+        let preDateValueString = dateUTCstring.substringToIndex(stringIndex)
+        
+        let newCount = count(preDateValueString)
         if newCount < 3
         {
             return nil
         }
         
-        let nextStringIndex = advance(dateValueString.endIndex, -3)
-        dateValueString = dateValueString.substringToIndex(nextStringIndex)
+        let nextStringIndex = advance(preDateValueString.endIndex, -3)
+        
+        let dateValueString = preDateValueString.substringToIndex(nextStringIndex)
         
         let timeInterval = (dateValueString as NSString).doubleValue as NSTimeInterval
         let date = NSDate(timeIntervalSince1970: timeInterval)
