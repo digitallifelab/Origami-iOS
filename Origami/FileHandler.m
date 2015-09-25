@@ -282,13 +282,13 @@
     }
 }
 
-#pragma mark - Tepm Video
--(NSString *) pathToTempVideo
-{
-    NSString *pathToDocs = [self rootDocumentsDirectory];
-    NSString *pathToVideo = [pathToDocs stringByAppendingString:@"/video.mov"];
-    return pathToVideo;
-}
+//#pragma mark - Tepm Video
+//-(NSString *) pathToTempVideo
+//{
+//    NSString *pathToDocs = [self rootDocumentsDirectory];
+//    NSString *pathToVideo = [pathToDocs stringByAppendingString:@"/video.mov"];
+//    return pathToVideo;
+//}
 //-(NSString *) saveTempVideoToDisk:(NSData *)videoData completionPath:(void(^)(NSString *path)) completion
 //{
 //    NSString *savePath = [self pathToTempVideo];
@@ -315,7 +315,7 @@
 //        [lvManager removeItemAtPath:videoPath error:nil];
 //    }
 //}
-#pragma mark MediaFiles
+#pragma mark - MediaFiles
 -(NSString *) pathToFileNamed:(NSString *) fileName
 {
     //NSString *pathToDocs = [self rootDocumentsDirectory];
