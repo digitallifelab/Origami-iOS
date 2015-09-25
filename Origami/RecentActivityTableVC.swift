@@ -47,7 +47,12 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         self.displayMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey) ? .Night : .Day
         configureNavigationControllerToolbarItems()
         
-        startLoadingElementsByActivity()
+        startLoadingElementsByActivity {[weak self] () -> () in
+            if let weakSelf = self
+            {
+                weakSelf.reloadTableView()
+            }
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -71,7 +76,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     
     //MARK --
     
-    func startLoadingElementsByActivity()
+    func startLoadingElementsByActivity(completion:(()->())?)
     {
         DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
             let bgQueue = dispatch_queue_create("filter.queue", DISPATCH_QUEUE_SERIAL)
@@ -87,7 +92,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                                 if let weakerSelf = self
                                 {
-                                    weakerSelf.reloadTableView()
+                                    completion?()
                                 }
                             })
                         }
@@ -98,7 +103,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                                 if let weakSelf = self
                                 {
                                     weakSelf.elements = withoutArchived
-                                    weakSelf.reloadTableView()
+                                    completion?()
                                 }
                             })
                         }

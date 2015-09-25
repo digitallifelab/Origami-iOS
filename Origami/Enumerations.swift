@@ -72,6 +72,22 @@ enum DisplayMode:Int
     case Night = 2
 }
 
+enum ToggleType {
+    case ToggledOn (filterType:ActionButtonCellType)
+    case ToggledOff (filterType:ActionButtonCellType)
+    
+    func toggleToOpposite() -> ToggleType
+    {
+        switch self
+        {
+        case .ToggledOn(let type):
+            return .ToggledOff(filterType: type)
+        case .ToggledOff(let type):
+            return .ToggledOn(filterType: type)
+        }
+    }
+}
+
 enum ActionButtonType:Int
 {
     case Edit = 1
@@ -93,9 +109,9 @@ enum ActionButtonCellType:Int
     case Delete
     case Archive
     case Signal  //4
-    case CheckMark  //5
+    case Task  //5
     case Idea //6
-    case Solution //7
+    case Decision //7
 }
 
 enum ElementFinishState:Int{

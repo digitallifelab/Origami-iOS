@@ -17,11 +17,29 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     is subject to change if subclassing
     */
     var currentTopRightButton:UIButton?
-   
+    
     var currentSelectedUserAvatar:UIImage? = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
     var elementsCreatedByUser:[Element]?
     var elementsUserParticipatesIn:[Element]?
     var selectedUserId:NSNumber = NSNumber(integer: 0)
+    
+    override var displayMode:DisplayMode{
+        
+        didSet{
+            switch displayMode
+            {
+            case .Day:
+                self.view.backgroundColor = kWhiteColor
+                self.topToolbar?.barTintColor = kWhiteColor
+                self.topToolbar?.tintColor = kDayNavigationBarBackgroundColor
+            case .Night:
+                self.view.backgroundColor = kBlackColor
+                self.topToolbar?.barTintColor = kBlackColor
+                self.topToolbar?.tintColor = kWhiteColor
+            }
+        }
+        
+    }
     
     @IBOutlet weak var segmentedConteol:UISegmentedControl?
     @IBOutlet weak var topToolbar:UIToolbar?
@@ -38,6 +56,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             }
         }
     }
+    
+    var ideasFilterEnabled = false
+    var signalsFilterEnabled = false
+    var tasksFilterEnabled = false
+    var decisionsFilterEnabled = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,10 +109,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
     }
     
-    override func startLoadingElementsByActivity() {
+    override func startLoadingElementsByActivity(completion:(()->())?) {
         
         if DataSource.sharedInstance.shouldReloadAfterElementChanged || self.elements == nil
         {
+            self.setLoadingIndicatorVisible(true)
             isReloadingTable = true
             println(" -> Getting all elements By Activity from DataSource... ")
             DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
@@ -117,6 +141,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                                     allCurrentElements += allWithoutArchived
                                 }
                             }
+                            
                             if let weakerSelf = self
                             {
                                 weakerSelf.elements = allCurrentElements
@@ -130,8 +155,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                 if !weakSelf.isReloadingTable
                                 {
-                                    //println(" -> reloading tableView.")
-                                    weakSelf.reloadTableView()
+                                    completion?()
                                 }
                             })//end of main_queue
                         }) //end of bgQue
@@ -143,7 +167,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func sortCurrentElementsForNewUserId()
     {
-        let numberOfSectionsBeforeDeleting = self.numberOfSectionsInTableView(self.tableView!)
+        //let numberOfSectionsBeforeDeleting = self.numberOfSectionsInTableView(self.tableView!)
         
         self.elementsCreatedByUser?.removeAll(keepCapacity: false)
         self.elementsUserParticipatesIn?.removeAll(keepCapacity: false)
@@ -212,6 +236,43 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func configureTopToolbarItems()
     {
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        //let imageInsets = UIEdgeInsetsMake(4, 4, 4, 4)
+        
+        let signalButton =  FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        signalButton.toggleType = .ToggledOff(filterType: .Signal) // my first parametrized enum :-)
+        signalButton.frame = CGRectMake(0, 0, 44, 44)
+        signalButton.setImage(UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        //signalButton.imageEdgeInsets = imageInsets
+        signalButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
+        let signalBarItem = UIBarButtonItem(customView: signalButton)
+        
+        let ideaButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        ideaButton.toggleType = .ToggledOff(filterType: .Idea)
+        ideaButton.frame = CGRectMake(0, 0, 44, 44)
+        ideaButton.setImage(UIImage(named: "icon-idea")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        //ideaButton.imageEdgeInsets = imageInsets
+        ideaButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
+        let ideaBarItem = UIBarButtonItem(customView: ideaButton)
+        
+        let taskButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        taskButton.toggleType = .ToggledOff(filterType:.Task)
+        taskButton.frame = CGRectMake(0, 0, 44, 44)
+        taskButton.setImage(UIImage(named: "icon-okey")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        //taskButton.imageEdgeInsets = imageInsets
+        taskButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
+        let taskBarItem = UIBarButtonItem(customView: taskButton)
+        
+        let decisionButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        decisionButton.toggleType = .ToggledOff(filterType:.Decision)
+        decisionButton.frame = CGRectMake(0, 0, 44, 44)
+        decisionButton.setImage(UIImage(named: "icon-solution")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        //decisionButton.imageEdgeInsets = imageInsets
+        decisionButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
+        let decisionBarItem = UIBarButtonItem(customView: decisionButton)
+        
+        
+        self.topToolbar?.items = [signalBarItem, flexibleSpace, ideaBarItem, flexibleSpace, taskBarItem, flexibleSpace, decisionBarItem]
         
     }
     
@@ -245,7 +306,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     {
         NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
     }
-    
+    //MARK: --
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         var number:Int = 0
         if let elementsByUser = elementsCreatedByUser
@@ -342,6 +403,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         //self.tableView?.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, length)), withRowAnimation: .None)
         isReloadingTable = false
+        
+        self.setLoadingIndicatorVisible(false)
+        
+        self.tableView?.userInteractionEnabled = true
+        
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -470,7 +536,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         }
     }
     
-    //MARK: TableItemPickerDelegate
+    //MARK: - TableItemPickerDelegate
     func itemPickerDidCancel(itemPicker: AnyObject) {
         //self.isReloadingTable = true
        
@@ -519,6 +585,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
+    //MARK: - Top Controllls actions
+    
     @IBAction func segmentedControlDidChange(sender:UISegmentedControl)
     {
         let currentIndex = sender.selectedSegmentIndex
@@ -538,17 +606,215 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         self.elements?.removeAll(keepCapacity: false)
         self.elements = nil
-        self.startLoadingElementsByActivity() // will reload tableView
+        self.startLoadingElementsByActivity {[weak self] ()->() in if let weakSelf = self{ weakSelf.reloadTableView() }} // will reload tableView and dismiss activity indicator
         
     }
     
-    @IBAction func toolbarItemTapped(sender:UIBarButtonItem)
+    func filterButtonTapped(sender:FilterAttributeButton)
     {
-        let currentTag = sender.tag
-        
-        if currentTag > 0
+        sender.toggleType = sender.toggleType.toggleToOpposite()
+    
+        applyFilter(sender.toggleType)
+    }
+    
+    func applyFilter(toggle:ToggleType)
+    {
+        if let currentAllElements = self.elements
         {
+            switch toggle
+            {
+                case .ToggledOn(let type) where type == .Signal:
+                    println(" enabled .Signal Filter")
+                    signalsFilterEnabled = true
+                    filterOutSignalsToggled()
+                    self.reloadTableView()
+                
+                case .ToggledOn(let type) where type == .Idea:
+                    println(" enabled .Idea Filter")
+                    ideasFilterEnabled = true
+                    filterOutElementsWithOptionsEnabled(.Idea) // Attention! passing not the same ENUM  here!
+                    self.reloadTableView()
+                
+                case .ToggledOn(let type) where type == .Task:
+                    println(" enabled .Task Filter")
+                    tasksFilterEnabled = true
+                    filterOutElementsWithOptionsEnabled(.Task)
+                    self.reloadTableView()
+                
+                case .ToggledOn(let type) where type == .Decision:
+                    println(" enabled .Decision Filter")
+                    decisionsFilterEnabled = true
+                    filterOutElementsWithOptionsEnabled(.Task)
+                    self.reloadTableView()
+                
+                ///---///
+                case .ToggledOff(let type) where type == .Signal:
+                    println(" disabled .Signal Filter")
+                    signalsFilterEnabled = false
+                    refreshFilteredData()
+                case .ToggledOff(let type) where type == .Idea:
+                    println(" disabled .Idea Filter")
+                    ideasFilterEnabled = false
+                    refreshFilteredData()
+                case .ToggledOff(let type) where type == .Task:
+                    println(" disabled .Task Filter")
+                    tasksFilterEnabled = false
+                    refreshFilteredData()
+                case .ToggledOff(let type) where type == .Decision:
+                    println(" disabled .Decision Filter")
+                    decisionsFilterEnabled = false
+                    refreshFilteredData()
+                default:
+                    break
+            }
+        }
+    }
+ 
+    func filterOutSignalsToggled()
+    {
+        if let owned = self.elementsCreatedByUser
+        {
+            let newOwned = owned.filter {element in return element.isSignal.boolValue}
+            if !newOwned.isEmpty
+            {
+                self.elementsCreatedByUser = newOwned
+            }
+            else
+            {
+                self.elementsCreatedByUser = nil
+            }
+        }
+        // sort participating if any
+        if let participating = self.elementsUserParticipatesIn
+        {
+            let newParticipating = participating.filter { element in
+                return element.isSignal.boolValue
+            }
             
+            if !newParticipating.isEmpty
+            {
+                self.elementsUserParticipatesIn = newParticipating
+            }
+            else
+            {
+                self.elementsUserParticipatesIn = nil
+            }
+        }
+    }
+    
+    func filterOutElementsWithOptionsEnabled(options:ElementOptions)
+    {
+        if let owned = self.elementsCreatedByUser
+        {
+            let optionsConverter = ElementOptionsConverter()
+            let newOwned = owned.filter { element in
+                return optionsConverter.isOptionEnabled(options, forCurrentOptions: element.typeId.integerValue)
+            }
+            
+            if !newOwned.isEmpty
+            {
+                self.elementsCreatedByUser = newOwned
+            }
+            else
+            {
+                self.elementsCreatedByUser = nil
+            }
+        }
+        // sort participating if any
+        if let participating = self.elementsUserParticipatesIn
+        {
+            let optionsConverter = ElementOptionsConverter()
+            let newParticipating = participating.filter { element in
+                return optionsConverter.isOptionEnabled(options, forCurrentOptions: element.typeId.integerValue)
+            }
+            if !newParticipating.isEmpty
+            {
+                self.elementsUserParticipatesIn = newParticipating
+            }
+            else
+            {
+                self.elementsUserParticipatesIn = nil
+            }
+        }
+    }
+    
+    func refreshFilteredData()
+    {
+        self.tableView?.userInteractionEnabled = false
+        self.elements = nil
+
+        self.startLoadingElementsByActivity {[weak self] () -> () in
+            if let weakSelf = self, allElements = weakSelf.elements
+            {
+                let bgQueue = dispatch_queue_create("com.origami.sorting.queue", DISPATCH_QUEUE_SERIAL)
+                dispatch_async(bgQueue, { () -> Void in
+                    if weakSelf.signalsFilterEnabled
+                    {
+                        weakSelf.filterOutSignalsToggled()
+                    }
+                   
+                    if weakSelf.ideasFilterEnabled
+                    {
+                        weakSelf.filterOutElementsWithOptionsEnabled(.Idea)
+                    }
+                    
+                    if weakSelf.tasksFilterEnabled
+                    {
+                        weakSelf.filterOutElementsWithOptionsEnabled(.Task)
+                    }
+                    
+                    if weakSelf.decisionsFilterEnabled
+                    {
+                        weakSelf.filterOutElementsWithOptionsEnabled(.Decision)
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let anotherWeakSelf = self
+                        {
+                            anotherWeakSelf.reloadTableView()
+                        }
+                    })
+                })
+                
+            }
+        }
+    }
+    
+    
+    func setLoadingIndicatorVisible(visible:Bool)
+    {
+        if visible
+        {
+            if let indicator = self.view.viewWithTag(0x70AD) as? UIActivityIndicatorView
+            {
+                if indicator.isAnimating()
+                {
+                    return //already showing
+                }
+                else
+                {
+                    indicator.startAnimating()
+                }
+                return
+            }
+            
+            let indicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
+            indicatorView.tag = 0x70AD
+            let frame = CGRectMake(0, 0, 200.0, 200.0)
+            indicatorView.frame = frame
+            indicatorView.layer.cornerRadius = 7.0
+            indicatorView.backgroundColor = kBlackColor.colorWithAlphaComponent(0.7)
+            indicatorView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds))
+            indicatorView.autoresizingMask =  .FlexibleLeftMargin | .FlexibleRightMargin | .FlexibleTopMargin | .FlexibleBottomMargin
+            self.view.addSubview(indicatorView)
+            indicatorView.startAnimating()
+        }
+        else
+        {
+            if let indicator = self.view.viewWithTag(0x70AD) as? UIActivityIndicatorView
+            {
+                indicator.stopAnimating()
+            }
         }
     }
 }

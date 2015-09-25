@@ -520,12 +520,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                         }
                         
                     }
-                case .CheckMark:
-                    fallthrough
-                case .Idea:
-                     fallthrough
-                case .Solution:
-                    fallthrough
+//                case .Task:
+//                    fallthrough
+//                case .Idea:
+//                     fallthrough
+//                case .Decision:
+//                    fallthrough
                 default :
                     break  // by default model.backgroundColor is lighGrayColor
                 }

@@ -69,11 +69,11 @@ class ElementActionButtonsDataSource: NSObject, UICollectionViewDataSource {
             return UIImage(named: "icon-arch")
         case .Signal:
             return UIImage(named: "icon-flag")
-        case .CheckMark:
+        case .Task:
             return UIImage(named: "icon-okey")
         case .Idea:
             return UIImage(named: "icon-idea")
-        case .Solution:
+        case .Decision:
             return UIImage(named: "icon-solution")
         }
     }

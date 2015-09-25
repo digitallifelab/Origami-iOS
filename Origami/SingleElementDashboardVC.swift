@@ -493,11 +493,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     elementArchivePressed()
                 case .Signal:
                     elementSignalToggled()
-                case .CheckMark:
+                case .Task:
                     elementTaskPressed()
                 case .Idea:
                     elementIdeaPressed()
-                case .Solution:
+                case .Decision:
                     elementDecisionPressed()
                 }
             }

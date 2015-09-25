@@ -30,6 +30,8 @@
 		F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
 		F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
+		F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */; };
+		F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F84D61E51B9DB164001DB163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
 		F84D61E61B9DB175001DB163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
@@ -270,6 +272,7 @@
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
 		F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinishTaskResultView.xib; sourceTree = "<group>"; };
+		F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterAttributeButton.swift; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPickerVC.swift; sourceTree = "<group>"; };
 		F84DB3701B7CBBB1004E55F7 /* ElementOptionsConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ElementOptionsConverter.h; sourceTree = "<group>"; };
@@ -459,6 +462,7 @@
 				F880D17A1B2583CE00E702D3 /* Extensions.swift */,
 				F8D2FF2B1B283DE900584B8D /* Enumerations.swift */,
 				F8DEE7EF1B68FCC60004F0CB /* Structs.swift */,
+				F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */,
 			);
 			name = tools;
 			sourceTree = "<group>";
@@ -1142,6 +1146,7 @@
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F8C65F481B98AA5A001EDEA6 /* AFURLResponseSerialization.m in Sources */,
+				F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
 				F8C93B131B861B94009D890E /* ChatVC.swift in Sources */,
@@ -1212,6 +1217,7 @@
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
 				F8A1DFCD1B7B735B00A66692 /* AttachFile.swift in Sources */,
 				F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */,
+				F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F8D9BAC31B399880006B507D /* MediaFile.swift in Sources */,
 				F88563FE1B31C48B005D223E /* ChatTextInputView.swift in Sources */,
 				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,

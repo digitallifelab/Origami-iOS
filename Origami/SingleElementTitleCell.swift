@@ -209,7 +209,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     private func setup_TASK_Button() //task
     {
-        if let currentElement = self.handledElement, taskButton = self.viewWithTag(ActionButtonCellType.CheckMark.rawValue) as? UIButton
+        if let currentElement = self.handledElement, taskButton = self.viewWithTag(ActionButtonCellType.Task.rawValue) as? UIButton
         {
             if currentElement.isOwnedByCurrentUser()
             {
@@ -302,7 +302,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     private func setupDecisionButton()
     {
-        if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Solution.rawValue)
+        if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Decision.rawValue)
         {
             if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue))
             {
