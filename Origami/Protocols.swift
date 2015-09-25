@@ -24,6 +24,11 @@ protocol AttachmentSelectionDelegate
     func attachedFileTapped(attachFile:AttachFile)
 }
 
+protocol AttachViewerDelegate
+{
+    func attachViewerDeleteAttachButtonTapped(viewer:UIViewController)
+}
+
 protocol ButtonTapDelegate
 {
     func didTapOnButton(button:UIButton)

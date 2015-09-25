@@ -28,12 +28,15 @@ class DashCell: UICollectionViewCell
         }
     }
     
-    @IBOutlet var titleLabel:UILabel!
-    @IBOutlet var descriptionLabel:UILabel!
-    @IBOutlet var signalsCountLabel:UILabel!
-    @IBOutlet var flagIcon:UIImageView!
-    @IBOutlet var dividerView:UIView? = nil
-    @IBOutlet var signalDetectorView:UIView? = nil
+    @IBOutlet weak var titleLabel:UILabel?
+    @IBOutlet weak var descriptionLabel:UILabel?
+    @IBOutlet weak var signalsCountLabel:UILabel?
+    @IBOutlet weak var flagIcon:UIImageView?
+    @IBOutlet weak var dividerView:UIView?
+    @IBOutlet weak var signalDetectorView:UIView?
+    @IBOutlet weak var ideaIcon:UIImageView?
+    @IBOutlet weak var taskIcon:UIImageView?
+    @IBOutlet weak var decisionIcon:UIImageView?
     
     required init(coder aDecoder: NSCoder) {
         
@@ -43,6 +46,26 @@ class DashCell: UICollectionViewCell
         
         super.init(coder: aDecoder)
     }
+    
+    var currentElementType:Int = 0{
+        didSet{
+            if currentElementType > 0
+            {
+                let optionsConverter = ElementOptionsConverter()
+            
+                ideaIcon?.hidden = !optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: currentElementType)
+                taskIcon?.hidden = !optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElementType)
+                decisionIcon?.hidden = !optionsConverter.isOptionEnabled(.Decision, forCurrentOptions: currentElementType)
+            }
+            else
+            {
+                ideaIcon?.hidden = true
+                taskIcon?.hidden = true
+                decisionIcon?.hidden = true
+            }
+        }
+    }
+    
     
     override init(frame: CGRect) {
         backColor = UIColor.clearColor()
@@ -103,7 +126,7 @@ class DashCell: UICollectionViewCell
             switch cellType
             {
                 case .SignalsToggleButton:
-                    flagIcon.image = UIImage(named: "icon-flag")
+                    flagIcon?.image = UIImage(named: "icon-flag")
                     titleColor = UIColor.whiteColor()
                     backColor = (self.displayMode == .Day) ? kDaySignalColor : kNightSignalColor
                     signalDetectorView?.hidden = true
@@ -134,9 +157,13 @@ class DashCell: UICollectionViewCell
     override func  awakeFromNib()
     {
         backgroundColor = backColor
-        titleLabel.textColor = titleColor
-        descriptionLabel.textColor = descriptionColor
+        titleLabel?.textColor = titleColor
+        descriptionLabel?.textColor = descriptionColor
         self.layer.cornerRadius = 5.0
+        
+        ideaIcon?.hidden = true
+        taskIcon?.hidden = true
+        decisionIcon?.hidden = true
     }
     
     override func prepareForReuse()
@@ -150,21 +177,21 @@ class DashCell: UICollectionViewCell
     func updateAppearance()
     {
         self.backgroundColor = backColor
-        titleLabel.textColor = titleColor
-        descriptionLabel.textColor = descriptionColor
+        titleLabel?.textColor = titleColor
+        descriptionLabel?.textColor = descriptionColor
         dividerView?.backgroundColor = titleColor
         signalDetectorView?.backgroundColor = (self.displayMode == .Day) ? kDaySignalColor : kNightSignalColor
         
         if cellType == .SignalsToggleButton
         {
-            titleLabel.hidden = true
-            descriptionLabel.hidden = true
+            titleLabel?.hidden = true
+            descriptionLabel?.hidden = true
             dividerView?.hidden = true
         }
         else
         {
-            titleLabel.hidden = false
-            descriptionLabel.hidden = false
+            titleLabel?.hidden = false
+            descriptionLabel?.hidden = false
             dividerView?.hidden = false
         }
     }

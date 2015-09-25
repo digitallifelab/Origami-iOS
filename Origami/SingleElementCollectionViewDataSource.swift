@@ -456,8 +456,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 subordinatesStore = self.subordinatesByIndexPath,
                 lvElement = subordinatesStore[indexPath]
             {
-                subordinateCell.titleLabel.text = lvElement.title as? String
-                subordinateCell.descriptionLabel.text = lvElement.details as? String
+                subordinateCell.titleLabel?.text = lvElement.title as? String
+                subordinateCell.descriptionLabel?.text = lvElement.details as? String
                 subordinateCell.signalDetectorView?.hidden = true
                 
                 let signalFlag = lvElement.isSignal.boolValue

@@ -8,12 +8,12 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate , FinishTaskResultViewDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIViewControllerTransitioningDelegate, ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate , FinishTaskResultViewDelegate, AttachViewerDelegate {
 
     var currentElement:Element?
     var collectionDataSource:SingleElementCollectionViewDataSource?
     var fadeViewControllerAnimator:FadeOpaqueAnimator?
-    
+    var currentShowingAttachName:String = ""
     var iOS7PopoverController:UIPopoverController?
     
     var displayMode:DisplayMode = .Day {
@@ -1245,40 +1245,74 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         //if it is image - get full image from disc and display in new view controller
         NSOperationQueue().addOperationWithBlock { () -> Void in
             let lvFileHandler = FileHandler()
-            lvFileHandler.loadFileNamed(file.fileName!, completion: {[weak self] (fileData, loadingError) -> Void in
-                if let imageData = fileData, imageToDisplay = UIImage(data: imageData)
-                {
-                    if let aSelf = self
+            if let name = file.fileName, attachIdInt = file.attachID?.integerValue
+            {
+                lvFileHandler.loadFileNamed(name, completion: {[weak self] (fileData, loadingError) -> Void in
+                    if let imageData = fileData, imageToDisplay = UIImage(data: imageData)
                     {
-                        if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName)
+                        if let aSelf = self
                         {
-                            NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self]() -> Void in
-                                if let weakSelf = self
-                                {
-                                    switch fileToDisplay.type
+                            if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName)
+                            {
+                                NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self]() -> Void in
+                                    if let weakSelf = self
                                     {
-                                    case .Image:
-                                        if let destinationVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
+                                        switch fileToDisplay.type
                                         {
-                                            destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
-                                            destinationVC.title = fileToDisplay.name
-                                            
-                                            weakSelf.navigationController?.pushViewController(destinationVC, animated: true)
+                                        case .Image:
+                                            if let destinationVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
+                                            {
+                                                destinationVC.delegate = weakSelf
+                                                weakSelf.currentShowingAttachName = fileToDisplay.name
+                                                destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
+                                                destinationVC.title = fileToDisplay.name
+                                                
+                                                weakSelf.navigationController?.pushViewController(destinationVC, animated: true)
+                                            }
+                                        case .Document:
+                                            fallthrough //TODO: Display some external pdf or text viewer or display inside app
+                                        case .Sound:
+                                            fallthrough //TODO: display VC with music player
+                                        case .Video:
+                                            fallthrough //TODO: display VC with Video player
+                                        default: break
                                         }
-                                    case .Document:
-                                        fallthrough //TODO: Display some external pdf or text viewer or display inside app
-                                    case .Sound:
-                                        fallthrough //TODO: display VC with music player
-                                    case .Video:
-                                        fallthrough //TODO: display VC with Video player
-                                    default: break
                                     }
-                                }
-                            })
+                                    })
+                            }
                         }
                     }
-                }
-            })
+                    })
+                
+
+            }
+        }
+    }
+    
+    //MARK: -
+    
+    func attachViewerDeleteAttachButtonTapped(viewer: UIViewController)
+    {
+        if !self.currentShowingAttachName.isEmpty
+        {
+            if let elementIdInt = self.currentElement?.elementId?.integerValue
+            {
+                DataSource.sharedInstance.deleteAttachedFileNamed(self.currentShowingAttachName, fromElement: elementIdInt, completion: { [weak self](success, error) -> () in
+                    if let weakSelf = self
+                    {
+                        if success
+                        {
+                            weakSelf.prepareCollectionViewDataAndLayout()
+                            weakSelf.navigationController?.popViewControllerAnimated(true)
+                        }
+                        else if let anError = error
+                        {
+                            NSLog(" -> Error while trying to delete an attachment.  LocalizedDescription: \n \(anError.localizedDescription) \n")
+                            weakSelf.navigationController?.popViewControllerAnimated(true)
+                        }
+                    }
+                })
+            }
         }
     }
     

@@ -383,7 +383,7 @@
     
 }
 
--(void) loadFileNamed:(NSString *)fileName completion:(void(^)(NSData *fileData, NSError *readingError)) completionBlock
+-(void)loadFileNamed:(nonnull NSString *)fileName completion:(nullable void (^)(NSData * __nullable, NSError * __nullable))completionBlock
 {
     NSString *filePath = [self pathToFileNamed:fileName];
     
@@ -412,8 +412,9 @@
 }
 
 
--(void) eraseFileNamed:(NSString *)fileName completion:(void (^)(BOOL, NSError *))completionBlock
+-(void)eraseFileNamed:(nonnull NSString *)fileName completion:(nullable void (^)(BOOL, NSError * __nullable))completionBlock
 {
+    
     NSString *pathToTargetFile = [self pathToFileNamed:fileName];
     if (!pathToTargetFile)
     {

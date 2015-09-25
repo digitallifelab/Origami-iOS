@@ -213,6 +213,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         {
             if currentElement.isOwnedByCurrentUser()
             {
+                taskButton.userInteractionEnabled = true
                 if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
                     if !currentElement.isArchived()
@@ -267,6 +268,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else if currentElement.isTaskForCurrentUser()
             {
+                taskButton.userInteractionEnabled = true
                 if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
@@ -277,6 +279,37 @@ class SingleElementTitleCell: UICollectionViewCell {
                             taskButton.hidden = true
                         case .InProcess:
                             taskButton.tintColor = kDaySignalColor
+                            taskButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                        case .FinishedGood:
+                            taskButton.userInteractionEnabled = false
+                            taskButton.tintColor = kWhiteColor
+                            taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                        case .FinishedBad:
+                            taskButton.userInteractionEnabled = false
+                            taskButton.tintColor = kWhiteColor
+                            taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                        }
+                    }
+                }
+                else
+                {
+                    taskButton.hidden = true
+                }
+            }
+            else
+            {
+                taskButton.userInteractionEnabled = false
+                if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId.integerValue))
+                {
+                    taskButton.hidden = false
+                    if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                    {
+                        switch finishState
+                        {
+                        case .Default:
+                            taskButton.hidden = true
+                        case .InProcess:
+                            taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedGood:
                             taskButton.tintColor = kWhiteColor
@@ -292,11 +325,6 @@ class SingleElementTitleCell: UICollectionViewCell {
                     taskButton.hidden = true
                 }
             }
-            else
-            {
-                taskButton.hidden = true
-            }
-            
         }
     }
     
@@ -306,13 +334,10 @@ class SingleElementTitleCell: UICollectionViewCell {
         {
             if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue))
             {
+                decisionButton.tintColor = kWhiteColor
                 if currentElement.isOwnedByCurrentUser()
                 {
                     decisionButton.tintColor = kDaySignalColor
-                }
-                else
-                {
-                    decisionButton.tintColor = kWhiteColor
                 }
             }
             else

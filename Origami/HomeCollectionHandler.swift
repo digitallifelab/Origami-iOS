@@ -97,8 +97,9 @@ import UIKit
             dashCell.cellType = cellType
             if cellType == .SignalsToggleButton
             {
-                dashCell.signalsCountLabel.text = "\(signals?.count ?? 0)"
+                dashCell.signalsCountLabel?.text = "\(signals?.count ?? 0)"
                 dashCell.layer.zPosition = 1000
+                dashCell.currentElementType = 0
             }
             else
             {
@@ -106,24 +107,26 @@ import UIKit
                 {
                     if let title = existingElement.title as? String
                     {
-                        dashCell.titleLabel.text = title.uppercaseString
+                        dashCell.titleLabel?.text = title.uppercaseString
                     }
                     if let lvDescription = existingElement.details as? String
                     {
-                        dashCell.descriptionLabel.text = lvDescription
+                        dashCell.descriptionLabel?.text = lvDescription
                     }
                     
                      let isAsignal = existingElement.isSignal.boolValue
                     
-                        if isAsignal
-                        {
-                            dashCell.signalDetectorView?.hidden = false
-                           // dashCell.signalDetectorView?.backgroundColor = kDaySignalColor
-                        }
-                        else
-                        {
-                            dashCell.signalDetectorView?.hidden = true
-                        }
+                    if isAsignal
+                    {
+                        dashCell.signalDetectorView?.hidden = false
+                       // dashCell.signalDetectorView?.backgroundColor = kDaySignalColor
+                    }
+                    else
+                    {
+                        dashCell.signalDetectorView?.hidden = true
+                    }
+                    
+                    dashCell.currentElementType = existingElement.typeId.integerValue // will set visibility for icons
                 }
             }
             

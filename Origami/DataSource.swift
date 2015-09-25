@@ -1462,12 +1462,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func deleteAttachedFileNamed(fileName:String, fromElement elementId:NSNumber, completion completionClosure:(success:Bool, error:NSError?)->() ) {
+    func deleteAttachedFileNamed(fileName:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? ) {
         
         //response key "RemoveFileFromElementResult"
         serverRequester.unAttachFile(fileName, fromElement: elementId) { (success, fromServerError) -> () in
             let backgroundQueue = NSOperationQueue()
-            backgroundQueue.maxConcurrentOperationCount = 2
+            backgroundQueue.maxConcurrentOperationCount = 1
             if success
             {
                 backgroundQueue.addOperationWithBlock({ () -> Void in
@@ -1478,12 +1478,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             if erased
                             {
                                 //we don`t care - if file was erased or simply not found - anyway file does not exist at Documents folder
-                                completionClosure(success:erased, error:nil)
+                                completionClosure?(success:erased, error:nil)
                             }
                             else
                             {
                                 println("Could not erase file from disc: \n Error: \n\(fromServerError)")
-                                completionClosure(success: false, error: eraseError)
+                                completionClosure?(success: false, error: eraseError)
                             }
                         })
                     })
@@ -1491,8 +1491,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
             else
             {
-                println("Could not deAttach file on server: \n Error: \n\(fromServerError)")
-                completionClosure(success: success, error: fromServerError)
+                println("\n ->Could not deAttach file on server: \n Error: \n\(fromServerError)")
+                completionClosure?(success: success, error: fromServerError)
             }
         }
     }
@@ -1663,6 +1663,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             var localAttachesCount = localAttaches.count
             
             println("\n -> Processing \(localAttachesCount) out of \(recievedAttachesCount) atatches...")
+            
+            let operationQueue = NSOperationQueue()
+            operationQueue.maxConcurrentOperationCount = 2
+            
             
             let lvQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
             dispatch_apply(localAttachesCount, lvQueue) { (currentIteration) -> Void in

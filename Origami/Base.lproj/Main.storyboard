@@ -232,7 +232,7 @@
                                             <subviews>
                                                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m80-QP-Ba5" userLabel="signalDetectorView">
                                                     <rect key="frame" x="0.0" y="0.0" width="10" height="120"/>
-                                                    <color key="backgroundColor" red="1" green="0.25098039220000001" blue="0.50588235290000005" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="backgroundColor" red="0.12941176469999999" green="0.58823529409999997" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="10" id="47N-b5-VbD"/>
                                                     </constraints>
@@ -305,34 +305,79 @@
                                                         <rect key="frame" x="0.0" y="83" width="100" height="17"/>
                                                     </variation>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-solution" translatesAutoresizingMaskIntoConstraints="NO" id="Ib8-zK-nM8">
+                                                    <rect key="frame" x="78" y="30" width="20" height="20"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="25" id="E6p-zQ-Jty"/>
+                                                        <constraint firstAttribute="height" constant="20" id="KtX-7b-WxL"/>
+                                                        <constraint firstAttribute="width" constant="20" id="nmU-dL-Wfg"/>
+                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="25" id="w1a-Y4-PEI"/>
+                                                    </constraints>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="E6p-zQ-Jty"/>
+                                                            <exclude reference="w1a-Y4-PEI"/>
+                                                        </mask>
+                                                    </variation>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-okey" translatesAutoresizingMaskIntoConstraints="NO" id="PmA-Z5-oeJ">
+                                                    <rect key="frame" x="42" y="31" width="25" height="25"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="25" id="5Ss-HJ-uZj"/>
+                                                        <constraint firstAttribute="width" constant="25" id="cLV-SG-xbN"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-idea" translatesAutoresizingMaskIntoConstraints="NO" id="D1V-L6-vcZ">
+                                                    <rect key="frame" x="8" y="31" width="25" height="25"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="25" id="PeZ-d3-M4O"/>
+                                                        <constraint firstAttribute="height" constant="25" id="q7I-Ll-IRc"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
+                                            <constraint firstItem="PmA-Z5-oeJ" firstAttribute="leading" secondItem="D1V-L6-vcZ" secondAttribute="trailing" constant="9" id="9OW-Jj-EJj"/>
                                             <constraint firstItem="c3m-Jd-F3G" firstAttribute="top" secondItem="DOH-i4-k5z" secondAttribute="bottom" constant="8" id="BIa-Xj-fPR"/>
+                                            <constraint firstItem="PmA-Z5-oeJ" firstAttribute="top" secondItem="Ib8-zK-nM8" secondAttribute="top" constant="1" id="Bdj-8P-SaK"/>
                                             <constraint firstItem="7az-Gp-NEg" firstAttribute="top" secondItem="c3m-Jd-F3G" secondAttribute="bottom" constant="8" id="DPX-ly-tYS"/>
                                             <constraint firstItem="m80-QP-Ba5" firstAttribute="top" secondItem="mN6-SB-qvR" secondAttribute="top" id="EVa-QE-ezw"/>
                                             <constraint firstAttribute="bottom" secondItem="7az-Gp-NEg" secondAttribute="bottom" constant="8" id="I1K-te-5KD"/>
+                                            <constraint firstItem="D1V-L6-vcZ" firstAttribute="leading" secondItem="m80-QP-Ba5" secondAttribute="trailing" constant="-2" id="IxM-cq-DQj"/>
                                             <constraint firstAttribute="centerY" secondItem="XNK-cf-nC7" secondAttribute="centerY" id="MNa-cq-Xa6"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="leading" secondItem="c3m-Jd-F3G" secondAttribute="leading" id="NaF-WU-kT1"/>
+                                            <constraint firstAttribute="trailingMargin" secondItem="Ib8-zK-nM8" secondAttribute="trailing" constant="12" id="OMs-g4-T2t"/>
                                             <constraint firstAttribute="trailing" secondItem="DOH-i4-k5z" secondAttribute="trailing" constant="16" id="PaY-m4-XbE"/>
                                             <constraint firstItem="X69-zu-5f4" firstAttribute="trailing" secondItem="mN6-SB-qvR" secondAttribute="trailingMargin" id="Rqq-7h-yVx"/>
                                             <constraint firstAttribute="bottom" secondItem="m80-QP-Ba5" secondAttribute="bottom" id="SbN-Dg-CHt"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="top" secondItem="mN6-SB-qvR" secondAttribute="topMargin" id="TFg-rt-KLH"/>
                                             <constraint firstAttribute="bottom" secondItem="X69-zu-5f4" secondAttribute="bottom" constant="8" id="W7M-za-mMh"/>
+                                            <constraint firstItem="PmA-Z5-oeJ" firstAttribute="top" secondItem="D1V-L6-vcZ" secondAttribute="top" id="ZUW-KV-QPo"/>
                                             <constraint firstItem="m80-QP-Ba5" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" id="bRH-Uh-E1f"/>
                                             <constraint firstAttribute="centerX" secondItem="XNK-cf-nC7" secondAttribute="centerX" id="dEq-nY-Y8t"/>
+                                            <constraint firstItem="Ib8-zK-nM8" firstAttribute="leading" secondItem="PmA-Z5-oeJ" secondAttribute="trailing" constant="11" id="ehx-tr-3yY"/>
                                             <constraint firstItem="DOH-i4-k5z" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" constant="16" id="fpY-u9-xwz"/>
+                                            <constraint firstItem="Ib8-zK-nM8" firstAttribute="top" secondItem="DOH-i4-k5z" secondAttribute="bottom" constant="-1" id="iz7-BW-S3N"/>
                                             <constraint firstItem="7az-Gp-NEg" firstAttribute="leading" secondItem="mN6-SB-qvR" secondAttribute="leading" constant="16" id="kJ5-ut-l7y"/>
                                             <constraint firstItem="7az-Gp-NEg" firstAttribute="trailing" secondItem="mN6-SB-qvR" secondAttribute="trailingMargin" id="mUk-W3-2xt"/>
                                         </constraints>
                                         <size key="customSize" width="206" height="120"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="OMs-g4-T2t"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
+                                            <outlet property="decisionIcon" destination="Ib8-zK-nM8" id="Gdu-qC-biu"/>
                                             <outlet property="descriptionLabel" destination="7az-Gp-NEg" id="12S-eP-pUr"/>
                                             <outlet property="flagIcon" destination="XNK-cf-nC7" id="fm0-MK-YdB"/>
+                                            <outlet property="ideaIcon" destination="D1V-L6-vcZ" id="sO9-vU-2fK"/>
                                             <outlet property="signalDetectorView" destination="m80-QP-Ba5" id="Etr-li-PdK"/>
                                             <outlet property="signalsCountLabel" destination="X69-zu-5f4" id="ZoK-8S-E9b"/>
+                                            <outlet property="taskIcon" destination="PmA-Z5-oeJ" id="UDx-ob-Ycu"/>
                                             <outlet property="titleLabel" destination="DOH-i4-k5z" id="fid-n6-fWu"/>
                                         </connections>
                                     </collectionViewCell>

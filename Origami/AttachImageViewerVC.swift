@@ -11,7 +11,7 @@ import UIKit
 class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
 
     @IBOutlet weak var imageScrollView:UIScrollView!
-    
+    var delegate:AttachViewerDelegate?
     var imageToDisplay:UIImage?
     var imageHolder:UIImageView?
     var doubleTapRecognizer:UITapGestureRecognizer?
@@ -30,6 +30,8 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         imageScrollView.delegate = self
        
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
+        
+        setupDeleteButton()
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,29 +55,40 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         }
    
     }
+    
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         imageHolder?.removeFromSuperview()
         imageHolder = nil
     }
+    
     override func viewDidLayoutSubviews() {
         addImageHolder()
     }
     
+//    
+//    @IBAction func closeBarButtonTapped(sender:UIBarButtonItem)
+//    {
+//        dismissSelf()
+//    }
+//    
+//    
+//
+//    func dismissSelf()
+//    {
+//        if let navController = self.navigationController
+//        {
+//            self.navigationController?.popViewControllerAnimated(true)
+//        }
+//        else
+//        {
+//            self.dismissViewControllerAnimated(true, completion: nil)
+//        }
+//    }
     
-    @IBAction func closeBarButtonTapped(sender:UIBarButtonItem)
+    private func setupDeleteButton()
     {
-        dismissSelf()
-    }
-
-    func dismissSelf(){
-        if let navController = self.navigationController
-        {
-            self.navigationController?.popViewControllerAnimated(true)
-        }
-        else
-        {
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
+        let deleteBarButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteButtontapped:")
+        self.navigationItem.rightBarButtonItem = deleteBarButton
     }
     
     func addImageHolder()
@@ -150,5 +163,11 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         centerImageInScrollView()
     }
     
+    
+    //MARK: - Delete Attach File
+    func deleteButtontapped(sender:AnyObject)
+    {
+        delegate?.attachViewerDeleteAttachButtonTapped(self)
+    }
 
 }

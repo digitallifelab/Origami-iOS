@@ -879,7 +879,7 @@ class ServerRequester: NSObject
     }
     
     //MARK: Attaches
-    func loadAttachesListForElementId(elementId:NSNumber, completion:networkResult)
+    func loadAttachesListForElementId(elementId:NSNumber, completion:networkResult?)
     {
         //"GetElementAttaches?elementId={elementId}&token={token}"
         //NSString *urlString = [NSString stringWithFormat:@"%@GetElementAttaches?elementId=%@&token=%@", BasicURL, elementId, _currentUser.token];
@@ -897,14 +897,14 @@ class ServerRequester: NSObject
                                 if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
                                 {
                                    dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-                                    completion(attaches, nil)
+                                    completion?(attaches, nil)
                                     })
                                 }
                                 else
                                 {
                                     
                                     dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-                                       completion(nil,nil)
+                                       completion?(nil,nil)
                                     })
                                     
 //                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
@@ -917,7 +917,7 @@ class ServerRequester: NSObject
                     else
                     {
                         let lvError = NSError(domain: "Attachment error", code: -45, userInfo: [NSLocalizedDescriptionKey:"Failed to convert recieved attaches data"])
-                        completion(nil, lvError)
+                        completion?(nil, lvError)
                     }
                     
             },
@@ -931,7 +931,7 @@ class ServerRequester: NSObject
                     
                     println("-> Failure while loading attachesList: \(error)")
                     
-                    completion(nil, error)
+                    completion?(nil, error)
             })
             
             
@@ -939,7 +939,7 @@ class ServerRequester: NSObject
             return
         }
         
-        completion(nil, noUserTokenError)
+        completion?(nil, noUserTokenError)
 
     }
     
@@ -1139,7 +1139,7 @@ class ServerRequester: NSObject
         completionClosure(success: false,  attachId:nil, error: noUserTokenError)
     }
         //remove attached file from element attaches
-    func unAttachFile(name:String, fromElement elementId:NSNumber, completion completionClosure:((success:Bool, error:NSError?)->() )? = nil ) {
+    func unAttachFile(name:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->() )?) {
         /*
         
         //"RemoveFileFromElement?elementId={elementId}&fileName={fileName}&token={token}"
@@ -1168,8 +1168,8 @@ class ServerRequester: NSObject
         
         */
         if let userToken = DataSource.sharedInstance.user?.token as? String {
-            unAttachFileUrlPart
-            let requestString = "\(serverURL)" + attachToElementUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(name)" + "&token=" + "\(userToken)"
+            
+            let requestString = "\(serverURL)" + unAttachFileUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(name)" + "&token=" + "\(userToken)"
             let requestOperation = httpManager.GET(requestString,
                 parameters: nil,
                 success: { (operation, result) -> Void in
@@ -1177,26 +1177,21 @@ class ServerRequester: NSObject
                     {
                         println("\n --- Successfully unattached file from element: \(response)")
                     }
-                    if completionClosure != nil
-                    {
-                        completionClosure!(success: true, error: nil)
-                    }
-                
+                   
+                    completionClosure?(success: true, error: nil)
             },
                 failure: { (operation, error) -> Void in
                     if let errorString = operation.responseString {
                         let lvError = NSError(domain: "Attachment Error", code: -44, userInfo: [NSLocalizedDescriptionKey:errorString])
-                        if completionClosure != nil
-                        {
-                            completionClosure!(success: false, error: lvError)
-                        }
+                        
+                            completionClosure?(success: false, error: lvError)
+                        
                         
                     }
                     else {
-                        if completionClosure != nil
-                        {
-                            completionClosure!(success: false, error: error)
-                        }
+                        
+                        completionClosure?(success: false, error: error)
+                        
                     }
             })
             
