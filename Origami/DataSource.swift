@@ -1849,7 +1849,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         if !DataSource.sharedInstance.contacts.isEmpty
         {
-            
             let foundContacts = DataSource.sharedInstance.contacts.filter({ (contact) -> Bool in
                 if let contactId = contact.contactId
                 {
@@ -2184,6 +2183,33 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return existingBytes
             }
         }
+        return nil
+    }
+    
+    func getAvatarForUserId(userIdInt:Int) -> UIImage?
+    {
+        if let currentUserId = DataSource.sharedInstance.user?.userId?.integerValue
+        {
+            if userIdInt == currentUserId
+            {
+                if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(DataSource.sharedInstance.user?.userName as? String)
+                {
+                    return UIImage(data: data)
+                }
+            }
+            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])), firstContact = contacts.first, contactUserName = firstContact.userName as? String, cData = DataSource.sharedInstance.getAvatarDataForContactUserName(contactUserName)
+            {
+                let image = UIImage(data: cData)
+                return image
+            }
+            
+            return nil
+        }
+        else
+        {
+            assert(DataSource.sharedInstance.user != nil, "No User in DataSource.  Probably logged out.")
+        }
+        
         return nil
     }
     

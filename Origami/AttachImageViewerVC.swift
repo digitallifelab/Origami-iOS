@@ -31,7 +31,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
        
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         
-        setupDeleteButton()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,6 +53,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         {
             addImageHolder()
         }
+        setupDeleteButton()
    
     }
     
@@ -87,8 +88,14 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     
     private func setupDeleteButton()
     {
-        let deleteBarButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteButtontapped:")
-        self.navigationItem.rightBarButtonItem = deleteBarButton
+        if let delegate = self.delegate
+        {
+            if delegate.attachViewerShouldAllowDeletion(self)
+            {
+                let deleteBarButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteButtontapped:")
+                self.navigationItem.rightBarButtonItem = deleteBarButton
+            }
+        }
     }
     
     func addImageHolder()

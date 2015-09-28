@@ -1289,7 +1289,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
-    //MARK: -
+    //MARK: - AttachViewerDelegate
+    func attachViewerShouldAllowDeletion(viewer: UIViewController) -> Bool {
+        if let element = self.currentElement
+        {
+            return element.isOwnedByCurrentUser()
+        }
+        return false
+    }
     
     func attachViewerDeleteAttachButtonTapped(viewer: UIViewController)
     {

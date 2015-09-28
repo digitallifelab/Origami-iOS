@@ -71,11 +71,34 @@
 }
 
 -(BOOL)isOptionEnabled:(ElementOptions)option forCurrentOptions:(NSInteger)currentOptions
-{    
+{
+//#ifdef DEBUG
+//    NSLog(@" -> Checking for option %@", [self debugAskedOption:option]);
+//#endif
     if ((currentOptions & option) == option)
         return YES;
     
     return NO;
+}
+
+- (nonnull NSString *)debugAskedOption:(ElementOptions)option
+{
+    switch (option) {
+        case ElementOptionsNone :
+            return @"ElementOptions.None";
+        case ElementOptionsIdea :
+            return @"ElementOptions.Idea";
+        case ElementOptionsTask:
+            return @"ElementOptions.Task";
+        case ElementOptionsDecision :
+            return @"ElementOptions.Decision";
+        case ElementOptionsReservedValue1:
+            return @"ElementOptions.ReservedValue1";
+        case ElementOptionsReservedValue2:
+            return @"ElementOptions.ReservedValue2";
+        default:
+            return @"Warning! : illegal Type";
+    }
 }
 
 @end

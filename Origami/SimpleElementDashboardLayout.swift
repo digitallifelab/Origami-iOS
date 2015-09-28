@@ -223,36 +223,31 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
         if let aDataSource = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
         {
-            if let titleCellFromDataSource = aDataSource.titleCell
-            {
-                var font = titleCellFromDataSource.titleTextView?.font//labelTitle.font
-                if let aFont = font
-                {
-                    
-                }
-                else
-                {
-                    font = UIFont(name: "SegoeUI", size: 30.0)
-                }
-                var size = CGSizeMake(mainFrame.width, 200.0)
-
-                if let nsStringTitleText =  self.elementStruct?.title
-                {
-                    var textLabelSize = nsStringTitleText.boundingRectWithSize(CGSizeMake(mainFrame.width - (60 + 16), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font!], context: nil)
-                    size.height =  ceil(textLabelSize.height) + 48 + 53 + 8
-                    //println("-> Title Label Size: \(textLabelSize)")
-                }
-                
+//            if let titleCellFromDataSource = aDataSource.titleCell
+//            {
                 if aDataSource.titleCellMode == .Title
                 {
+                    var size = CGSizeMake(mainFrame.width, 200.0)
+                    
+                    if let nsStringTitleText =  self.elementStruct?.title, font = UIFont(name: "SegoeUI", size: 30.0)
+                    {
+                        var boundingSize = CGSizeMake(mainFrame.width - (50 + 16), CGFloat(FLT_MAX) )
+                        if aDataSource.elementIsTask()
+                        {
+                            boundingSize.width -= 48.0
+                        }
+                        var textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
+                        size.height =  ceil(textLabelSize.height) + 60 + 55
+                    }
+                    
                     titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
-                    //println("-> Title Cell Size:\(titleFrame.size)")
+                    println("-> Title Cell Size:\(titleFrame.size)")
                 }
                 else // .Dates
                 {
                     titleFrame.size = CGSizeMake(mainFrame.width, 140.0)
                 }
-            }
+//            }
         }
         
         let titleIndexPath = NSIndexPath(forItem: 0, inSection: 0)

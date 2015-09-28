@@ -27,6 +27,7 @@ protocol AttachmentSelectionDelegate
 protocol AttachViewerDelegate
 {
     func attachViewerDeleteAttachButtonTapped(viewer:UIViewController)
+    func attachViewerShouldAllowDeletion(viewer:UIViewController) -> Bool
 }
 
 protocol ButtonTapDelegate

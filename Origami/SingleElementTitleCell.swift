@@ -54,6 +54,16 @@ class SingleElementTitleCell: UICollectionViewCell {
 
         NSNotificationCenter.defaultCenter().postNotification(tapNotification)
     }
+    @IBOutlet weak var responsiblePersonAvatarIcon:UIImageView?
+    @IBOutlet var responsiblePErsonAvatarWidthConstraint:NSLayoutConstraint!
+    
+    let visibleResponsibleAvatarWidth:CGFloat = 40.0
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        responsiblePersonAvatarIcon?.tintColor = kWhiteColor
+        responsiblePersonAvatarIcon?.maskToCircle()
+    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -216,6 +226,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 taskButton.userInteractionEnabled = true
                 if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
+                    self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     if !currentElement.isArchived()
                     {
                         taskButton.tintColor = kWhiteColor
@@ -255,6 +266,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 }
                 else
                 {
+                    self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                     if !currentElement.isArchived()
                     {
                         taskButton.tintColor = kWhiteColor
@@ -271,6 +283,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 taskButton.userInteractionEnabled = true
                 if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
+                    self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
                     {
                         switch finishState
@@ -294,6 +307,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 else
                 {
                     taskButton.hidden = true
+                    self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                 }
             }
             else
@@ -301,13 +315,14 @@ class SingleElementTitleCell: UICollectionViewCell {
                 taskButton.userInteractionEnabled = false
                 if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
+                    self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     taskButton.hidden = false
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
                     {
                         switch finishState
                         {
                         case .Default:
-                            taskButton.hidden = true
+                            taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .InProcess:
                             taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
@@ -323,6 +338,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 else
                 {
                     taskButton.hidden = true
+                    self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                 }
             }
         }

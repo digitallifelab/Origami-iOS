@@ -380,7 +380,8 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                         {
                             let itemFrame = CGRectMake(offsetX, offsetY, elementWidth, self.itemSize.height)
                             itemAttributes.frame = itemFrame
-                            cellAttributes![indexPathForItem] = itemAttributes
+                            itemAttributes.hidden = false
+                                cellAttributes![indexPathForItem] = itemAttributes
                             
                             offsetX += elementWidth + self.minimumInteritemSpacing
                         }

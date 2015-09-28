@@ -158,6 +158,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         //return subordinates
     }
     
+    func elementIsTask() -> Bool
+    {
+        if let element = self.handledElement
+        {
+            let optionsCovnerter = ElementOptionsConverter()
+            return optionsCovnerter.isOptionEnabled(.Task, forCurrentOptions: element.typeId.integerValue)
+        }
+        return false
+    }
+    
     func getLayoutInfo() -> ElementDetailsStruct?
     {
         if let options = self.currentCellsOptions
@@ -259,11 +269,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 cellTypes.append(.Attaches)
                 indexCount += 1
             }
-//            if options.cellTypes.contains(.Buttons)
-//            {
-//                cellTypes.append(.Buttons)
-//                indexCount += 1
-//            }
+            
             if options.cellTypes.contains(.Subordinates)
             {
                 if let subordinates = getElementSubordinates()
@@ -356,8 +362,22 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
                 titleCell.handledElement = self.handledElement
                 titleCell.setupActionButtons(elementIsOwned())
-                self.titleCell = titleCell
+              
+                if let currentelement = self.handledElement
+                {
                 
+                    let responsibleIdInt = currentelement.responsible.integerValue
+                    if responsibleIdInt > 0
+                    {
+                        titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                        if let image = DataSource.sharedInstance.getAvatarForUserId(responsibleIdInt)
+                        {
+                            titleCell.responsiblePersonAvatarIcon?.image = image
+                        }
+                    }
+                    
+                }
+                self.titleCell = titleCell
                 return titleCell
                 
             case .Dates:
@@ -428,23 +448,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
                 return defaultCell
             }
-           
-            
-//        case .Buttons:
-//            var buttonsHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementButtonsHolderCell", forIndexPath: indexPath) as! SingleElementButtonsCell
-//            if let actionButtonsDataSource = ElementActionButtonsDataSource(buttonModels: createActionButtonModels())
-//            {
-//                var buttonTypes = [ActionButtonCellType]()
-//
-//                for model in actionButtonsDataSource.buttons!
-//                {
-//                    buttonTypes.append(model.type)
-//                }
-//                
-//                buttonsHolderCell.dataSource = actionButtonsDataSource
-//                buttonsHolderCell.buttonsLayout = ElementActionButtonsLayout(buttonTypes: buttonTypes)
-//            }
-//            return buttonsHolderCell
             
         case .Subordinates:
             var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
@@ -467,16 +470,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return subordinateCell
         }
     }
-    
-//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-//        if indexPath.item == 0
-//        {
-//            if let titleCell = cell as? SingleElementTitleCell
-//            {
-//                titleCell.labelTitle.text = getElementTitle()
-//            }
-//        }
-//    }
     
     func createActionButtonModels() -> [ActionButtonModel]?
     {
@@ -520,12 +513,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                         }
                         
                     }
-//                case .Task:
-//                    fallthrough
-//                case .Idea:
-//                     fallthrough
-//                case .Decision:
-//                    fallthrough
                 default :
                     break  // by default model.backgroundColor is lighGrayColor
                 }
@@ -559,22 +546,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func elementIsOwned() -> Bool
     {
-//        if DataSource.sharedInstance.user!.userId!.integerValue == handledElement!.creatorId.integerValue
-//        {
-//            return true
-//        }
-//        else if let elementsTree = DataSource.sharedInstance.getRootElementTreeForElement(handledElement!)
-//        {
-//            for anElement in elementsTree
-//            {
-//                if anElement.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
-//                {
-//                    return true
-//                }
-//            }
-//        }
-//        
-//        return false
         if let element = self.handledElement
         {
             return element.isOwnedByCurrentUser()

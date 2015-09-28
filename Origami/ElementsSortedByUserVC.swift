@@ -81,12 +81,17 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         })
         
         configureCurrentRightTopButton()
-        configureTopToolbarItems()
+        //configureTopToolbarItems()
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        configureTopToolbarItems()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -100,6 +105,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     override func viewWillDisappear(animated: Bool) {
         
+        self.signalsFilterEnabled = false
+        self.ideasFilterEnabled = false
+        self.tasksFilterEnabled = false
+        self.decisionsFilterEnabled = false
+        
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
@@ -111,58 +121,64 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     override func startLoadingElementsByActivity(completion:(()->())?) {
         
-        if DataSource.sharedInstance.shouldReloadAfterElementChanged || self.elements == nil
-        {
-            self.setLoadingIndicatorVisible(true)
-            isReloadingTable = true
-            println(" -> Getting all elements By Activity from DataSource... ")
-            DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
-                if let weakSelf = self
+        
+        self.setLoadingIndicatorVisible(true)
+        isReloadingTable = true
+        println(" -> Getting all elements By Activity from DataSource... ")
+        DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
+            if let weakSelf = self
+            {
+                if let elementsPresent = elements
                 {
-                    if let elementsPresent = elements
-                    {
-                            let archVisibleLocal = weakSelf.archivedVisible
-                        let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-                        dispatch_async(bgQueue, {[weak self] () -> Void in
-                            var allCurrentElements = [Element]()
-                            if archVisibleLocal
+                        let archVisibleLocal = weakSelf.archivedVisible
+                    let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+                    dispatch_async(bgQueue, {[weak self] () -> Void in
+                        var allCurrentElements = [Element]()
+                        if archVisibleLocal
+                        {
+                            let archived = ObjectsConverter.filterArchiveElements(true, elements: elementsPresent)
+                            if !archived.isEmpty
                             {
-                                let archived = ObjectsConverter.filterArchiveElements(true, elements: elementsPresent)
-                                if !archived.isEmpty
-                                {
-                                    allCurrentElements += archived
-                                }
+                                allCurrentElements += archived
                             }
-                            else
+                        }
+                        else
+                        {
+                            let allWithoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsPresent)
+                            if !allWithoutArchived.isEmpty
                             {
-                                let allWithoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsPresent)
-                                if !allWithoutArchived.isEmpty
-                                {
-                                    allCurrentElements += allWithoutArchived
-                                }
+                                allCurrentElements += allWithoutArchived
                             }
-                            
-                            if let weakerSelf = self
+                        }
+                        
+                        if let weakerSelf = self
+                        {
+                            weakerSelf.elements = allCurrentElements
+                            if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
                             {
-                                weakerSelf.elements = allCurrentElements
-                                if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
-                                {
-                                    println(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
-                                    weakSelf.sortCurrentElementsForNewUserId()
-                                }
+                                println(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
+                                weakSelf.sortCurrentElementsForNewUserId()
                             }
-                            
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                if !weakSelf.isReloadingTable
+                        }
+                        
+                        weakSelf.checkFiltersEnabled({ () -> () in
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let anotherWeakSelf = self
                                 {
-                                    completion?()
+                                    //if !weakSelf.isReloadingTable
+                                    //{
+                                        completion?()
+                                    //}
                                 }
+                                
                             })//end of main_queue
-                        }) //end of bgQue
-                    }
+                        })
+                     
+                    }) //end of bgQue
                 }
             }
         }
+        
     }
     
     func sortCurrentElementsForNewUserId()
@@ -240,34 +256,60 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         //let imageInsets = UIEdgeInsetsMake(4, 4, 4, 4)
         
         let signalButton =  FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
-        signalButton.toggleType = .ToggledOff(filterType: .Signal) // my first parametrized enum :-)
+        if self.signalsFilterEnabled
+        {
+            signalButton.toggleType = .ToggledOn(filterType: .Signal)
+        }
+        else
+        {
+            signalButton.toggleType = .ToggledOff(filterType: .Signal)
+        }
         signalButton.frame = CGRectMake(0, 0, 44, 44)
         signalButton.setImage(UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        //signalButton.imageEdgeInsets = imageInsets
         signalButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let signalBarItem = UIBarButtonItem(customView: signalButton)
         
+        //
         let ideaButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
-        ideaButton.toggleType = .ToggledOff(filterType: .Idea)
+        if self.ideasFilterEnabled
+        {
+            ideaButton.toggleType = .ToggledOn(filterType: .Idea)
+        }
+        else
+        {
+            ideaButton.toggleType = .ToggledOff(filterType: .Idea)
+        }
         ideaButton.frame = CGRectMake(0, 0, 44, 44)
         ideaButton.setImage(UIImage(named: "icon-idea")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        //ideaButton.imageEdgeInsets = imageInsets
         ideaButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let ideaBarItem = UIBarButtonItem(customView: ideaButton)
         
         let taskButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
-        taskButton.toggleType = .ToggledOff(filterType:.Task)
+        if self.tasksFilterEnabled
+        {
+            taskButton.toggleType = .ToggledOn(filterType: .Task)
+        }
+        else
+        {
+            taskButton.toggleType = .ToggledOff(filterType: .Task)
+        }
         taskButton.frame = CGRectMake(0, 0, 44, 44)
         taskButton.setImage(UIImage(named: "icon-okey")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        //taskButton.imageEdgeInsets = imageInsets
         taskButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let taskBarItem = UIBarButtonItem(customView: taskButton)
         
         let decisionButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        if self.decisionsFilterEnabled
+        {
+            decisionButton.toggleType = .ToggledOn(filterType: .Decision)
+        }
+        else
+        {
+            decisionButton.toggleType = .ToggledOff(filterType: .Decision)
+        }
         decisionButton.toggleType = .ToggledOff(filterType:.Decision)
         decisionButton.frame = CGRectMake(0, 0, 44, 44)
         decisionButton.setImage(UIImage(named: "icon-solution")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        //decisionButton.imageEdgeInsets = imageInsets
         decisionButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let decisionBarItem = UIBarButtonItem(customView: decisionButton)
         
@@ -562,6 +604,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
         //self.isReloadingTable = true
+      
+        self.configureTopToolbarItems()
         
         if let aContact = item as? Contact
         {
@@ -586,7 +630,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     }
     
     //MARK: - Top Controllls actions
-    
+    //MARK: Archived / Normal
     @IBAction func segmentedControlDidChange(sender:UISegmentedControl)
     {
         let currentIndex = sender.selectedSegmentIndex
@@ -610,10 +654,14 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
     }
     
+    //MARK: Filter by type
     func filterButtonTapped(sender:FilterAttributeButton)
     {
+        //let debugCurrentToggleType = sender.toggleType.description()
+        //println(" old toggle type: \(debugCurrentToggleType)")
         sender.toggleType = sender.toggleType.toggleToOpposite()
-    
+        //let debugNewToggleType = sender.toggleType.description()
+        //println(" new toggle type: \(debugNewToggleType)")
         applyFilter(sender.toggleType)
     }
     
@@ -644,7 +692,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 case .ToggledOn(let type) where type == .Decision:
                     println(" enabled .Decision Filter")
                     decisionsFilterEnabled = true
-                    filterOutElementsWithOptionsEnabled(.Task)
+                    filterOutElementsWithOptionsEnabled(.Decision)
                     self.reloadTableView()
                 
                 ///---///
@@ -741,43 +789,50 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     func refreshFilteredData()
     {
         self.tableView?.userInteractionEnabled = false
-        self.elements = nil
+        //self.elements = nil
 
         self.startLoadingElementsByActivity {[weak self] () -> () in
             if let weakSelf = self, allElements = weakSelf.elements
             {
                 let bgQueue = dispatch_queue_create("com.origami.sorting.queue", DISPATCH_QUEUE_SERIAL)
                 dispatch_async(bgQueue, { () -> Void in
-                    if weakSelf.signalsFilterEnabled
-                    {
-                        weakSelf.filterOutSignalsToggled()
-                    }
-                   
-                    if weakSelf.ideasFilterEnabled
-                    {
-                        weakSelf.filterOutElementsWithOptionsEnabled(.Idea)
-                    }
-                    
-                    if weakSelf.tasksFilterEnabled
-                    {
-                        weakSelf.filterOutElementsWithOptionsEnabled(.Task)
-                    }
-                    
-                    if weakSelf.decisionsFilterEnabled
-                    {
-                        weakSelf.filterOutElementsWithOptionsEnabled(.Decision)
-                    }
-                    
-                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                        if let anotherWeakSelf = self
-                        {
-                            anotherWeakSelf.reloadTableView()
-                        }
+                    weakSelf.checkFiltersEnabled({ () -> () in
+                       
+                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                            if let anotherWeakSelf = self
+                            {
+                                anotherWeakSelf.reloadTableView()
+                            }
+                        })
                     })
                 })
-                
             }
         }
+    }
+    
+    func checkFiltersEnabled(completion:(()->())?)
+    {
+        if self.signalsFilterEnabled
+        {
+            filterOutSignalsToggled()
+        }
+        
+        if self.ideasFilterEnabled
+        {
+            filterOutElementsWithOptionsEnabled(.Idea)
+        }
+        
+        if self.tasksFilterEnabled
+        {
+            filterOutElementsWithOptionsEnabled(.Task)
+        }
+        
+        if self.decisionsFilterEnabled
+        {
+            filterOutElementsWithOptionsEnabled(.Decision)
+        }
+        
+        completion?()
     }
     
     

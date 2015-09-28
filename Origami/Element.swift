@@ -179,7 +179,7 @@ class Element:NSObject
         toReturn["ChangerId"] = self.changerId //?? NSNull()
         if let finishString = toReturn["FinishDate"] as? String
         {
-            println(" \n-> Returning description of element: [ArchDate] = [\(self.archiveDate!)] , [FinishDate] = [\(finishString)]\n ")
+            println(" \n-> Returning description of element: [ArchDate] = [\(self.archiveDate)] , [FinishDate] = [\(finishString)]\n ")
         }
         return toReturn
     }

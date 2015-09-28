@@ -25,4 +25,5 @@ typedef NS_OPTIONS(NSInteger, ElementOptions) // this enum type is currently use
 
 -(BOOL)isOptionEnabled:(ElementOptions)option forCurrentOptions:(NSInteger)currentOptions;
 
+-(nonnull NSString *)debugAskedOption:(ElementOptions)option;
 @end

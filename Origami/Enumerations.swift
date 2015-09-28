@@ -86,6 +86,45 @@ enum ToggleType {
             return .ToggledOn(filterType: type)
         }
     }
+    
+    func description() -> String
+    {
+        var lvDescription = ""
+        switch self
+        {
+        case .ToggledOn(let filterType):
+            lvDescription = ".ToggledOn"
+            switch filterType
+            {
+            case .Decision:
+                lvDescription += " .Decision"
+            case .Signal:
+                lvDescription += " .Signal"
+            case .Idea:
+                lvDescription += " .Idea"
+            case .Task:
+                lvDescription += " .Task"
+            default:
+                lvDescription += " .WRONG VALUE"
+            }
+        case .ToggledOff(let filterType):
+            lvDescription = ".ToggledOff"
+            switch filterType
+            {
+            case .Decision:
+                lvDescription += " .Decision"
+            case .Signal:
+                lvDescription += " .Signal"
+            case .Idea:
+                lvDescription += " .Idea"
+            case .Task:
+                lvDescription += " .Task"
+            default:
+                lvDescription += " .WRONG VALUE"
+            }
+        }
+        return lvDescription
+    }
 }
 
 enum ActionButtonType:Int

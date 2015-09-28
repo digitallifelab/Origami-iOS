@@ -279,6 +279,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                     {
                         itemAttributes.zIndex = itemAttributes.indexPath.item
                         itemAttributes.frame = itemFrame
+                        itemAttributes.hidden = true
                         cellAttributes![indexPathForItem] = itemAttributes
                     }
                 }
