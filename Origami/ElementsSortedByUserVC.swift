@@ -582,8 +582,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     }
     
     //MARK: - TableItemPickerDelegate
-    func itemPickerDidCancel(itemPicker: AnyObject) {
-        //self.isReloadingTable = true
+    func itemPickerDidCancel(itemPicker: AnyObject)
+    {
        
         if let aNumber = DataSource.sharedInstance.user?.userId
         {
@@ -605,7 +605,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
-    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
+    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject)
+    {
         //self.isReloadingTable = true
       
         self.configureTopToolbarItems()

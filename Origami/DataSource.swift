@@ -2163,10 +2163,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         if let imageData = DataSource.sharedInstance.avatarsHolder[userName]
         {
             response = .Replaced
+            println(" -> Replaced avatar data for username: \(userName)")
         }
         else
         {
             response = .Added
+            println(" -> Added avatar data for username: \(userName)")
         }
         DataSource.sharedInstance.avatarsHolder[userName] = avatarBytes
         
@@ -2182,7 +2184,42 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 //println(" returning avatar Data from avatarsHolder")
                 return existingBytes
             }
+            
+            if let alreadyChecking = DataSource.sharedInstance.pendingUserAvatarsDownolads[lvName]
+            {
+                
+            }
+            else
+            {
+                let lowQueue:dispatch_queue_t
+                if !FrameCounter.isLowerThanIOSVersion("8.0")
+                {
+                    let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_UTILITY, 0)
+                    lowQueue = dispatch_queue_create("com.Origami.BackgroundImage.Queue", attributes)
+                }
+                else
+                {
+                    lowQueue = dispatch_queue_create("com.Origami.BackgroundImage.Queue", DISPATCH_QUEUE_SERIAL)
+                }
+                /*
+                dispatch_queue_t queue;
+                *	dispatch_queue_attr_t attr;
+                *	attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
+                *			QOS_CLASS_UTILITY, 0);
+                *	queue = dispatch_queue_create("com.example.myqueue", attr);
+                */
+             
+                
+                dispatch_async(lowQueue, { () -> Void in
+                     DataSource.sharedInstance.loadAvatarFromDiscForLoginName(lvName, completion: nil)
+                })
+               
+            }
         }
+        
+        
+        
+        
         return nil
     }
     
@@ -2215,8 +2252,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
     {
-        if let block = completionBlock
-        {
+       
             let fileHandler = FileHandler()
             
             fileHandler.loadAvatarDataForLoginName(loginName, completion: { (avatarData, error) -> Void in
@@ -2228,24 +2264,25 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
                         DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
                      
-                        block(image: image, error: nil)
+                        completionBlock?(image: image, error: nil)
                     }
                     else
                     {
                         let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
-                        block(image: nil, error: imageCreatingError)
+                        completionBlock?(image: nil, error: imageCreatingError)
                     }
                 }
                 else if let anError = error
                 {
-                    block(image: nil, error: error)
+                    completionBlock?(image: nil, error: error)
+                    
                     if anError.code == 406
                     {
                         DataSource.sharedInstance.startLoadingAvatarForUserName(loginName)
                     }
                 }
             })
-        }
+        
     }
         
     func loadAvatarForLoginName(loginName:String, completion completionBlock:((image:UIImage?) ->())? )
