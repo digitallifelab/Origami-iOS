@@ -7,7 +7,7 @@
 //
 
 #import "FileHandler.h"
-
+#import <ImageIO/ImageIO.h>
 @implementation FileHandler
 
 //-(NSArray *)documentsDirectoryPaths
@@ -492,5 +492,40 @@
     }
     //NSLog(@"\n ... Finished removing attached files.");
 }
+
+-(nullable NSDictionary *)getAllExistingAvatarsPreviews
+{
+    NSString *pathToAvatarsFolder = [self pathToAvatarFolder];
+    NSError *lvError;
+    NSArray *contains = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToAvatarsFolder error:&lvError];
+    if (contains && contains.count > 0)
+    {
+        NSMutableDictionary *toReturn = [NSMutableDictionary dictionaryWithCapacity:contains.count];
+        for (NSString *anItemName in contains)
+        {
+            NSError *loopError;
+            NSString *singleItemPath = [pathToAvatarsFolder stringByAppendingString:anItemName];
+            NSData *fileData = [NSData dataWithContentsOfFile:singleItemPath options:NSDataReadingMappedIfSafe error:&loopError];
+            if (fileData != nil)
+            {
+                NSString *fixedFileName = [anItemName stringByReplacingOccurrencesOfString:@".jpg" withString:@""];
+                [toReturn setObject:fileData forKey:fixedFileName];
+            }
+            
+        }
+        if (toReturn.count > 0)
+        {
+            return toReturn;
+        }
+    }
+    else if (lvError)
+    {
+        return nil;
+    }
+    
+    return nil;
+}
+
+
 
 @end

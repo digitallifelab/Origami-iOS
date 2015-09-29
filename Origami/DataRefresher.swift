@@ -35,7 +35,6 @@ class DataRefresher
     
     func loadElements()
     {
-        println(" -->DataRefresher.loadElements() called")
         isInProgress = true
         
         serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
@@ -102,8 +101,6 @@ class DataRefresher
                             {
                                 if let existingElement = DataSource.sharedInstance.getElementById(changedOne.elementId!.integerValue)
                                 {
-                                    //println("existing: \(existingElement.toDictionary().description)")
-                                    //println("changed: \(changedOne.toDictionary().description)")
                                     existingElement.isSignal = changedOne.isSignal
                                     existingElement.details = changedOne.details
                                     existingElement.title = changedOne.title
@@ -165,7 +162,7 @@ class DataRefresher
                         var ints = [Int]()
                         for anElement in arrayToIterate
                         {
-                            //println("Element to delete: \n \(anElement.toDictionary().description)")
+                            
                             if let aNumber = anElement.elementId
                             {
                                 ints.append(aNumber.integerValue)
@@ -182,10 +179,6 @@ class DataRefresher
                         var arrayToIterate = Array(elementsToInsert)
                         ObjectsConverter.sortElementsByDate(&arrayToIterate)
                         
-                        for anElement in arrayToIterate
-                        {
-                            //println("Element to insert: \n \(anElement.toDictionary().description)")
-                        }
                         
                         DataSource.sharedInstance.addElementsLocked(arrayToIterate)
                     }

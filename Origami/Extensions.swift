@@ -77,8 +77,36 @@ extension NSDate
     {
         var dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .ShortStyle
-        dateFormatter.timeStyle = .MediumStyle
+        dateFormatter.timeStyle = .ShortStyle
         
+        let toReturn = dateFormatter.stringFromDate(self)
+        
+        return toReturn
+    }
+    
+    func timeDateStringForMediaName() -> String
+    {
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "YYYY-MM-dd_HH-MM-SS"
+        let stringToReturn = dateFormatter.stringFromDate(self)
+        
+        return stringToReturn
+    }
+    
+    func timeStringShortStyle() -> String
+    {
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.timeStyle = .ShortStyle
+        
+        let toReturn = dateFormatter.stringFromDate(self)
+        
+        return toReturn
+    }
+    
+    func dateStringShortStyle() -> String
+    {
+        var dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .ShortStyle
         let toReturn = dateFormatter.stringFromDate(self)
         
         return toReturn
@@ -93,6 +121,52 @@ extension NSDate
         let toReturn = dateFormatter.stringFromDate(self)
         
         return toReturn
+    }
+    
+    func lessThanDayAgo() -> Bool
+    {
+        let cal = NSCalendar.currentCalendar();
+        let flags = NSCalendarUnit.YearCalendarUnit | NSCalendarUnit.MonthCalendarUnit | NSCalendarUnit.DayCalendarUnit
+        let date = NSDate()
+        
+//        let todayComps = cal.components(flags, fromDate:  date)
+        //println("today componetns day: \(todayComps.day)")
+        let components = cal.components(flags, fromDate: date.dateByAddingTimeInterval(-1.days))
+        //println("today componetns day: \(components.day)")
+//        
+//        let selfComponents = cal.components(flags, fromDate: self)
+        //println(" self  .day = \(selfComponents.day)")
+        if let yesterday = cal.dateFromComponents(components)
+        {
+            let comprarison = self.compareDateOnly(yesterday);
+            
+            let toReturn = (comprarison != .OrderedAscending);
+            
+            return toReturn;
+            
+        }
+        
+        return false
+    }
+    
+    func compareDateOnly(dateToCompare:NSDate) -> NSComparisonResult
+    {
+        let flags = NSCalendarUnit.YearCalendarUnit | NSCalendarUnit.MonthCalendarUnit | NSCalendarUnit.DayCalendarUnit
+        
+        if let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
+        {
+            let components = calendar.components(flags, fromDate: dateToCompare)
+            let componentsForSelf = calendar.components(flags, fromDate: self)
+            if  let
+                dateToCompareWithoutTime = calendar.dateFromComponents(components) ,
+                selfDateToCompareWithoutTime = calendar.dateFromComponents(componentsForSelf)
+            {
+                let result = selfDateToCompareWithoutTime.compare(dateToCompareWithoutTime)
+                return result
+            }
+        }
+        
+        return NSComparisonResult.OrderedSame
     }
 }
 

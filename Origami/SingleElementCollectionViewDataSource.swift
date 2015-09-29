@@ -355,7 +355,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     titleCell.titleTextView?.attributedText = NSAttributedString(string: title, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 30)!, NSForegroundColorAttributeName:kWhiteColor])
                 }
                 
-                titleCell.labelDate.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateStringShortStyle() as? String
+                titleCell.labelDate.text = handledElement?.lastChangeDateReadableString()// changeDate?.dateFromServerDateString()?.timeDateStringShortStyle() as? String
                 if let isFavourite = self.handledElement?.isFavourite.boolValue
                 {
                     titleCell.favourite = isFavourite
@@ -367,12 +367,19 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                 
                     let responsibleIdInt = currentelement.responsible.integerValue
+                    titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
                     if responsibleIdInt > 0
                     {
-                        titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
                         if let image = DataSource.sharedInstance.getAvatarForUserId(responsibleIdInt)
                         {
                             titleCell.responsiblePersonAvatarIcon?.image = image
+                        }
+                    }
+                    else if currentelement.creatorId.integerValue > 0
+                    {
+                        if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(currentelement.creatorId.integerValue)
+                        {
+                            titleCell.responsiblePersonAvatarIcon?.image = ownerAvatar
                         }
                     }
                     
@@ -471,78 +478,78 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
     }
     
-    func createActionButtonModels() -> [ActionButtonModel]?
-    {
-        //check
-        var elementIsOwned = self.elementIsOwned()
-        if !elementIsOwned //don`t show SingleElementButtons cell
-        {
-            return nil
-        }
-        
-        //try to add models
-        var toReturn = [ActionButtonModel]()
-        for var i = 0; i < 8; i++
-        {
-            var model = ActionButtonModel()
-            model.enabled = (i == 1) ? true : elementIsOwned //we allow user to add new subordinate element
-            
-            if let buttonType = ActionButtonCellType(rawValue: i)
-            {
-                model.type = buttonType
-                
-            if model.enabled
-            {
-                switch model.type
-                {
-                case .Edit:
-                    model.backgroundColor = UIColor(red: 19.0/255.0, green: 195.0/255.0, blue: 28.0/255.0, alpha: 1.0)
-                case .Add:
-                    model.backgroundColor = UIColor(red: 204.0/255.0, green: 201.0/255.0, blue: 20.0/255.0, alpha: 1.0)
-                case .Delete:
-                    model.backgroundColor = UIColor.magentaColor()
-                case .Archive:
-                    model.backgroundColor = UIColor.blueColor()
-                case .Signal:
-                    model.backgroundColor = kDaySignalColor
-                    if let signalFlag = handledElement?.isSignal
-                    {
-                        if signalFlag.boolValue
-                        {
-                            model.tintColor = UIColor.redColor()
-                        }
-                        
-                    }
-                default :
-                    break  // by default model.backgroundColor is lighGrayColor
-                }
-            }
-            else
-            {
-                switch model.type
-                {
-                
-                case .Add:
-                    model.backgroundColor = UIColor.yellowColor()
-                default:
-                    break // by default model.backgroundColor is lighGrayColor
-                }
-            }
-                
-                
-            }
-            
-            toReturn.append(model)
-        }
-        
-        //return properly
-        if !toReturn.isEmpty
-        {
-            return toReturn
-        }
-        return nil
-        
-    }
+//    func createActionButtonModels() -> [ActionButtonModel]?
+//    {
+//        //check
+//        var elementIsOwned = self.elementIsOwned()
+//        if !elementIsOwned //don`t show SingleElementButtons cell
+//        {
+//            return nil
+//        }
+//        
+//        //try to add models
+//        var toReturn = [ActionButtonModel]()
+//        for var i = 0; i < 8; i++
+//        {
+//            var model = ActionButtonModel()
+//            model.enabled = (i == 1) ? true : elementIsOwned //we allow user to add new subordinate element
+//            
+//            if let buttonType = ActionButtonCellType(rawValue: i)
+//            {
+//                model.type = buttonType
+//                
+//            if model.enabled
+//            {
+//                switch model.type
+//                {
+//                case .Edit:
+//                    model.backgroundColor = UIColor(red: 19.0/255.0, green: 195.0/255.0, blue: 28.0/255.0, alpha: 1.0)
+//                case .Add:
+//                    model.backgroundColor = UIColor(red: 204.0/255.0, green: 201.0/255.0, blue: 20.0/255.0, alpha: 1.0)
+//                case .Delete:
+//                    model.backgroundColor = UIColor.magentaColor()
+//                case .Archive:
+//                    model.backgroundColor = UIColor.blueColor()
+//                case .Signal:
+//                    model.backgroundColor = kDaySignalColor
+//                    if let signalFlag = handledElement?.isSignal
+//                    {
+//                        if signalFlag.boolValue
+//                        {
+//                            model.tintColor = UIColor.redColor()
+//                        }
+//                        
+//                    }
+//                default :
+//                    break  // by default model.backgroundColor is lighGrayColor
+//                }
+//            }
+//            else
+//            {
+//                switch model.type
+//                {
+//                
+//                case .Add:
+//                    model.backgroundColor = UIColor.yellowColor()
+//                default:
+//                    break // by default model.backgroundColor is lighGrayColor
+//                }
+//            }
+//                
+//                
+//            }
+//            
+//            toReturn.append(model)
+//        }
+//        
+//        //return properly
+//        if !toReturn.isEmpty
+//        {
+//            return toReturn
+//        }
+//        return nil
+//        
+//    }
     
     func elementIsOwned() -> Bool
     {

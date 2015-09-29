@@ -148,7 +148,6 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     func centerImageInScrollView()
     {
         let center = CGPointMake(CGRectGetMidX(imageScrollView.bounds), CGRectGetMidY(imageScrollView.bounds))
-        //println("  Center: \(center)")
         imageHolder!.center = center
     }
     
@@ -166,7 +165,6 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         return imageHolder
     }
     func scrollViewDidZoom(scrollView: UIScrollView) {
-        //println("did zoom")
         centerImageInScrollView()
     }
     

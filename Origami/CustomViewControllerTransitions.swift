@@ -17,10 +17,6 @@ class FadeOpaqueAnimator : NSObject, UIViewControllerAnimatedTransitioning {
         return 0.3
     }
     
-    //func animationEnded(transitionCompleted: Bool) {
-        //println(" Finished custom animated transitioning") //commented, because works normally
-    //}
-    
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
         
         let containerView = transitionContext.containerView()
@@ -28,8 +24,6 @@ class FadeOpaqueAnimator : NSObject, UIViewControllerAnimatedTransitioning {
         let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
         
         let finalToFrame:CGRect = transitionContext.finalFrameForViewController(toVC!)
-        
-        
         
         if transitionDirection == .FadeIn
         {

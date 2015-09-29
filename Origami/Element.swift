@@ -74,9 +74,6 @@ class Element:NSObject
         }
         if let type = info["TypeId"] as? NSNumber
         {
-            //#if DEBUG
-            //println("Element Current Type Id: \(type)")
-            //#endif
             self.typeId = type
         }
         if let finish = info["FinishState"] as? NSNumber
@@ -87,14 +84,8 @@ class Element:NSObject
         {
             if let date = finishDate.dateFromServerDateString() //still optional
             {
-                println("_finish date string_: \(finishDate) ")
                 self.finishDate = date
-                println("_finish date_ : \(self.finishDate!)")
             }
-//            else
-//            {
-//                println("_finish date_ : could not be converted")
-//            }
         }
         if let remind = info["RemindDate"] as? NSString
         {
@@ -138,11 +129,6 @@ class Element:NSObject
             if let passIDs = info["PassWhomIds"] as? [NSNumber]
             {
                 self.passWhomIDs = passIDs
-                //println(" -> \(passIDs) for element \(self.elementId)")
-            }
-            else
-            {
-                //println("->Null passWhomIDs for element \(self.elementId)")
             }
         }
     }
@@ -177,10 +163,7 @@ class Element:NSObject
         toReturn["CreatorId"] = self.creatorId //?? NSNull()
         toReturn["ChangeDate"] = self.changeDate //?? NSNull()
         toReturn["ChangerId"] = self.changerId //?? NSNull()
-        if let finishString = toReturn["FinishDate"] as? String
-        {
-            println(" \n-> Returning description of element: [ArchDate] = [\(self.archiveDate)] , [FinishDate] = [\(finishString)]\n ")
-        }
+       
         return toReturn
     }
     
@@ -194,10 +177,8 @@ class Element:NSObject
     {
         if let archiveDateString = self.archiveDate as? String, let archiveDate = archiveDateString.dateFromServerDateString()
         {
-            //println("\n ->Element IS ARCHIVED: \" \(self.title!) , , ElementId: \(self.elementId!.integerValue), \" \(archiveDateString) =  \(archiveDate) \n")
             return true
         }
-        //println("\n -> Element NOT ARCHIVED:  \(self.title!) , ElementId: \(self.elementId!.integerValue) , archiveDate: \(self.archiveDate!) \n")
         return false
     }
     
@@ -233,7 +214,39 @@ class Element:NSObject
         }
         return false
     }
+    
+    func lastChangeDateReadableString() -> String?
+    {
+        let todayDate = NSDate()
+        let yesterday = todayDate.dateByAddingTimeInterval(-1.days)
         
+        if let changeDate = self.changeDate as? String,  date = changeDate.dateFromServerDateString()
+        {
+            if date.lessThanDayAgo()
+            {
+                let timString = date.timeStringShortStyle()
+                return timString
+            }
+            
+            let dateString = date.dateStringShortStyle()
+            return dateString
+        }
+        return nil
+    }
+    
+    func creationDateReadableString(shouldEvaluateCurrentDay:Bool = true) -> String?
+    {
+        if let created = self.createDate as? String,  date = created.dateFromServerDateString(), readable = date.timeDateStringShortStyle() as? String
+        {
+            if shouldEvaluateCurrentDay
+            {
+                //TODO: create string like "2 days ago" , "3 months ago"
+            }
+            return readable
+        }
+        return nil
+    }
+    
     override var hash:Int
         {
             let integer = self.title!.hashValue ^ self.elementId!.hashValue

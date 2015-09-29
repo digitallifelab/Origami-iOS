@@ -59,18 +59,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
        
         
         
-        if let ourElement = self.currentElement
+        if let ourElementIdInt = self.currentElement?.elementId?.integerValue
         {
-            
-            println("pass Whom IDs old: \(ourElement.passWhomIDs)")
-            DataSource.sharedInstance.loadPassWhomIdsForElement(ourElement, comlpetion: {[weak self] (finished) -> () in
+            DataSource.sharedInstance.loadPassWhomIdsForElement(ourElementIdInt, comlpetion: {[weak self] (finished) -> () in
                 // background queue here
                 if let aSelf = self
                 {
                     if finished
                     {
                         println("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
-                        aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElement.elementId!.integerValue)
+                        aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElementIdInt)
                         println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
                     }
                     else
@@ -106,47 +104,51 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         var currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
         println("\n Refreshing attaches in viewWillAppear...")
-        DataSource.sharedInstance.refreshAttachesForElement(self.currentElement, completion: { [weak self] (attachesArray) -> () in
-            if let weakSelf = self
-            {
-                if let recievedAttaches = attachesArray
+        if let elementIdInt = self.currentElement?.elementId?.integerValue
+        {
+            DataSource.sharedInstance.refreshAttachesForElement(elementIdInt, completion: { [weak self] (attachesArray) -> () in
+                if let weakSelf = self
                 {
-                    if let existAttaches = currentAttachesInDataSource
+                    if let recievedAttaches = attachesArray
                     {
-                        var setOfExisting = Set(existAttaches)
-                        var setOfNew = Set(recievedAttaches)
-                        
-                        let remainderSet = setOfNew.subtract(setOfExisting)
-                        if remainderSet.isEmpty
+                        if let existAttaches = currentAttachesInDataSource
                         {
-                            println("-> No new attach files loaded")
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                println("\n Starting to Query attach previews in background..")
-                                weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
-                            })
+                            var setOfExisting = Set(existAttaches)
+                            var setOfNew = Set(recievedAttaches)
+                            
+                            let remainderSet = setOfNew.subtract(setOfExisting)
+                            if remainderSet.isEmpty
+                            {
+                                println("-> No new attach files loaded")
+                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                    println("\n Starting to Query attach previews in background..")
+                                    weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
+                                })
+                                
+                            }
+                            else
+                            {
+                                println("-> Loaded \(remainderSet.count) new attaches")
+                                weakSelf.prepareCollectionViewDataAndLayout()
+                                
+                                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                                    println("\n Starting to Query EXIST attachInfo previews in background..")
+                                    weakSelf.startLoadingDataForMissingAttaches(existAttaches)
+                                })
+                                
+                            }
                             
                         }
                         else
                         {
-                            println("-> Loaded \(remainderSet.count) new attaches")
                             weakSelf.prepareCollectionViewDataAndLayout()
-                            
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                println("\n Starting to Query EXIST attachInfo previews in background..")
-                                weakSelf.startLoadingDataForMissingAttaches(existAttaches)
-                            })
-
                         }
-                        
                     }
-                    else
-                    {
-                        weakSelf.prepareCollectionViewDataAndLayout()
-                    }
+                    
                 }
-                
-            }
-        })
+                })
+
+        }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
     }
     
@@ -264,9 +266,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     
                     
                     
-                    if let element = weakerSelf.currentElement
+                    if let elementId = weakerSelf.currentElement?.elementId?.integerValue
                     {
-                        DataSource.sharedInstance.loadAttachesInfoForElement(element, completion: { [weak self](attaches) -> () in
+                        DataSource.sharedInstance.loadAttachesInfoForElement(elementId, completion: { [weak self](attaches) -> () in
                             
                             if let arrayOfAttaches = attaches
                             {
@@ -1355,16 +1357,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     return
                 }
                 
-                if let aSelf = self, currentElementToRefresh = aSelf.currentElement
+                if let aSelf = self, elementId_ToRefresh = aSelf.currentElement?.elementId?.integerValue
                 {
-                    DataSource.sharedInstance.refreshAttachesForElement(currentElementToRefresh, completion: {[weak self] (attaches) -> () in
+                    DataSource.sharedInstance.refreshAttachesForElement(elementId_ToRefresh, completion: {[weak self] (attaches) -> () in
+                        
                         if let attachObjects = attaches
                         {
-                            if let aSelf = self
+                            if let lvSelf = self
                             {
                                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5) ), dispatch_get_main_queue(), { () -> Void in
                                     
-                                    aSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
+                                    lvSelf.queryAttachesDataAndShowAttachesCellOnCompletion()
                                 })
                             }
                         }

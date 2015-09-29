@@ -261,6 +261,19 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         {
             if let element = elementForIndexPath(indexPath)
             {
+                if let changeDateString = element.lastChangeDateReadableString()
+                {
+                    activityCell.dateLabel?.text = changeDateString
+                }
+                else if let createDateString = element.creationDateReadableString(shouldEvaluateCurrentDay: true)
+                {
+                    activityCell.dateLabel?.text = createDateString
+                }
+                else
+                {
+                    activityCell.dateLabel?.text = nil
+                }
+                
                 activityCell.elementTitleLabel?.text = element.title as? String
                 activityCell.elementDetailsTextView?.text = element.details as? String
                 activityCell.displayMode = self.displayMode
@@ -275,6 +288,15 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 else
                 {
                     activityCell.elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                    //and try to query avatar from ram again
+                    let creatorIdInt = element.creatorId.integerValue
+                    if creatorIdInt > 0
+                    {
+                        let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
+                        dispatch_async(bgQueue, { () -> Void in
+                            DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
+                        })
+                    }
                 }
                 return activityCell
             }

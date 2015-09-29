@@ -159,7 +159,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                     contactName += (" " + lastName!)
                 }
             }
-            //println(contactName)
+            
             cell.nameLabel?.text = (contactName.isEmpty) ? nil : contactName
             
             if let avatarImage = contactImages[contact.userName! as String]

@@ -41,13 +41,11 @@ class Contact:NSObject
         {
             var fixedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.firstName = fixedName
-            //println("\(self.firstName)")
         }
         if let last = info["LastName"] as? NSString
         {
             var fixedSurname = last.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.lastName = fixedSurname
-            //println("\(self.lastName)")
         }
         if let uName = info["LoginName"] as? NSString
         {
@@ -65,12 +63,11 @@ class Contact:NSObject
         if let fav = info["IsFavorite"] as? NSNumber
         {
             self.isFavourite = fav
-            //println("-> isFavourite = \(self.isFavourite)")
         }
+        
         if let lvState = info["State"] as? NSNumber
         {
             self.state = lvState
-            //println("contact state:\(self.state)")
         }
         if let reg = info["RegDate"] as? NSString
         {

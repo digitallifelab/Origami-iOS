@@ -232,10 +232,10 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     if let nsStringTitleText =  self.elementStruct?.title, font = UIFont(name: "SegoeUI", size: 30.0)
                     {
                         var boundingSize = CGSizeMake(mainFrame.width - (50 + 16), CGFloat(FLT_MAX) )
-                        if aDataSource.elementIsTask()
-                        {
+                        //if aDataSource.elementIsTask()
+                        //{
                             boundingSize.width -= 48.0
-                        }
+                        //}
                         var textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
                         size.height =  ceil(textLabelSize.height) + 60 + 55
                     }

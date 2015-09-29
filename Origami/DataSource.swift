@@ -26,6 +26,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         case Added = 1
         case Replaced = 2
+        case Denied = 3
     }
     
     override init() {
@@ -166,6 +167,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
             })
         }
+        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
+            if let info = FileHandler().getAllExistingAvatarsPreviews() as? [String:NSData]
+            {
+                for (name, data) in info
+                {
+                    if let previewData =  ImageFilter.getImagePreviewDataFromData(data)
+                    {
+                        DataSource.sharedInstance.addAvatarData(previewData, forContactUserName: name)
+                    }
+                }
+            }
+        })
+        
     }
     
     func editUserInfo(completion: ((success:Bool, error: NSError?)->())?)
@@ -895,28 +910,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
                     
                     DataSource.sharedInstance.elements += elementsArrayFromSet
-                    println("Count Elements = \(elementsArrayFromSet.count)")
+                    println("\n -> Added Elements = \(elementsArrayFromSet.count)")
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(success: true, failure: nil)
                     })
                 })
-                
-                
-                
-                
-                //test stuff
-//                DataSource.sharedInstance.databaseHandler?.insertElements(Set(DataSource.sharedInstance.elements), completion: { (finishInfo, error) -> Void in
-//                    if let successInfo = finishInfo
-//                    {
-//                        println("\(successInfo)")
-//                    }
-//                    
-//                    if let insertError = error
-//                    {
-//                        println("Error while saving ELEMENTS to local database;")
-//                    }
-//                })
                 
                 //start loading ather info in background
                 let bgOperationQueue = NSOperationQueue()
@@ -925,39 +924,29 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 for anElement in DataSource.sharedInstance.elements
                 {
-                    bgOperationQueue.addOperationWithBlock({ () -> Void in
-                        // load connected userIDs for element
-                       // println(" -> Loading Pass Whom IDs for element. >- \n")
-                        DataSource.sharedInstance.loadPassWhomIdsForElement(anElement, comlpetion:
-                            { (finished) -> () in
-                                //println(" loadPassWhomIdsForElement completion block.")
+                    if let anInt = anElement.elementId?.integerValue
+                    {
+                        bgOperationQueue.addOperationWithBlock({ () -> Void in
+                            // load connected userIDs for element
+                            
+                                DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
+                            
+                            
                         })
-                    })
-                    
-                    
-                    bgOperationQueue.addOperationWithBlock({ () -> Void in
-                        // load attach files info
-                        if !anElement.attachIDs.isEmpty
-                        {
-                              //println(" -> not IsEmpty: Loading attach info for element. >- \n")
-                            DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
-                                if let existAttaches = attaches
-                                {
-                                    println("\n --> not empty IDS - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
-                                }
-                            })
-                        }
-                        else if anElement.hasAttaches.boolValue
-                        {
-                            //println(" -> Has Attaches: Loading attach info for element. >- \n")
-                            DataSource.sharedInstance.loadAttachesInfoForElement(anElement, completion: { (attaches) -> () in
-                                if let existAttaches = attaches
-                                {
-                                    //println("\n --> Has Attaches: - > DataSource has loaded \"\(existAttaches.count)\" attaches for elementID: \(anElement.elementId)")
-                                }
-                            })
-                        }
-                    })
+                        
+                        
+                        bgOperationQueue.addOperationWithBlock({ () -> Void in
+                            // load attach files info
+                            if !anElement.attachIDs.isEmpty
+                            {
+                                DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
+                            }
+                            else if anElement.hasAttaches.boolValue
+                            {
+                                DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
+                            }
+                        })
+                    }
                 }
             }
             else
@@ -1115,8 +1104,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         { () -> Void in
                             if success
                             {
-                                //println("\r - Edit successfull")
-                                
                                 completion(edited: true)
                             }
                             else
@@ -1195,9 +1182,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     
     
-    func loadPassWhomIdsForElement(element:Element, comlpetion completionClosure:(finished:Bool)->() ) {
+    func loadPassWhomIdsForElement(elementIdInt:Int, comlpetion completionClosure:((finished:Bool)->())? ) {
         
-        let elementIdInt = element.elementId!.integerValue
+        //let elementIdInt = element.elementId!.integerValue
         DataSource.sharedInstance.serverRequester.loadPassWhomIdsForElementID(elementIdInt, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
@@ -1211,12 +1198,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     elementFromDataSource.passWhomIDs = ordered
                 }
                 //element.passWhomIDs = recievedIDs
-                completionClosure(finished: true)
+                completionClosure?(finished: true)
             }
             else
             {
                 println("did not load passWhomIDs for element: \(elementIdInt)")
-                completionClosure(finished: false)
+                completionClosure?(finished: false)
             }
         })
     }
@@ -1361,60 +1348,52 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
-    func loadAttachesInfoForElement(element:Element, completion:attachesArrayClosure)
+    func loadAttachesInfoForElement(elementIdInt:Int, completion:attachesArrayClosure?)
     {
-        if let localElementId = element.elementId
-        {            
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-          
-            DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(localElementId,
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+      
+        DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(elementIdInt,
+        completion:
+        { (result, error) -> ()
+            in
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            if let attachesArray = result as? [AttachFile]
+            {
+                let aNumberKey = NSNumber(integer: elementIdInt)
+                DataSource.sharedInstance.attaches[aNumberKey] = attachesArray
+                completion?(DataSource.sharedInstance.attaches[aNumberKey]!)
+            }
+            else
+            {
+                completion?(nil)
+            }
+        })
+      
+    }
+    
+    func refreshAttachesForElement(elementIdInt:Int, completion:attachesArrayClosure?)
+    {
+    
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(elementIdInt,
             completion:
             { (result, error) -> ()
                 in
+                
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let attachesArray = result as? [AttachFile]
                 {
-                    DataSource.sharedInstance.attaches[localElementId] = attachesArray
-                    completion(DataSource.sharedInstance.attaches[localElementId]!)
+                    let aNumber = NSNumber(integer: elementIdInt)
+                    DataSource.sharedInstance.attaches[aNumber] = attachesArray
+                    completion?(DataSource.sharedInstance.attaches[aNumber]!)
                 }
                 else
                 {
-                    completion(nil)
+                    completion?(nil)
                 }
-            })
-        }
-        else
-        {
-            completion(nil)
-        }
-    }
-    
-    func refreshAttachesForElement(element:Element?, completion:attachesArrayClosure?)
-    {
-        if let localElementId = element?.elementId
-        {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            
-            DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(localElementId,
-                completion:
-                { (result, error) -> ()
-                    in
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    if let attachesArray = result as? [AttachFile]
-                    {
-                        DataSource.sharedInstance.attaches[localElementId] = attachesArray
-                        completion?(DataSource.sharedInstance.attaches[localElementId]!)
-                    }
-                    else
-                    {
-                        completion?(nil)
-                    }
-            })
-        }
-        else
-        {
-            completion?(nil)
-        }
+        })
     }
     
     func attachFile(file:MediaFile, toElementId elementId:NSNumber?, completion completionClosure:(success:Bool, error: NSError?)->() ) {
@@ -2162,6 +2141,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         var response:ResponseType
         if let imageData = DataSource.sharedInstance.avatarsHolder[userName]
         {
+            if imageData == avatarBytes //checking NSData for equality of contents, not objects
+            {
+                println(" Will NOT Rewrite the same avatar data again for user name: \(userName)")
+                return .Denied
+            }
             response = .Replaced
             println(" -> Replaced avatar data for username: \(userName)")
         }
@@ -2181,44 +2165,35 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             if let existingBytes = DataSource.sharedInstance.avatarsHolder[lvName]
             {
-                //println(" returning avatar Data from avatarsHolder")
                 return existingBytes
             }
             
-            if let alreadyChecking = DataSource.sharedInstance.pendingUserAvatarsDownolads[lvName]
-            {
-                
-            }
-            else
+            if DataSource.sharedInstance.pendingUserAvatarsDownolads[lvName] == nil
             {
                 let lowQueue:dispatch_queue_t
                 if !FrameCounter.isLowerThanIOSVersion("8.0")
                 {
-                    let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_UTILITY, 0)
+                    let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0)
                     lowQueue = dispatch_queue_create("com.Origami.BackgroundImage.Queue", attributes)
+                    
+                    /*
+                    dispatch_queue_t queue;
+                    *	dispatch_queue_attr_t attr;
+                    *	attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
+                    *			QOS_CLASS_UTILITY, 0);
+                    *	queue = dispatch_queue_create("com.example.myqueue", attr);
+                    */
                 }
                 else
                 {
                     lowQueue = dispatch_queue_create("com.Origami.BackgroundImage.Queue", DISPATCH_QUEUE_SERIAL)
                 }
-                /*
-                dispatch_queue_t queue;
-                *	dispatch_queue_attr_t attr;
-                *	attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                *			QOS_CLASS_UTILITY, 0);
-                *	queue = dispatch_queue_create("com.example.myqueue", attr);
-                */
-             
                 
                 dispatch_async(lowQueue, { () -> Void in
                      DataSource.sharedInstance.loadAvatarFromDiscForLoginName(lvName, completion: nil)
                 })
-               
             }
         }
-        
-        
-        
         
         return nil
     }
@@ -2260,11 +2235,24 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     if let image = UIImage(data: avatarBytes)
                     {
-                        let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200))
-                        let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                        DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
-                     
                         completionBlock?(image: image, error: nil)
+                        
+                        if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
+                        {
+                            let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200))
+                            let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                            
+                            if avatarIconData != avatarData
+                            {
+                                DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                            }
+                        }
+                        else
+                        {
+                            let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200))
+                            let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                            DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                        }
                     }
                     else
                     {
@@ -2347,12 +2335,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200))
                     let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                    println(" got avatar from Server..")
-                    DataSource.sharedInstance.avatarsHolder[name] = avatarData //save to RAM also
+                    println(" got avatar from Server... Saving small preview data to ram")
+                    DataSource.sharedInstance.addAvatarData(avatarData, forContactUserName: name)//save to RAM also
                     
                     //save to disc
+                    println(" saving avatar to disc...")
                     let fileHandler = FileHandler()
-                    
                     fileHandler.saveAvatar(avatarBytes, forLoginName: name, completion: { (errorSaving) -> Void in
                         if let error = errorSaving
                         {

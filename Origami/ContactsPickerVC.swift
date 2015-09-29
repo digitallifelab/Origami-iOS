@@ -166,7 +166,6 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
     {
-        //println("contact for section: \(indexPath.section) row: \(indexPath.row)")
         if indexPath.section == 0
         {
             return nil
@@ -190,13 +189,11 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             tableView.deselectRowAtIndexPath(indexPath, animated: true)
             if let aContact = contactForIndexPath(indexPath)
             {
-                // println("did selet contact: \(aContact.firstName)")
                 self.selectedContact = aContact
                 self.delegate?.itemPicker(self, didPickItem: aContact)
             }
             else
             {
-                //println("-> Did select current user")
                 self.selectedContact = nil
                 self.delegate?.itemPickerDidCancel(self)
             }
@@ -205,19 +202,15 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         {
             if let aContact = contactForIndexPath(indexPath)
             {
-                // println("did selet contact: \(aContact.firstName)")
                 self.selectedContact = aContact
             }
             else
             {
-                //println("-> Did select current user")
                 if let currentUserId = DataSource.sharedInstance.user?.userId
                 {
                      self.selectedContact = Contact(info: ["ContactId":currentUserId])
                 }
             }
-            //tableView.deselectRowAtIndexPath(indexPath, animated: false)
-            //tableView.reloadData()
         }
     }
     

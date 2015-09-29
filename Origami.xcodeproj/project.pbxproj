@@ -70,10 +70,6 @@
 		F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
 		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
-		F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */; };
-		F87FE6C01B611726004CA576 /* ElementActionButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */; };
-		F87FE6C31B611836004CA576 /* ElementActionButtonsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */; };
-		F87FE6C51B6126BC004CA576 /* ElementActionButtonsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C41B6126BC004CA576 /* ElementActionButtonsDataSource.swift */; };
 		F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D17A1B2583CE00E702D3 /* Extensions.swift */; };
 		F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D1801B25B22900E702D3 /* ServerRequester.swift */; };
 		F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F882328C1B6B706400990A4E /* EditingMenuPopupVC.swift */; };
@@ -152,7 +148,6 @@
 		F8C93ADC1B861B94009D890E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1DFCE1B7B738200A66692 /* User.swift */; };
 		F8C93ADE1B861B94009D890E /* ElementSubordinatesSimpleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F891BBE71B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift */; };
 		F8C93ADF1B861B94009D890E /* NewElementTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */; };
-		F8C93AE01B861B94009D890E /* ElementActionButtonsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C41B6126BC004CA576 /* ElementActionButtonsDataSource.swift */; };
 		F8C93AE11B861B94009D890E /* MessagesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1031B833D940048B3DE /* MessagesLoader.swift */; };
 		F8C93AE21B861B94009D890E /* EditingMenuPopupVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F882328C1B6B706400990A4E /* EditingMenuPopupVC.swift */; };
 		F8C93AE31B861B94009D890E /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
@@ -171,7 +166,6 @@
 		F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
 		F8C93AF31B861B94009D890E /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */; };
 		F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8016FF01B304614002A1620 /* FrameCounter.swift */; };
-		F8C93AF51B861B94009D890E /* ElementActionButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */; };
 		F8C93AF81B861B94009D890E /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */; };
 		F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
@@ -188,7 +182,6 @@
 		F8C93B071B861B94009D890E /* PopupMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F882328E1B6B71AD00990A4E /* PopupMenuCell.swift */; };
 		F8C93B091B861B94009D890E /* ServerRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D1801B25B22900E702D3 /* ServerRequester.swift */; };
 		F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
-		F8C93B0D1B861B94009D890E /* ElementActionButtonsLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */; };
 		F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
 		F8C93B0F1B861B94009D890E /* ContactProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742A1B56839D00E48E13 /* ContactProfileVC.swift */; };
 		F8C93B101B861B94009D890E /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7EF1B68FCC60004F0CB /* Structs.swift */; };
@@ -202,7 +195,6 @@
 		F8C93B1A1B861B94009D890E /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
 		F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
 		F8C93B1D1B861B94009D890E /* AllContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */; };
-		F8C93B1E1B861B94009D890E /* SingleElementButtonsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */; };
 		F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B651B21E86A00156CEC /* DashCell.swift */; };
 		F8C93B211B861B94009D890E /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1DFC61B7B727000A66692 /* Element.swift */; };
 		F8C93B251B861B94009D890E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A61B1DEFA100172667 /* Main.storyboard */; };
@@ -318,10 +310,6 @@
 		F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableItemPickerVC.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
-		F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementButtonsCell.swift; sourceTree = "<group>"; };
-		F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonCell.swift; sourceTree = "<group>"; };
-		F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonsLayout.swift; sourceTree = "<group>"; };
-		F87FE6C41B6126BC004CA576 /* ElementActionButtonsDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonsDataSource.swift; sourceTree = "<group>"; };
 		F880D17A1B2583CE00E702D3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F880D1801B25B22900E702D3 /* ServerRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerRequester.swift; sourceTree = "<group>"; };
 		F882328C1B6B706400990A4E /* EditingMenuPopupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditingMenuPopupVC.swift; sourceTree = "<group>"; };
@@ -498,7 +486,6 @@
 				F8468E611B6136270005174C /* ChatCell */,
 				F8468E621B6136320005174C /* DetailsCell */,
 				F8468E631B6136390005174C /* AttachesCell */,
-				F87FE6C11B611807004CA576 /* ActionButtonsHolderCell */,
 				F8D2FF331B28710600584B8D /* CollectionViewCell */,
 			);
 			name = ElementCollectionCells;
@@ -686,25 +673,6 @@
 				F855BB9D1B74A7AF00EC114C /* CoreData */,
 			);
 			name = Model;
-			sourceTree = "<group>";
-		};
-		F87FE6C11B611807004CA576 /* ActionButtonsHolderCell */ = {
-			isa = PBXGroup;
-			children = (
-				F87FE6BD1B60E314004CA576 /* SingleElementButtonsCell.swift */,
-				F87FE6C61B6128A5004CA576 /* Contents */,
-			);
-			name = ActionButtonsHolderCell;
-			sourceTree = "<group>";
-		};
-		F87FE6C61B6128A5004CA576 /* Contents */ = {
-			isa = PBXGroup;
-			children = (
-				F87FE6C41B6126BC004CA576 /* ElementActionButtonsDataSource.swift */,
-				F87FE6C21B611836004CA576 /* ElementActionButtonsLayout.swift */,
-				F87FE6BF1B611726004CA576 /* ElementActionButtonCell.swift */,
-			);
-			name = Contents;
 			sourceTree = "<group>";
 		};
 		F882328B1B6B702E00990A4E /* Right top options popup menu */ = {
@@ -1092,7 +1060,6 @@
 				F80656CC1B99AFCB008258F8 /* DataRefresher.swift in Sources */,
 				F8C93ADE1B861B94009D890E /* ElementSubordinatesSimpleLayout.swift in Sources */,
 				F8C93ADF1B861B94009D890E /* NewElementTextViewCell.swift in Sources */,
-				F8C93AE01B861B94009D890E /* ElementActionButtonsDataSource.swift in Sources */,
 				F8C93AE11B861B94009D890E /* MessagesLoader.swift in Sources */,
 				F8DBE53D1BA30C3900A8891E /* SelectableContactCell.swift in Sources */,
 				F8C93AE21B861B94009D890E /* EditingMenuPopupVC.swift in Sources */,
@@ -1115,7 +1082,6 @@
 				F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */,
 				F8C93AF31B861B94009D890E /* ImagePickingViewController.swift in Sources */,
 				F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */,
-				F8C93AF51B861B94009D890E /* ElementActionButtonCell.swift in Sources */,
 				F8C93AF81B861B94009D890E /* FileHandler.m in Sources */,
 				F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */,
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
@@ -1139,7 +1105,6 @@
 				F8C93B071B861B94009D890E /* PopupMenuCell.swift in Sources */,
 				F8C93B091B861B94009D890E /* ServerRequester.swift in Sources */,
 				F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */,
-				F8C93B0D1B861B94009D890E /* ElementActionButtonsLayout.swift in Sources */,
 				F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */,
 				F8C93B0F1B861B94009D890E /* ContactProfileVC.swift in Sources */,
 				F8C93B101B861B94009D890E /* Structs.swift in Sources */,
@@ -1163,7 +1128,6 @@
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F8C93B3C1B862868009D890E /* DBElement.m in Sources */,
 				F8C93B1D1B861B94009D890E /* AllContactsVC.swift in Sources */,
-				F8C93B1E1B861B94009D890E /* SingleElementButtonsCell.swift in Sources */,
 				F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */,
 				F8C93B211B861B94009D890E /* Element.swift in Sources */,
 			);
@@ -1211,7 +1175,6 @@
 				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F891BBE81B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
-				F87FE6C51B6126BC004CA576 /* ElementActionButtonsDataSource.swift in Sources */,
 				F85CF1041B833D940048B3DE /* MessagesLoader.swift in Sources */,
 				F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
@@ -1233,7 +1196,6 @@
 				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,
 				F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */,
 				F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */,
-				F87FE6C01B611726004CA576 /* ElementActionButtonCell.swift in Sources */,
 				F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */,
 				F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */,
 				F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */,
@@ -1258,7 +1220,6 @@
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
 				F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */,
-				F87FE6C31B611836004CA576 /* ElementActionButtonsLayout.swift in Sources */,
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
@@ -1277,7 +1238,6 @@
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F80597491B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
 				F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */,
-				F87FE6BE1B60E314004CA576 /* SingleElementButtonsCell.swift in Sources */,
 				F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
 				F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */,
 				F8A1DFC71B7B727000A66692 /* Element.swift in Sources */,
@@ -1335,7 +1295,7 @@
 				OTHER_SWIFT_FLAGS = "-D SHEVCHENKO";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1347,8 +1307,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1359,7 +1319,7 @@
 				OTHER_SWIFT_FLAGS = "-D SHEVCHENKO";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 			};
 			name = Release;
@@ -1381,7 +1341,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1426,7 +1386,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -1453,7 +1413,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"DEBUG=1",
@@ -1463,9 +1423,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "5f41f7ec-b1df-49be-bc89-b137270139a1";
+				PROVISIONING_PROFILE = "ae771714-9134-47b2-bb1b-5f2e2075acd7";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Debug;
 		};
@@ -1482,7 +1442,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "5f41f7ec-b1df-49be-bc89-b137270139a1";
+				PROVISIONING_PROFILE = "ae771714-9134-47b2-bb1b-5f2e2075acd7";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 			};
 			name = Release;

@@ -27,11 +27,14 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     }
     private var mediaName:String? {
         get{
-            var lvDate = NSDate().timeDateStringShortStyle().stringByReplacingOccurrencesOfString(" ", withString: "_") + ".jpg" as NSString
-            lvDate = lvDate.stringByReplacingOccurrencesOfString(":", withString: "-")
-            lvDate = lvDate.stringByReplacingOccurrencesOfString(",", withString: "")
-            lvDate = lvDate.stringByReplacingOccurrencesOfString("/", withString: "-")
-            return lvDate as String
+            var lvDateString = NSDate().timeDateStringForMediaName() + ".jpg"
+            
+//                lvDate = lvDate.stringByReplacingOccurrencesOfString(" ", withString: "_") + ".jpg"// as NSString
+//            lvDate = lvDate.stringByReplacingOccurrencesOfString(":", withString: "-")
+//            lvDate = lvDate.stringByReplacingOccurrencesOfString(",", withString: "")
+//            lvDate = lvDate.stringByReplacingOccurrencesOfString("/", withString: "-")
+            
+            return lvDateString // as String
         }
     }
     
@@ -132,6 +135,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     func proceedWithSelectedImage(image:UIImage)
     {
         let bgQueue:dispatch_queue_t = dispatch_queue_create("Origami.ImageProcessing.Background", DISPATCH_QUEUE_SERIAL)
+        let currentMediaName = self.mediaName
         dispatch_async(bgQueue, {[weak self] () -> Void in
             
             var lvSelectedMedia = MediaFile()
@@ -147,7 +151,14 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
                 fixedImage = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
             }
             lvSelectedMedia.type = .Image
-            lvSelectedMedia.name = self?.mediaName ?? ""
+            if let name = currentMediaName
+            {
+                lvSelectedMedia.name = name
+            }
+            else
+            {
+                lvSelectedMedia.name = ""
+            }
             lvSelectedMedia.data = UIImageJPEGRepresentation(fixedImage,
                 0.9)
             

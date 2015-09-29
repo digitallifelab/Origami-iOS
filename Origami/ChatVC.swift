@@ -18,11 +18,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
     @IBOutlet weak var textHolderHeightConstraint: NSLayoutConstraint!
     var defaultTextInputViewHeight:CGFloat?
-    var currentChatMessages = [Message](){
-        didSet{
-            println("\n ->Did set currentChatMessages.\n Chat Messages Count: \(currentChatMessages.count)")
-        }
-    }
+    var currentChatMessages = [Message]()
+//        {
+//        didSet{
+//            println("\n ->Did set currentChatMessages.\n Chat Messages Count: \(currentChatMessages.count)")
+//        }
+//    }
     
     var displayMode:DisplayMode = .Day{
         didSet{
@@ -343,7 +344,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             if self.currentChatMessages.count > 1
             {
                 let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
-                //println("\n -> LastIndexPathRow: \(lastMessagePath.row)")
+               
                 chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: false)
                 
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [weak self]() -> Void in
@@ -493,7 +494,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 if let message = messageForIndexPath(targetIndexPath)
                 {
                     currentMessage = message
-                    //println(" pressed  message: \(message.textBody)")
                 }
             }
             
@@ -667,16 +667,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     DataSource.sharedInstance.addSeveralContacts(passWhomSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
-                            //println(" added to \(succeededIDs)")
-                            //println(" failed to add to \(failedIDs)")
                             if let weakSelf = self
                             {
                                 weakSelf.showAlertWithTitle("ERROR.", message: "Could not add contacts to new element.", cancelButtonTitle: "Ok")
                             }
-                        }
-                        else
-                        {
-                            //println(" added to \(succeededIDs)")
                         }
                     })
                 }
@@ -689,7 +683,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                         DataSource.sharedInstance.editElement(currentNewElement, completionClosure: { (edited) -> () in
                             if edited
                             {
-                                //println("Updated element`s typeId")
+                                println("\n -> Updated element`s typeId")
                             }
                             else
                             {

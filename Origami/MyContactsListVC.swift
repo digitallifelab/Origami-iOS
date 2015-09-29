@@ -31,7 +31,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         myContacts = DataSource.sharedInstance.getMyContacts()
         
-        #if SHEVCHENKO
+        //#if SHEVCHENKO
         DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
             
             if let weakSelf = self
@@ -72,7 +72,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 }
             }
         }
-        #endif
+        //#endif
         myContactsTable.estimatedRowHeight = 60
         myContactsTable.rowHeight = UITableViewAutomaticDimension
     }

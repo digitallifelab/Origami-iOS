@@ -67,7 +67,6 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
         
-        //println("Wanted Rect: \(rect) ")
         if let superAttributes = super.layoutAttributesForElementsInRect(rect) {
             
             

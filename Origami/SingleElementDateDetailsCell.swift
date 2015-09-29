@@ -23,13 +23,14 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         }
     }
     weak var handledElement:Element?
-    @IBOutlet weak var datesTable:UITableView!
-    @IBOutlet weak var ownerNameLabel:UILabel!
+    @IBOutlet weak var datesTable:UITableView?
+    @IBOutlet weak var ownerNameLabel:UILabel?
+    @IBOutlet weak var ownerLocalizedLabel:UILabel?
     @IBOutlet weak var editButton:UIButton?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.datesTable.scrollsToTop = false
+        self.datesTable?.scrollsToTop = false
     }
     
     override func layoutSubviews() {
@@ -37,7 +38,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         
         self.layer.masksToBounds = false
         
-        datesTable.backgroundColor = UIColor.clearColor()
+        datesTable?.backgroundColor = UIColor.clearColor()
         
         let selfBounds = self.bounds
         let shadowColor = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? UIColor.grayColor().CGColor : UIColor.blackColor().CGColor
@@ -98,8 +99,9 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
             
             if !ownerNameToDisplay.isEmpty
             {
-                ownerNameLabel.text = ownerNameToDisplay
+                ownerNameLabel?.text = ownerNameToDisplay
             }
+            ownerLocalizedLabel?.text = "creator".localizedWithComment("")
         }
     }
     

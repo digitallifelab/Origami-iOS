@@ -96,12 +96,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         titleTextView.font = UIFont(name: "SegoeUI", size: 30.0)
         titleTextView.textColor = kWhiteColor
     }
-    
-//    deinit
-//    {
-//        cleanShadow()
-//    }
-    
+        
     
     func cleanShadow()
     {
@@ -226,7 +221,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 taskButton.userInteractionEnabled = true
                 if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
-                    self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
+                    //self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     if !currentElement.isArchived()
                     {
                         taskButton.tintColor = kWhiteColor
@@ -266,7 +261,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 }
                 else
                 {
-                    self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
+                    //self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                     if !currentElement.isArchived()
                     {
                         taskButton.tintColor = kWhiteColor
@@ -283,7 +278,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 taskButton.userInteractionEnabled = true
                 if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
-                    self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
+                   // self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
                     {
                         switch finishState
@@ -307,7 +302,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 else
                 {
                     taskButton.hidden = true
-                    self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
+                    //self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                 }
             }
             else
@@ -315,7 +310,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 taskButton.userInteractionEnabled = false
                 if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId.integerValue))
                 {
-                    self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
+                   // self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     taskButton.hidden = false
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
                     {
@@ -338,7 +333,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                 else
                 {
                     taskButton.hidden = true
-                    self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
+                    //self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                 }
             }
         }

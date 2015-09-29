@@ -532,19 +532,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 //            }
         }
     }
-
-    //MARK: MessageObserver
-//    func newMessagesAdded(messages:[Message])
-//    {
-//        self.collectionDashboard.reloadSections(NSIndexSet(index:0))
-//    }
   
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
-//        DataSource.sharedInstance.refreshAttachesForElement(element, completion: { (attaches) -> () in
-//            
-//        })
+
         self.presentNewSingleElementVC(element)
         
     }

@@ -117,22 +117,17 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             self.displayMode = .Day
         }
    
-        if self.allContacts != nil
+        if let contacts = self.allContacts
         {
-            for lvContact in allContacts!
-            {
-                //set avatar image
-                if let userName = lvContact.userName as? String
+            let bgAvatarsQueue = dispatch_queue_create("com.Origami.Avatars.Queue.Composer", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgAvatarsQueue) {[weak self] () -> Void in
+                for lvContact in contacts
                 {
-                    DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
-                        if let weakSelf = self
-                        {
-                            if let avatar = image
-                            {
-                                weakSelf.contactImages[userName] = avatar
-                            }
-                        }
-                    })
+                    //set avatar image
+                    if let userName = lvContact.userName as? String, avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName), avatar = UIImage(data: avatarData), weakSelf = self
+                    {
+                        weakSelf.contactImages[userName] = avatar
+                    }
                 }
             }
         }

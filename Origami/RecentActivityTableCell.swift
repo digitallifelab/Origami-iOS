@@ -10,6 +10,7 @@ import UIKit
 
 class RecentActivityTableCell: UITableViewCell {
 
+    @IBOutlet weak var dateLabel:UILabel?
     @IBOutlet weak var elementTitleLabel:UILabel?
     @IBOutlet weak var elementDetailsTextView:UITextView?
     @IBOutlet weak var elementCreatorAvatar:UIImageView?

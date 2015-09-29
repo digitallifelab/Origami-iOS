@@ -879,7 +879,7 @@ class ServerRequester: NSObject
     }
     
     //MARK: Attaches
-    func loadAttachesListForElementId(elementId:NSNumber, completion:networkResult?)
+    func loadAttachesListForElementId(elementId:Int, completion:networkResult?)
     {
         //"GetElementAttaches?elementId={elementId}&token={token}"
         //NSString *urlString = [NSString stringWithFormat:@"%@GetElementAttaches?elementId=%@&token=%@", BasicURL, elementId, _currentUser.token];
@@ -890,6 +890,7 @@ class ServerRequester: NSObject
             let requestOperation = httpManager.GET(requestString,
                 parameters: nil,
                 success: { [weak self] (operation, result) -> Void in
+                    
                     if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
                     {
                         NSOperationQueue().addOperationWithBlock({/* [weak self]*/() -> Void in
@@ -906,10 +907,6 @@ class ServerRequester: NSObject
                                     dispatch_async(dispatch_get_main_queue(),{ () -> Void in
                                        completion?(nil,nil)
                                     })
-                                    
-//                                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-//                                        completion(nil,nil)
-//                                    })
                             }
 
                         })
@@ -934,8 +931,11 @@ class ServerRequester: NSObject
                     completion?(nil, error)
             })
             
-            
+           
             requestOperation?.start()
+            
+            
+           
             return
         }
         
