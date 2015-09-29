@@ -18,8 +18,11 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     var elements:[Element]?
-    var displayMode:DisplayMode = .Day{
-        didSet{
+    
+    var avatarForElementHolder:[Int:UIImage] = [Int:UIImage]()
+    
+    var displayMode:DisplayMode = .Day {
+        didSet {
             switch displayMode
             {
             case .Day:
@@ -33,6 +36,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView?.backgroundColor = UIColor.clearColor()
+        
         // Do any additional setup after loading the view.
     }
 
@@ -51,6 +55,46 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
             if let weakSelf = self
             {
                 weakSelf.reloadTableView()
+                if let elementsToGetCreatorAvatars = weakSelf.elements
+                {
+                    let bgQueue = dispatch_queue_create("com.Origami.AvatarsQuery.queue", DISPATCH_QUEUE_SERIAL)
+                    dispatch_async(bgQueue, {[weak self] () -> Void in
+                        if let weakerSelf = self, elementsForBgQueue = weakerSelf.elements
+                        {
+                            var creatorIDsSet = Set<Int>()
+                            //1 insert creatorIDs
+                            for anElement in elementsForBgQueue
+                            {
+                                let idInt = anElement.creatorId.integerValue
+                                if idInt > 0
+                                {
+                                    creatorIDsSet.insert(idInt)
+                                }
+                            }
+                            
+                            //2 try to get avatars
+                            if !creatorIDsSet.isEmpty
+                            {
+                                for anId in creatorIDsSet
+                                {
+                                    if let avatar = DataSource.sharedInstance.getAvatarForUserId(anId)
+                                    {
+                                        weakSelf.avatarForElementHolder[anId] = avatar
+                                    }
+                                }
+                            }
+                            
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                if let visibleRowsPaths = weakerSelf.tableView?.indexPathsForVisibleRows() as? [NSIndexPath]
+                                {
+                                    weakerSelf.tableView?.reloadRowsAtIndexPaths(visibleRowsPaths, withRowAnimation: .None)
+                                }
+                            })
+                        }
+                     
+                    }) //bg queue end
+                }
+
             }
         }
     }
@@ -223,6 +267,14 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 if element.isArchived()
                 {
                     activityCell.backgroundColor = UIColor.lightGrayColor()
+                }
+                if let avatar = avatarForElementHolder[element.creatorId.integerValue]
+                {
+                    activityCell.elementCreatorAvatar?.image = avatar
+                }
+                else
+                {
+                    activityCell.elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
                 return activityCell
             }

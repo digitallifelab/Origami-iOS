@@ -26,32 +26,49 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         
-        if let contacts = contactsToSelectFrom
-        {
+        
             
             let bgOpQueue = NSOperationQueue()
-            var i = 0
-            for aContact in contacts
-            {
-                let indexPath = NSIndexPath(forRow: i, inSection: 0)
-                i++
-                if let userName = aContact.userName as? String
+            bgOpQueue.addOperationWithBlock({[weak self] () -> Void in
+                if let weakSelf = self, contacts = weakSelf.contactsToSelectFrom
                 {
-                    bgOpQueue.addOperationWithBlock({ () -> Void in
+                    var i = 0
+                    for aContact in contacts
+                    {
+                        let indexPath = NSIndexPath(forRow: i, inSection: 1)
                         
-                        DataSource.sharedInstance.loadAvatarForLoginName(userName) {[weak self] (image) -> () in
-                            if let avatar = image
+                        i++
+                        
+                        if let userId = aContact.contactId?.integerValue
+                        {
+                            //                        DataSource.sharedInstance.loadAvatarForLoginName(userName) {[weak self] (image) -> () in
+                            //                            if let avatar = image
+                            //                            {
+                            //                                if let weakSelf = self
+                            //                                {
+                            //                                    weakSelf.avatarsHolder[indexPath] = avatar
+                            //                                }
+                            //                            }
+                            //                        }
+                            if let avatar = DataSource.sharedInstance.getAvatarForUserId(userId)
                             {
-                                if let weakSelf = self
-                                {
-                                    weakSelf.avatarsHolder[indexPath] = avatar
-                                }
+                                weakSelf.avatarsHolder[indexPath] = avatar
                             }
                         }
-                    })
+                    }
+                    if let userIdInt = DataSource.sharedInstance.user?.userId?.integerValue
+                    {
+                        if let image = DataSource.sharedInstance.getAvatarForUserId(userIdInt)
+                        {
+                            weakSelf.avatarsHolder[NSIndexPath(forRow: 0, inSection: 0)] = (image.copy() as! UIImage)
+                        }
+                    }
                 }
-            }
-        }
+            })
+            
+            
+        
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -84,9 +101,6 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.tableView?.reloadData()
         self.tableView?.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: .Top)
     }
-    
-
-
     
   
     // MARK: - Table view data source
@@ -128,14 +142,6 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                     cell.contactNameLabel?.text = contactFullname
                 }
             }
-            if let avatar = avatarsHolder[indexPath]
-            {
-                cell.avatarImageView?.image = avatar
-            }
-            else
-            {
-                cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
-            }
         }
         else
         {
@@ -144,6 +150,16 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                 cell.contactNameLabel?.text = "Me".localizedWithComment("")
             }
         }
+        
+        if let avatar = avatarsHolder[indexPath]
+        {
+            cell.avatarImageView?.image = avatar
+        }
+        else
+        {
+            cell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+        }
+        
         
         return cell
     }

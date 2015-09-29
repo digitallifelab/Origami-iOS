@@ -49,7 +49,7 @@
 "startTaskMessage" = "Назначьте ответственного за выполнение задачи и установите дату напоминания.";
 "restartTaskPrompt" = "Повторить задачу";
 "restartTaskMessage" = "Назначте нового ответственного за выполнение и новую дату напоминания.";
-"FinishTaskPromptText" = "Shoose result for finishing current task.";
+"FinishTaskPromptText" = "Выберите результат завершения текущего задания.";
 
 "sureToChangePassword" = "Подтвердите смену пароля.";
 "attention" = "Внимание";

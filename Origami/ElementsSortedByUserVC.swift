@@ -189,6 +189,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.elementsUserParticipatesIn?.removeAll(keepCapacity: false)
         self.elementsCreatedByUser = nil
         self.elementsUserParticipatesIn = nil      
+        let currentSelecnedUserId = self.selectedUserId
         
         if let allElements = self.elements
         {
@@ -201,7 +202,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             {
                 //println("Element`s pass whom IDs: \(anElement.passWhomIDs)")
                 
-                if anElement.creatorId.isEqualToNumber( self.selectedUserId)
+                if anElement.creatorId.isEqualToNumber(currentSelecnedUserId)
                 {
                     toSortMyElements.insert(anElement)
                 }
@@ -209,7 +210,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 {
                     if userIDFromDataSource != nil
                     {
-                        if userIDFromDataSource!.isEqualToNumber(self.selectedUserId)
+                        if userIDFromDataSource!.isEqualToNumber(currentSelecnedUserId)
                         {
                             toSortParticipatingElements.insert(anElement)
                         }
@@ -486,7 +487,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         return 0.0
     }
 
-    
+    //MARK: - right nav button
     func configureCurrentRightTopButton()
     {
         if let rightButton = UIButton.buttonWithType(.System) as? UIButton
@@ -494,15 +495,17 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             var rightButton = UIButton.buttonWithType(.System) as! UIButton
             rightButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
             rightButton.imageEdgeInsets = UIEdgeInsetsMake(4, 4, 4, 4)
+            rightButton.imageView?.contentMode = .ScaleAspectFit
             rightButton.setImage(self.currentSelectedUserAvatar, forState: .Normal)
             rightButton.addTarget(self, action: "selectElementsOwnerTapped:", forControlEvents: .TouchUpInside)
-            rightButton.imageView?.contentMode = .ScaleAspectFit
+         
+            rightButton.maskToCircle()
             self.currentTopRightButton = rightButton
             
             var rightBarButton = UIBarButtonItem(customView: self.currentTopRightButton!)
             
             self.navigationItem.rightBarButtonItem = rightBarButton
-            
+           
             configureCurrentRightButtonImage()
         }
     }

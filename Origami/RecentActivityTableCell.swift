@@ -34,6 +34,7 @@ class RecentActivityTableCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        elementCreatorAvatar?.maskToCircle()
         
     }
 
