@@ -55,7 +55,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 if let passwhomIDs = currentElement?.passWhomIDs
                 {
                     let passWhomIDsSet = Set(passwhomIDs)
-                    var allContactsSet:Set<Contact> = Set(contacts!)
+                    let allContactsSet:Set<Contact> = Set(contacts!)
                     
                     checkedContacts = contacts!.filter({ (lvContact) -> Bool in
                         let contains = passWhomIDsSet.contains(lvContact.contactId!)
@@ -64,7 +64,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                     //sort alphabeticaly
                     sortContactsAlphabeticaly(&checkedContacts)
                     
-                    var uncheckedContactsSet = allContactsSet.subtract(Set(checkedContacts))
+                    let uncheckedContactsSet = allContactsSet.subtract(Set(checkedContacts))
                     uncheckedContacts = Array(uncheckedContactsSet)
                     
                     sortContactsAlphabeticaly(&uncheckedContacts)
@@ -85,7 +85,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func sortContactsAlphabeticaly(inout contactArray:[Contact])
     {
-        contactArray.sort({ (contact1, contact2) -> Bool in
+        contactArray.sortInPlace({ (contact1, contact2) -> Bool in
             if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
             {
                 return firstName1 >= firstName2
@@ -165,7 +165,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         
         //prepare view
-        var view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
+        let view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
         view.backgroundColor = kWhiteColor
         view.opaque = true
         
@@ -196,7 +196,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var currentContact = contactForIndexPath(indexPath)
+        let currentContact = contactForIndexPath(indexPath)
         var nameLabelText = ""
         
         if currentContact != nil
@@ -215,7 +215,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             }
         }
         
-        var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
+        let contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
         contactCell.nameLabel.text = nameLabelText
         contactCell.displayMode = self.displayMode
         contactCell.selectionStyle = UITableViewCellSelectionStyle.None

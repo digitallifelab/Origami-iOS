@@ -58,10 +58,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     private lazy var avatarsHolder = [String:NSData]()
     
     private let serverRequester = ServerRequester()
-    #if SHEVCHENKO
-    #else
-       private var databaseHandler:DatabaseHandler?
-    #endif
  
     var shouldReloadAfterElementChanged = false
     var isRemovingObsoleteMessages = false
@@ -81,15 +77,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return existingObserver
         }
         return nil
-    }
-    
-    
-    func saveDB()
-    {
-        #if SHEVCHENKO
-        #else
-        DataSource.sharedInstance.databaseHandler?.save()
-        #endif
     }
    
     func removeAllObserversForNewMessages()
@@ -767,14 +754,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getDashboardElements( completion:([Int:[Element]]?)->() )
     {
-        //NSLog("\r _________ Started gathering elements for Dashboard.....")
+        
         let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
         dispatch_async(dispatchQueue,
         {
             if DataSource.sharedInstance.elements.isEmpty
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    //NSLog("\r _________ Finished gathering elements for Dashboard..... Returning empty.")
                     completion(nil)
                 })
                 return
@@ -788,6 +774,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             ObjectsConverter.sortElementsByDate(&favouriteElements)
         
+            //debug 
+            for lvFavourite in favouriteElements
+            {
+                print(lvFavourite.title!, lvFavourite.elementId!.integerValue)
+            }
             
             
         
@@ -861,33 +852,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
 
     
-    #if SHEVCHENKO
-    #else
-    func loadExistingDashboardElementsFromLocalDatabaseCompletion( completion:((elements:[String:[DBElement]]?, error:NSError?)->()) )
-    {
-        DataSource.sharedInstance.databaseHandler?.queryDashboardElementsCompletion({ (elementsContainerDict) -> Void in
-            
-            if let dbElements = elementsContainerDict as? [String:[DBElement]]
-            {
-                completion(elements: dbElements, error: nil)
-                return
-            }
-//            else
-//            {
-//                if let error = elementsRequestEror
-//                {
-//                    completion(elements: nil, error: error)
-//                }
-//                else
-//                {
-//                    let unknownError = NSError(domain: "Origami.UnknownError", code: 100509, userInfo: [NSLocalizedDescriptionKey:"Unknown error while querrying Home screen elements"])
-//                    completion(elements: nil, error: unknownError);
-//                    
-//                }
-//            }
-        })
-    }
-    #endif
     func loadAllElementsInfo(completion:(success:Bool, failure:NSError?) ->())
     {
         DataSource.sharedInstance.serverRequester.loadAllElements {(result, error) -> () in

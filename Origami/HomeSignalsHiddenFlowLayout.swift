@@ -111,7 +111,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
-            let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
+            //let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
 //            if currentIdiom == .Phone
 //            {
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
@@ -149,27 +149,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         var offsetY:CGFloat = self.minimumLineSpacing
         
         /* - fix top offset in iPhone 6,5,4- */
-        
-//        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
-//        
-//        switch comparisonResult
-//        {
-//        case .OrderedSame, .OrderedDescending:
-//            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
-//            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
-//            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
-//            
-//            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
-//            {
-//                offsetY += 40.0
-//            }
-//            else if currentTraitCollectionWidth == .Regular && currentTraitCollectionHeight == .Compact
-//            {
-//                offsetY += 20.0
-//            }
-//        case .OrderedAscending:
-//            offsetY += 0.0
-//        }
+
         if #available (iOS 8.0, *)
         {
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
@@ -227,7 +207,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             offsetX = self.minimumInteritemSpacing
             //create frame for header of section
             let indexPathForSection = NSIndexPath(forItem: 0, inSection: section)
-            var sectionHeaderAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withIndexPath: indexPathForSection)
+            let sectionHeaderAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withIndexPath: indexPathForSection)
             let headerFrame = CGRectMake(0.0, offsetY, self.headerReferenceSize.width, self.headerReferenceSize.height)
             sectionHeaderAttributes.frame = headerFrame
             
@@ -264,7 +244,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             {
                 let indexPathForItem = NSIndexPath(forItem: currentItem, inSection: section)
                 
-                var itemAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPathForItem)
+                let itemAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPathForItem)
                 
                 var elementWidth = self.itemSize.width
                 

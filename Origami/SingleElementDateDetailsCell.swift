@@ -109,15 +109,15 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var countRows = 0
-        if let dateCreated = handledElement?.createDate?.timeDateStringFromServerDateString() as? String
+        if let _ = handledElement?.createDate?.timeDateStringFromServerDateString() as? String
         {
             countRows += 1
         }
-        if let dateModified = handledElement?.changeDate?.timeDateStringFromServerDateString() as? String
+        if let _ = handledElement?.changeDate?.timeDateStringFromServerDateString() as? String
         {
             countRows += 1
         }
-        if let dateFinished = handledElement?.finishDate?.timeDateString() as? String
+        if let _ = handledElement?.finishDate?.timeDateString() as? String
         {
             countRows += 1
         }
@@ -126,7 +126,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var datesCell = tableView.dequeueReusableCellWithIdentifier("DatesTableHolderCell", forIndexPath: indexPath) as! ElementDashboardDatesCell
+        let datesCell = tableView.dequeueReusableCellWithIdentifier("DatesTableHolderCell", forIndexPath: indexPath) as! ElementDashboardDatesCell
         datesCell.displayMode = self.displayMode
         datesCell.backgroundColor = UIColor.clearColor()
         configureDateCellForRow(indexPath.row, cell: datesCell)

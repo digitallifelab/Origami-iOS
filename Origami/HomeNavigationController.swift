@@ -24,22 +24,22 @@ class HomeNavigationController: UINavigationController {
 
     func currentPresentedMenuItem() -> NSInteger
     {
-        if let vc =  self.topViewController as? HomeVC
+        if let _ =  self.topViewController as? HomeVC
         {
             return 0
         }
         
-        if let vc = self.topViewController as? ElementsSortedByUserVC
+        if let _ = self.topViewController as? ElementsSortedByUserVC
         {
             return 1
         }
         
-        if let vc = self.topViewController as? UserProfileVC
+        if let _ = self.topViewController as? UserProfileVC
         {
             return 2
         }
         
-        if let vc = self.topViewController as? MyContactsListVC
+        if let _ = self.topViewController as? MyContactsListVC
         {
             return 3
         }

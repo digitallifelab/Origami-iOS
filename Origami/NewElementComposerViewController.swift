@@ -71,7 +71,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         didSet{
             if editingStyle == .AddNew
             {
-                var elementNew = Element()
+                let elementNew = Element()
                 //self.newElement = Element()
                 elementNew.rootElementId = NSNumber(integer:self.rootElementID)
                 elementNew.passWhomIDs = Array(self.contactIDsToPass)
@@ -157,14 +157,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         switch editingStyle
         {
         case .AddNew:
-            var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
-            var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-            var doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
-            //toolbar.items = [cancelBarButton, flexibleSpace, doneBarButtonItem]
-        
+            let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
+            let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
             self.navigationItem.leftBarButtonItem = cancelBarButton
             self.navigationItem.rightBarButtonItem = doneBarButtonItem
-            
             
         case .EditCurrent:
             let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
@@ -182,11 +178,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     archiveButtonTitle = "Unarchive".localizedWithComment("")
                 }
             }
-            var archiveBarButton = UIBarButtonItem(title: archiveButtonTitle , style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
-            var flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-            var deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
+            let archiveBarButton = UIBarButtonItem(title: archiveButtonTitle , style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
+            let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+            let deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
             
-            var doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
+            let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
             self.navigationItem.setLeftBarButtonItems([ cancelBarButton, flexibleSpace, archiveBarButton, flexibleSpace, deleteBarButton, flexibleSpace, doneBarButtonItem], animated: true)
             self.navigationItem.setRightBarButtonItems([], animated: true)
    
@@ -309,14 +305,14 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
                 else
                 {
-                    let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
+                    //let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
                     cell.textView.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
                 }
                 
             }
             else
             {
-                let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
+                //let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
                 cell.textView.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
             }
         }
@@ -381,7 +377,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
         
         //prepare view
-        var view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
+        let view = UIView(frame: CGRectMake(0, 0, tableView.bounds.size.width, 50.0))
         view.backgroundColor = kWhiteColor
         view.opaque = true
         
@@ -540,7 +536,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         if let notif = notification
         {
-            var cellIndexPath = notif.object as? NSIndexPath
+            //var cellIndexPath = notif.object as? NSIndexPath
             
             if let info = notif.userInfo, let textViewTargetHeight = info["height"] as? CGFloat, targetTextView = notif.object as? UITextView
             {
@@ -570,9 +566,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             if let textPosition = cell.textView.selectedTextRange
             {
-                var cursorRect = cell.textView.caretRectForPosition(textPosition.start)
+                let cursorRect = cell.textView.caretRectForPosition(textPosition.start)
                 
-                var cursorRectNew = table.convertRect(cursorRect, fromView:cell.textView)
+                _ = table.convertRect(cursorRect, fromView:cell.textView)
                 
                 if !rectVisible(cursorRect)
                 {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -39,12 +39,6 @@
 		F84D791E1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */; };
 		F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
-		F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */; };
-		F855BBC41B74ED1400EC114C /* DBElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC31B74ED1400EC114C /* DBElement.m */; };
-		F855BBC71B74ED1500EC114C /* DBContact.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC61B74ED1500EC114C /* DBContact.m */; };
-		F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC91B74ED1500EC114C /* DBAttachment.m */; };
-		F855BBCD1B74ED1500EC114C /* DBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCC1B74ED1500EC114C /* DBMessage.m */; };
-		F855BBD01B74ED9B00EC114C /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */; };
 		F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
 		F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */; };
 		F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */; };
@@ -204,11 +198,6 @@
 		F8C93B291B861B94009D890E /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F8C93B2A1B861B94009D890E /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
-		F8C93B391B86285F009D890E /* DBMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCC1B74ED1500EC114C /* DBMessage.m */; };
-		F8C93B3A1B862862009D890E /* DBAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC91B74ED1500EC114C /* DBAttachment.m */; };
-		F8C93B3B1B862865009D890E /* DBContact.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC61B74ED1500EC114C /* DBContact.m */; };
-		F8C93B3C1B862868009D890E /* DBElement.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBC31B74ED1400EC114C /* DBElement.m */; };
-		F8C93B3D1B862873009D890E /* DatabaseHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */; };
 		F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
 		F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
 		F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */; };
@@ -273,17 +262,6 @@
 		F8521FF21B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F8521FF31B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		F8521FF41B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
-		F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OrigamiModel.xcdatamodel; sourceTree = "<group>"; };
-		F855BBC21B74ED1400EC114C /* DBElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBElement.h; sourceTree = "<group>"; };
-		F855BBC31B74ED1400EC114C /* DBElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBElement.m; sourceTree = "<group>"; };
-		F855BBC51B74ED1500EC114C /* DBContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBContact.h; sourceTree = "<group>"; };
-		F855BBC61B74ED1500EC114C /* DBContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBContact.m; sourceTree = "<group>"; };
-		F855BBC81B74ED1500EC114C /* DBAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBAttachment.h; sourceTree = "<group>"; };
-		F855BBC91B74ED1500EC114C /* DBAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBAttachment.m; sourceTree = "<group>"; };
-		F855BBCB1B74ED1500EC114C /* DBMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DBMessage.h; sourceTree = "<group>"; };
-		F855BBCC1B74ED1500EC114C /* DBMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBMessage.m; sourceTree = "<group>"; };
-		F855BBCE1B74ED9B00EC114C /* DatabaseHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseHandler.h; sourceTree = "<group>"; };
-		F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseHandler.m; sourceTree = "<group>"; };
 		F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDateDetailsCell.swift; sourceTree = "<group>"; };
 		F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVC.swift; sourceTree = "<group>"; };
 		F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVCCell.swift; sourceTree = "<group>"; };
@@ -550,27 +528,8 @@
 		F855BB9D1B74A7AF00EC114C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				F855BBCE1B74ED9B00EC114C /* DatabaseHandler.h */,
-				F855BBCF1B74ED9B00EC114C /* DatabaseHandler.m */,
-				F855BBD11B74EDB500EC114C /* DatabaseObjects */,
-				F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */,
 			);
 			name = CoreData;
-			sourceTree = "<group>";
-		};
-		F855BBD11B74EDB500EC114C /* DatabaseObjects */ = {
-			isa = PBXGroup;
-			children = (
-				F855BBCB1B74ED1500EC114C /* DBMessage.h */,
-				F855BBCC1B74ED1500EC114C /* DBMessage.m */,
-				F855BBC81B74ED1500EC114C /* DBAttachment.h */,
-				F855BBC91B74ED1500EC114C /* DBAttachment.m */,
-				F855BBC51B74ED1500EC114C /* DBContact.h */,
-				F855BBC61B74ED1500EC114C /* DBContact.m */,
-				F855BBC21B74ED1400EC114C /* DBElement.h */,
-				F855BBC31B74ED1400EC114C /* DBElement.m */,
-			);
-			name = DatabaseObjects;
 			sourceTree = "<group>";
 		};
 		F85CF0FD1B830D150048B3DE /* MyContacts */ = {
@@ -945,7 +904,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = CloudCraft;
 				TargetAttributes = {
 					F8C93AB91B861B94009D890E = {
@@ -969,7 +928,7 @@
 				};
 			};
 			buildConfigurationList = F8D456981B1DEFA100172667 /* Build configuration list for PBXProject "Origami" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1047,7 +1006,6 @@
 				F8C93ACD1B861B94009D890E /* AttachImageViewerVC.swift in Sources */,
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */,
-				F8C93B3D1B862873009D890E /* DatabaseHandler.m in Sources */,
 				F8C93ACF1B861B94009D890E /* ChatMessageRecievedCell.swift in Sources */,
 				F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */,
 				F8C93AD11B861B94009D890E /* UserProfileFlowLayout.swift in Sources */,
@@ -1056,7 +1014,6 @@
 				F8C93AD51B861B94009D890E /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F8C93AD71B861B94009D890E /* SingleElementDashboardVC.swift in Sources */,
 				F8C93AD81B861B94009D890E /* DashboardMessagesCell.swift in Sources */,
-				F8C93B3A1B862862009D890E /* DBAttachment.m in Sources */,
 				F8C93ADC1B861B94009D890E /* User.swift in Sources */,
 				F80656CC1B99AFCB008258F8 /* DataRefresher.swift in Sources */,
 				F8C93ADE1B861B94009D890E /* ElementSubordinatesSimpleLayout.swift in Sources */,
@@ -1094,7 +1051,6 @@
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
 				F8DBE5371BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
 				F8C65F461B98AA5A001EDEA6 /* AFURLRequestSerialization.m in Sources */,
-				F8C93B391B86285F009D890E /* DBMessage.m in Sources */,
 				F8C93B001B861B94009D890E /* Extensions.swift in Sources */,
 				F8C65F401B98AA5A001EDEA6 /* AFNetworkReachabilityManager.m in Sources */,
 				F8C93B021B861B94009D890E /* UserProfileTextContainerCell.swift in Sources */,
@@ -1125,9 +1081,7 @@
 				F8C65F3A1B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.m in Sources */,
 				F8C93B1A1B861B94009D890E /* SingleElementDateDetailsCell.swift in Sources */,
 				F805974A1B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
-				F8C93B3B1B862865009D890E /* DBContact.m in Sources */,
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
-				F8C93B3C1B862868009D890E /* DBElement.m in Sources */,
 				F8C93B1D1B861B94009D890E /* AllContactsVC.swift in Sources */,
 				F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */,
 				F8C93B211B861B94009D890E /* Element.swift in Sources */,
@@ -1154,8 +1108,6 @@
 				F8C65F451B98AA5A001EDEA6 /* AFURLRequestSerialization.m in Sources */,
 				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
-				F855BBC41B74ED1400EC114C /* DBElement.m in Sources */,
-				F855BBC71B74ED1500EC114C /* DBContact.m in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */,
@@ -1170,9 +1122,7 @@
 				F8C65F3D1B98AA5A001EDEA6 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				F81BAD681B5F874D00DB50F8 /* SingleElementDashboardVC.swift in Sources */,
 				F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */,
-				F855BBA01B74A7CD00EC114C /* OrigamiModel.xcdatamodeld in Sources */,
 				F8A1DFCF1B7B738200A66692 /* User.swift in Sources */,
-				F855BBCD1B74ED1500EC114C /* DBMessage.m in Sources */,
 				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F891BBE81B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
@@ -1193,7 +1143,6 @@
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
 				F8A1DFD31B7B74BE00A66692 /* Language.swift in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
-				F855BBD01B74ED9B00EC114C /* DatabaseHandler.m in Sources */,
 				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,
 				F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */,
 				F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */,
@@ -1220,7 +1169,6 @@
 				F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
-				F855BBCA1B74ED1500EC114C /* DBAttachment.m in Sources */,
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
@@ -1295,10 +1243,11 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-D SHEVCHENKO";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.CloudCaft.Shevchenko-Network";
 				PRODUCT_NAME = "Shevchenko network";
 				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Debug;
 		};
@@ -1319,6 +1268,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "-D SHEVCHENKO";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.CloudCaft.Shevchenko-Network";
 				PRODUCT_NAME = "Shevchenko network";
 				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
@@ -1346,6 +1296,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1365,7 +1316,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1414,8 +1365,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1423,8 +1374,9 @@
 				INFOPLIST_FILE = Origami/Origami.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.CloudCraft.Origami;
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "ae771714-9134-47b2-bb1b-5f2e2075acd7";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -1436,14 +1388,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				INFOPLIST_FILE = Origami/Origami.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.CloudCraft.Origami;
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "ae771714-9134-47b2-bb1b-5f2e2075acd7";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 			};
 			name = Release;
@@ -1479,19 +1432,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		F855BB9E1B74A7CD00EC114C /* OrigamiModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */,
-			);
-			currentVersion = F855BB9F1B74A7CD00EC114C /* OrigamiModel.xcdatamodel */;
-			path = OrigamiModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = F8D456951B1DEFA100172667 /* Project object */;
 }

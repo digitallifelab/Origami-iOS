@@ -18,9 +18,9 @@ class AllContactsVCCell: UITableViewCell {
     var contactIsMine:Bool = false {
         didSet{
             switch contactIsMine
-            {   case true:
+            {   case contactIsMine == true:
                     selectionIndicator?.image = UIImage(named:"icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
-                case false:
+                case contactIsMine == false:
                     selectionIndicator?.image = UIImage(named:"icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
                 default:break
             }

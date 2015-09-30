@@ -55,10 +55,11 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
         DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: {[weak self] (messages) -> () in
             if let aSelf = self
             {
-                if let toShow = messages, existing = aSelf.currentMessages
+                if let recievedMessages = messages, _ = aSelf.currentMessages
                 {
-                    aSelf.reloadChatTableWithNewMessages(messages)
-                    let resultAddingObserver = DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
+                    aSelf.reloadChatTableWithNewMessages(recievedMessages)
+                    //let resultAddingObserver =
+                    DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
                 }
                 else
                 {

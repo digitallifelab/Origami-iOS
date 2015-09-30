@@ -100,34 +100,6 @@ class ImageFilter
     
     class func getImagePreviewDataFromData(imageData:NSData) -> NSData?
     {
-//        var size : Int = 200
-//        let cfBool:CFBooleanRef = true
-//        let cfNum = CFNumberCreate(nil, CFNumberType.IntType, &size)
-//        
-//        let dictionayKeyCB = UnsafePointer<CFDictionaryKeyCallBacks>()
-//        let valueKeyCB = UnsafePointer<CFDictionaryValueCallBacks>()
-//        
-//        let keys: [CFStringRef] = [kCGImageSourceCreateThumbnailFromImageIfAbsent, kCGImageSourceThumbnailMaxPixelSize]
-//        let keysPointer =  UnsafeMutablePointer<UnsafePointer<Void>>.alloc(1)
-//        keysPointer.initialize(keys)
-//        
-//        let values: [CFTypeRef] = [kCFBooleanTrue, cfNum]
-//        let valuesPointer =  UnsafeMutablePointer<UnsafePointer<Void>>.alloc(1)
-//        valuesPointer.initialize(values)
-//        
-//        let options = CFDictionaryCreate(kCFAllocatorDefault, keysPointer, valuesPointer, 2, dictionayKeyCB, valueKeyCB)
-//
-//        
-//        if let imageSource = CGImageSourceCreateWithData(imageData , nil)
-//        {
-//            
-//            let cgImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options)
-//            //CFRelease(imageSource)
-//            if let uiImage = UIImage(CGImage: cgImage)
-//            {
-//                return UIImageJPEGRepresentation(uiImage, 1.0)
-//            }
-//        }
         if let image = UIImage(data: imageData)
         {
             if let scaledImage = image.scaleToSizeKeepAspect(CGSizeMake(200, 200))

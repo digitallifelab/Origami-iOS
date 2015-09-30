@@ -93,58 +93,6 @@ class ServerRequester: NSObject
         }
         
         editOperation?.start()
-        
-        /*
-        NSString *editUserUrlString = [NSString stringWithFormat:@"%@EditUser", BasicURL];
-        NSDictionary *userToSend = [NSDictionary dictionaryWithObjectsAndKeys:[self.currentUser toDictionary] , @"user",nil];
-        
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        AFJSONRequestSerializer *serializer = [AFJSONRequestSerializer serializer];
-        
-        [serializer setTimeoutInterval:60];
-        [serializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        [serializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-        
-        manager.requestSerializer = serializer;
-        
-        
-        
-        AFJSONResponseSerializer *jsonSerializer = [AFJSONResponseSerializer serializerWithReadingOptions:NSJSONReadingAllowFragments];
-        [jsonSerializer.acceptableContentTypes setByAddingObjectsFromArray:@[@"text/html",@"application/json"] ];
-        manager.responseSerializer = jsonSerializer;
-        
-        
-        AFHTTPRequestOperation *postEditOp = [manager POST:editUserUrlString
-        parameters:userToSend
-        success:^(AFHTTPRequestOperation *operation, id responseObject)
-        {
-        if (completionBlock)
-        {
-        completionBlock(responseObject,nil);
-        }
-        }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error)
-        {
-        if (error.description)
-        {
-        NSLog(@"%@", error.description);
-        }
-        NSString *responseString = operation.responseString;
-        if (responseString)
-        {
-        NSLog(@"\r\n updateUserInfoWithCompletion Error response: %@", responseString);
-        }
-        if (completionBlock)
-        {
-        completionBlock(nil,error);
-        }
-        }];
-        
-        [postEditOp start];
-        
-        */
-        
     }
     
     func loginWith(userName:String, password:String, completion:networkResult)
@@ -286,7 +234,7 @@ class ServerRequester: NSObject
                                 let lvElement = Element(info: lvElementDict)
                                 elements.insert(lvElement)
                             }
-                            print("\n -> loaded \(elements.count) elements.. ")
+                            print("\n -> Server requester loaded \(elements.count) elements.. ")
                             
                             completion(Array(elements),nil)
                         }
@@ -661,7 +609,7 @@ class ServerRequester: NSObject
             //throw error
         }
         catch {
-            
+            print("\n -> Did catch unknown error...")
         }
 
     }
@@ -679,41 +627,29 @@ class ServerRequester: NSObject
                 let finishStateRequest = NSMutableURLRequest(URL: url)
                 finishStateRequest.HTTPMethod = "POST"
                 
-//                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void in
-//                    
-////                    if let aData = responseData
-////                    {
-//                        do
-//                        {
-//                            if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(responseData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
-//                            {
-//                                if jsonResponse.isEmpty
-//                                {
-//                                    completion?(success:true)
-//                                }
-//                                return
-//                            }
-//                            
-//                            
-//                            if let jsonResponse = try  NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.AllowFragments) as? String
-//                            {
-//                                if jsonResponse.isEmpty
-//                                {
-//                                    //completion?(success:true)
-//                                }
-//                            }
-//                        }
-//                        catch let error as NSError
-//                        {
-//                            print("\(error)")
-//                        }
-////                    }
-//                    
-//                })
-//
                 let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, pesponseError) -> Void in
                 
-                   
+                    if let aData = responseData
+                    {
+                        do{
+                            if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject] {
+                                if jsonResponse.isEmpty {
+                                    completion?(success:true)
+                                    return
+                                }
+                                
+                                completion?(success:false)
+                            }
+                        }
+                        catch let error as NSError
+                        {
+                            print("\(error)")
+                            completion?(success:false)
+                        }
+                        catch{
+                            completion?(success:false)
+                        }
+                    }
                     
                 })
                 

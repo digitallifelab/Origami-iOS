@@ -59,7 +59,7 @@ class DataRefresher
                 ObjectsConverter.sortElementsByDate(&sortedElements)
                 
                 //let currentElementsCount = DataSource.sharedInstance.countExistingElements()
-                let newElementsCount = sortedElements.count
+                //let newElementsCount = sortedElements.count
                 
                 if let allCurrentElements = DataSource.sharedInstance.getAllElementsLocked()
                 {
@@ -153,7 +153,7 @@ class DataRefresher
                     }
                     
                     ///////-----/////
-                    var elementsToDelete = existingSet.subtract(comonElementsSetForExisting)
+                    let elementsToDelete = existingSet.subtract(comonElementsSetForExisting)
                     if elementsToDelete.count > 0
                     {
                         var arrayToIterate = Array(elementsToDelete)
@@ -173,7 +173,7 @@ class DataRefresher
                     }
                     
                     ///////-----/////
-                    var elementsToInsert = newSet.subtract(commonElementSetForNew)
+                    let elementsToInsert = newSet.subtract(commonElementSetForNew)
                     if elementsToInsert.count > 0
                     {
                         var arrayToIterate = Array(elementsToInsert)

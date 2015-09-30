@@ -119,7 +119,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             return
         }
         
-        var difference = ceil(desiredSize.height - oldSize.height)
+        let difference = ceil(desiredSize.height - oldSize.height)
         textHolderHeightConstraint.constant += difference
 
         self.view.layoutIfNeeded()
@@ -140,7 +140,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 
                 if let messageInfo = nsDict as? [String : AnyObject]
                 {
-                    var newMessage = Message(info: messageInfo)
+                    let newMessage = Message(info: messageInfo)
                    
                     NSOperationQueue.mainQueue().addOperationWithBlock({[weak self] () -> Void in
                         if let aSelf = self
@@ -378,8 +378,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         {
             if existingMessage.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
             {
-                var sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
-                sentCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
+                let sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
+                sentCell.dateLabel.text = existingMessage.dateCreated?.timeDateString() as? String
                 sentCell.message = existingMessage.textBody
                 sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
                 sentCell.backgroundColor = UIColor.clearColor()
@@ -387,10 +387,10 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             }
             else
             {
-                var recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
+                let recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
                 recievedCell.message = existingMessage.textBody
                 recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
-                recievedCell.dateLabel.text = existingMessage.dateCreated!.timeDateString() as? String
+                recievedCell.dateLabel.text = existingMessage.dateCreated?.timeDateString() as? String
                 recievedCell.avatar.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
                 recievedCell.backgroundColor = UIColor.clearColor()
                 return recievedCell
@@ -444,7 +444,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
         if let picker = itemPicker as? OptionsView
         {
-            var indexpath = item as? NSIndexPath
+            let indexpath = item as? NSIndexPath
             hideOptionsView(picker, completion: {[weak self] () -> () in
                 
                 if let indexPath = indexpath
@@ -499,23 +499,23 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             
         }
         
-        var originX = floor (CGRectGetMidX(self.view.bounds) - 160.0)
-        var originY = CGRectGetMaxY(self.view.bounds) - 200.0
+        let originX = floor (CGRectGetMidX(self.view.bounds) - 160.0)
+        let originY = CGRectGetMaxY(self.view.bounds) - 200.0
         
-        var optionsFame:CGRect = CGRectMake(originX, originY, 320, 200)
+        let optionsFame:CGRect = CGRectMake(originX, originY, 320, 200)
         
-        var currentWidth = self.view.bounds.size.width
-        var currentHeight = self.view.bounds.size.height
+        //var currentWidth = self.view.bounds.size.width
+        //var currentHeight = self.view.bounds.size.height
         
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            let orientation = FrameCounter.getCurrentDeviceOrientation()
-            if orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight
-            {
-                currentHeight = self.view.bounds.size.width
-                currentWidth = self.view.bounds.size.height
-            }
-        }
+//        if FrameCounter.isLowerThanIOSVersion("8.0")
+//        {
+//            let orientation = FrameCounter.getCurrentDeviceOrientation()
+//            if orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight
+//            {
+//                currentHeight = self.view.bounds.size.width
+//                currentWidth = self.view.bounds.size.height
+//            }
+//        }
         
         showOptionsView(optionsFame,
             params: [

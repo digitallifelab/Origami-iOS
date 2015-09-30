@@ -32,7 +32,7 @@ class DashHeaderView : UICollectionReusableView
     {
         super.init(frame: frame)
         label = UILabel()
-        //label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        label.translatesAutoresizingMaskIntoConstraints = false//setTranslatesAutoresizingMaskIntoConstraints(false)
         label.numberOfLines = 1
         self.addSubview(label)
         configureLabel()

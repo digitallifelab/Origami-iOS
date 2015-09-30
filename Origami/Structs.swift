@@ -60,7 +60,7 @@ struct ElementCellsOptions
     var orderedOptions:[ElementCellType] {
         
         var options = Array(cellTypes)
-        options.sort { (option1, option2) -> Bool in
+        options.sortInPlace { (option1, option2) -> Bool in
             return option1.rawValue < option2.rawValue
         }
         return options

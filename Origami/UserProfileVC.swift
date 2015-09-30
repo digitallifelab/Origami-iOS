@@ -929,10 +929,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                     
                     if let anError = error
                     {
-                        if let anError = error
-                        {
-                            print("Error: \n ->\(anError)")
-                        }
+                        print("Error: \n ->\(anError)")
                     }
                    
                     DataSource.sharedInstance.user?.password = oldPassword
@@ -1072,7 +1069,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func userDidChangePhoneNumber(newString:String)
     {
         //store before updating user phone
-        var previousValue = DataSource.sharedInstance.user?.phone as? String
+        let previousValue = DataSource.sharedInstance.user?.phone as? String
         if newString == previousValue
         {
             return
@@ -1091,7 +1088,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
         else
         {
-            if let anError = error
+            if let _ = error
             {
                 DataSource.sharedInstance.user?.phone = previousValue
                 dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in

@@ -385,18 +385,19 @@ extension UIImage{
         
         if let context:CGContextRef = UIGraphicsGetCurrentContext()
         {
-        CGContextTranslateCTM(context, 0.0, newSize.height)
-        CGContextScaleCTM(context, 1.0, -1.0)
-        let rect = CGRectMake(newSize.width / 2 - (newSize.width * widthRatio) / 2, newSize.height / 2 - (newSize.height - heightRatio) / 2, newSize.width * widthRatio, newSize.height * heightRatio)
-        CGContextDrawImage(context, rect, self.CGImage)
-        
-        let scaledImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
-        
-        UIGraphicsEndImageContext()
+            CGContextTranslateCTM(context, 0.0, newSize.height)
+            CGContextScaleCTM(context, 1.0, -1.0)
+            let rect = CGRectMake(newSize.width / 2 - (newSize.width * widthRatio) / 2, newSize.height / 2 - (newSize.height - heightRatio) / 2, newSize.width * widthRatio, newSize.height * heightRatio)
+            CGContextDrawImage(context, rect, self.CGImage)
+            
+            let scaledImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
+            
+            UIGraphicsEndImageContext()
         
             return scaledImage
         }
         
+        UIGraphicsEndImageContext()
         return nil
     }
     

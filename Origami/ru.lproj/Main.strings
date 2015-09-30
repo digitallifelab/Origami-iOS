@@ -42,7 +42,7 @@
 "HKN-Ge-hVy.text" = "Archived";
 
 /* Class = "UILabel"; text = "menu item name"; ObjectID = "KVD-ty-xaM"; */
-"KVD-ty-xaM.text" = "menu item name";
+"KVD-ty-xaM.text" = "пункт меню";
 
 /* Class = "UILabel"; text = "title"; ObjectID = "LG9-gz-wTP"; */
 "LG9-gz-wTP.text" = "title";
@@ -60,7 +60,7 @@
 "PBu-aF-Ydb.text" = "Element title label";
 
 /* Class = "UILabel"; text = "name or email or phone"; ObjectID = "PWk-AJ-c68"; */
-"PWk-AJ-c68.text" = "name or email or phone";
+"PWk-AJ-c68.text" = "имя или фамилия или телефон";
 
 /* Class = "UIButton"; normalTitle = "Login"; ObjectID = "Uxo-Jh-pfs"; */
 "Uxo-Jh-pfs.normalTitle" = "Вход";
@@ -80,8 +80,8 @@
 /* Class = "UILabel"; text = "13:30, 2 Aug"; ObjectID = "dad-7V-46K"; */
 "dad-7V-46K.text" = "13:30, 2 Aug";
 
-/* Class = "UILabel"; text = "details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah"; ObjectID = "ebd-9s-qKP"; */
-"ebd-9s-qKP.text" = "details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah details label text goes here      hello  blah blah blah details label text goes here  hello  blah blah blah";
+/* Class = "UILabel"; text = ""; */
+"ebd-9s-qKP.text" = "";
 
 /* Class = "UIBarButtonItem"; title = "Delete"; ObjectID = "ecv-ZC-JX7"; */
 "ecv-ZC-JX7.title" = "Удалить";

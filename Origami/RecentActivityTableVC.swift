@@ -55,7 +55,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
             if let weakSelf = self
             {
                 weakSelf.reloadTableView()
-                if let elementsToGetCreatorAvatars = weakSelf.elements
+                if let _ = weakSelf.elements
                 {
                     let bgQueue = dispatch_queue_create("com.Origami.AvatarsQuery.queue", DISPATCH_QUEUE_SERIAL)
                     dispatch_async(bgQueue, {[weak self] () -> Void in

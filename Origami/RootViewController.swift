@@ -181,16 +181,12 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             else
             {
-                self.hideMenu(true, completion: { () -> () in
-                    
-                })
+                self.hideMenu(true, completion:nil)
             }
         }
         else
         {
-            showMenu(true, completion: {[weak self] () -> () in
-                
-           })    
+            showMenu(true, completion: nil)
         }
        
     }

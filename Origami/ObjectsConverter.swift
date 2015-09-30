@@ -26,7 +26,7 @@ class ObjectsConverter {
             return nil
         }
         
-        languages.sort { (lang1, lang2) -> Bool in
+        languages.sortInPlace { (lang1, lang2) -> Bool in
             return lang1.languageName < lang2.languageName
         }
         
@@ -65,7 +65,7 @@ class ObjectsConverter {
             return nil
         }
         
-        countries.sort { (c1, c2) -> Bool in
+        countries.sortInPlace { (c1, c2) -> Bool in
             return c1.countryName < c2.countryName
         }
         return countries
@@ -164,7 +164,7 @@ class ObjectsConverter {
             toReturn.append(lvNewMessage)
         }
         
-        toReturn.sort { (message1, message2) -> Bool in
+        toReturn.sortInPlace { (message1, message2) -> Bool in
             return message1.elementId!.integerValue < message2.elementId!.integerValue
         }
         return toReturn
@@ -174,7 +174,7 @@ class ObjectsConverter {
     {
         if elements.count > 1
         {
-            elements.sort({ (element1, element2) -> Bool in
+            elements.sortInPlace({ (element1, element2) -> Bool in
                 if let changed1 = element1.changeDate , changed2 =  element2.changeDate
                 {
                     let  date1 = changed1.dateFromServerDateString()
@@ -245,7 +245,7 @@ class ObjectsConverter {
     {
         if messages.count > 1
         {
-            messages.sort { (message1, message2) -> Bool in
+            messages.sortInPlace { (message1, message2) -> Bool in
                 
                 return (message1.compareToAnotherMessage(message2) == .OrderedAscending)
             }

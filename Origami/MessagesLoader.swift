@@ -28,11 +28,7 @@ class MessagesLoader:NSObject
         // Create a dispatch source that'll act as a timer on the concurrent queue
         // You'll need to store this somewhere so you can suspend and remove it later on
  
-        if let source = self.dispatchSource
-        {
-            
-        }
-        else
+        if  self.dispatchSource == nil
         {
             self.createDispatch_source()
         }
@@ -52,7 +48,7 @@ class MessagesLoader:NSObject
                         
                         if let anError = error
                         {
-                            print("Error loading last messages:")
+                            print("\n -> Error loading last messages:\(anError)\n")
                         }
                         if let weakerSelf = self
                         {
@@ -103,9 +99,9 @@ class MessagesLoader:NSObject
     }
     func cancelDispatchSource()
     {
-        if let source = self.dispatchSource
+        if self.dispatchSource != nil
         {
-           self.dispatchSource = nil
+            self.dispatchSource = nil
             print(" -> MessagesLoader -> removed dispatch source...")
         }
     }

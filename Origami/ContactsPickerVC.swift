@@ -107,7 +107,7 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
      func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         
-        if let contacts = contactsToSelectFrom
+        if let _ = contactsToSelectFrom
         {
             return 2
         }
@@ -145,7 +145,7 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
         else
         {
-            if let user = DataSource.sharedInstance.user
+            if let _ = DataSource.sharedInstance.user
             {
                 cell.contactNameLabel?.text = "Me".localizedWithComment("")
             }

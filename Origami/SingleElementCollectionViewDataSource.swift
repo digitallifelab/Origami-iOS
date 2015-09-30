@@ -28,12 +28,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         didSet {
             // detect visible cells by checking options
             var options:[ElementCellType] = [ElementCellType]()
-            if let title = getElementTitle()
+            if let _ = getElementTitle()
             {
                 //print("\n appended Title")
                 options.append(.Title)
             }
-            if let chatMessages = getElementLastMessages()
+            if let _ = getElementLastMessages()
             {
                 //print("\n appended CHAT")
                 options.append(.Chat)
@@ -54,7 +54,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 options.append(.Attaches)
             }           
             
-            if let subordinates = getElementSubordinates()
+            if let _ = getElementSubordinates()
             {
                 //print("\n appended Subordinates")
                 options.append(.Subordinates)
@@ -148,7 +148,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
         else
         {
-            var unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates)
+            let unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates)
             if unarchivedSubordinates.isEmpty
             {
                 return nil
@@ -191,8 +191,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     elementDetails = nil
                 }
             }
-            var messages:Bool = options.cellTypes.contains(.Chat)
-            var attaches:Bool = options.cellTypes.contains(.Attaches)
+            let messages:Bool = options.cellTypes.contains(.Chat)
+            let attaches:Bool = options.cellTypes.contains(.Attaches)
             //var buttons = options.cellTypes.contains(.Buttons)
             
             
@@ -202,7 +202,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             {
                 //get ordered array of indexPaths for subordinates
                 var allValues = Array(subordinateStore)
-                allValues.sort({ (item1, item2) -> Bool in
+                allValues.sortInPlace({ (item1, item2) -> Bool in
                     
                      return item1.0.item < item2.0.item  //item1 - (NSIndexPath, Element), we are interested in sorting by indexPath
                 })
@@ -344,7 +344,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             switch titleCellMode
             {
             case .Title:
-                var titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell",
+                let titleCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementTitleCell",
                                                                                 forIndexPath: indexPath) as! SingleElementTitleCell
                 
                 titleCell.displayMode = self.displayMode
@@ -388,7 +388,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 return titleCell
                 
             case .Dates:
-                var datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell",
+                let datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell",
                                                                                 forIndexPath: indexPath) as! SingleElementDateDetailsCell
                 datesCell.displayMode = self.displayMode
                 datesCell.handledElement = self.handledElement
@@ -399,7 +399,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
         case .Chat:
-            var chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell",
+            let chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell",
                                                                                 forIndexPath: indexPath) as! SingleElementLastMessagesCell
             chatCell.displayMode = self.displayMode
             if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.handledElement!.elementId!)
@@ -411,7 +411,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return chatCell
             
         case .Details:
-            var detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell",
+            let detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell",
                                                                                 forIndexPath: indexPath) as! SingleElementDetailsCell
             detailsCell.textLabel.text = getElementDetails()
             detailsCell.displayMode = self.displayMode
@@ -422,7 +422,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
         case .Attaches:
             
-            var aCell:AnyObject = collectionView.dequeueReusableCellWithReuseIdentifier("AttachesHolderCell", forIndexPath: indexPath)
+            let aCell:AnyObject = collectionView.dequeueReusableCellWithReuseIdentifier("AttachesHolderCell", forIndexPath: indexPath)
             if let attachesHolderCell = aCell as? SingleElementAttachesCollectionHolderCell
             {
                 if let attachHandler = self.attachesHandler
@@ -442,7 +442,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             {
                 print("\n - ! ERROR: \n SingleElementCollectionViewDataSource Could not dequeue attachesHolder cell.\n Returning default collectionViewCell")
                 
-                var defaultCell = SingleElementAttachesCollectionHolderCell()
+                let defaultCell = SingleElementAttachesCollectionHolderCell()
                 if let attachHandler = self.attachesHandler
                 {
                     attachHandler.attachTapDelegate = self.attachTapDelegate
@@ -457,7 +457,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
         case .Subordinates:
-            var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
+            let subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementSubordinateCell", forIndexPath: indexPath) as! DashCell
            
             subordinateCell.displayMode = self.displayMode
             subordinateCell.cellType = .Other

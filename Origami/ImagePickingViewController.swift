@@ -27,7 +27,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     }
     private var mediaName:String? {
         get{
-            var lvDateString = NSDate().timeDateStringForMediaName() + ".jpg"
+            let lvDateString = NSDate().timeDateStringForMediaName() + ".jpg"
             
 //                lvDate = lvDate.stringByReplacingOccurrencesOfString(" ", withString: "_") + ".jpg"// as NSString
 //            lvDate = lvDate.stringByReplacingOccurrencesOfString(":", withString: "-")

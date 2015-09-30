@@ -164,19 +164,19 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
         
         let chatPath = NSIndexPath(forItem: 1, inSection: 0)
-        var chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
+        let chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
         if let elementId = self.currentElement?.elementId?.integerValue
         {
-            var currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId)
+            let currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId) //Optional
             if chatCell == nil && currentLastMessages != nil
             {
                 prepareCollectionViewDataAndLayout()
             }
-            else if chatCell != nil && currentLastMessages != nil
+            else if let cell = chatCell, messages = currentLastMessages
             {
-                if currentLastMessages!.last !== chatCell!.messages?.last
+                if messages.last !== cell.messages?.last
                 {
-                    chatCell!.messages = currentLastMessages
+                    chatCell!.messages = messages
                     self.collectionView.reloadItemsAtIndexPaths([chatPath])
                 }
             }
@@ -277,7 +277,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                     if let weakSelf = self
                                     {
                                         print("\n--> recieved \(arrayOfAttaches.count) attaches for current element\n")
-                                        if let existingAttachesHandler = weakSelf.collectionDataSource?.getElementAttachesHandler()
+                                        if let _ = weakSelf.collectionDataSource?.getElementAttachesHandler()
                                         {
                                             if let attachesCellPath = weakSelf.collectionDataSource?.indexPathForAttachesCell()
                                             {
@@ -364,7 +364,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 print(" ! -> Some error occured while reloading collectionView with new lyout.")
             }
-            collectionView.performBatchUpdates({ [weak self]() -> Void in
+            collectionView.performBatchUpdates({ () -> Void in
                 
             }, completion: {[weak self] (finished) -> Void in
                 if let weakSelf = self
@@ -419,14 +419,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 editingVC.rootElementID = rootElementId.integerValue
             }
 
-            if let currentElement = self.currentElement
+            if let _ = self.currentElement
             {
-                let copyElement = Element(info:  currentElement.toDictionary())
+                //let copyElement = Element(info:  currentElement.toDictionary())
                 editingVC.composingDelegate = self
                 
                 self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-                self.navigationController?.delegate = self
-                self.navigationController?.pushViewController(editingVC, animated: true)
+                
+                if let selfNav = self.navigationController
+                {
+                    selfNav.delegate = self
+                    selfNav.pushViewController(editingVC, animated: true)
+                }
+                else
+                {
+                    print("probably, some shit happened in simulator iOS 9.")
+                }
             }
            
         }
@@ -443,7 +451,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     func elementFavouriteToggled(notification:NSNotification)
     {
-        if let element = currentElement, elementIdInt = element.elementId?.integerValue
+        if let element = currentElement, _ = element.elementId?.integerValue
         {
             if element.isArchived()
             {
@@ -451,26 +459,21 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 return
             }
             let favourite = element.isFavourite.boolValue
-            var isFavourite = !favourite
-            var elementCopy = Element(info: element.toDictionary())
-            var titleCell:SingleElementTitleCell?
-            if let titleCellCheck = notification.object as? SingleElementTitleCell
-            {
-                titleCell = titleCellCheck
-            }
+            let isFavourite = !favourite
+            let elementCopy = Element(info: element.toDictionary())
+//            var titleCell:SingleElementTitleCell?
+//            
+//            if let titleCellCheck = notification.object as? SingleElementTitleCell
+//            {
+//                titleCell = titleCellCheck
+//            }
             DataSource.sharedInstance.updateElement(elementCopy, isFavourite: isFavourite) { [weak self] (edited) -> () in
                 
                 if let weakSelf = self
                 {
                     if edited
                     {
-                        //weakSelf.currentElement?.isFavourite = isFavourite
-                       //titleCell?.favourite = isFavourite
-//                        if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
-//                        {
-                            //weakSelf.currentElement = existElement
-                            weakSelf.collectionView?.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-//                        }
+                        weakSelf.collectionView?.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                 }
             }
@@ -527,7 +530,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
             
             let isSignal = theElement.isSignal.boolValue
-            var elementCopy = Element(info: theElement.toDictionary())
+            let elementCopy = theElement.createCopy()
             let isCurrentlySignal = !isSignal
             elementCopy.isSignal = isCurrentlySignal
             
@@ -591,7 +594,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         if let element = self.currentElement
         {
-            var copyElement = element.createCopy()
+            let copyElement = element.createCopy()
             let currentDate = NSDate()
             if let string = currentDate.dateForServer()
             {
@@ -640,7 +643,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 
                 let anOptionsConverter = ElementOptionsConverter()
                 let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
-                var editingElement = Element(info: self.currentElement!.toDictionary())
+                let editingElement = current.createCopy() // Element(info: self.currentElement!.toDictionary())
                 editingElement.typeId = NSNumber(integer: newOptions)
                 print("new element type id: \(editingElement.typeId)")
                 self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
@@ -759,7 +762,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 let anOptionsConverter = ElementOptionsConverter()
                 let newOptions = anOptionsConverter.toggleOptionChange(current.typeId.integerValue, selectedOption: 3)
-                var editingElement = current.createCopy()
+                let editingElement = current.createCopy()
                 editingElement.typeId = NSNumber(integer: newOptions)
                 print("new element type id: \(editingElement.typeId)")
                 self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
@@ -1180,16 +1183,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: handling notifications
     func elementWasDeleted(notification:NSNotification?)
     {
-        if let note = notification, userInfo = note.userInfo, elementId = userInfo["elementId"] as? NSNumber
+        if let note = notification, userInfo = note.userInfo, _/*deletedElementId*/ = userInfo["elementId"] as? Int
         {
+            //FIXME: delete designated rows from layout and datasource
            self.prepareCollectionViewDataAndLayout()
         }
     }
     
     func refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement(notification:NSNotification)
     {
-        if let info = notification.userInfo, elementIdNumbersSet = info["IDs"] as? Set<NSNumber>
+        if let info = notification.userInfo, /*elementIdNumbersSet*/ _ = info["IDs"] as? Set<NSNumber>
         {
+            //FIXME: delete designated rows from layout and datasource
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
                 {
@@ -1214,13 +1219,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     }
                     
                 }
-                else
-                {
-                    if let collectionDataSource = self.collectionDataSource
-                    {
-                        let attachesHandler = ElementAttachedFilesCollectionHandler()
-                    }
-                }
+//                else
+//                {
+//                    if let collectionDataSource = self.collectionDataSource
+//                    {
+//                        let attachesHandler = ElementAttachedFilesCollectionHandler()
+//                    }
+//                }
             }
         }
     }
@@ -1240,7 +1245,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: AttachmentSelectionDelegate
     func attachedFileTapped(attachFile:AttachFile)
     {
-        if let attachId = attachFile.attachID
+        if let _ = attachFile.attachID?.integerValue
         {
             showAttachentDetailsVC(attachFile)
         }
@@ -1251,12 +1256,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         //if it is image - get full image from disc and display in new view controller
         NSOperationQueue().addOperationWithBlock { () -> Void in
             let lvFileHandler = FileHandler()
-            if let name = file.fileName, attachIdInt = file.attachID?.integerValue
+            if let name = file.fileName, _ = file.attachID?.integerValue
             {
                 lvFileHandler.loadFileNamed(name, completion: {[weak self] (fileData, loadingError) -> Void in
-                    if let imageData = fileData, imageToDisplay = UIImage(data: imageData)
+                    if let imageData = fileData, _ = UIImage(data: imageData)
                     {
-                        if let aSelf = self
+                        if let _ = self
                         {
                             if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName)
                             {

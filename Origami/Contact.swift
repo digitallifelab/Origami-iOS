@@ -39,17 +39,17 @@ class Contact:NSObject
         
         if let name = info["FirstName"] as? NSString
         {
-            var fixedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            let fixedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.firstName = fixedName
         }
         if let last = info["LastName"] as? NSString
         {
-            var fixedSurname = last.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            let fixedSurname = last.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.lastName = fixedSurname
         }
         if let uName = info["LoginName"] as? NSString
         {
-            var fixedUserName = uName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            let fixedUserName = uName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.userName = fixedUserName
         }
         if let element = info["ElementId"] as? NSNumber

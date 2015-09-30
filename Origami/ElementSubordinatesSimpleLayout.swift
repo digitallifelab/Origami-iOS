@@ -93,13 +93,9 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
     
     override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
-        if let superHeaderAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
+        if let current = self.layoutAttributes
         {
-            
-        }
-        if self.layoutAttributes != nil
-        {
-            for lvAttribute in self.layoutAttributes!
+            for lvAttribute in current
             {
                 if lvAttribute.representedElementKind == UICollectionElementKindSectionHeader && lvAttribute.indexPath.compare(indexPath) == .OrderedSame
                 {
@@ -107,9 +103,10 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                 }
             }
         }
+        
         if let superAttributes = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
         {
-              return superAttributes
+            return superAttributes
         }
         
         return nil
@@ -126,7 +123,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
     
     private func configureAttributes()
     {
-        if let collView = self.collectionView
+        if let _ = self.collectionView
         {
             self.configureAttributesForSimpleView()
         }
@@ -159,7 +156,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                     {
                         // create attributes boject with frames for cells and header views in between
                         let indexPath = NSIndexPath(forItem:itemCount , inSection: 0)
-                        var attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+                        let attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
                         
                         let element = collectionDataSourse.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
@@ -193,7 +190,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                     {
                         // create attributes boject with frames for cells and header views in between
                         let indexPath = NSIndexPath(forItem:itemCount , inSection: 0)
-                        var attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+                        let attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
                         
                         let element = collectionDataSource.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
@@ -227,7 +224,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
     {
         var lvSignals = elements.filter({ (includeElement) -> Bool in  return includeElement.isSignal.boolValue == true })
         var lvFavourite = elements.filter( { (includeElement) -> Bool in return includeElement.isFavourite.boolValue == true})
-        var otherSet = Set(elements).subtract( Set(lvSignals))
+        let otherSet = Set(elements).subtract( Set(lvSignals))
         var otherArray = Array(otherSet)
         
         ObjectsConverter.sortElementsByDate(&lvSignals)
