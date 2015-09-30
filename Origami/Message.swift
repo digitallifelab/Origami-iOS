@@ -73,20 +73,20 @@ class Message:NSObject
         }
     }
     
-    func toDictionary() ->NSDictionary
+    func toDictionary() -> [String:AnyObject]
     {
-        var toReturn = NSMutableDictionary(capacity:7)
-        if textBody != nil
+        var toReturn = [String:AnyObject]()
+        if let message = textBody
         {
-            toReturn["Msg"] = textBody
+            toReturn["Msg"] = message
         }
-        if messageId != nil
+        if let idMessage = messageId
         {
-            toReturn["MessageId"] = messageId
+            toReturn["MessageId"] = idMessage
         }
-        if elementId != nil
+        if let lvElementId = self.elementId
         {
-            toReturn["ElementId"] = elementId
+            toReturn["ElementId"] = lvElementId
         }
         if creatorId != nil
         {

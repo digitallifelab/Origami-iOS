@@ -124,7 +124,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         self.setLoadingIndicatorVisible(true)
         isReloadingTable = true
-        println(" -> Getting all elements By Activity from DataSource... ")
+        print(" -> Getting all elements By Activity from DataSource... ")
         DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
             if let weakSelf = self
             {
@@ -156,20 +156,20 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                             weakerSelf.elements = allCurrentElements
                             if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
                             {
-                                println(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
+                                print(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
                                 weakSelf.sortCurrentElementsForNewUserId()
                             }
                         }
                         
                         weakSelf.checkFiltersEnabled({ () -> () in
-                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                if let anotherWeakSelf = self
-                                {
+                            dispatch_async(dispatch_get_main_queue(), {/*[weak self]*/() -> Void in
+                               // if let _ = self
+                               // {
                                     //if !weakSelf.isReloadingTable
                                     //{
                                         completion?()
                                     //}
-                                }
+                                //}
                                 
                             })//end of main_queue
                         })
@@ -200,7 +200,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             
             for anElement in allElements
             {
-                //println("Element`s pass whom IDs: \(anElement.passWhomIDs)")
+                //print("Element`s pass whom IDs: \(anElement.passWhomIDs)")
                 
                 if anElement.creatorId.isEqualToNumber(currentSelecnedUserId)
                 {
@@ -256,7 +256,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         //let imageInsets = UIEdgeInsetsMake(4, 4, 4, 4)
         
-        let signalButton =  FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        let signalButton =  FilterAttributeButton(type:.System) //as! FilterAttributeButton
         if self.signalsFilterEnabled
         {
             signalButton.toggleType = .ToggledOn(filterType: .Signal)
@@ -271,7 +271,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         let signalBarItem = UIBarButtonItem(customView: signalButton)
         
         //
-        let ideaButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        let ideaButton = FilterAttributeButton(type:.System) //as! FilterAttributeButton
         if self.ideasFilterEnabled
         {
             ideaButton.toggleType = .ToggledOn(filterType: .Idea)
@@ -285,7 +285,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         ideaButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let ideaBarItem = UIBarButtonItem(customView: ideaButton)
         
-        let taskButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        let taskButton = FilterAttributeButton(type:.System) //as! FilterAttributeButton
         if self.tasksFilterEnabled
         {
             taskButton.toggleType = .ToggledOn(filterType: .Task)
@@ -299,7 +299,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         taskButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let taskBarItem = UIBarButtonItem(customView: taskButton)
         
-        let decisionButton = FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
+        let decisionButton = FilterAttributeButton(type:.System) //FilterAttributeButton.buttonWithType(.System) as! FilterAttributeButton
         if self.decisionsFilterEnabled
         {
             decisionButton.toggleType = .ToggledOn(filterType: .Decision)
@@ -332,15 +332,15 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 return
             }
         }
-            var leftButton = UIButton.buttonWithType(.System) as! UIButton
-            leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
-            leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
-            leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-            leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
-        
-            var leftBarButton = UIBarButtonItem(customView: leftButton)
-        
-            self.navigationItem.leftBarButtonItem = leftBarButton
+        let leftButton = UIButton(type:.System)//UIButton.buttonWithType(.System) as! UIButton
+        leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
+        leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
+    
+        let leftBarButton = UIBarButtonItem(customView: leftButton)
+    
+        self.navigationItem.leftBarButtonItem = leftBarButton
 //        }
     }
     
@@ -457,16 +457,16 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         switch section
         {
         case 0:
-            if let elementsByUser = elementsCreatedByUser
+            if let _ = elementsCreatedByUser
             {
                 return "Creator of".localizedWithComment("")
             }
-            else if let elementsParticipating = elementsUserParticipatesIn
+            else if let _ = elementsUserParticipatesIn
             {
                 return "Participant of".localizedWithComment("")
             }
         case 1:
-            if let elementsParticipating = elementsUserParticipatesIn
+            if let _ = elementsUserParticipatesIn
             {
                 return "Participant of".localizedWithComment("")
             }
@@ -479,7 +479,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section < 2
         {
-            if let title = self.tableView(tableView, titleForHeaderInSection: section)
+            if let _ = self.tableView(tableView, titleForHeaderInSection: section)
             {
                 return 50.0
             }
@@ -490,9 +490,9 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     //MARK: - right nav button
     func configureCurrentRightTopButton()
     {
-        if let rightButton = UIButton.buttonWithType(.System) as? UIButton
-        {
-            var rightButton = UIButton.buttonWithType(.System) as! UIButton
+//        if let rightButton = UIButton(type:.System)//UIButton.buttonWithType(.System) as? UIButton
+//        {
+            let rightButton = UIButton(type:.System)//UIButton.buttonWithType(.System) as! UIButton
             rightButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
             rightButton.imageEdgeInsets = UIEdgeInsetsMake(4, 4, 4, 4)
             rightButton.imageView?.contentMode = .ScaleAspectFit
@@ -502,12 +502,12 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             rightButton.maskToCircle()
             self.currentTopRightButton = rightButton
             
-            var rightBarButton = UIBarButtonItem(customView: self.currentTopRightButton!)
+            let rightBarButton = UIBarButtonItem(customView: self.currentTopRightButton!)
             
             self.navigationItem.rightBarButtonItem = rightBarButton
            
             configureCurrentRightButtonImage()
-        }
+//        }
     }
     
     func configureCurrentRightButtonImage()
@@ -549,7 +549,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                             {
                                 if let anImage = image
                                 {
-                                    println(" - > Avatar image size: \(anImage.size)")
+                                    print(" - > Avatar image size: \(anImage.size)")
                                     weakSelf.currentSelectedUserAvatar = anImage
                                     weakSelf.currentTopRightButton?.setImage(weakSelf.currentSelectedUserAvatar?.imageWithRenderingMode(.AlwaysOriginal), forState: .Normal)
                                     return
@@ -559,7 +559,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                                     weakSelf.currentSelectedUserAvatar = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
                                     weakSelf.currentTopRightButton?.setImage(weakSelf.currentSelectedUserAvatar, forState: .Normal)
                                     
-                                    println(" -> Could not load AVATAR image for selected contact.")
+                                    print(" -> Could not load AVATAR image for selected contact.")
                                 }
                             }
                         })
@@ -662,58 +662,58 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     func filterButtonTapped(sender:FilterAttributeButton)
     {
         //let debugCurrentToggleType = sender.toggleType.description()
-        //println(" old toggle type: \(debugCurrentToggleType)")
+        //print(" old toggle type: \(debugCurrentToggleType)")
         sender.toggleType = sender.toggleType.toggleToOpposite()
         //let debugNewToggleType = sender.toggleType.description()
-        //println(" new toggle type: \(debugNewToggleType)")
+        //print(" new toggle type: \(debugNewToggleType)")
         applyFilter(sender.toggleType)
     }
     
     func applyFilter(toggle:ToggleType)
     {
-        if let currentAllElements = self.elements
+        if let _ = self.elements
         {
             switch toggle
             {
                 case .ToggledOn(let type) where type == .Signal:
-                    println(" enabled .Signal Filter")
+                    print(" enabled .Signal Filter")
                     signalsFilterEnabled = true
                     filterOutSignalsToggled()
                     self.reloadTableView()
                 
                 case .ToggledOn(let type) where type == .Idea:
-                    println(" enabled .Idea Filter")
+                    print(" enabled .Idea Filter")
                     ideasFilterEnabled = true
                     filterOutElementsWithOptionsEnabled(.Idea) // Attention! passing not the same ENUM  here!
                     self.reloadTableView()
                 
                 case .ToggledOn(let type) where type == .Task:
-                    println(" enabled .Task Filter")
+                    print(" enabled .Task Filter")
                     tasksFilterEnabled = true
                     filterOutElementsWithOptionsEnabled(.Task)
                     self.reloadTableView()
                 
                 case .ToggledOn(let type) where type == .Decision:
-                    println(" enabled .Decision Filter")
+                    print(" enabled .Decision Filter")
                     decisionsFilterEnabled = true
                     filterOutElementsWithOptionsEnabled(.Decision)
                     self.reloadTableView()
                 
                 ///---///
                 case .ToggledOff(let type) where type == .Signal:
-                    println(" disabled .Signal Filter")
+                    print(" disabled .Signal Filter")
                     signalsFilterEnabled = false
                     refreshFilteredData()
                 case .ToggledOff(let type) where type == .Idea:
-                    println(" disabled .Idea Filter")
+                    print(" disabled .Idea Filter")
                     ideasFilterEnabled = false
                     refreshFilteredData()
                 case .ToggledOff(let type) where type == .Task:
-                    println(" disabled .Task Filter")
+                    print(" disabled .Task Filter")
                     tasksFilterEnabled = false
                     refreshFilteredData()
                 case .ToggledOff(let type) where type == .Decision:
-                    println(" disabled .Decision Filter")
+                    print(" disabled .Decision Filter")
                     decisionsFilterEnabled = false
                     refreshFilteredData()
                 default:
@@ -796,7 +796,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         //self.elements = nil
 
         self.startLoadingElementsByActivity {[weak self] () -> () in
-            if let weakSelf = self, allElements = weakSelf.elements
+            if let weakSelf = self, _ = weakSelf.elements
             {
                 let bgQueue = dispatch_queue_create("com.origami.sorting.queue", DISPATCH_QUEUE_SERIAL)
                 dispatch_async(bgQueue, { () -> Void in
@@ -864,7 +864,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             indicatorView.layer.cornerRadius = 7.0
             indicatorView.backgroundColor = kBlackColor.colorWithAlphaComponent(0.7)
             indicatorView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds))
-            indicatorView.autoresizingMask =  .FlexibleLeftMargin | .FlexibleRightMargin | .FlexibleTopMargin | .FlexibleBottomMargin
+            indicatorView.autoresizingMask =  [.FlexibleLeftMargin , .FlexibleRightMargin , .FlexibleTopMargin , .FlexibleBottomMargin]
             self.view.addSubview(indicatorView)
             indicatorView.startAnimating()
         }

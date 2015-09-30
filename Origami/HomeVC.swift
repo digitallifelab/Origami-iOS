@@ -23,7 +23,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     deinit
     {
-        println("\n -> removing Home VC from NotificationCenter ->\n")
+        print("\n -> removing Home VC from NotificationCenter ->\n")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -43,11 +43,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
         
-        if let refresher = DataSource.sharedInstance.dataRefresher
-        {
-            
-        }
-        else
+//        if let refresher = DataSource.sharedInstance.dataRefresher
+//        {
+//            
+//        }
+        if DataSource.sharedInstance.dataRefresher == nil
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             loadingAllElementsInProgress = true
@@ -60,25 +60,25 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         
                         if let wSelf = self
                         {
-                            //println(" \(wSelf) Loaded elements")
+                            //print(" \(wSelf) Loaded elements")
                             wSelf.shouldReloadCollection = true
-                            println("reloadDashboardView from viewDidLoad - success TRUE")
+                            print("reloadDashboardView from viewDidLoad - success TRUE")
                             wSelf.reloadDashboardView()
                         }
                     }
                     else
                     {
                         
-                        println("reloadDashboardView from viewDidLoad - success FALSE")
+                        print("reloadDashboardView from viewDidLoad - success FALSE")
                         wSelf.reloadDashboardView()
                     }
                     wSelf.loadingAllElementsInProgress = false
                     
                     let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
                     let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
-                    dispatch_after(time, bgQueue, {[weak self] () -> Void in
+                    dispatch_after(time, bgQueue, {/*[weak self]*/ () -> Void in
                         
-                        if let userId = DataSource.sharedInstance.user?.userId
+                        if let _ = DataSource.sharedInstance.user?.userId
                         {
                             DataSource.sharedInstance.dataRefresher = DataRefresher()
                             DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
@@ -122,7 +122,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     override func viewWillAppear(animated: Bool)
     {
         super.viewWillAppear(animated)
-        if let user = DataSource.sharedInstance.user
+        if let _ = DataSource.sharedInstance.user
         {
             nightModeDidChange(nil)
         }
@@ -132,7 +132,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidAppear(animated)
         
-        if let user = DataSource.sharedInstance.user
+        if let _ = DataSource.sharedInstance.user
         {
             //register for night-day modes switching
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
@@ -145,7 +145,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             if !loadingAllElementsInProgress
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                println("-> reload collection view from viewDidAppear")
+                print("-> reload collection view from viewDidAppear")
                 
                 //if DataSource.sharedInstance.shouldReloadAfterElementChanged
                 //{
@@ -184,14 +184,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func configureLeftBarButtonItem()
     {
-        var leftButton = UIButton.buttonWithType(.Custom) as! UIButton
+        let leftButton = UIButton(type:.Custom)
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         leftButton.tintColor = UIColor.whiteColor()
         
-        var leftBarButton = UIBarButtonItem(customView: leftButton)
+        let leftBarButton = UIBarButtonItem(customView: leftButton)
         
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
@@ -213,7 +213,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func configureNavigationControllerToolbarItems()
     {
         //....
-        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        let homeButton = UIButton(type:.System)
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
@@ -222,7 +222,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         let homeImageButton = UIBarButtonItem(customView: homeButton)
         
         //....
-        let filterButton = UIButton.buttonWithType(.System) as! UIButton
+        let filterButton = UIButton(type:.System)
         filterButton.setImage(UIImage(named: "menu-icon-sorting")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         filterButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         filterButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
@@ -232,7 +232,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         let filterButtonItem = UIBarButtonItem(customView: filterButton)
         
         //....
-        let recentActivityButton = UIButton.buttonWithType(.System) as! UIButton
+        let recentActivityButton = UIButton(type:.System)
         recentActivityButton.setImage(UIImage(named: "menu-icon-recent")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         recentActivityButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         recentActivityButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
@@ -257,7 +257,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK:-----
     func reloadDashboardView()
     {
-        println("-> reloadDashboardView")
+        print("-> reloadDashboardView")
         loadingAllElementsInProgress = true
             
         DataSource.sharedInstance.getDashboardElements({[weak self](dashboardElements) -> () in
@@ -337,12 +337,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                 }
                                 else
                                 {
-                                    println(" ->  hiddenLayout. Will not reload Home CollectionView.")
+                                    print(" ->  hiddenLayout. Will not reload Home CollectionView.")
                                 }
                             
                                 //customLayout.invalidateLayout() // to recalculate position of home elements
                             }
-                            else if let visibleLayout = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
+                            else if let _ = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
                             {
                                 if aSelf.shouldReloadCollection || DataSource.sharedInstance.shouldReloadAfterElementChanged
                                 {
@@ -373,18 +373,18 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                 }
                                 else
                                 {
-                                    println(" -> visibleLayout. Will not reload Home CollectionView.")
+                                    print(" -> visibleLayout. Will not reload Home CollectionView.")
                                 }
                             }
                             else
                             {
-                                println(" -> Hone VC. New Layout.")
+                                print(" -> Hone VC. New Layout.")
                                 let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount + 1 , favourites: newFavs, other: newOther)
                                 
                                 aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
                                     
                                     aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
-                                    println(" -> did assign collection datasource")
+                                    print(" -> did assign collection datasource")
                                     aSelf.collectionSource!.elementSelectionDelegate = aSelf
                                     
                                     aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
@@ -408,13 +408,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         }
                         else
                         {
-                            if let token = DataSource.sharedInstance.user?.token as? String
+                            if let _ = DataSource.sharedInstance.user?.token as? String
                             {
                                 aSelf.showAddTheVeryFirstElementPlus()
                             }
-                            else
+                            else if let weakSelf = self
                             {
-                                self?.showAlertWithTitle("Error", message: "Please relogin.", cancelButtonTitle: "Close")
+                                weakSelf.showAlertWithTitle("Error", message: "Please relogin.", cancelButtonTitle: "Close")
                             }
                              UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         }
@@ -431,7 +431,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
             //customTransitionAnimator = FadeOpaqueAnimator()
-            let composerHolder = UINavigationController(rootViewController: newElementCreator)
+            //let composerHolder = UINavigationController(rootViewController: newElementCreator)
             
             newElementCreator.composingDelegate = self
             
@@ -453,7 +453,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         let numberOfSections =  self.collectionDashboard.numberOfSections()
         if numberOfSections > 1
         {
-            var collectionLayout = self.collectionDashboard.collectionViewLayout
+            let collectionLayout = self.collectionDashboard.collectionViewLayout
             if let hiddenLayout = collectionLayout as? HomeSignalsHiddenFlowLayout
             {
                 hiddenLayout.clearAllElements()
@@ -472,25 +472,25 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
         
        
-        var tapView = UIView(frame: CGRectMake(0, 0, 200.0, 200.0))
+        let tapView = UIView(frame: CGRectMake(0, 0, 200.0, 200.0))
         tapView.userInteractionEnabled = true
         tapView.backgroundColor = UIColor.whiteColor()
         tapView.opaque = true
         tapView.tag = 0xAD12
         
-        var imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
+        let imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
         imageView.contentMode = .ScaleAspectFit
         imageView.image = UIImage(named: "icon-add")?.imageWithRenderingMode(.AlwaysTemplate)
         imageView.tintColor = kDayNavigationBarBackgroundColor
-        imageView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+        imageView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]// UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
         tapView.addSubview(imageView)
         
-        var tapButton = UIButton.buttonWithType(.Custom) as! UIButton
+        let tapButton = UIButton(type:.System)
         tapButton.frame = tapView.bounds
         tapButton.addTarget(self, action: "showElementCreationVC:", forControlEvents: UIControlEvents.TouchUpInside)
         tapButton.backgroundColor = UIColor.clearColor()
         tapButton.opaque = true
-        tapButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+        tapButton.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]
         
         tapView.addSubview(tapButton)
         
@@ -503,7 +503,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func menuButtonTapped(sender:AnyObject?)
     {
-        if let aSender = sender as? UIButton //menu button
+        if let _ = sender as? UIButton //menu button
         {
             NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self.navigationController, userInfo: nil)
             return
@@ -516,11 +516,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         if recognizer.state == UIGestureRecognizerState.Began
         {
-            println("left pan.")
+            print("left pan.")
             let translationX = round(recognizer.translationInView(recognizer.view!).x)
             let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
-            println(" Horizontal Velocity: \(velocityX)")
-            println(" Horizontal Translation: \(translationX)")
+            print(" Horizontal Velocity: \(velocityX)")
+            print(" Horizontal Translation: \(translationX)")
         
 //            if translationX > 60.0
 //            {
@@ -543,7 +543,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func presentNewSingleElementVC(element:Element)
     {
-        let rootId = element.rootElementId.integerValue
+        //let rootId = element.rootElementId.integerValue
 
         if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
         {
@@ -591,12 +591,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     DataSource.sharedInstance.addSeveralContacts(passWhomIDsSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
-                            println(" added to \(succeededIDs)")
-                            println(" failed to add to \(failedIDs)")
+                            print(" added to \(succeededIDs)")
+                            print(" failed to add to \(failedIDs)")
                         }
                         else
                         {
-                            println(" added to \(succeededIDs)")
+                            print(" added to \(succeededIDs)")
                         }
                     })
                     if let weakSelf = self
@@ -626,7 +626,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func elementWasDeleted(notification:NSNotification?)
     {
-        if let note = notification, userInfo = note.userInfo, elementIds = userInfo["elementIdInts"] as? [Int]
+        if let note = notification, userInfo = note.userInfo, _ = userInfo["elementIdInts"] as? [Int]
         {
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
@@ -640,7 +640,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func elementsWereAdded(notification:NSNotification?)
     {
-        if let note = notification
+        if let _ = notification
         {
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
@@ -664,7 +664,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             return menuShowTransitor
         }
         
-        println(" Will not animate view controller transitioning")
+        print(" Will not animate view controller transitioning")
         return nil
     }
     
@@ -680,7 +680,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             return menuShowTransitor
         }
         
-        println(" Will not animate view controller transitioning")
+        print(" Will not animate view controller transitioning")
         return nil
     }
 
@@ -693,7 +693,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             if let nightModeEnabled = userInfo["mode"] as? Bool
             {
-                println(" New Night Mode Value: \(nightModeEnabled)")
+                print(" New Night Mode Value: \(nightModeEnabled)")
                 setAppearanceForNightModeToggled(nightModeEnabled)
                 self.collectionSource?.turnNightModeOn(nightModeEnabled)
                 self.collectionDashboard.reloadData()
@@ -755,7 +755,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     chatVC.currentElement = targetElement
                     
                     var toShowVCs = [UIViewController]()
-                    if let viewControllers = self.navigationController?.viewControllers as? [UIViewController]
+                    if let viewControllers = self.navigationController?.viewControllers //as? [UIViewController]
                     {
                         toShowVCs += viewControllers
                     }
@@ -831,7 +831,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func showUserProfileVC()
     {
         if  let profileNavHolder = self.storyboard?.instantiateViewControllerWithIdentifier("ProfileNavController") as? UINavigationController,
-            userProfileVC = profileNavHolder.viewControllers.first as? UserProfileVC
+            _ = profileNavHolder.viewControllers.first as? UserProfileVC
         {
             profileNavHolder.modalPresentationStyle = .Custom
             profileNavHolder.transitioningDelegate = self

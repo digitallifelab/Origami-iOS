@@ -50,7 +50,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     @IBOutlet var titleTextView:UITextView!
     @IBAction func favoutireButtonTap(sender:UIButton)
     {
-        var tapNotification = NSNotification(name: kElementFavouriteButtonTapped, object: self)
+        let tapNotification = NSNotification(name: kElementFavouriteButtonTapped, object: self)
 
         NSNotificationCenter.defaultCenter().postNotification(tapNotification)
     }
@@ -71,8 +71,8 @@ class SingleElementTitleCell: UICollectionViewCell {
         //apply shadow to fav button
         let buttonBounds = favouriteButton.bounds
         
-        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: UIRectCorner.BottomRight | UIRectCorner.TopRight, cornerRadii: CGSizeMake(5, 5))
-        var shape = CAShapeLayer()
+        let roundedLeftBottomPath = UIBezierPath(roundedRect: buttonBounds, byRoundingCorners: [UIRectCorner.BottomRight , UIRectCorner.TopRight], cornerRadii: CGSizeMake(5, 5))
+        let shape = CAShapeLayer()
         shape.frame = buttonBounds
         shape.path = roundedLeftBottomPath.CGPath
         favouriteButton.layer.mask = shape
@@ -90,7 +90,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
-        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: [UIRectCorner.BottomLeft , UIRectCorner.BottomRight], cornerRadii: CGSizeMake(5.0, 5.0))
         self.layer.shadowPath = offsetPath.CGPath
         
         titleTextView.font = UIFont(name: "SegoeUI", size: 30.0)
@@ -100,15 +100,18 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     func cleanShadow()
     {
-        for aLayer in self.superview!.layer.sublayers
+        if let sublayers = self.superview?.layer.sublayers
         {
-            if let layer = aLayer as? CALayer
+            for aLayer in sublayers//self.superview!.layer.sublayers
             {
-                if layer.zPosition == 900
-                {
-                    layer.removeFromSuperlayer()
-                    break
-                }
+                //if let layer = aLayer as? CALayer
+                //{
+                    if aLayer.zPosition == 900
+                    {
+                        aLayer.removeFromSuperlayer()
+                        break
+                    }
+                //}
             }
         }
     }

@@ -48,7 +48,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 configString = ".Details"
             }
-            println(" ->CurrentEditingConfiguration:  \(configString)")
+            print(" ->CurrentEditingConfiguration:  \(configString)")
         }
     }
     
@@ -167,8 +167,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             
             
         case .EditCurrent:
-            var cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
-            var fixedSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
+            let cancelBarButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonTap:")
+            let fixedSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FixedSpace, target: nil, action: nil)
             fixedSpace.width = 50.0
             if UIScreen.mainScreen().bounds.size.width < 330
             {
@@ -205,10 +205,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         if let notifInfo = notification.userInfo
         {
             //prepare needed values
-            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
+            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue
             let keyboardHeight = keyboardFrame.size.height
-            let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
-            let options = UIViewAnimationOptions(UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            //let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
+            //let options = UIViewAnimationOptions(rawValue:UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
             var keyboardIsToShow = false
             if notification.name == UIKeyboardWillShowNotification
             {
@@ -253,15 +253,15 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         switch indexPath.section
         {
             case 0:
-                var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
+                let textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
                 configureTextViewCell(textViewCell, forIndexPath: indexPath)
                 return textViewCell
             case 1:
-                var textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
+                let textViewCell = tableView.dequeueReusableCellWithIdentifier("TextViewCell", forIndexPath: indexPath) as! NewElementTextViewCell
                 configureTextViewCell(textViewCell, forIndexPath: indexPath)
                 return textViewCell
             case 2:
-                var contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
+                let contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
                 configureContactCell(contactCell, forIndexPath:indexPath)
                 return contactCell
             default:
@@ -390,13 +390,20 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         label.textAlignment = NSTextAlignment.Center
         label.textColor = kDayCellBackgroundColor
         //        var testFontNames = UIFont.fontNamesForFamilyName("Segoe UI")
-        //        println("\(testFontNames)")
+        //        print("\(testFontNames)")
         if let font = UIFont(name: "SegoeUI-Semibold", size: 18.0)
         {
             label.font = font
         }
         label.text = self.tableView(tableView, titleForHeaderInSection:section)
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+//        if #available (iOS 6.0, 8.4.1)
+//        {
+//            label.setTranslatesAutoresizingMaskIntoConstraints(false)
+//        }
+//        else
+//        {
+            label.translatesAutoresizingMaskIntoConstraints = false
+//        }
         view.addSubview(label)
         
         //create constraints for label
@@ -635,11 +642,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     func textViewDidEndEditing(textView: UITextView) {
         if detectTextView_isTitleCell_TextView(textView)
         {
-            println(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = TRUE")
+            print(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = TRUE")
         }
         else
         {
-            println(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = FALSE")
+            print(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = FALSE")
         }
         
         
@@ -649,7 +656,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         let textViewOriginalFrame = textView.frame
         let textViewFrame = textView.convertRect(textViewOriginalFrame, toView:self.table)
-        if let indexPaths = self.table.indexPathsForRowsInRect(textViewFrame) as? [NSIndexPath], let firstIndexPath = indexPaths.first
+        if let indexPaths = self.table.indexPathsForRowsInRect(textViewFrame), let firstIndexPath = indexPaths.first
         {
             if let cell  = self.table.cellForRowAtIndexPath(firstIndexPath) as? NewElementTextViewCell
             {
@@ -674,9 +681,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
         if let anElement = self.newElement, let currentTitle = newElement?.title as? String
         {
-            if count(currentTitle) < 1
+            if currentTitle.characters.count < 1
             {
-                println(" -> Cancelling editing of element. Reason: Element title is EMPTY")
+                print(" -> Cancelling editing of element. Reason: Element title is EMPTY")
                 cancelButtonTap(sender)
                 return
             }
@@ -691,13 +698,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 if self.editingStyle == .AddNew
                 {
                     var contactIDs = Array(contactIDsToPass)
-                    contactIDs.sort(>)
+                    contactIDs.sortInPlace(>)
                     anElement.passWhomIDs = contactIDs
                 }
                 else //EditCurrent
                 {
                     var contactIDs = Array(contactIDsToPass)
-                    contactIDs.sort(>)
+                    contactIDs.sortInPlace(>)
                     anElement.passWhomIDs = contactIDs
                 }
             }
@@ -750,15 +757,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         let deleteTitle = "delete".localizedWithComment("")
         let cancelTitle = "cancel".localizedWithComment("")
         
-        if FrameCounter.isLowerThanIOSVersion("8.0")
+        
+        if #available(iOS 8.0, *)
         {
-            let alertDelete = UIAlertView(title: warningTitle, message: warningMessage, delegate: self, cancelButtonTitle: cancelTitle, otherButtonTitles: deleteTitle)
-            alertDelete.tag = 0xde1e7e
-            alertDelete.show()
-        }
-        else
-        {
-            var alertController = UIAlertController(title: warningTitle, message: warningMessage, preferredStyle: .Alert)
+            let alertController = UIAlertController(title: warningTitle, message: warningMessage, preferredStyle: .Alert)
             let deleteAction = UIAlertAction(title: deleteTitle , style: UIAlertActionStyle.Default ) { [weak self](alertAction) -> Void in
                 if let weakSelf = self
                 {
@@ -775,6 +777,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             alertController.addAction(cancelAction)
             
             self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let alertDelete = UIAlertView(title: warningTitle, message: warningMessage, delegate: self, cancelButtonTitle: cancelTitle, otherButtonTitles: deleteTitle)
+            alertDelete.tag = 0xde1e7e
+            alertDelete.show()
         }
       
     

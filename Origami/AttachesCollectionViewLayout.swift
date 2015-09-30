@@ -28,10 +28,11 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
             privItemSize = newSize
         }
     }
-    
+   
+    @available(iOS 8.0, *)
     override var estimatedItemSize:CGSize {
         get{
-            let superEstimatedSize = super.estimatedItemSize
+            //let superEstimatedSize = super.estimatedItemSize
             return privEstimatedItemSize
         }
         set(newSize){
@@ -65,7 +66,7 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
         self.configureAttributes()
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         
         if let superAttributes = super.layoutAttributesForElementsInRect(rect) {
             
@@ -85,7 +86,7 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
         }
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         if self.attributes != nil {
             
             for lvAttribute in self.attributes!
@@ -129,9 +130,9 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
             
             for var i = 0; i < attachesCount; i++
             {
-                var cellFrame = CGRectMake(horizontalOffset, 0, privItemSize.width, privItemSize.height)
+                let cellFrame = CGRectMake(horizontalOffset, 0, privItemSize.width, privItemSize.height)
                 
-                var attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forItem: i, inSection: 0))
+                let attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: NSIndexPath(forItem: i, inSection: 0))
                 attribute.frame = cellFrame
                 
                 horizontalOffset += cellFrame.size.width + privInterItemSize.width
@@ -141,7 +142,7 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
         }
         else
         {
-            println("\r - Warning!! No items in attached files to calculate layout for cells! - \r")
+            print("\r - Warning!! No items in attached files to calculate layout for cells! - \r")
             attributes = nil
         }
         let lvContentSize = CGSizeMake(horizontalOffset, privItemSize.height + privInterItemSize.height)

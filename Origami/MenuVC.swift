@@ -49,7 +49,7 @@ class SideMenuCell: UITableViewCell
     override func prepareForReuse()
     {
         self.cellType = .Regular
-        var nightModeOn:Bool = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        let nightModeOn:Bool = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         switcher?.on = nightModeOn
     }
     
@@ -153,7 +153,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var menuCell = tableView.dequeueReusableCellWithIdentifier("SideMenuCell", forIndexPath: indexPath) as! SideMenuCell
+        let menuCell = tableView.dequeueReusableCellWithIdentifier("SideMenuCell", forIndexPath: indexPath) as! SideMenuCell
         menuCell.backgroundColor = UIColor.clearColor()
         configureMenuCell(menuCell, forIndexpath: indexPath)
         

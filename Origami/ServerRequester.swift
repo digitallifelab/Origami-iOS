@@ -17,8 +17,8 @@ class ServerRequester: NSObject
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
-        var requestString:String = "\(serverURL)" + "\(registerUserUrlPart)"
-        var parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
+        let requestString:String = "\(serverURL)" + "\(registerUserUrlPart)"
+        let parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
         
         let operation = httpManager.GET(
             requestString,
@@ -34,16 +34,16 @@ class ServerRequester: NSObject
         operation?.start()
     }
     
-    func editUser(userToEdit:User, completion:(success:Bool, error:NSError?) -> () )
+    func editUser(userToEdit:User, completion:((success:Bool, error:NSError?) -> ())? )
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        var requestString:String = "\(serverURL)" + "\(editUserUrlPart)"
+        let requestString:String = "\(serverURL)" + "\(editUserUrlPart)"
         let dictUser = userToEdit.toDictionary()
         //let dictionaryDebug = NSDictionary(dictionary: dictUser)
-        //println(dictionaryDebug)
-        var params = ["user":dictUser]
+        //print(dictionaryDebug)
+        let params = ["user":dictUser]
         
-        var jsonSerializer = httpManager.responseSerializer
+        let jsonSerializer = httpManager.responseSerializer
         
         let requestSerializer = AFJSONRequestSerializer()
         requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
@@ -53,7 +53,7 @@ class ServerRequester: NSObject
         
         if let acceptableTypes = jsonSerializer.acceptableContentTypes //as? NSSet<NSObject>
         {
-            var newSet = NSMutableSet(set: acceptableTypes)
+            let newSet = NSMutableSet(set: acceptableTypes)
             newSet.addObjectsFromArray(["text/html", "application/json"])
             jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
         }
@@ -65,9 +65,15 @@ class ServerRequester: NSObject
             { (operation, resultObject) -> Void in
                 if let result = resultObject as? [String:AnyObject]
                 {
-                    //println(" -> Edit user result: \(result)")
+                    print(" -> Edit user result: \(result)")
+                    completion?(success: true, error: nil)
                 }
-                completion(success: true, error: nil)
+                else
+                {
+                    print(" -> failed to edit user...")
+                    completion?(success: false, error: nil)
+                }
+                
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             
         })
@@ -75,14 +81,14 @@ class ServerRequester: NSObject
     
                 if let errorString = operation.responseString
                 {
-                    println("->failure string in edit uer: \n \(errorString) \n")
+                    print("\n ->failure string in edit uer: \n \(errorString) \n")
                 }
                 
                 
-                println(" -> Edit user Error: \(responseError)")
+                print("\n -> Edit user Error: \(responseError)")
                 
     
-            completion(success: false, error: responseError)
+            completion?(success: false, error: responseError)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         
@@ -144,8 +150,8 @@ class ServerRequester: NSObject
     func loginWith(userName:String, password:String, completion:networkResult)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        var requestString:String = "\(serverURL)" + "\(loginUserUrlPart)"
-        var params = ["username":userName, "password":password]
+        let requestString:String = "\(serverURL)" + "\(loginUserUrlPart)"
+        let params = ["username":userName, "password":password]
         
         let loginOperation = httpManager.GET(
             requestString,
@@ -258,10 +264,10 @@ class ServerRequester: NSObject
     {
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
-            let testUserId = DataSource.sharedInstance.user?.userId
-            let params = [tokenKey:DataSource.sharedInstance.user?.token as! String]
+            //let testUserId = DataSource.sharedInstance.user?.userId
+            let params = [tokenKey:tokenString]
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            var requestString = "\(serverURL)" + "\(getElementsUrlPart)"
+            let requestString = "\(serverURL)" + "\(getElementsUrlPart)"
             let requestOperation = httpManager.GET(
                 requestString,
                 parameters:params,
@@ -276,22 +282,17 @@ class ServerRequester: NSObject
                         {
                             var elements = Set<Element>()
                             for lvElementDict in elementsArray
-                            {
-//                                if let archDate = lvElementDict["ArchDate"] as? String, theDate = archDate.timeDateStringFromServerDateString()
-//                                {
-//                                    //NSLog("\n Archive date:  \(archDate) \n")
-//                                }
-                           
+                            {                          
                                 let lvElement = Element(info: lvElementDict)
                                 elements.insert(lvElement)
                             }
-                            println("\n -> loaded \(elements.count) elements.. ")
+                            print("\n -> loaded \(elements.count) elements.. ")
                             
                             completion(Array(elements),nil)
                         }
                         else
                         {
-                            completion(nil,NSError())
+                            completion(nil, NSError(domain: "com.Origami.WrongDataFormet.Error", code: -4321, userInfo: [NSLocalizedDescriptionKey:"Could not process response feom server while querying all attaches"]))
                         }
                     })
             },
@@ -300,6 +301,8 @@ class ServerRequester: NSObject
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 completion(nil, responseError)
             })
+            
+            requestOperation.start()
         }
         else
         {
@@ -323,7 +326,7 @@ class ServerRequester: NSObject
                 let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
                 let params = ["element":elementDict]
                 
-                var requestSerializer = AFJSONRequestSerializer()
+                let requestSerializer = AFJSONRequestSerializer()
                 requestSerializer.timeoutInterval = 15.0 as NSTimeInterval
                 requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
                 requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -449,7 +452,7 @@ class ServerRequester: NSObject
             NSOperationQueue().addOperationWithBlock({ () -> Void in
                 
                 let requestString = "\(serverURL)" + "\(favouriteElementUrlPart)" + "?elementId=" + "\(elementId.integerValue)" + "&token=" + "\(userToken)"
-                var requestError = NSError()
+                var requestError:NSError?
                 
                 let manager = AFHTTPRequestOperationManager()
                 let requestSerializer = AFJSONRequestSerializer()
@@ -485,8 +488,9 @@ class ServerRequester: NSObject
                             requestError = error
                         }
                         
-                        
+                       
                         completionClosure(success: false, error: requestError)
+                        
                 })
                 
                 editRequestOperation?.start()
@@ -551,7 +555,7 @@ class ServerRequester: NSObject
             success: { (response, responseObject) -> Void in
                 if let dict = responseObject as? [String:AnyObject]
                 {
-                    println("Success response while deleting element: \(dict) ")
+                    print("Success response while deleting element: \(dict) ")
                 }
                 closure(deleted: true, error: nil)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
@@ -581,87 +585,85 @@ class ServerRequester: NSObject
             if let url = NSURL(string: requestString)
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                var finishStateRequest = NSMutableURLRequest(URL: url)
+                let finishStateRequest = NSMutableURLRequest(URL: url)
                 finishStateRequest.HTTPMethod = "POST"
                 finishStateRequest.setValue("application/json", forHTTPHeaderField: "Accept")
                 finishStateRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 finishStateRequest.setValue(finishDate, forHTTPHeaderField: "date")
-                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void in
+                
+                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: {[weak self] (aData:NSData?, response:NSURLResponse?, anError:NSError?) -> Void in
                     
-                    if let error = responseError
+                    if let error = anError
                     {
                         NSLog(" Error Setting finish Date for element:   \n \(error.description)")
                         completion?(success:false)
                     }
-                    if let data = responseData
+                    
+                    if let data = aData
                     {
-                        if data.length == 0
+                        if data.length > 0
                         {
-                            
-                        }
-                        else
-                        {
-                            var errorParsing:NSError?
-                            if let jsonResponse = NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.MutableContainers, error: &errorParsing) as? [String:AnyObject]
+                            //var errorParsing:NSError?
+                            if let weakSelf = self, completionBlock = completion
                             {
-                                if jsonResponse.isEmpty
-                                {
-                                    completion?(success:true)
-                                }
-                                println("\n Set Finish Date response: \(jsonResponse)")
-                                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                                weakSelf.handleResponseWithData(data, completion: completionBlock)
                                 return
                             }
                             
-                            if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
-                            {
-                                let range =  stringFromData.rangeOfString("String was not recognized as a valid DateTime.")
-                                println("\(range)")
-                                if range.location != Int.max
-                                {
-                                    completion?(success:false)
-                                }
-                                else
-                                {
-                                    completion?(success: true)
-                                }
-                                
-                            }
-
                         }
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-
-
-                
                 })
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                     postFinishStateTask.resume()
                 })
-            
                 
-                
-                //                    let params = ["token":userToken, "date":finishDate, "elementId":elementId] as [String:AnyObject]
-                //
-                //                    let finishDateOparetion = self.httpManager.POST(requestString, parameters: params, success: { (operation, responseObject) -> Void in
-                //
-                //                    }, failure: { (operation, responseError) -> Void in
-                //
-                //                    })
-                //                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
-                //                    finishDateOparetion.start()
-                //                }
-            }
-            else
-            {
-                completion?(success: false)
             }
         }
         else
         {
             completion?(success:false)
         }
+    }
+    
+    private func handleResponseWithData(data:NSData, completion:((success:Bool) -> ()) )
+    {
+        do{
+            if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [String:AnyObject]
+            {
+                if jsonResponse.isEmpty
+                {
+                    completion(success:true)
+                }
+                print("\n Set Finish Date response: \(jsonResponse)")
+            }
+            else if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
+            {
+                let range =  stringFromData.rangeOfString("String was not recognized as a valid DateTime.")
+                print("\(range)")
+                if range.location != Int.max
+                {
+                    completion(success:false)
+                }
+                else
+                {
+                    completion(success: true)
+                }
+            }
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            
+        }
+        catch let error as NSError  {
+            print(error.description)
+            completion(success:false)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            //throw error
+        }
+        catch {
+            
+        }
+
     }
     
     func setElementFinishState(elementId:Int, finishState:Int, completion:((success:Bool)->())?)
@@ -674,24 +676,44 @@ class ServerRequester: NSObject
             if let url = NSURL(string: requestString)
             {
              
-                var finishStateRequest = NSMutableURLRequest(URL: url)
+                let finishStateRequest = NSMutableURLRequest(URL: url)
                 finishStateRequest.HTTPMethod = "POST"
+                
+//                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void in
+//                    
+////                    if let aData = responseData
+////                    {
+//                        do
+//                        {
+//                            if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(responseData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+//                            {
+//                                if jsonResponse.isEmpty
+//                                {
+//                                    completion?(success:true)
+//                                }
+//                                return
+//                            }
+//                            
+//                            
+//                            if let jsonResponse = try  NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.AllowFragments) as? String
+//                            {
+//                                if jsonResponse.isEmpty
+//                                {
+//                                    //completion?(success:true)
+//                                }
+//                            }
+//                        }
+//                        catch let error as NSError
+//                        {
+//                            print("\(error)")
+//                        }
+////                    }
+//                    
+//                })
+//
                 let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: { (responseData, urlResponse, pesponseError) -> Void in
-                    var errorParsing:NSError?
-                    if let jsonResponse = NSJSONSerialization.JSONObjectWithData(responseData, options: NSJSONReadingOptions.AllowFragments, error: &errorParsing) as? [String:AnyObject]
-                    {
-                        if jsonResponse.isEmpty
-                        {
-                            completion?(success:true)
-                        }
-                    }
-                    if let jsonResponse =  NSJSONSerialization.JSONObjectWithData(responseData, options: NSJSONReadingOptions.AllowFragments, error: &errorParsing) as? String
-                    {
-                        if jsonResponse.isEmpty
-                        {
-                            //completion?(success:true)
-                        }
-                    }
+                
+                   
                     
                 })
                 
@@ -720,7 +742,7 @@ class ServerRequester: NSObject
             let messagesOp = httpManager.GET(urlString,
                 parameters: nil,
                 success:
-                { [unowned self] (operation, result) -> Void in
+                { (operation, result) -> Void in
                     
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
                         if let
@@ -737,6 +759,7 @@ class ServerRequester: NSObject
                     if let errorString = operation.responseString
                     {
                         let lvError = NSError(domain: "Messages Loading Error", code: 704, userInfo: [NSLocalizedDescriptionKey:errorString])
+                        completion(nil, lvError)
                     }
                     else
                     {
@@ -754,68 +777,66 @@ class ServerRequester: NSObject
     
     func sendMessage(message:Message, toElement elementId:NSNumber, completion:networkResult?)
     {
-        println(" -> sendMessage Called.")
+        print(" -> sendMessage Called.")
         //POST
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
             let postUrlString =  "\(serverURL)" + "\(sendMessageUrlPart)" + "?token=" + "\(tokenString)" + "&elementId=" + "\(elementId.integerValue)"
-            println("sending message to element: \(elementId)")
-            var messageToSend = message.textBody!
-            
-            let params = NSDictionary(dictionary: ["msg":messageToSend])
-            
-            
-            
-            var serializer = AFJSONRequestSerializer();
-            
-            serializer.timeoutInterval = 20;
-            serializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
-            serializer.setValue("application/json", forHTTPHeaderField:"Accept")
-            
-            
-            httpManager.requestSerializer = serializer;
-            
-            let messageSendOp = httpManager.POST(postUrlString,
-                parameters: params,
-                success: { (requestOp, result) -> Void in
-                    
-                    if let completionBlock = completion
-                    {
-                        completionBlock([String:AnyObject](), nil)
-                    }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                },
-                failure: { (requestOp, error) -> Void in
-                    
-                    if let responseString = requestOp.responseString
-                    {
-                        println("\r - Error Sending Message: \r \(responseString) ");
-                        let lvError = NSError(domain: "Failure Sending Message", code: 703, userInfo: [NSLocalizedDescriptionKey:responseString])
-                        if completion != nil{
-                            completion!(nil, lvError)
-                        }
-                    }
-                    else
-                    {
+            print("sending message to element: \(elementId)")
+            if let messageToSend = message.textBody
+            {
+                
+                let params = NSDictionary(dictionary: ["msg":messageToSend])
+                let serializer = AFJSONRequestSerializer();
+                
+                serializer.timeoutInterval = 20;
+                serializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
+                serializer.setValue("application/json", forHTTPHeaderField:"Accept")
+                
+                
+                httpManager.requestSerializer = serializer;
+                
+                let messageSendOp = httpManager.POST(postUrlString,
+                    parameters: params,
+                    success: { (requestOp, result) -> Void in
+                        
                         if let completionBlock = completion
                         {
-                            completionBlock(nil, error)
+                            completionBlock([String:AnyObject](), nil)
                         }
-                    }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            })
-            
-            messageSendOp?.start()
-            
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    },
+                    failure: { (requestOp, error) -> Void in
+                        
+                        if let responseString = requestOp.responseString
+                        {
+                            print("\r - Error Sending Message: \r \(responseString) ");
+                            let lvError = NSError(domain: "Failure Sending Message", code: 703, userInfo: [NSLocalizedDescriptionKey:responseString])
+                            if completion != nil{
+                                completion!(nil, lvError)
+                            }
+                        }
+                        else
+                        {
+                            if let completionBlock = completion
+                            {
+                                completionBlock(nil, error)
+                            }
+                        }
+                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                })
+                
+                messageSendOp?.start()
+                
+                return
+            }
             return
         }
         
-        if let completionBlock = completion
-        {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            completionBlock(nil, noUserTokenError)
-        }
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        completion?(nil, noUserTokenError)
+        
     }
     
     
@@ -836,13 +857,13 @@ class ServerRequester: NSObject
                             {
                                 if let messagesArray = ObjectsConverter.convertToMessages(newMessageInfos)
                                 {
-                                    println("loaded new Messages")
+                                    print("loaded new Messages")
                                     
                                     completionBlock(messages: messagesArray, error: nil)
                                 }
                                 else
                                 {
-                                    //println("loaded empty messages")
+                                    //print("loaded empty messages")
                                     completionBlock(messages: nil, error: nil)
                                 }
                                 
@@ -863,7 +884,7 @@ class ServerRequester: NSObject
                 {
                     completionBlock(messages: nil, error: error)
                 }
-                println("-> Error while loading last messages:\(error)")
+                print("-> Error while loading last messages:\(error)")
                 
             })
             
@@ -889,7 +910,7 @@ class ServerRequester: NSObject
             
             let requestOperation = httpManager.GET(requestString,
                 parameters: nil,
-                success: { [weak self] (operation, result) -> Void in
+                success: {  (operation, result) -> Void in
                     
                     if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
                     {
@@ -922,11 +943,11 @@ class ServerRequester: NSObject
                 
                     if let responseString = operation.responseString
                     {
-                        println("-> Failure while loading attachesList: \(responseString)")
+                        print("-> Failure while loading attachesList: \(responseString)")
                     }
                     
                     
-                    println("-> Failure while loading attachesList: \(error)")
+                    print("-> Failure while loading attachesList: \(error)")
                     
                     completion?(nil, error)
             })
@@ -950,7 +971,7 @@ class ServerRequester: NSObject
             let requestString = serverURL + getAttachFileUrlPart + "?fileId=" + "\(attachId)" + "&token=" + userToken
             if let requestURL = NSURL(string: requestString)
             {
-                var fileDataRequest = NSMutableURLRequest(URL: requestURL)
+                let fileDataRequest = NSMutableURLRequest(URL: requestURL)
                 fileDataRequest.HTTPMethod = "GET"
 
 //                var synchronousError:NSError?
@@ -969,7 +990,7 @@ class ServerRequester: NSObject
 //                        {
 //                            if arrayOfIntegers.isEmpty
 //                            {
-//                                println("Empty response for Attach File id = \(attachId)")
+//                                print("Empty response for Attach File id = \(attachId)")
 //                                completionClosure(attachFileData: NSData(), error: nil)
 //                            }
 //                            else
@@ -981,7 +1002,7 @@ class ServerRequester: NSObject
 //                                else
 //                                {
 //                                    //error
-//                                    println("ERROR: Could not convert response to NSData object")
+//                                    print("ERROR: Could not convert response to NSData object")
 //                                    let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
 //                                    completionClosure(attachFileData: nil, error: convertingError)
 //                                }
@@ -990,14 +1011,14 @@ class ServerRequester: NSObject
 //                        else
 //                        {
 //                            //error
-//                            println("ERROR: Could not convert to array of integers object.")
+//                            print("ERROR: Could not convert to array of integers object.")
 //                            let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
 //                            completionClosure(attachFileData: nil, error: arrayConvertingError)
 //                        }
 //                    }
 //                    else
 //                    {
-//                        println(" ERROR: \(jsonReadingError)")
+//                        print(" ERROR: \(jsonReadingError)")
 //                        let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
 //                        completionClosure(attachFileData: nil, error: convertingError)
 //                    }
@@ -1005,64 +1026,74 @@ class ServerRequester: NSObject
 //                }
 //                else
 //                {
-//                    println("No response data..")
+//                    print("No response data..")
 //                    completionClosure(attachFileData: NSData(), error: nil)
 //                }
                 
-                let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void
+                let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
                     
                     in
                     
-                    if responseError != nil
+                    if let anError = responseError
                     {
-                        completionClosure?(attachFileData: nil, error: responseError)
+                        completionClosure?(attachFileData: nil, error: anError)
                     }
                     else if let synchroData = responseData
                     {
-                        var jsonReadingError:NSError? = nil
-                        if let responseDict = NSJSONSerialization.JSONObjectWithData(synchroData, options: NSJSONReadingOptions.AllowFragments , error: &jsonReadingError) as? [NSObject:AnyObject]
+                        if synchroData.length > 0
                         {
-                            if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
-                            {
-                                if arrayOfIntegers.isEmpty
+                            do{
+                                if let responseDict = try NSJSONSerialization.JSONObjectWithData(synchroData, options: NSJSONReadingOptions.AllowFragments ) as? [String:AnyObject]
                                 {
-                                    println("Empty response for Attach File id = \(attachId)")
-                                    completionClosure?(attachFileData: NSData(), error: nil)
-                                }
-                                else
-                                {
-                                    if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
+                                    if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
                                     {
-                                        completionClosure?(attachFileData: lvData, error: nil)
+                                        if arrayOfIntegers.isEmpty
+                                        {
+                                            print("Empty response for Attach File id = \(attachId)")
+                                            completionClosure?(attachFileData: NSData(), error: nil)
+                                        }
+                                        else
+                                        {
+                                            if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
+                                            {
+                                                completionClosure?(attachFileData: lvData, error: nil)
+                                            }
+                                            else
+                                            {
+                                                //error
+                                                print("ERROR: Could not convert response to NSData object")
+                                                let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
+                                                completionClosure?(attachFileData: nil, error: convertingError)
+                                            }
+                                        }
                                     }
                                     else
                                     {
                                         //error
-                                        println("ERROR: Could not convert response to NSData object")
-                                        let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
-                                        completionClosure?(attachFileData: nil, error: convertingError)
+                                        print("ERROR: Could not convert to array of integers object.")
+                                        let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
+                                        completionClosure?(attachFileData: nil, error: arrayConvertingError)
                                     }
                                 }
+//                                else
+//                                {
+//                                    print(" ERROR: \(jsonReadingError)")
+//                                    let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
+//                                    completionClosure?(attachFileData: nil, error: convertingError)
+//                                }
+
+                                
                             }
-                            else
-                            {
-                                //error
-                                println("ERROR: Could not convert to array of integers object.")
-                                let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
-                                completionClosure?(attachFileData: nil, error: arrayConvertingError)
+                            catch{
+                                
                             }
+                            
+
                         }
-                        else
-                        {
-                            println(" ERROR: \(jsonReadingError)")
-                            let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
-                            completionClosure?(attachFileData: nil, error: convertingError)
-                        }
-                        
                     }
                     else
                     {
-                        println("No response data..")
+                        print("No response data..")
                         completionClosure?(attachFileData: NSData(), error: nil)
                     }
 
@@ -1078,7 +1109,7 @@ class ServerRequester: NSObject
         }
     }
         //attach file to element
-    func attachFile(file:MediaFile, toElement elementId:NSNumber, completion completionClosure:(success:Bool, attachId:NSNumber?, error:NSError?)->() ){
+    func attachFile(file:MediaFile, toElement elementId:NSNumber, completion completionClosure:((success:Bool, attachId:NSNumber?, error:NSError?)->())? ){
         /*
         
         NSString *photoUploadURL = [NSString stringWithFormat:@"%@AttachFileToElement?elementId=%@&fileName=%@&token=%@", BasicURL, elementId, fileName, _currentUser.token];
@@ -1092,51 +1123,62 @@ class ServerRequester: NSObject
         if let userToken = DataSource.sharedInstance.user?.token
         {
             let attachedFileDataLength = file.data.length
-            println("\n -> attaching \"\(attachedFileDataLength)\" bytes...")
+            print("\n -> attaching \"\(attachedFileDataLength)\" bytes...")
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             let postURLstring = "\(serverURL)" + attachToElementUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(file.name)" + "&token=" + "\(userToken)" as NSString
             let postURL = NSURL(string: postURLstring as String)
-            var mutableRequest = NSMutableURLRequest(URL: postURL!)
+            let mutableRequest = NSMutableURLRequest(URL: postURL!)
             mutableRequest.HTTPMethod = "POST"
             mutableRequest.HTTPBody = file.data
             
-            var backgroundQueue = NSOperationQueue()
-            backgroundQueue.maxConcurrentOperationCount = 2
-            NSURLConnection.sendAsynchronousRequest(mutableRequest,
-                queue: backgroundQueue,
-                completionHandler: { (response, responseData, error) -> Void in
-
-                    if error != nil {
-                       println("\(error)")
-                        completionClosure(success: false, attachId:nil, error: error)
-                        return
-                    }
-                    
-                    var lvError:NSError? = nil
-                    let optionReading = NSJSONReadingOptions.AllowFragments
-                    if let responseDict = NSJSONSerialization.JSONObjectWithData(responseData, options: optionReading, error: &lvError) as? [NSObject:AnyObject]
-                    {
-                        if lvError != nil {
-                            println("\(lvError)")
-                            completionClosure(success: false, attachId:nil, error: lvError)
-                        }
-                        else
+            let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData:NSData?, response:NSURLResponse?, responseError:NSError?) -> Void in
+                
+                if let error = responseError
+                {
+                    print("\(error)")
+                    completionClosure?(success: false, attachId:nil, error: error)
+                    return
+                }
+                
+                guard let data = responseData where data.length > 0  else
+                {
+                    completionClosure?(success: false, attachId: nil, error: nil)
+                    return
+                }
+                
+                let optionReading = NSJSONReadingOptions.AllowFragments
+                
+                do{
+                    if let responseDict = try NSJSONSerialization.JSONObjectWithData(data, options: optionReading) as? [String:AnyObject] {
+                        print("Success sending file to server: \n \(responseDict)")
+                        if let attachID = responseDict["AttachFileToElementResult"] as? NSNumber
                         {
-                            println("Success sending file to server: \n \(responseDict)")
-                            if let attachID = responseDict["AttachFileToElementResult"] as? NSNumber
-                            {
-                                completionClosure(success: true, attachId:attachID ,error: nil)
-                            }
+                            completionClosure?(success: true, attachId:attachID ,error: nil)
                         }
                     }
                     
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                }
+                catch let error as NSError{
+                    completionClosure?(success: false, attachId:nil ,error: error)
+                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+                catch{
+                    completionClosure?(success: false, attachId:nil ,error: nil)
+                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+                
+                
+                
             })
+            
+            dataTask.resume()
             
             return
         }
         
-        completionClosure(success: false,  attachId:nil, error: noUserTokenError)
+        completionClosure?(success: false,  attachId:nil, error: noUserTokenError)
     }
         //remove attached file from element attaches
     func unAttachFile(name:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->() )?) {
@@ -1175,7 +1217,7 @@ class ServerRequester: NSObject
                 success: { (operation, result) -> Void in
                     if let response = result["RemoveFileFromElementResult"] as? [NSObject:AnyObject]
                     {
-                        println("\n --- Successfully unattached file from element: \(response)")
+                        print("\n --- Successfully unattached file from element: \(response)")
                     }
                    
                     completionClosure?(success: true, error: nil)
@@ -1207,156 +1249,64 @@ class ServerRequester: NSObject
     
     
     //MARK: Avatars
-    func loadAvatarDataForUserName(loginName:String, completion completionBlock:((avatarData:NSData?, error:NSError?) ->())? )
+    func loadAvatarDataForUserName(loginName:String, completion:((avatarData:NSData?, error:NSError?) ->())? )
     {
-        /*
-        NSString *userAvatarRequestURL = [NSString stringWithFormat:@"%@GetPhoto?userName=%@", BasicURL, userLoginName];
-        NSURL *requestURL = [NSURL URLWithString:userAvatarRequestURL];
-        
-        NSMutableURLRequest *avatarRequest = [NSMutableURLRequest requestWithURL:requestURL];
-        [avatarRequest setHTTPMethod:@"GET"];
-        
-        [NSURLConnection sendAsynchronousRequest:avatarRequest
-        queue:[NSOperationQueue currentQueue]
-        completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
-        {
-        //NSLog(@"Response: \r %@", response);
-        if (completionBlock)
-        {
-        if (!connectionError)
-        {
-        if (data.length > 0)
-        {
-        NSError *jsonError;
-        id jsonObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
-        
-        if (jsonObject)
-        {
-        if ([(NSDictionary *)jsonObject objectForKey:@"GetPhotoResult"] != [NSNull null])
-        {
-        NSArray *result = [(NSDictionary *)jsonObject objectForKey:@"GetPhotoResult"];
-        
-        NSMutableData *mutableData = [NSMutableData data];
-        
-        for (NSNumber *number in result) //iterate through array and convert digits to bytes
-        {
-        int digit = [number intValue];
-        
-        NSData *lvData = [NSData dataWithBytes:&digit length:1];
-        
-        [mutableData appendData:lvData];
-        }
-        
-        NSData *photoData = [NSData dataFromIntegersArray:result];
-        
-        if (mutableData.length == photoData.length)
-        {
-        NSLog(@"\n  PHOTO TEST PASSED \n");
-        }
-        
-        UIImage *photo = [UIImage imageWithData:mutableData];
-        if (photo)
-        {
-        NSDictionary *photoDict = @{userLoginName : photo};
-        completionBlock(photoDict, nil);
-        }
-        else
-        {
-        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
-        code:NSKeyValueValidationError
-        userInfo:@{NSLocalizedDescriptionKey:@"Could not convert data to Image"}];
-        completionBlock(nil, lvError);
-        }
-        
-        }
-        else
-        {
-        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
-        code:NSKeyValueValidationError
-        userInfo:@{NSLocalizedDescriptionKey:@"No Image for User"}];
-        completionBlock(nil, lvError);
-        }
-        }
-        else
-        {
-        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
-        code:NSKeyValueValidationError
-        userInfo:@{NSLocalizedDescriptionKey:@"Wrong response object"}];
-        completionBlock(nil, lvError);
-        }
-        
-        }
-        else
-        {
-        NSError *lvError = [NSError errorWithDomain:@"Image Loading failure"
-        code:NSKeyValueValidationError
-        userInfo:@{NSLocalizedDescriptionKey:@"Wrong data format"} ];
-        completionBlock(nil, lvError);
-        }
-        }
-        else
-        {
-        completionBlock(nil, connectionError);
-        }
-        }
-        }];
-        */
         
         let userAvatarRequestURLString = serverURL + "GetPhoto?username=" + loginName
         if let requestURL = NSURL(string: userAvatarRequestURLString)
         {
-            var mutableRequest = NSMutableURLRequest(URL: requestURL)
+            let mutableRequest = NSMutableURLRequest(URL: requestURL)
             mutableRequest.timeoutInterval = 30.0
             mutableRequest.HTTPMethod = "GET"
             
             let sessionTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData, response, responseError) -> Void in
-               // let bgQueue = dispatch_queue_create("image.Loading.completion.queue", DISPATCH_QUEUE_SERIAL)
-                //dispatch_async(bgQueue, { () -> Void in
-                    if let toReturnCompletion = completionBlock
-                    {
-                        if let responseBytes = responseData
+                
+                if let anError = responseError
+                {
+                    print("\(anError)")
+                    completion?(avatarData: nil, error: anError)
+                    return
+                }
+                
+                
+                if let responseBytes = responseData
+                {
+
+                    do{
+                        if let jsonObject = try NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers) as? [String:AnyObject]
                         {
-                            var jsonError:NSError?
-                            if let
-                                jsonObject = NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers, error: &jsonError) as? [NSObject:AnyObject]
+                            if let response = jsonObject["GetPhotoResult"] as? [Int]
                             {
-                                if let response = jsonObject["GetPhotoResult"] as? [NSNumber]
+//                                var ints = [Int]()
+//                                for aNumber in response
+//                                {
+//                                    ints.append(aNumber.integerValue)
+//                                }
+                                if let aData = NSData.dataFromIntegersArray(response)
                                 {
-                                    var ints = [Int]()
-                                    for aNumber in response
-                                    {
-                                        ints.append(aNumber.integerValue)
-                                    }
-                                    if let aData = NSData.dataFromIntegersArray(ints)
-                                    {
-                                        toReturnCompletion(avatarData: aData, error: nil)
-                                    }
-                                    else
-                                    {
-                                        toReturnCompletion(avatarData: nil, error: nil)
-                                    }
-                                    return
+                                    completion?(avatarData: aData, error: nil)
                                 }
-                                
-                                if let jsonString = NSJSONSerialization.JSONObjectWithData(responseBytes, options: .AllowFragments, error: &jsonError) as? [String:AnyObject]
+                                else
                                 {
-                                    println("-> downloadAvatar response: \(jsonString) for userName: \(loginName)")
-                                    toReturnCompletion(avatarData: nil, error: nil)
+                                    completion?(avatarData: nil, error: nil)
                                 }
                             }
-                            else
-                            {
-                                toReturnCompletion(avatarData: nil, error: nil)
-                            }
-                            return
+                            
                         }
-                        if let anError = responseError
+                        else
                         {
-                            println("\(anError)")
+                            completion?(avatarData: nil, error: nil)
                         }
-                        toReturnCompletion(avatarData: nil, error: responseError)
+
+                    }catch let error as NSError{
+                        completion?(avatarData: nil, error: error)
                     }
-                //})
+                    catch{
+                       completion?(avatarData: nil, error: nil)
+                    }
+                }
+                
+                
             })
             
             sessionTask.resume()
@@ -1420,7 +1370,7 @@ class ServerRequester: NSObject
             let requestString = serverURL + "SetPhoto" + "?token=" + userToken
             if let url = NSURL(string: requestString)
             {
-                var mutableRequest = NSMutableURLRequest(URL: url)
+                let mutableRequest = NSMutableURLRequest(URL: url)
                 mutableRequest.HTTPMethod = "POST"
                 mutableRequest.HTTPBody = data
                 
@@ -1433,13 +1383,25 @@ class ServerRequester: NSObject
                     }
                     else if let respData = responseData
                     {
-                        var jsonError:NSError?
-                        var dataObject = NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments, error: &jsonError) as? [String:AnyObject]
-                        if let dict = dataObject
-                        {
-                            println("-> user avatar uploading result: \(dict)")
-                            completionBlock?(response: dict, error: nil)
+                        do{
+                            if let dataObject = try NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+                            {
+                                print("-> user avatar uploading result: \(dataObject)")
+                                completionBlock?(response: dataObject, error: nil)
+                            }
+                            else
+                            {
+                                let errorReading = NSError(domain: "com.Origami.jsonCasting.Error", code: -5432, userInfo: [NSLocalizedDescriptionKey: "Failed to parse \"uploadUserAvatarBytes\" response"])
+                                completionBlock?(response: nil, error: errorReading)
+                            }
+                            
+                            
+                        }catch let error as NSError{
+                            completionBlock?(response: nil, error: error)
+                        } catch{
+                            completionBlock?(response: nil, error: nil)
                         }
+                       
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 })
@@ -1471,7 +1433,7 @@ class ServerRequester: NSObject
             
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
-                success: { [unowned self] (operation, result) -> Void in
+                success: { (operation, result) -> Void in
                 NSOperationQueue().addOperationWithBlock({ () -> Void in
                     if let completion = completionClosure
                     {
@@ -1521,7 +1483,7 @@ class ServerRequester: NSObject
         {
             let requestString = serverURL + passElementUrlPart + "?token=" + userToken + "&elementId=" + "\(rightElementId)" + "&userPassTo=" + "\(contactId)"
             
-            var serializer = AFJSONRequestSerializer()
+            let serializer = AFJSONRequestSerializer()
             
             serializer.timeoutInterval = 10.0
             serializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
@@ -1536,7 +1498,7 @@ class ServerRequester: NSObject
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let resultDict = result as? [String:AnyObject]
                 {
-                    println("\n ->passElement Response from server: \(resultDict)")
+                    print("\n ->passElement Response from server: \(resultDict)")
                     completionClosure(success: true, error: nil)
                     return
                 }
@@ -1566,72 +1528,88 @@ class ServerRequester: NSObject
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
     }
     
+    
+    
+    
     func passElement(elementId : Int, toSeveratContacts contactIDs:Set<Int>, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())?)
     {
-        let token = DataSource.sharedInstance.user!.token! as! String
+        guard let token = DataSource.sharedInstance.user?.token as? String else
+        {
+            print(" -> no user token")
+            completionClosure?(succeededIDs: [], failedIDs: Array(contactIDs))
+            return
+        }
+        
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        NSOperationQueue.currentQueue()!.addOperationWithBlock { () -> Void in
-            var failedIDs = [Int]()
-            var succededIDs = [Int]()
-            for lvUserID in contactIDs
+       
+        var failedIDs = [Int]()
+        var succededIDs = [Int]()
+        let contactIDsCount = contactIDs.count
+        var completedRequestsCount:Int = 0
+        
+        for lvUserID in contactIDs
+        {
+            let addSrtingURL = serverURL + passElementUrlPart + "?token=" + token + "&elementId=" + "\(elementId)" + "&userPassTo=" + "\(lvUserID)"
+            
+            if let addUrl = NSURL(string: addSrtingURL)
             {
-                let addSrtingURL = serverURL + passElementUrlPart + "?token=" + token + "&elementId=" + "\(elementId)" + "&userPassTo=" + "\(lvUserID)"
+                let request:NSMutableURLRequest = NSMutableURLRequest(URL: addUrl)
+                request.HTTPMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Accept")
                 
-                if let addUrl = NSURL(string: addSrtingURL)
-                {
-                    var request:NSMutableURLRequest = NSMutableURLRequest(URL: addUrl)
-                    request.HTTPMethod = "POST"
-                    var lvError:NSError? = nil
-                    var urlResponse:NSURLResponse? = nil
-                    
-                    //using SYNCHRONOUS requests because we need to wait FOR loop to finish
-                    var responseData:NSData? = NSURLConnection.sendSynchronousRequest(request, returningResponse: &urlResponse, error: &lvError)
-                    
-                    if let error = lvError
+                
+                let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: {(responseData, urlResponse, responseError) -> Void in
+                    if let _ = responseError
                     {
                         failedIDs.append(lvUserID)
                     }
-                    else
+                    else if let data = responseData
                     {
-                        if let dict = NSJSONSerialization.JSONObjectWithData(responseData!, options: NSJSONReadingOptions.AllowFragments, error: &lvError) as? [String:AnyObject]
-                        {
-                            //recieved good response
-                            //now check if any contact id is returned
-                            //returned ids mean failed ids
-                            if dict.isEmpty
+                        do{
+                            if let dict = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
                             {
-                                succededIDs.append(lvUserID)
+                                //recieved good response
+                                //now check if any contact id is returned
+                                //returned ids mean failed ids
+                                if dict.isEmpty
+                                {
+                                    succededIDs.append(lvUserID)
+                                }
+                                else
+                                {
+                                    failedIDs.append(lvUserID)
+                                }
                             }
-                            else
-                            {
-                                failedIDs.append(lvUserID)
-                            }
+                            
+                            completedRequestsCount = completedRequestsCount + 1
                         }
-                        else if let arr = NSJSONSerialization.JSONObjectWithData(responseData!, options: NSJSONReadingOptions.AllowFragments, error: &lvError) as? [AnyObject]
-                        {
-                            println("response:\(arr)")
+                        catch{
                             failedIDs.append(lvUserID)
-                        }
-                        else if let string = NSString(data: responseData!, encoding: NSUTF8StringEncoding)
-                        {
-                            println(string)
-                            failedIDs.append(lvUserID)
+                            completedRequestsCount = completedRequestsCount + 1
                         }
                     }
-                }
-                else
-                {
-                    failedIDs.append(lvUserID)
-                }
+                    
+                    
+                    
+                    if completedRequestsCount == contactIDsCount
+                    {
+                        completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
+                    }
+
+                })
+                
+                dataTask.resume()
             }
-            
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                
-                println("succeeded contact ids: \(succededIDs)")
-                
-                completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
-            })
+            else
+            {
+                failedIDs.append(lvUserID)
+            }
+        }
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock{ () -> Void in
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            print("succeeded contact ids: \(succededIDs)")
+            completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
         }
     }
     
@@ -1648,7 +1626,7 @@ class ServerRequester: NSObject
             
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
-                success: { [unowned self] (operation, result) -> Void in
+                success: { (operation, result) -> Void in
                     NSOperationQueue().addOperationWithBlock({ () -> Void in
                         if let completionBlock = completion
                         {
@@ -1656,7 +1634,7 @@ class ServerRequester: NSObject
                             {
                                 let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)
                                 
-                                //println("Loaded all contacts:\(convertedContacts)")
+                                //print("Loaded all contacts:\(convertedContacts)")
                                 
                                 completionBlock(contacts:convertedContacts, error: nil)
                             }
@@ -1702,7 +1680,7 @@ class ServerRequester: NSObject
             let favUrlString = serverURL + favContactURLPart + "?token=" + userToken + "&contactId=" + "\(contactId)"
             
             let favOperation = httpManager.GET(favUrlString, parameters: nil, success: { (operation, response) -> Void in
-                if let aResponse = response as? [NSObject:AnyObject]
+                if let _ = response as? [String:AnyObject]
                 {
                     if let completionBlock = completion
                     {
@@ -1736,7 +1714,7 @@ class ServerRequester: NSObject
         {
             let removeUrlString = serverURL + "RemoveContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
             let removeContactOperation = httpManager.GET(removeUrlString, parameters: nil, success: { (operation, response) -> Void in
-                if let aResponse = response as? [NSObject:AnyObject]
+                if let _ = response as? [String:AnyObject]
                 {
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     if let completionBlock = completion
@@ -1770,7 +1748,7 @@ class ServerRequester: NSObject
         {
             let addUrlString = serverURL + "AddContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
             let addContactOperation = httpManager.GET(addUrlString, parameters: nil, success: { (operation, response) -> Void in
-                if let aResponse = response as? [NSObject:AnyObject]
+                if let _ = response as? [String:AnyObject]
                 {
                     if let completionBlock = completion
                     {

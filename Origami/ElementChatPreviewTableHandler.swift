@@ -38,14 +38,14 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         }
         self.messageObjects = messages!
         self.trytoGetContactsForLastMessages()
-        println(" \n added Observer Dashboard messages table handler ..........")
+        print(" \n added Observer Dashboard messages table handler ..........")
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshTable:", name: "FinishedProcessingContactAvatars", object: nil)
     }
     
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        println("\n removed Observer Dashboard messages table handler- > \n")
+        print("\n removed Observer Dashboard messages table handler- > \n")
     }
     
     private func trytoGetContactsForLastMessages()
@@ -64,14 +64,14 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     //DataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        //println("  >>>>>   Preview messages count: \(messageObjects.count )")
+        //print("  >>>>>   Preview messages count: \(messageObjects.count )")
         return messageObjects.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         self.tableView = tableView
-        var chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
+        let chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         chatCell.messageLabel.text = messageObjects[indexPath.row].textBody
         chatCell.backgroundColor = UIColor.clearColor()
         // nest two filtering method calls are test stuff
@@ -90,7 +90,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         let message = messageObjects[indexPath.row]
         if let messageDate = message.dateCreated
         {
-            var messageDateString = messageDate.timeDateStringShortStyle()
+            let messageDateString = messageDate.timeDateStringShortStyle()
             chatCell.dateLabel.text = messageDateString as String
         }
         if let creatorId = message.creatorId
@@ -131,7 +131,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
                 }
                 else
                 {
-                    println(" -> No CONTACT for message found..")
+                    print(" -> No CONTACT for message found..")
                 }
             }
         }
@@ -162,6 +162,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     private func startLoadingAvatarForUserName(name:String , andIndexPath indexPath:NSIndexPath)
     {
+    
         if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(name)
         {
             if let avatar = UIImage(data: imageData)
@@ -179,7 +180,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         else
         {
             let row = indexPath.row
-            
+            let section = indexPath.section
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                 DataSource.sharedInstance.loadAvatarFromDiscForLoginName(name, completion: {[weak self] (fullImage, error) -> () in
                     
@@ -193,7 +194,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
                                 dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                                     if let aSelf = self, table = aSelf.tableView
                                     {
-                                        table.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                        table.reloadRowsAtIndexPaths([NSIndexPath(forRow: row, inSection: section)], withRowAnimation: .None)
                                     }
                                 })
                             }

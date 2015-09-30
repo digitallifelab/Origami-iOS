@@ -21,7 +21,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     var currentChatMessages = [Message]()
 //        {
 //        didSet{
-//            println("\n ->Did set currentChatMessages.\n Chat Messages Count: \(currentChatMessages.count)")
+//            print("\n ->Did set currentChatMessages.\n Chat Messages Count: \(currentChatMessages.count)")
 //        }
 //    }
     
@@ -212,16 +212,16 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         if let notifInfo = notification.userInfo
         {
             //prepare needed values
-            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
+            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue//()
             let keyboardHeight = keyboardFrame.size.height
             //let animationOptionCurveNumber = notifInfo[UIKeyboardAnimationCurveUserInfoKey]! as! NSNumber
             //let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions.fromRaw(   animationOptionCurveNumber)
             let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
-            let options = UIViewAnimationOptions(UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
-            var keyboardIsToShow = false
+            let options = UIViewAnimationOptions(rawValue:UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+            //var keyboardIsToShow = false
             if notification.name == UIKeyboardWillShowNotification
             {
-                keyboardIsToShow = true
+                //keyboardIsToShow = true
                 textHolderBottomConstaint.constant = keyboardHeight //- self.navigationController!.toolbar.bounds.size.height
             }
             else
@@ -241,7 +241,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
              
                 
             },
-                completion: { [weak self]  (finished) -> () in
+                completion: { /*[weak self]*/  (finished) -> () in
 
             })
         }
@@ -278,7 +278,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func setupNavigationBar()
     {
-        var contactsButton = UIButton.buttonWithType(.Custom) as! UIButton
+        let contactsButton = UIButton(type:.Custom)
         contactsButton.frame = CGRectMake(0, 0, 35.0, 35.0)
         contactsButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         contactsButton.imageEdgeInsets = UIEdgeInsetsMake(5, 10.0, 5, -10.0)
@@ -294,7 +294,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         if let title = currentElement?.title as? String
         {
-            var lvTitleLabel = UILabel()
+            let lvTitleLabel = UILabel()
             let titleFont =  UIFont(name: "Segoe UI", size: 15.0)
             lvTitleLabel.font = titleFont!
             lvTitleLabel.text = title//"\(participantsCount)" + " " + "participants".localizedWithComment("")
@@ -619,12 +619,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
         if let fullInfo = self.newElementDetailsInfo
         {
-            let countChars = count(fullInfo)
+            let countChars = fullInfo.characters.count
             
             if countChars > 40
             {
                 let startIndex = fullInfo.startIndex
-                let toIndex = advance(startIndex, 40)
+                let toIndex = startIndex.advancedBy(40)
                 let cutString = fullInfo.substringToIndex(toIndex)
                 return cutString
             }
@@ -683,11 +683,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                         DataSource.sharedInstance.editElement(currentNewElement, completionClosure: { (edited) -> () in
                             if edited
                             {
-                                println("\n -> Updated element`s typeId")
+                                print("\n -> Updated element`s typeId")
                             }
                             else
                             {
-                                println("error while updating element`s type id")
+                                print("error while updating element`s type id")
                             }
                         })
                     }

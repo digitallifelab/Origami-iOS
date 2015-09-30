@@ -113,7 +113,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             imageHolder = UIImageView(image: imageToDisplay)
             imageHolder!.contentMode = .ScaleAspectFit
             imageHolder!.sizeToFit()
-            var fullFrame = imageHolder!.frame
+            let fullFrame = imageHolder!.frame
             
             if fullFrame.size.width > imageScrollView.bounds.size.width || fullFrame.size.height > imageScrollView.bounds.size.height
             {
@@ -121,7 +121,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             
                 let horizontalRatio = imageScrollView.bounds.size.width / fullFrame.size.width
                 let verticalRatio = imageScrollView.bounds.size.height / fullFrame.size.height
-                var scaleFactor = (horizontalRatio > verticalRatio) ? verticalRatio : horizontalRatio
+                let scaleFactor = (horizontalRatio > verticalRatio) ? verticalRatio : horizontalRatio
                 
                 let newImageFrame = CGRectMake(fullFrame.origin.x, fullFrame.origin.y, fullFrame.size.width * scaleFactor, fullFrame.size.height * scaleFactor)
                 

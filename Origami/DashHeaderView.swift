@@ -23,7 +23,7 @@ class DashHeaderView : UICollectionReusableView
         }
     }
 
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
         //fatalError("init(coder:) has not been implemented")
@@ -32,15 +32,16 @@ class DashHeaderView : UICollectionReusableView
     {
         super.init(frame: frame)
         label = UILabel()
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        //label.setTranslatesAutoresizingMaskIntoConstraints(false)
         label.numberOfLines = 1
         self.addSubview(label)
         configureLabel()
     }
     private func configureLabel()
     {
-        let subViews:NSDictionary = NSDictionary(object: label, forKey: "_label")
-        let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[_label]", options:.AlignAllLeft, metrics:nil, views:subViews as [NSObject:AnyObject])
+        let subViews = ["_label" : label]
+        let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[_label]", options:.AlignAllLeft, metrics:nil, views:subViews /*as [NSObject:AnyObject]*/)
+        
         addConstraints(horizontalConstraint)
         let verticalCenterConstraint = NSLayoutConstraint(item: label,
             attribute: .CenterY,
@@ -58,7 +59,7 @@ class DashHeaderView : UICollectionReusableView
         if display
         {
             let dividerView:UIView = UIView()
-            dividerView.setTranslatesAutoresizingMaskIntoConstraints(false)
+            //dividerView.setTranslatesAutoresizingMaskIntoConstraints(false)
             dividerView.tag = 0xADF
             dividerView.backgroundColor = UIColor.lightGrayColor()
             

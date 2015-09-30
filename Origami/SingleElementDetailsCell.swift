@@ -48,7 +48,7 @@ class SingleElementDetailsCell: UICollectionViewCell {
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 3.0
-        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: [UIRectCorner.BottomLeft , UIRectCorner.BottomRight], cornerRadii: CGSizeMake(5.0, 5.0))
         self.layer.shadowPath = offsetPath.CGPath
         
         if selfBounds.size.height < 120

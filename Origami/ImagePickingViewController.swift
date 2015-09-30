@@ -72,7 +72,8 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     }
     
     //MARK: UIImagePickerControllerDelegate
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
         var selectedImage:UIImage = UIImage()
         if picker.allowsEditing
@@ -138,7 +139,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         let currentMediaName = self.mediaName
         dispatch_async(bgQueue, {[weak self] () -> Void in
             
-            var lvSelectedMedia = MediaFile()
+            let lvSelectedMedia = MediaFile()
             
             var fixedImage = image.fixOrientation()
             
@@ -146,9 +147,16 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             if fixedImage.size.width >= 1000.0 || fixedImage.size.height >= 1000.0
             {
                 let ratio = min(1000.0 / fixedImage.size.width , 1000.0 / fixedImage.size.height)
-                let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
-                let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
-                fixedImage = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
+                //let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
+                //let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
+                if let scaled = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
+                {
+                    fixedImage = scaled
+                }
+                else
+                {
+                    assert(false, " did not  scale down an image.")
+                }
             }
             lvSelectedMedia.type = .Image
             if let name = currentMediaName
@@ -159,8 +167,11 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             {
                 lvSelectedMedia.name = ""
             }
-            lvSelectedMedia.data = UIImageJPEGRepresentation(fixedImage,
-                0.9)
+            
+            if let aData = UIImageJPEGRepresentation(fixedImage, 1.0)
+            {
+                lvSelectedMedia.data = aData
+            }
             
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let aSelf = self

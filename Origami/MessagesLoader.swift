@@ -15,12 +15,12 @@ class MessagesLoader:NSObject
     
     override init() {
         super.init()
-        println("... MessagesLoader initialized ...")
+        print("... MessagesLoader initialized ...")
     }
     
     deinit
     {
-        //println("... MessagesLoader deinit ...")
+        //print("... MessagesLoader deinit ...")
     }
     
     func startRefreshingLastMessages()
@@ -43,7 +43,7 @@ class MessagesLoader:NSObject
             dispatch_source_set_event_handler(source, {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    println("Fired a timer.")
+                    print("Fired a timer.")
                     if let source = weakSelf.dispatchSource
                     {
                         dispatch_suspend(source)
@@ -52,7 +52,7 @@ class MessagesLoader:NSObject
                         
                         if let anError = error
                         {
-                            println("Error loading last messages:")
+                            print("Error loading last messages:")
                         }
                         if let weakerSelf = self
                         {
@@ -66,13 +66,13 @@ class MessagesLoader:NSObject
             })
             
             dispatch_source_set_cancel_handler(source, {[weak self] () -> Void in
-                println(" -> MessagesLoader -> cancellation handler called...")
+                print(" -> MessagesLoader -> cancellation handler called...")
                 
                 //typically this is never executed, because of cancelDispatchSource() call->
                 if let weakSelf = self
                 {
                     weakSelf.dispatchSource = nil
-                    println("deleted dispatch source by cancel_handler...")
+                    print("deleted dispatch source by cancel_handler...")
                 }
             })
             // Start the timer
@@ -106,7 +106,7 @@ class MessagesLoader:NSObject
         if let source = self.dispatchSource
         {
            self.dispatchSource = nil
-            println(" -> MessagesLoader -> removed dispatch source...")
+            print(" -> MessagesLoader -> removed dispatch source...")
         }
     }
 }

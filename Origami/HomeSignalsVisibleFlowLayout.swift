@@ -64,10 +64,10 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         self.privFavourites = favourites
         self.privOther = other
         
-        //println(" ------- Visible Layout initialized with \(self.privSignals) signals")
+        //print(" ------- Visible Layout initialized with \(self.privSignals) signals")
     }
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
     
@@ -98,7 +98,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         return false
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
         var superForIndexPath = super.layoutAttributesForItemAtIndexPath(indexPath)
         if let existingItemAttrs =  cellAttributes?[indexPath]
@@ -107,12 +107,12 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         }
         else
         {
-            //println("Cell attributes is null.  Returning super attributes.")
+            //print("Cell attributes is null.  Returning super attributes.")
         }
         return superForIndexPath
     }
     
-    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
         if elementKind == UICollectionElementKindSectionHeader
         {
@@ -122,20 +122,20 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             }
             else
             {
-                //println("returning SUPER HEADER attributes for indexPath: \(indexPath)")
+                //print("returning SUPER HEADER attributes for indexPath: \(indexPath)")
                 let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
                 return superAttrs
             }
         }
         else
         {
-            //println("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
+            //print("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
             let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
             return superAttrs
         }
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]?
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]?
     {
         if let superAttrs = super.layoutAttributesForElementsInRect(rect)
         {
@@ -168,7 +168,15 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 
             }
             
-            existingAttrs.filter({ (attributeToCheck) -> Bool in
+//            existingAttrs.filter({ (attributeToCheck) -> Bool in
+//                if rect.intersects(attributeToCheck.frame)
+//                {
+//                    return true
+//                }
+//                return false
+//            })
+            
+            let filtered = existingAttrs.filter({ (attributeToCheck) -> Bool in
                 if rect.intersects(attributeToCheck.frame)
                 {
                     return true
@@ -176,18 +184,13 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 return false
             })
             
-            if existingAttrs.isEmpty
+            if filtered.isEmpty
             {
-                //println(" returning >>>SUPER<<<< attributes fo rect: \(rect),  \n \(superAttrs)")
+                //print(" returning >>>SUPER<<<< attributes fo rect: \(rect),  \n \(superAttrs)")
                 return superAttrs
             }
             
-            //println(" returning <<<EXISTING>>> attributes fo rect: \(rect)")
-//            for attr in existingAttrs
-//            {
-//                println("\n kind: \(attr.representedElementKind), frame: \(attr.frame)\n")
-//            }
-            return existingAttrs
+            return filtered
             
         }
         
@@ -216,38 +219,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         var offsetX:CGFloat = self.minimumInteritemSpacing
         var offsetY:CGFloat = self.minimumLineSpacing
         /* - fix top offset in iPhone 6,5,4- */
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-//            if currentIdiom == .Phone
-//            {
-                var currentWidth = UIScreen.mainScreen().bounds.size.width
-                var currentHeight = UIScreen.mainScreen().bounds.size.height
-                
-                let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
-                switch currentDeviceOrentation
-                {
-                    case UIInterfaceOrientation.Unknown:
-                        break
-                    case UIInterfaceOrientation.Portrait:
-                        fallthrough
-                    case UIInterfaceOrientation.PortraitUpsideDown:
-                        break
-                    case UIInterfaceOrientation.LandscapeLeft:
-                        fallthrough
-                    case UIInterfaceOrientation.LandscapeRight:
-                        currentWidth = currentHeight
-                        currentHeight = UIScreen.mainScreen().bounds.size.width
-                        viewWidth = currentWidth - 10.0
-                }
-                
-                if currentWidth > currentHeight
-                {
-                    offsetY += 20.0
-                }
-//            }
-        }
-        else
+        if  #available(iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
@@ -257,10 +229,38 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 offsetY += 40.0
             }
         }
+        else
+        {
+
+            var currentWidth = UIScreen.mainScreen().bounds.size.width
+            var currentHeight = UIScreen.mainScreen().bounds.size.height
+            
+            let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
+            switch currentDeviceOrentation
+            {
+            case UIInterfaceOrientation.Unknown:
+                break
+            case UIInterfaceOrientation.Portrait:
+                fallthrough
+            case UIInterfaceOrientation.PortraitUpsideDown:
+                break
+            case UIInterfaceOrientation.LandscapeLeft:
+                fallthrough
+            case UIInterfaceOrientation.LandscapeRight:
+                currentWidth = currentHeight
+                currentHeight = UIScreen.mainScreen().bounds.size.width
+                viewWidth = currentWidth - 10.0
+            }
+            
+            if currentWidth > currentHeight
+            {
+                offsetY += 20.0
+            }
+        }
        
         /*---*/
         
-        if let collectionDataSource = self.collectionView?.dataSource
+        if let _ = self.collectionView?.dataSource
         {
             if cellAttributes == nil
             {
@@ -287,7 +287,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 offsetX = self.minimumInteritemSpacing
                 //create frame for header of section
                 let indexPathForSection = NSIndexPath(forItem: 0, inSection: section)
-                var sectionHeaderAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withIndexPath: indexPathForSection)
+                let sectionHeaderAttributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withIndexPath: indexPathForSection)
                 let headerFrame = CGRectMake(0.0, offsetY, self.headerReferenceSize.width, self.headerReferenceSize.height)
                 sectionHeaderAttributes.frame = headerFrame
                 
@@ -321,7 +321,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 {
                     let indexPathForItem = NSIndexPath(forItem: currentItem, inSection: section)
                     
-                    var itemAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPathForItem)
+                    let itemAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPathForItem)
                     
                     var elementWidth = self.itemSize.width
                     
@@ -368,8 +368,8 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                         }
                         else if indexPathForItem.item == 1 //MessagesHolderCell
                         {
-                            let maximumMessagesCellWidth = max(elementWidth * 2, viewWidth - elementWidth * 2 - minimumInteritemSpacing)
-                            let messagesCellFrame = CGRectMake(viewWidth - maximumMessagesCellWidth + minimumInteritemSpacing, offsetY, maximumMessagesCellWidth, self.itemSize.height)
+                            //let maximumMessagesCellWidth = max(elementWidth * 2, viewWidth - elementWidth * 2 - minimumInteritemSpacing)
+                            //let messagesCellFrame = CGRectMake(viewWidth - maximumMessagesCellWidth + minimumInteritemSpacing, offsetY, maximumMessagesCellWidth, self.itemSize.height)
                             
                             let itemFrame = CGRectMake(viewWidth - elementWidth * 2 , offsetY, elementWidth * 2, self.itemSize.height)
                             itemAttributes.frame = CGRectOffset(itemFrame, itemFrame.size.width * 2, 0)

@@ -35,7 +35,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         self.dataCache.countLimit = 50
         
 //        self.databaseHandler = DatabaseHandler(completionCallBack: {[weak self] () -> Void in
-//            println("Finished initializing CoreData handler in DataSource.");
+//            print("Finished initializing CoreData handler in DataSource.");
 //        })
     }
     
@@ -110,9 +110,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
             DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
             DataSource.sharedInstance.attaches.removeAll(keepCapacity: false)
-            println("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
+            print("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
-            println("AvatarsHolder After cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
+            print("AvatarsHolder After cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             DataSource.sharedInstance.stopRefreshingNewMessages()
             DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
             
@@ -138,7 +138,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func cleanDataCache()
     {
-        println("..Datasource is clearing Data Cache...")
+        print("..Datasource is clearing Data Cache...")
         
         DataSource.sharedInstance.dataCache.removeAllObjects()
     }
@@ -168,7 +168,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             })
         }
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
+        dispatch_async(queue, { () -> Void in
             if let info = FileHandler().getAllExistingAvatarsPreviews() as? [String:NSData]
             {
                 for (name, data) in info
@@ -387,7 +387,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     }
                 }
             }
-            messagesToReturn.sort({ (message1, message2) -> Bool in
+            messagesToReturn.sortInPlace({ (message1, message2) -> Bool in
                 return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
             })
             return messagesToReturn
@@ -403,7 +403,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         let messagesQuantity:Int = 3
         if let existingMessagesForElementId = DataSource.sharedInstance.getAllMessagesForElementId(elementId)
         {
-            let sorted = existingMessagesForElementId.sorted { (message1, message2) -> Bool in
+            let sorted = existingMessagesForElementId.sort { (message1, message2) -> Bool in
                 return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
             }
             let count = sorted.count
@@ -418,7 +418,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     let lastMessage = sorted[i]
                     messagesToReturn.insert(lastMessage, atIndex: 0)
-                    //println(" i = \(i)")
+                    //print(" i = \(i)")
                 }
                 
                 return messagesToReturn
@@ -456,11 +456,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
 
                 var lastThreeItems = [Message]()
-                let reversed = sortedArray.reverse()
+                let reversed = Array(sortedArray.reverse())
                 var index = 0
             
             var elementIDsToDeleteMessageSet = Set<NSNumber>()
-            for aMessage in reversed
+            for _ in reversed
             {
                 if lastThreeItems.count > 2
                 {
@@ -472,7 +472,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 if let elementId = lastMessage.elementId
                 {
-                    if let existElementForMEssage = DataSource.sharedInstance.getElementById(elementId.integerValue)
+                    if let _ = DataSource.sharedInstance.getElementById(elementId.integerValue)
                     {
                         lastThreeItems.insert(lastMessage, atIndex: 0)
                     }
@@ -486,7 +486,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             if !elementIDsToDeleteMessageSet.isEmpty
             {
-                println(" \n -> deleting messages for non existing elements...")
+                print(" \n -> deleting messages for non existing elements...")
                 DataSource.sharedInstance.removeMessagesForDeletedElements(elementIDsToDeleteMessageSet)
             }
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -502,7 +502,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func addObserverForNewMessagesForElement(newObserver:MessageObserver, elementId:NSNumber) -> ResponseType
     {
         var response:ResponseType
-        if let existingMessagesObserver = DataSource.sharedInstance.getMessagesObserverForElementId(elementId) // array exists for this element
+        if let _ = DataSource.sharedInstance.getMessagesObserverForElementId(elementId) // array exists for this element
         {
             // replace with new one and return .Replaced
             response = .Replaced
@@ -549,7 +549,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if DataSource.sharedInstance.messages.removeValueForKey(anId) != nil
                 {
-                    println(" -> Deleted messages array.")
+                    print(" -> Deleted messages array.")
                 }
             }
         }
@@ -576,7 +576,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var lvMessagesHolder = [NSNumber:[Message]]()
                     for lvMessage in messagesArray
                     {
-                        println(" ->New message: >>> \(lvMessage.toDictionary().description)))")
+                        print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
                         if lvMessagesHolder[lvMessage.elementId!] != nil
                         {
                             lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -730,7 +730,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             ObjectsConverter.sortElementsByDate(&elementsToReturn)
             if !shouldIncludeArchived
             {
-                var newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
+                let newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
                 return newElements
             }
         }
@@ -740,7 +740,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getSubordinateElementsTreeForElement(targetRootElement:Element) -> [Element]?
     {
-        var treeToReturn = [Element]()
+        //var treeToReturn = [Element]()
         
         let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId?.integerValue, shouldIncludeArchived:false)
         if currentSubordinates.isEmpty
@@ -748,7 +748,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return nil
         }
         
-        let countSubordinates = currentSubordinates.count
+        //let countSubordinates = currentSubordinates.count
         var subordinatesSet = Set<Element>()
         
         for lvElement in currentSubordinates
@@ -779,7 +779,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 })
                 return
             }
-            var preFavouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
+            
+            let preFavouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
                 return checkedElement.isFavourite.boolValue
             })
             
@@ -804,12 +805,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 otherElementsSet.insert(lvElement)
             }
             
-            var preOtherElementsArray = Array(otherElementsSet)
+            let preOtherElementsArray = Array(otherElementsSet)
             var otherElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preOtherElementsArray)
             ObjectsConverter.sortElementsByDate(&otherElementsArray)
             
             // get all signals
-            var filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
+            let filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
                 
                 let signalValue = element.isSignal.boolValue
                 //let  rootId = element.rootElementId.integerValue
@@ -817,8 +818,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return (signalValue )
             })
             
-            var signalElementsSet = Set(filteredSignals)
-            var preSignalElementsArray = Array(signalElementsSet)
+            let signalElementsSet = Set(filteredSignals)
+            let preSignalElementsArray = Array(signalElementsSet)
             
             //filter out archiveElements
             
@@ -904,13 +905,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
                     
                     
-                    var elementsSet = Set(allElements)
+                    let elementsSet = Set(allElements)
                     var elementsArrayFromSet = Array(elementsSet)
                     
                     ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
                     
                     DataSource.sharedInstance.elements += elementsArrayFromSet
-                    println("\n -> Added Elements = \(elementsArrayFromSet.count)")
+                    print("\n -> Added Elements = \(elementsArrayFromSet.count)")
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(success: true, failure: nil)
@@ -1004,7 +1005,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         aLock.unlock()
         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        var deletedNotif = NSNotification(name: kElementWasDeletedNotification, object: nil, userInfo:["elementIdInts":elementsToDelete])
+        let deletedNotif = NSNotification(name: kElementWasDeletedNotification, object: nil, userInfo:["elementIdInts":elementsToDelete])
   
         NSNotificationCenter.defaultCenter().postNotification(deletedNotif)
     }
@@ -1108,10 +1109,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             }
                             else
                             {
-                                println("! Warning ! Could not edit element.")
+                                print("! Warning ! Could not edit element.")
                                 if let errorDict = error?.userInfo
                                 {
-                                    println("Reason : \(errorDict[NSLocalizedDescriptionKey])")
+                                    print("Reason : \(errorDict[NSLocalizedDescriptionKey])")
                                 }
                                 completion(edited: false)
                             }
@@ -1176,7 +1177,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             else
             {
                 completionClosure(edited: false)
-                println("Error did not update FAVOURITE for element.")
+                print("Error did not update FAVOURITE for element.")
             }
         }
     }
@@ -1188,12 +1189,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadPassWhomIdsForElementID(elementIdInt, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
-                //println(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
+                //print(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
                 if let elementFromDataSource = DataSource.sharedInstance.getElementById(elementIdInt)
                 {
                     var ordered = Array(recievedIDs)
                     
-                    ordered.sort {$0.integerValue < $1.integerValue}
+                    ordered.sortInPlace {$0.integerValue < $1.integerValue}
                     
                     elementFromDataSource.passWhomIDs = ordered
                 }
@@ -1202,7 +1203,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
             else
             {
-                println("did not load passWhomIDs for element: \(elementIdInt)")
+                print("did not load passWhomIDs for element: \(elementIdInt)")
                 completionClosure?(finished: false)
             }
         })
@@ -1238,7 +1239,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 if let allSubordinatesTree = DataSource.sharedInstance.getSubordinateElementsTreeForElement(target)
                 {
                     //clean attaches if present
-                    var bgQueue = NSOperationQueue()
+                    let bgQueue = NSOperationQueue()
                     bgQueue.maxConcurrentOperationCount = 2
                     
                     
@@ -1251,12 +1252,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     }
                     
                     //clean elements themselves
-                    var allElements = Set(DataSource.sharedInstance.elements)
+                    let allElements = Set(DataSource.sharedInstance.elements)
                     var toDelete = Set(allSubordinatesTree)
                     toDelete.insert(target)
                     
                     let afterDeletionSet = allElements.subtract(toDelete)
-                    var cleanedElements = Array(afterDeletionSet)
+                    let cleanedElements = Array(afterDeletionSet)
                   
                     DataSource.sharedInstance.elements = cleanedElements
                 }
@@ -1280,7 +1281,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     DataSource.sharedInstance.cleanAttachesForElement(lvElement.elementId!.integerValue)
                 }
                 
-                var filterAgain = Set(DataSource.sharedInstance.elements)
+                let filterAgain = Set(DataSource.sharedInstance.elements)
                 let newSet = filterAgain.subtract(setToDelete)
                 
                 var remainingElements = Array(newSet)
@@ -1293,13 +1294,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 if !reCheckSubordinates.isEmpty
                 {
                     // assert(false, "Check properly deleted subordinates....")
-                    println("Did not delete subordinates for current element Id: \(elementId)")
+                    print("Did not delete subordinates for current element Id: \(elementId)")
                 }
             }
         }
         
         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        println("   ->Finished deleting element from local storage.")
+        print("   ->Finished deleting element from local storage.")
         if shouldNotify
         {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1401,7 +1402,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         if elementId == nil || (elementId!.integerValue <= 0)
         {
             let errorId = NSError(domain: "Element id error", code: -65, userInfo: [NSLocalizedDescriptionKey:"Colud not start attaching file. Reason: wrong element id format."])
-            completionClosure(success: false, error: nil)
+            completionClosure(success: false, error: errorId)
             return
         }
         
@@ -1461,7 +1462,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             }
                             else
                             {
-                                println("Could not erase file from disc: \n Error: \n\(fromServerError)")
+                                print("Could not erase file from disc: \n Error: \n\(fromServerError)")
                                 completionClosure?(success: false, error: eraseError)
                             }
                         })
@@ -1470,7 +1471,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
             else
             {
-                println("\n ->Could not deAttach file on server: \n Error: \n\(fromServerError)")
+                print("\n ->Could not deAttach file on server: \n Error: \n\(fromServerError)")
                 completionClosure?(success: success, error: fromServerError)
             }
         }
@@ -1503,11 +1504,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         if toReturnArray.isEmpty
         {
-            println(" empty snapshots array. returning nil.")
+            print(" empty snapshots array. returning nil.")
             return nil
         }
         
-        println("  -> returning \(toReturnArray.count) snapshotDatas for \(attaches.count) AttacFiles\n")
+        print("  -> returning \(toReturnArray.count) snapshotDatas for \(attaches.count) AttacFiles\n")
         return toReturnArray
     }
     
@@ -1516,17 +1517,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         if let cachedData = DataSource.sharedInstance.getAttachFileDataFromCache(file)
         {
         
-            println(" ->returning attach snapshot from cache..")
+            print(" ->returning attach snapshot from cache..")
             return [file:cachedData]
         }
         else
         {
             if let fileSystemData = DataSource.sharedInstance.getAttachFileDataFromFileSystem(file)
             {
-                println(" ->returning attach snapshot from disc..")
+                print(" ->returning attach snapshot from disc..")
                 return [file:fileSystemData]
             }
-            println(" ->returning nil attach snapshot")
+            print(" ->returning nil attach snapshot")
             return nil
         }
     }
@@ -1542,16 +1543,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     //reduce image size, and insert into cache already reduced image data
                     
-                    if let fullImage = UIImage(data: attachData)
+                    if let fullImage = UIImage(data: attachData), scaledToSizeImage = DataSource.sharedInstance.reduceImageSize( fullImage, toSize: CGSizeMake(180, 140)), imagePreviewData = UIImageJPEGRepresentation(scaledToSizeImage, 1.0)
                     {
-                        var scaledToSizeImage = DataSource.sharedInstance.reduceImageSize( fullImage, toSize: CGSizeMake(180, 140))
-                        
-                        if let imagePreviewData = UIImageJPEGRepresentation(scaledToSizeImage, 1.0)
-                        {
-                            //println("\n--- Inserting imagePreview data \(imagePreviewData.length) bytes to cache...")
+                            //print("\n--- Inserting imagePreview data \(imagePreviewData.length) bytes to cache...")
                             DataSource.sharedInstance.dataCache.setObject(imagePreviewData, forKey: attachFile.fileName!)
                             outerFileData = imagePreviewData
-                        }
+                
                     }
                     else
                     {
@@ -1560,7 +1557,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
                 else if let error = readingError
                 {
-                    println(" ->FileReadingError: \n\(error.localizedDescription)")
+                    print(" ->FileReadingError: \n\(error.localizedDescription)")
                 }
                 
             })
@@ -1573,7 +1570,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return DataSource.sharedInstance.dataCache.objectForKey(file.fileName!) as? NSData
     }
     
-    private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage
+    private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage?
     {
         //let reduceTagretSize = CGSizeMake(180, 140) // 90x70 cell size x 2
         //NSLog(" -> Image Size Before reducing: \(image.size)")
@@ -1591,9 +1588,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         
         let reducedImageSize = CGSizeMake(image.size.width * ratio, image.size.height * ratio)
-        let scaledToSizeImage = image.scaleToSizeKeepAspect(reducedImageSize)
-        //NSLog(" -> Image Size After reducing: \(scaledToSizeImage.size)")
-        return scaledToSizeImage
+        if let scaledToSizeImage = image.scaleToSizeKeepAspect(reducedImageSize)
+        {
+            //NSLog(" -> Image Size After reducing: \(scaledToSizeImage.size)")
+            return scaledToSizeImage
+        }
+        
+        return nil
     }
     
     
@@ -1607,7 +1608,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
      
         let recievedAttachesCount = attaches.count
-        println("\n -> Starting to filter pending attaches..")
+        print("\n -> Starting to filter pending attaches..")
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
      
         var localAttaches = [AttachFile]()
@@ -1618,12 +1619,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if pending
                 {
-                    println("is pending")
+                    print("is pending")
                     continue
                 }
                 else
                 {
-                    println("pending is waiting to be cleared")
+                    print("pending is waiting to be cleared")
                     continue
                 }
             }
@@ -1639,9 +1640,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             let dispatchGroup = dispatch_group_create()
             let fileManager = FileHandler()
             
-            var localAttachesCount = localAttaches.count
+            let localAttachesCount = localAttaches.count
             
-            println("\n -> Processing \(localAttachesCount) out of \(recievedAttachesCount) atatches...")
+            print("\n -> Processing \(localAttachesCount) out of \(recievedAttachesCount) atatches...")
             
             let operationQueue = NSOperationQueue()
             operationQueue.maxConcurrentOperationCount = 2
@@ -1653,9 +1654,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 dispatch_group_enter(dispatchGroup)
                 let lvAttach = localAttaches[currentIteration]
                 
-                if let name = lvAttach.fileName, attachData = fileManager.synchronouslyLoadFileNamed(name)
+                if let name = lvAttach.fileName, _ = fileManager.synchronouslyLoadFileNamed(name)
                 {
-                    println("\n -> DataSource Will not load existing attach file several times. Attach File: \(lvAttach.fileName!)\n")
+                    print("\n -> DataSource Will not load existing attach file several times. Attach File: \(lvAttach.fileName!)\n")
                     
                     if let name = lvAttach.fileName
                     {
@@ -1671,14 +1672,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 else
                 {
                     let attachFileName = lvAttach.fileName
-                    println("\n -> DataSource Will  load  attach file . Attach File: \(lvAttach.fileName!)\n")
+                    print("\n -> DataSource Will  load  attach file . Attach File: \(lvAttach.fileName!)\n")
                     DataSource.sharedInstance.serverRequester.loadDataForAttach(lvAttach.attachID!, completion: { (attachFileData, error) -> () in
                         if attachFileData != nil
                         {
                             fileManager.saveFileToDisc(attachFileData!, fileName: lvAttach.fileName! , completion: { (path, saveError) -> Void in
                                 if path != nil
                                 {
-                                    //println("\n -> Saved a file")
+                                    //print("\n -> Saved a file")
                                     if let name = attachFileName
                                     {
                                         let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
@@ -1690,7 +1691,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 
                                 if saveError != nil
                                 {
-                                    println("\n ->Failed to save data to disc: \n \(saveError?.localizedDescription)")
+                                    print("\n ->Failed to save data to disc: \n \(saveError?.localizedDescription)")
                                 }
                                 DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = false
                                 dispatch_group_leave(dispatchGroup)
@@ -1698,7 +1699,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                         else
                         {
-                            println(" \n ->Failed to load attach file data: \n \(error?.localizedDescription)")
+                            print(" \n ->Failed to load attach file data: \n \(error?.localizedDescription)")
                             DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID!] = false
                             dispatch_group_leave(dispatchGroup)
                         }
@@ -1723,7 +1724,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         if let number = anAttach.attachID
                         {
                             DataSource.sharedInstance.pendingAttachFileDataDownloads[number] = nil
-                            println("\n Cleared pending \(number.integerValue)\n")
+                            print("\n Cleared pending \(number.integerValue)\n")
                         }
                     }
                 })
@@ -1733,7 +1734,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         else
         {
-            println("\n -> Will not process queried attach files - all are currently pending..")
+            print("\n -> Will not process queried attach files - all are currently pending..")
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if let completionBlock = completionClosure
             {
@@ -1762,17 +1763,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.serverRequester.downloadMyContacts(completion: { (contacts, error) -> () in
                 if error != nil
                 {
-                    println("Contacts loading failed: \n \(error!.localizedDescription)")
+                    print("Contacts loading failed: \n \(error!.localizedDescription)")
                 }
                 else if let aContacts = contacts
                 {
                     if aContacts.isEmpty
                     {
-                        println("WARNING!: Loaded empty contacts!!!!!")
+                        print("WARNING!: Loaded empty contacts!!!!!")
                     }
                     else
                     {
-                        println(" -> Loaded contacts: \(aContacts.count)")
+                        print(" -> Loaded contacts: \(aContacts.count)")
                         DataSource.sharedInstance.contacts = aContacts
                     }
                 }
@@ -1781,7 +1782,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return nil
         }
         
-        println("returning existing contacts")
+        print("returning existing contacts")
         
         return DataSource.sharedInstance.contacts
     }
@@ -1796,7 +1797,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadAllContacts { (contacts, error) -> () in
             if error != nil
             {
-                println(" ALL Contacts loading failed: \n \(error!.localizedDescription)")
+                print(" ALL Contacts loading failed: \n \(error!.localizedDescription)")
                 if let completionBlock = completion
                 {
                     completionBlock(contacts: nil, error: error)
@@ -1806,7 +1807,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if contacts!.isEmpty
                 {
-                    println("WARNING!: Loaded empty contacts!!!!!")
+                    print("WARNING!: Loaded empty contacts!!!!!")
                     if let completionBlock = completion
                     {
                         completionBlock(contacts: nil, error: error)
@@ -1814,7 +1815,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
                 else
                 {
-                    println(" -> Loaded ALL contacts: \(contacts!.count)")
+                    print(" -> Loaded ALL contacts: \(contacts!.count)")
                     if let completionBlock = completion
                     {
                         completionBlock(contacts: contacts, error: nil)
@@ -1912,9 +1913,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if preInsertCount < postInsertCount
                     {
                         // successfully removed contact id from element`s pass whom ids
-                        println("Added contact to chat Locally also.")
+                        print("Added contact to chat Locally also.")
                     }
-                    var newPassWhomIDs = Array(passWhomSet)
+                    let newPassWhomIDs = Array(passWhomSet)
                     element.passWhomIDs = newPassWhomIDs
                 }
             }
@@ -1934,12 +1935,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if !passWhomIDs.isEmpty
                     {
                         var passWhomSet = Set(passWhomIDs)
-                        if let removedContactId = passWhomSet.remove(contactId)
+                        if let _ = passWhomSet.remove(contactId)
                         {
                             // successfully removed contact id from element`s pass whom ids
-                            println("Removed contact from chat Locally also.")
+                            print("Removed contact from chat Locally also.")
                         }
-                        var newPassWhomIDs = Array(passWhomSet)
+                        let newPassWhomIDs = Array(passWhomSet)
                         element.passWhomIDs = newPassWhomIDs
                     }
                 }
@@ -1992,7 +1993,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     if failedIDs.count > 0
                     {
-                        println("failed to assign contacts to current element: Contact IDs: \(failedIDs)")
+                        print("failed to assign contacts to current element: Contact IDs: \(failedIDs)")
                     }
                 }
 
@@ -2031,7 +2032,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     }
                     if !failedIds.isEmpty
                     {
-                        println("\n Failed to detach contacts:\(failedIds) from element \(elementId)\n")
+                        print("\n Failed to detach contacts:\(failedIds) from element \(elementId)\n")
                     }
                 }
                 
@@ -2077,10 +2078,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 let countAfter = currentContacts.count
                 if countAfter == countBefore
                 {
-                    println("\n Warning!! DataSource did NOT REMOVE contact from mycontacts\n")
+                    print("\n Warning!! DataSource did NOT REMOVE contact from mycontacts\n")
                 }
                 
-                var sorted = Array(currentContacts).sorted({ (contact1, contact2) -> Bool in
+                let sorted = Array(currentContacts).sort({ (contact1, contact2) -> Bool in
                     if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
                     {
                         return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
@@ -2111,10 +2112,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 let countAfter = currentContacts.count
                 if countAfter == countBefore
                 {
-                    println("\n Warning!! DataSource did NOT ADD contact from myContacts\n")
+                    print("\n Warning!! DataSource did NOT ADD contact from myContacts\n")
                 }
                 
-                var sorted = Array(currentContacts).sorted({ (contact1, contact2) -> Bool in
+                let sorted = Array(currentContacts).sort({ (contact1, contact2) -> Bool in
                     if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
                     {
                         return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
@@ -2143,16 +2144,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             if imageData == avatarBytes //checking NSData for equality of contents, not objects
             {
-                println(" Will NOT Rewrite the same avatar data again for user name: \(userName)")
+                print(" Will NOT Rewrite the same avatar data again for user name: \(userName)")
                 return .Denied
             }
             response = .Replaced
-            println(" -> Replaced avatar data for username: \(userName)")
+            print(" -> Replaced avatar data for username: \(userName)")
         }
         else
         {
             response = .Added
-            println(" -> Added avatar data for username: \(userName)")
+            print(" -> Added avatar data for username: \(userName)")
         }
         DataSource.sharedInstance.avatarsHolder[userName] = avatarBytes
         
@@ -2171,7 +2172,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if DataSource.sharedInstance.pendingUserAvatarsDownolads[lvName] == nil
             {
                 let lowQueue:dispatch_queue_t
-                if !FrameCounter.isLowerThanIOSVersion("8.0")
+                if #available(iOS 8.0, *)
                 {
                     let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0)
                     lowQueue = dispatch_queue_create("com.Origami.BackgroundImage.Queue", attributes)
@@ -2239,19 +2240,21 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         
                         if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
                         {
-                            let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200))
-                            let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                            
-                            if avatarIconData != avatarData
+                            if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)),  avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
                             {
-                                DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                                if avatarIconData != avatarData
+                                {
+                                    DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                                }
                             }
+                            
                         }
                         else
                         {
-                            let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200))
-                            let avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                            DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                            if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)), avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                            {
+                                DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                            }
                         }
                     }
                     else
@@ -2285,7 +2288,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     completionBlock?(image: toReturnImage)
                 })
                 
-                println(" got avatar from RAM..")
+                print(" got avatar from RAM..")
                 return
             }
             
@@ -2293,7 +2296,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             //step 2 try to get from disc
             DataSource.sharedInstance.loadAvatarFromDiscForLoginName(loginName, completion: { (image, error) -> () in
                 
-                if let anError = error
+                if let _ = error
                 {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completionBlock?(image: nil)
@@ -2319,13 +2322,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func startLoadingAvatarForUserName(name:String)
     {
-        if let existValue = DataSource.sharedInstance.pendingUserAvatarsDownolads[name]
+        if let _ = DataSource.sharedInstance.pendingUserAvatarsDownolads[name]
         {
-            println(" - Current avatar is pending. Will not try to load in again...")
+            print(" - Current avatar is pending. Will not try to load in again...")
             return
         }
         
-        println(" Loading Avatar: \(name)")
+        print(" Loading Avatar: \(name)")
         DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = Int(1)
         
         DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(name, completion: { (avatarData, error) -> () in
@@ -2333,25 +2336,25 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if let avatar = UIImage(data: avatarBytes)
                 {
-                    let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200))
-                    let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                    println(" got avatar from Server... Saving small preview data to ram")
-                    DataSource.sharedInstance.addAvatarData(avatarData, forContactUserName: name)//save to RAM also
-                    
+                    if let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200)), let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                    {
+                        print(" got avatar from Server... Saving small preview data to ram")
+                        DataSource.sharedInstance.addAvatarData(avatarData, forContactUserName: name)//save to RAM also
+                    }
                     //save to disc
-                    println(" saving avatar to disc...")
+                    print(" saving avatar to disc...")
                     let fileHandler = FileHandler()
                     fileHandler.saveAvatar(avatarBytes, forLoginName: name, completion: { (errorSaving) -> Void in
                         if let error = errorSaving
                         {
-                            println(" Did not save currently loaded avatar for user name: \(name)")
+                            print(" Did not save currently loaded avatar for user name: \(name) \n Error: \(error.localizedDescription)")
                         }
                         DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
                     })
                 }
                 else
                 {
-                    println(" Did not recieve avatar image bytes.")
+                    print(" Did not recieve avatar image bytes.")
                     DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
                 }
              
@@ -2360,7 +2363,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             if let anError = error
             {
-                println(" Error while downloading avatar for userName: \(name): \n \(anError.description) ")
+                print(" Error while downloading avatar for userName: \(name): \n \(anError.description) ")
             }
             DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
         })
@@ -2370,7 +2373,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func uploadAvatarForCurrentUser(data:NSData, completion completionBlock:((success:Bool, error:NSError?)->())?)
     {
         DataSource.sharedInstance.serverRequester.uploadUserAvatarBytes(data, completion: { (response, error) -> () in
-            if let responseSending = response
+            if let _ = response
             {
                 completionBlock?(success: true, error: nil)
                 
@@ -2381,7 +2384,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     fileHandler.saveAvatar(data, forLoginName: userName, completion: { (error) -> Void in
                         if let saveError = error
                         {
-                            println("-> Could not update current user avatar on disc.")
+                            print("-> Could not update current user avatar on disc. \n->Error: \(saveError)")
                             return
                         }
                         DataSource.sharedInstance.avatarsHolder.removeValueForKey(userName) //for later re-reloading new avatar from disc

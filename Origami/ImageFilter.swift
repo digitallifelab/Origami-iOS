@@ -14,89 +14,89 @@ typealias imageReturningBlock = (image:UIImage?)->()
 
 class ImageFilter
 {
-    var context:CIContext = CIContext(options: [kCIContextPriorityRequestLow:true])
-    var filter:CIFilter = CIFilter(name: "CIPhotoEffectNoir")// "CISepiaTone"  "CIPhotoEffectMono"
-    
-    deinit
-    {
-        println(" ImageFilter Was Released")
-    }
-    
-    init()
-    {
-        println(" ImageFilter was Initialized")
-    }
-    
-    func filterImageBlackAndWhite(image:UIImage) -> UIImage?
-    {
-        var currentImageOrientation : UIImageOrientation?
-        
-        currentImageOrientation = image.imageOrientation
-        
-        var startImage = CIImage(CGImage: image.CGImage)
-        filter.setValue(startImage, forKey: kCIInputImageKey)
-        
-        var outputImage = filter.outputImage
-        
-        var cgImage = context.createCGImage(outputImage, fromRect: outputImage.extent())
-        
-        var toReturnUIImage:UIImage?
-        if let orientation = currentImageOrientation
-        {
-            toReturnUIImage = UIImage(CGImage: cgImage, scale: 1.0, orientation: orientation)
-        }
-        else
-        {
-            toReturnUIImage = UIImage(CGImage: cgImage)
-        }
-        
-        return toReturnUIImage
-    }
-    
-    func filterImageBlackAndWhiteInBackGround(image:UIImage, completeInMainQueue:Bool, completion completionBlock:imageReturningBlock?)
-    {
-        let bgQueue = dispatch_queue_create("Origami.ImageFiltering", DISPATCH_QUEUE_SERIAL)
-        
-        dispatch_async(bgQueue, { () -> Void in
-            var currentImageOrientation : UIImageOrientation?
-            
-            currentImageOrientation = image.imageOrientation
-            
-            var lvContext:CIContext = CIContext(options: [kCIContextPriorityRequestLow:true])
-            var filter:CIFilter = CIFilter(name: "CIPhotoEffectNoir")
-            
-            var startImage = CIImage(CGImage: image.CGImage)
-            filter.setValue(startImage, forKey: kCIInputImageKey)
-            
-            var outputImage = filter.outputImage
-            
-            var cgImage = lvContext.createCGImage(outputImage, fromRect: outputImage.extent())
-            
-            var toReturnUIImage:UIImage?
-            if let orientation = currentImageOrientation
-            {
-                toReturnUIImage = UIImage(CGImage: cgImage, scale: 1.0, orientation: orientation)
-            }
-            else
-            {
-                toReturnUIImage = UIImage(CGImage: cgImage)
-            }
-            
-            if let toComplete = completionBlock
-            {
-                if completeInMainQueue
-                {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        toComplete(image: toReturnUIImage)
-                    })
-                }
-                else
-                {
-                    toComplete(image: toReturnUIImage)
-                }
-            }
-        })
-    }
+//    var context:CIContext = CIContext(options: [kCIContextPriorityRequestLow:true])
+//    var filter:CIFilter = CIFilter(name: "CIPhotoEffectNoir")// "CISepiaTone"  "CIPhotoEffectMono"
+//    
+//    deinit
+//    {
+//        print(" ImageFilter Was Released")
+//    }
+//    
+//    init()
+//    {
+//        print(" ImageFilter was Initialized")
+//    }
+//    
+//    func filterImageBlackAndWhite(image:UIImage) -> UIImage?
+//    {
+//        var currentImageOrientation : UIImageOrientation?
+//        
+//        currentImageOrientation = image.imageOrientation
+//        
+//        var startImage = CIImage(CGImage: image.CGImage)
+//        filter.setValue(startImage, forKey: kCIInputImageKey)
+//        
+//        var outputImage = filter.outputImage
+//        
+//        var cgImage = context.createCGImage(outputImage, fromRect: outputImage.extent())
+//        
+//        var toReturnUIImage:UIImage?
+//        if let orientation = currentImageOrientation
+//        {
+//            toReturnUIImage = UIImage(CGImage: cgImage, scale: 1.0, orientation: orientation)
+//        }
+//        else
+//        {
+//            toReturnUIImage = UIImage(CGImage: cgImage)
+//        }
+//        
+//        return toReturnUIImage
+//    }
+//    
+//    func filterImageBlackAndWhiteInBackGround(image:UIImage, completeInMainQueue:Bool, completion completionBlock:imageReturningBlock?)
+//    {
+//        let bgQueue = dispatch_queue_create("Origami.ImageFiltering", DISPATCH_QUEUE_SERIAL)
+//        
+//        dispatch_async(bgQueue, { () -> Void in
+//            var currentImageOrientation : UIImageOrientation?
+//            
+//            currentImageOrientation = image.imageOrientation
+//            
+//            var lvContext:CIContext = CIContext(options: [kCIContextPriorityRequestLow:true])
+//            var filter:CIFilter = CIFilter(name: "CIPhotoEffectNoir")
+//            
+//            var startImage = CIImage(CGImage: image.CGImage)
+//            filter.setValue(startImage, forKey: kCIInputImageKey)
+//            
+//            var outputImage = filter.outputImage
+//            
+//            var cgImage = lvContext.createCGImage(outputImage, fromRect: outputImage.extent())
+//            
+//            var toReturnUIImage:UIImage?
+//            if let orientation = currentImageOrientation
+//            {
+//                toReturnUIImage = UIImage(CGImage: cgImage, scale: 1.0, orientation: orientation)
+//            }
+//            else
+//            {
+//                toReturnUIImage = UIImage(CGImage: cgImage)
+//            }
+//            
+//            if let toComplete = completionBlock
+//            {
+//                if completeInMainQueue
+//                {
+//                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                        toComplete(image: toReturnUIImage)
+//                    })
+//                }
+//                else
+//                {
+//                    toComplete(image: toReturnUIImage)
+//                }
+//            }
+//        })
+//    }
     
     class func getImagePreviewDataFromData(imageData:NSData) -> NSData?
     {
@@ -130,8 +130,10 @@ class ImageFilter
 //        }
         if let image = UIImage(data: imageData)
         {
-            let scaledImage = image.scaleToSizeKeepAspect(CGSizeMake(200, 200))
-            return UIImageJPEGRepresentation(scaledImage, 1.0)
+            if let scaledImage = image.scaleToSizeKeepAspect(CGSizeMake(200, 200))
+            {
+                return UIImageJPEGRepresentation(scaledImage, 1.0)
+            }
         }
         
         return nil

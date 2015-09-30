@@ -80,7 +80,7 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
         return false
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         if let superAttributes = super.layoutAttributesForElementsInRect(rect)
         {
             if layoutAttributes.isEmpty
@@ -113,7 +113,7 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
         return nil
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         if let existingAttribute = layoutAttributes[indexPath]
         {
             return existingAttribute
@@ -139,13 +139,13 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
     
     func configureAttributes()
     {
-        if let existCollectionView = self.collectionView
+        if let _ = self.collectionView
         {
             //prepare start values
             var contentWidth = UIScreen.mainScreen().bounds.size.width
             if FrameCounter.isLowerThanIOSVersion("8.0")
             {
-                let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
+                //let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
              
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
                 var currentHeight = UIScreen.mainScreen().bounds.size.height
@@ -178,9 +178,9 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
             for var i = 0; i < itemsToCalculate; i++
             {
                 let indexPath = NSIndexPath(forItem: i, inSection: 0)
-                var layoutAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
+                let layoutAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPath)
                 
-                var cellWidth:CGFloat = self.itemSize.width
+                let cellWidth:CGFloat = self.itemSize.width
                 
                 if (offsetX + cellWidth) > contentWidth
                 {

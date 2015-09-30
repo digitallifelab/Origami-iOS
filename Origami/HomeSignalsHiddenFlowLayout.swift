@@ -73,12 +73,12 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         self.privFavourites = favourites
         self.privOther = other
         
-        //println(" ------- Hidden Layout initialized with \(self.privSignals) signals")
+        //print(" ------- Hidden Layout initialized with \(self.privSignals) signals")
         
         //self.configureAttributes()
     }
     
-    required init(coder aDecoder: NSCoder)
+    required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
     }
@@ -150,11 +150,28 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         
         /* - fix top offset in iPhone 6,5,4- */
         
-        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
-        
-        switch comparisonResult
+//        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
+//        
+//        switch comparisonResult
+//        {
+//        case .OrderedSame, .OrderedDescending:
+//            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
+//            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
+//            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
+//            
+//            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
+//            {
+//                offsetY += 40.0
+//            }
+//            else if currentTraitCollectionWidth == .Regular && currentTraitCollectionHeight == .Compact
+//            {
+//                offsetY += 20.0
+//            }
+//        case .OrderedAscending:
+//            offsetY += 0.0
+//        }
+        if #available (iOS 8.0, *)
         {
-        case .OrderedSame, .OrderedDescending:
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
             let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
@@ -167,12 +184,12 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             {
                 offsetY += 20.0
             }
-        case .OrderedAscending:
-            offsetY += 0.0
+        }
+        else
+        {
+             offsetY += 0.0
         }
         
-        
-     
        
         /*---------*/
         
@@ -216,7 +233,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             
             headerAttributes![indexPathForSection] = sectionHeaderAttributes
             
-            //println("header attributes: \(headerAttributes?.count)")
+            //print("header attributes: \(headerAttributes?.count)")
             
             //move down
             offsetY += sectionHeaderAttributes.frame.size.height + self.minimumLineSpacing
@@ -352,7 +369,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         return false
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
         var superForIndexPath = super.layoutAttributesForItemAtIndexPath(indexPath)
         if let existingItemAttrs =  cellAttributes?[indexPath]
@@ -363,7 +380,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         return superForIndexPath
     }
     
-    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
         if elementKind == UICollectionElementKindSectionHeader
         {
@@ -373,29 +390,29 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             }
             else
             {
-                //println("returning SUPER HEADER attributes for indexPath: \(indexPath)")
+                //print("returning SUPER HEADER attributes for indexPath: \(indexPath)")
                 let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
                 return superAttrs
             }
         }
         else
         {
-            //println("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
+            //print("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
             let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
             return superAttrs
         }
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]?
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]?
     {
-        //println("\(rect)")
+        //print("\(rect)")
         if let superAttrs = super.layoutAttributesForElementsInRect(rect)
         {
             var existingAttrs = [UICollectionViewLayoutAttributes]()
             
             if let cellAttrs = cellAttributes
             {
-                for (_ , cellAttr) in cellAttributes!
+                for (_ , cellAttr) in cellAttrs
                 {
                     if CGRectIntersectsRect(rect, cellAttr.frame)
                     {
@@ -406,7 +423,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             
             if let headerAttrs = headerAttributes
             {
-                for (_, headerAttr) in headerAttributes!
+                for (_, headerAttr) in headerAttrs
                 {
                     if CGRectIntersectsRect(rect, headerAttr.frame)
                     {
@@ -418,7 +435,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             
             if existingAttrs.isEmpty
             {
-                //println(" returning >>>SUPER<<<< attributes fo rect: \(rect),  \n \(superAttrs)")
+                //print(" returning >>>SUPER<<<< attributes fo rect: \(rect),  \n \(superAttrs)")
                 return superAttrs
             }
             

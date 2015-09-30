@@ -26,7 +26,7 @@ import UIKit
         self.favourites = favourites
         self.other = other
         self.signals = signals
-        //println("---> HomeCollectionHandler -  Initialized with \(self.signals?.count) signals");
+        //print("---> HomeCollectionHandler -  Initialized with \(self.signals?.count) signals");
     }
 
     func deleteAllElements()
@@ -49,7 +49,7 @@ import UIKit
             let otherCount = (other!.count > 0) ? 1 : 0
             sectionsCountToReturn += otherCount
         }
-//        println("---- -- -- NumberOfSections: \(sectionsCountToReturn)")
+//        print("---- -- -- NumberOfSections: \(sectionsCountToReturn)")
         return sectionsCountToReturn
     }
     
@@ -85,14 +85,14 @@ import UIKit
         let cellType = cellTypeForIndexPath(indexPath)
         if cellType == .Messages
         {
-            var messagesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("LastMessagesHolderCollectionCell", forIndexPath: indexPath) as! DashboardMessagesCell
+            let messagesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("LastMessagesHolderCollectionCell", forIndexPath: indexPath) as! DashboardMessagesCell
             messagesHolderCell.displayMode = (nightModeEnabled) ? .Night : .Day
             messagesHolderCell.getLastMessages()
             return messagesHolderCell
         }
         else
         {
-            var dashCell:DashCell =  collectionView.dequeueReusableCellWithReuseIdentifier("DashCell", forIndexPath: indexPath) as! DashCell
+            let dashCell:DashCell =  collectionView.dequeueReusableCellWithReuseIdentifier("DashCell", forIndexPath: indexPath) as! DashCell
             dashCell.displayMode = (nightModeEnabled) ? .Night : .Day
             dashCell.cellType = cellType
             if cellType == .SignalsToggleButton
@@ -353,7 +353,7 @@ import UIKit
         }
         else
         {
-            //println("  - Toggle Signals Pressed\n")
+            //print("  - Toggle Signals Pressed\n")
             isSignalsToggled = !isSignalsToggled
             var newLayout:UICollectionViewFlowLayout?
             if isSignalsToggled

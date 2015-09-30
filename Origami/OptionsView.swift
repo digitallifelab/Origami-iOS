@@ -25,7 +25,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     let displayMode:DisplayMode = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? .Night : .Day
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         self.tableView = UITableView(frame: CGRectZero, style: .Plain)
         super.init(coder: aDecoder)
     }
@@ -52,7 +52,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
         }
         
         self.optionsSource = optionsInfo
-        self.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | UIViewAutoresizing.FlexibleRightMargin | UIViewAutoresizing.FlexibleTopMargin
+        self.autoresizingMask = [UIViewAutoresizing.FlexibleLeftMargin , UIViewAutoresizing.FlexibleRightMargin , UIViewAutoresizing.FlexibleTopMargin]
     }
 
     override func layoutSubviews() {
@@ -97,7 +97,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
+        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "Cell")
         
         cell.selectionStyle = .Gray
 
@@ -178,7 +178,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
     {
         self.tableView.removeFromSuperview()
         
-        self.tableView.setTranslatesAutoresizingMaskIntoConstraints(true)
+        self.tableView.translatesAutoresizingMaskIntoConstraints = true//setTranslatesAutoresizingMaskIntoConstraints(true)
         
         self.tableView.backgroundColor = UIColor.clearColor()
         
@@ -186,7 +186,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
        
         self.addSubview(self.tableView)
         
-        self.tableView.autoresizingMask = .FlexibleHeight | .FlexibleWidth
+        self.tableView.autoresizingMask = [.FlexibleHeight , .FlexibleWidth]
         
         self.tableView.scrollEnabled = false
         

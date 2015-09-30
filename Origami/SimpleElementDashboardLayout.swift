@@ -33,7 +33,7 @@ struct ElementDetailsStruct
     
     var hiddenDetailsText = true {
         didSet{
-            println(" - > elementStruct details visibility toggled! -- Visible = \(self.hiddenDetailsText)")
+            print(" - > elementStruct details visibility toggled! -- Visible = \(self.hiddenDetailsText)")
         }
     }
     
@@ -99,7 +99,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         super.init()
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         
         self.cellLayoutAttributes = [NSIndexPath : UICollectionViewLayoutAttributes]()
         //self.headerLayoutAttributes = [NSIndexPath : UICollectionViewLayoutAttributes]()
@@ -123,7 +123,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         }
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
         var superForIndexPath = super.layoutAttributesForItemAtIndexPath(indexPath)
         
@@ -136,7 +136,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
     }
     
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         
         var attributesToReturn = [UICollectionViewLayoutAttributes]()
         for ( _ , attribute ) in cellLayoutAttributes
@@ -182,11 +182,11 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
     {
         //let currentScreenInfo = FrameCounter.getCurrentTraitCollection()
         var currentScreenWidth = UIScreen.mainScreen().bounds.size.width
-        var itemMargin = self.minimumInteritemSpacing
+        //var itemMargin = self.minimumInteritemSpacing
         
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
-            let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
+            //let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
 //            if currentIdiom == .Phone
 //            {
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
@@ -211,7 +211,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
 //            }
         }
         
-        var itemWidth = currentScreenWidth //- itemMargin
+        //var itemWidth = currentScreenWidth //- itemMargin
         
         
         let mainFrameWidth = currentScreenWidth
@@ -220,7 +220,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         var offsetX = mainFrame.origin.x
         var offsetY = mainFrame.origin.y
         var titleFrame = CGRectMake(offsetX, offsetY, mainFrame.width, 150.0)
-        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
+        //let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
         if let aDataSource = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
         {
 //            if let titleCellFromDataSource = aDataSource.titleCell
@@ -236,12 +236,12 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                         //{
                             boundingSize.width -= 48.0
                         //}
-                        var textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
+                        let textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
                         size.height =  ceil(textLabelSize.height) + 60 + 55
                     }
                     
                     titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
-                    println("-> Title Cell Size:\(titleFrame.size)")
+                    print("-> Title Cell Size:\(titleFrame.size)")
                 }
                 else // .Dates
                 {
@@ -251,7 +251,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         }
         
         let titleIndexPath = NSIndexPath(forItem: 0, inSection: 0)
-        var attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: titleIndexPath)
+        let attribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: titleIndexPath)
         attribute.zIndex = 1000
         attribute.frame = titleFrame
         cellLayoutAttributes[titleIndexPath] = attribute
@@ -272,14 +272,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             {
                 let messagesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
 
-                var messagesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 152.0)
-                var messagesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: messagesIndexPath)
+                let messagesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 152.0)
+                let messagesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: messagesIndexPath)
                 messagesAttribute.zIndex = 400
                 messagesAttribute.frame = messagesFrame
                 cellLayoutAttributes[messagesIndexPath] = messagesAttribute
                 itemIndex += 1
                 
-                offsetY += CGRectGetHeight(messagesFrame); //println("moved down from MESSAGES cell")
+                offsetY += CGRectGetHeight(messagesFrame); //print("moved down from MESSAGES cell")
                 offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
             }
             
@@ -304,10 +304,10 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                             
                             let label = detailsCellFromDataSource.textLabel
 
-                            var labelSize = label.sizeThatFits(CGSizeMake(mainFrame.width - (28 + 8), CGFloat(FLT_MAX) ))
+                            let labelSize = label.sizeThatFits(CGSizeMake(mainFrame.width - (28 + 8), CGFloat(FLT_MAX) ))
 
                             detailsSize.height = labelSize.height + 2 + 2 + 32 //top and bottom constraints
-                            //println("-> Details Cell Size: \(detailsSize)")
+                            //print("-> Details Cell Size: \(detailsSize)")
                             
                             if detailsSize.height < detailsFrame.size.height
                             {
@@ -323,20 +323,20 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                         }
                     }
                     
-                    var detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
+                    let detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)
                     detailsAttribute.zIndex = 200
                     detailsAttribute.frame = detailsFrame
                     cellLayoutAttributes[detailsIndexPath] = detailsAttribute
                     itemIndex += 1
                     
-                    offsetY += CGRectGetHeight(detailsFrame); //println("moved down from DETAILS cell")
+                    offsetY += CGRectGetHeight(detailsFrame); //print("moved down from DETAILS cell")
                     
 
                     offsetX = checkCurrentCellOffset(offsetX, frame: mainFrame)
                 }
                 else
                 {
-                    println("\n -> Will not calculate layout for empty details collectiobView cell <- ")
+                    print("\n -> Will not calculate layout for empty details collectiobView cell <- ")
                 }
             }
             
@@ -348,14 +348,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                 
                 let attachesFrame = CGRectMake(offsetX, offsetY, mainFrame.size.width, 80.0)
                 let attachesIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
-                var attachesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: attachesIndexPath)
+                let attachesAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: attachesIndexPath)
                 attachesAttribute.frame = attachesFrame
                 cellLayoutAttributes[attachesIndexPath] = attachesAttribute
                 itemIndex += 1
                 
-                offsetY += attachesFrame.size.height;// println("Moved Down after ATTACHes cell")
+                offsetY += attachesFrame.size.height;// print("Moved Down after ATTACHes cell")
                 
-                //println("\n-----------Layout for attach file collection holder cell-----------\n")
+                //print("\n-----------Layout for attach file collection holder cell-----------\n")
             }
 
             
@@ -380,7 +380,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     // create and store frame
                     let subordinateIndexPath = NSIndexPath(forItem: itemIndex, inSection: 0)
                     var cellFrame = CGRectMake(offsetX, offsetY, subordinateSize.width, subordinateSize.height)
-                    var subordinateAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: subordinateIndexPath)
+                    let subordinateAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: subordinateIndexPath)
                     
                     // detect if next frame with this offset will be still visible
                     if CGRectGetMaxX(cellFrame) > (mainFrame.size.width - self.minimumInteritemSpacing)
@@ -399,7 +399,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                     offsetX = CGRectGetMaxX(cellFrame) + self.minimumInteritemSpacing // move to right
                 }
                 
-                //println("\n Finished calculating subordinates")
+                //print("\n Finished calculating subordinates")
             }
         }
         // detect downmost frame
@@ -416,7 +416,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         let lastAttribute = cellLayoutAttributes[lastIndexPath]
         
         self.sizeOfContent = CGSizeMake(CGRectGetMaxX(lastAttribute!.frame), CGRectGetMaxY(lastAttribute!.frame) + self.minimumLineSpacing * 2)
-        //println("self.collectionViewContentSize()  should return \(sizeOfContent)")
+        //print("self.collectionViewContentSize()  should return \(sizeOfContent)")
     }
     
     private func checkCurrentCellOffset(offset:CGFloat, frame:CGRect) -> CGFloat
@@ -432,7 +432,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
     
     func toggleDetailsTextVisibility()
     {
-        if let aStruct = self.elementStruct
+        if let _ = self.elementStruct
         {
             self.elementStruct?.toggleDetailsHidden()
         }

@@ -52,7 +52,7 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var menuCell = tableView.dequeueReusableCellWithIdentifier("PopupMenuCell", forIndexPath: indexPath) as! PopupMenuCell
+        let menuCell = tableView.dequeueReusableCellWithIdentifier("PopupMenuCell", forIndexPath: indexPath) as! PopupMenuCell
         configureMenuCell(menuCell, forIndexPath: indexPath)
         return menuCell
     }
@@ -86,8 +86,8 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
     //MARK: iPhone iOS 7 stuff
     func addTapToDismissGesture()
     {
-        var dummyButton = UIButton.buttonWithType(.Custom) as! UIButton
-        dummyButton.setTranslatesAutoresizingMaskIntoConstraints(false)
+        let dummyButton = UIButton(type:.Custom) //as! UIButton
+        //dummyButton.setTranslatesAutoresizingMaskIntoConstraints(false)
         dummyButton.opaque = true
         dummyButton.backgroundColor = UIColor.clearColor()
         dummyButton.tintColor = kDayCellBackgroundColor

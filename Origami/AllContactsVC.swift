@@ -25,14 +25,14 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
         if let existContacts = allContacts
         {
-            allContacts!.sort({ (contact1, contact2) -> Bool in
+            allContacts!.sortInPlace { (contact1, contact2) -> Bool in
                 if let lastName1 = contact1.lastName as? String, lastName2 = contact2.lastName as? String
                 {
                     let comparisonResult = lastName1.caseInsensitiveCompare(lastName2)
                     return comparisonResult == .OrderedAscending
                 }
                 return false
-            })
+            }
             
             let bgQueue = dispatch_queue_create("avatars-loader-queue", DISPATCH_QUEUE_CONCURRENT)
             dispatch_async(bgQueue, { [weak self]() -> Void in
@@ -73,7 +73,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 {
                     if let weakSelf = self
                     {
-                        if let visibleCells = weakSelf.contactsTable?.visibleCells() as? [AllContactsVCCell]
+                        if let visibleCells = weakSelf.contactsTable?.visibleCells as? [AllContactsVCCell]
                         {
                             var indexPathsToReload = [NSIndexPath]()
                             for aCell in visibleCells
@@ -97,7 +97,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 }
                 else
                 {
-                    println(" No Avatar loaded. Will not reload visible rows.")
+                    print(" No Avatar loaded. Will not reload visible rows.")
                 }
             })
         }
@@ -113,13 +113,13 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if let contacts = allContacts
         {
-            return allContacts!.count
+            return contacts.count
         }
         return 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var commonContactCell = tableView.dequeueReusableCellWithIdentifier("allContactsCell", forIndexPath: indexPath) as! AllContactsVCCell
+        let commonContactCell = tableView.dequeueReusableCellWithIdentifier("allContactsCell", forIndexPath: indexPath) as! AllContactsVCCell
         
         commonContactCell.avatarImageView?.maskToCircle()
         commonContactCell.selectionStyle = .None
@@ -133,30 +133,25 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         if let contact = contactForIndexPath(indexPath)
         {
             cell.contactIsMine = contactIsMine(contact)
+
             
-            var firstName = contact.firstName as? String
-            var lastName = contact.lastName as? String
-            var userName = contact.userName as? String
-            var phoneNumber = contact.phone as? String
-            var userMood = contact.mood as? String
-            //cell.phoneNumber?.text = phoneNumber ?? "phone no."
-            //cell.emailLabel?.text = userName
-             cell.moodLabel?.text = userMood /* "Warning once only: Detected a case where constraints ambiguous" */
+          
+            cell.moodLabel?.text = contact.mood as? String//userMood /* "Warning once only: Detected a case where constraints ambiguous" */
             var contactName = ""
             
-            if firstName != nil
+            if let firstName = contact.firstName as? String
             {
-                contactName = firstName!
+                contactName = firstName
             }
-            if lastName != nil
+            if let lastName = contact.lastName as? String
             {
                 if contactName.isEmpty
                 {
-                    contactName = lastName!
+                    contactName = lastName
                 }
                 else
                 {
-                    contactName += (" " + lastName!)
+                    contactName += (" " + lastName)
                 }
             }
             
@@ -194,7 +189,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func contactIsMine(contact:Contact) -> Bool
     {
-        if let myContact = DataSource.sharedInstance.getContactsByIds(Set([contact.contactId!.integerValue]))
+        if let _ = DataSource.sharedInstance.getContactsByIds(Set([contact.contactId!.integerValue]))
         {
             return true
         }
@@ -220,7 +215,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         {
             let contactName = contactNameStringFromContact(contact)
             
-            var mainFrameWidth = UIScreen.mainScreen().bounds.size.width
+            let mainFrameWidth = UIScreen.mainScreen().bounds.size.width
             let nameFrame = contactName.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 17.0)!], context: nil)
             
             var moodFrame = CGRectZero

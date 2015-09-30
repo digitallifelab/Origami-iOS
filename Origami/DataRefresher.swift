@@ -43,13 +43,13 @@ class DataRefresher
             {
                 if weakSelf.cancelled
                 {
-                    println("Stopped refreshing elements : SELF.cancelled")
+                    print("Stopped refreshing elements : SELF.cancelled")
                     return
                 }
             }
             else
             {
-                println("Stopped refreshing elements : no SELF")
+                print("Stopped refreshing elements : no SELF")
                 return
             }
             
@@ -83,13 +83,13 @@ class DataRefresher
                                 }
                                 else
                                 {
-                                    println("Stopped refreshing elements : SELF.cancelled")
+                                    print("Stopped refreshing elements : SELF.cancelled")
                                     return
                                 }
                             }
                             else
                             {
-                                println("Stopped refreshing elements : no SELF")
+                                print("Stopped refreshing elements : no SELF")
                                 return
                             }
                         }
@@ -140,13 +140,13 @@ class DataRefresher
                                 }
                                 else
                                 {
-                                    println("Stopped refreshing elements : SELF.cancelled")
+                                    print("Stopped refreshing elements : SELF.cancelled")
                                     return
                                 }
                             }
                             else
                             {
-                                println("Stopped refreshing elements : no SELF")
+                                print("Stopped refreshing elements : no SELF")
                                 return
                             }
                         }
@@ -189,7 +189,7 @@ class DataRefresher
             {
                 if weakSelf.cancelled
                 {
-                    println("Stopped refreshing elements : SELF.cancelled")
+                    print("Stopped refreshing elements : SELF.cancelled")
                     return
                 }
                 else
@@ -199,7 +199,7 @@ class DataRefresher
             }
             else
             {
-                println("Stopped refreshing elements : no SELF")
+                print("Stopped refreshing elements : no SELF")
                 return
             }
         }

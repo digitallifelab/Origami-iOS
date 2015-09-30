@@ -30,33 +30,33 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             var options:[ElementCellType] = [ElementCellType]()
             if let title = getElementTitle()
             {
-                //println("\n appended Title")
+                //print("\n appended Title")
                 options.append(.Title)
             }
             if let chatMessages = getElementLastMessages()
             {
-                //println("\n appended CHAT")
+                //print("\n appended CHAT")
                 options.append(.Chat)
             }
             if let details = getElementDetails()
             {
                 if !details.isEmpty
                 {
-                    //println("\n appended DETAILS")
+                    //print("\n appended DETAILS")
                     options.append(.Details)
                 }
                 
             }
             if let attachesCollectionHandler = getElementAttachesHandler()
             {
-                //println("\n appended ATTACHES")
+                //print("\n appended ATTACHES")
                 self.attachesHandler = attachesCollectionHandler
                 options.append(.Attaches)
             }           
             
             if let subordinates = getElementSubordinates()
             {
-                //println("\n appended Subordinates")
+                //print("\n appended Subordinates")
                 options.append(.Subordinates)
             }
             
@@ -435,12 +435,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
                     
                 }
-                //println("\n-----------returning attach file collection holder cell-----------\n")
+                //print("\n-----------returning attach file collection holder cell-----------\n")
                 return attachesHolderCell
             }
             else
             {
-                println("\n - ! ERROR: \n SingleElementCollectionViewDataSource Could not dequeue attachesHolder cell.\n Returning default collectionViewCell")
+                print("\n - ! ERROR: \n SingleElementCollectionViewDataSource Could not dequeue attachesHolder cell.\n Returning default collectionViewCell")
                 
                 var defaultCell = SingleElementAttachesCollectionHolderCell()
                 if let attachHandler = self.attachesHandler

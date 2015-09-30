@@ -56,7 +56,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
         }
     }
     
-    override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]?
+    override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]?
     {
         var currentAttributes = [UICollectionViewLayoutAttributes]()
         
@@ -70,26 +70,28 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
         return currentAttributes
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
-        var lvAttributeSuper = super.layoutAttributesForItemAtIndexPath(indexPath)
-        if layoutAttributes != nil
+        if let lvAttributeSuper = super.layoutAttributesForItemAtIndexPath(indexPath)
         {
-            for lvAttribute in layoutAttributes!
+            if layoutAttributes != nil
             {
-                if lvAttribute.indexPath.compare(indexPath) == .OrderedSame && lvAttribute.representedElementKind != UICollectionElementKindSectionHeader
+                for lvAttribute in layoutAttributes!
                 {
-                    lvAttributeSuper.frame = lvAttribute.frame
-                    break
+                    if lvAttribute.indexPath.compare(indexPath) == .OrderedSame && lvAttribute.representedElementKind != UICollectionElementKindSectionHeader
+                    {
+                        lvAttributeSuper.frame = lvAttribute.frame
+                        break
+                    }
                 }
             }
+            return lvAttributeSuper
         }
-        
-        
-        return lvAttributeSuper
+       
+        return nil
     }
     
-    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes!
+    override func layoutAttributesForSupplementaryViewOfKind(elementKind: String, atIndexPath indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
         if let superHeaderAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
         {
@@ -105,9 +107,12 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                 }
             }
         }
-        var superAttributes = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
+        if let superAttributes = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
+        {
+              return superAttributes
+        }
         
-        return superAttributes
+        return nil
     }
     
     override func collectionViewContentSize() ->CGSize

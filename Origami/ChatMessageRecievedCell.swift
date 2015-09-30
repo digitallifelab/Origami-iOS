@@ -60,15 +60,15 @@ class ChatMessageRecievedCell: UITableViewCell {
     {
         self.layoutIfNeeded()
         
-        setMaskTo(self.textContainerView, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight | UIRectCorner.TopRight, withColor: UIColor.lightGrayColor())
+        setMaskTo(self.textContainerView, byRoundingCorners:[ UIRectCorner.BottomLeft, UIRectCorner.BottomRight, UIRectCorner.TopRight], withColor: UIColor.lightGrayColor())
     }
     
     func setMaskTo(view:UIView, byRoundingCorners corners:UIRectCorner, withColor color:UIColor)
     {
         let rect = view.bounds
         //rounded mask
-        var rounded =  UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
-        var shape = CAShapeLayer()
+        let rounded =  UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSizeMake(10.0, 10.0))
+        let shape = CAShapeLayer()
         shape.path = rounded.CGPath;
         self.maskLayer = shape;
         view.layer.mask = shape;

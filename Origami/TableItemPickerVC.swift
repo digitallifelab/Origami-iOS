@@ -51,9 +51,9 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             var countrieNamesFirstLettersSet = Set<String>()
             for aCountry in array
             {
-                if count(aCountry.countryName) > 1
+                if aCountry.countryName.characters.count > 1
                 {
-                    let endIndex = advance(aCountry.countryName.startIndex, 1)
+                    let endIndex = aCountry.countryName.startIndex.advancedBy(1)//advance(aCountry.countryName.startIndex, 1)
                     let firstLetterSubstring = aCountry.countryName.substringToIndex(endIndex)
                     if !countrieNamesFirstLettersSet.contains(firstLetterSubstring)
                     {
@@ -64,7 +64,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             
             var firstLettersArray = Array(countrieNamesFirstLettersSet)
             
-            firstLettersArray.sort( < )
+            firstLettersArray.sortInPlace( < )
             
             var countryNamesByLetter = [[String]]()
             
@@ -73,7 +73,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                 
                 let sortedCountries = array.filter { (country) in
                     
-                    let endIndex = advance(country.countryName.startIndex, 1)
+                    let endIndex = country.countryName.startIndex.advancedBy(1)//advance(country.countryName.startIndex, 1)
                     let firstLetterSubstring = country.countryName.substringToIndex(endIndex)
                     
                     return (firstLetterSubstring == aLetter)
@@ -84,11 +84,11 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                     countryNames.append(aCountry.countryName)
                 }
                 countryNamesByLetter.append(countryNames)
-                //println(aLetter)
-                //println(countryNames)
+                //print(aLetter)
+                //print(countryNames)
             }
             
-            //println("\(firstLettersArray)")
+            //print("\(firstLettersArray)")
             
             if countryNamesByLetter.count == firstLettersArray.count
             {
@@ -115,9 +115,9 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             var languageNamesFirstLettersSet = Set<String>()
             for aLanguage in array
             {
-                if count(aLanguage.languageName) > 1
+                if aLanguage.languageName.characters.count > 1
                 {
-                    let endIndex = advance(aLanguage.languageName.startIndex, 1)
+                    let endIndex = aLanguage.languageName.startIndex.advancedBy(1) //advance(aLanguage.languageName.startIndex, 1)
                     let firstLetterSubstring = aLanguage.languageName.substringToIndex(endIndex)
                     if !languageNamesFirstLettersSet.contains(firstLetterSubstring)
                     {
@@ -128,7 +128,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             
             var firstLettersArray = Array(languageNamesFirstLettersSet)
             
-            firstLettersArray.sort( < )
+            firstLettersArray.sortInPlace( < )
             
             var languageNamesByLetter = [[String]]()
             
@@ -137,7 +137,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                 
                 let sortedLanguages = array.filter { (language) in
                     
-                    let endIndex = advance(language.languageName.startIndex, 1)
+                    let endIndex = language.languageName.startIndex.advancedBy(1) // advance(language.languageName.startIndex, 1)
                     let firstLetterSubstring = language.languageName.substringToIndex(endIndex)
                     
                     return (firstLetterSubstring == aLetter)
@@ -149,11 +149,11 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
                 }
                 
                 languageNamesByLetter.append(languageNames)
-                //println(aLetter)
-                //println(languageNames)
+                //print(aLetter)
+                //print(languageNames)
             }
             
-            //println("\(firstLettersArray)")
+            //print("\(firstLettersArray)")
             
             if languageNamesByLetter.count == firstLettersArray.count
             {
@@ -179,7 +179,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         if let items = currentItems
         {
-            //println("number of sections: \(items.count)")
+            //print("number of sections: \(items.count)")
             return items.count
         }
         return 0
@@ -205,7 +205,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             let item = items[section]
             
             let key = item.keys.first
-            //println("key for section \(section) = \(key)")
+            //print("key for section \(section) = \(key)")
             return key
         }
         return nil
@@ -215,8 +215,8 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
         
         if let title = titleForSection(section)
         {
-            let range = advance(title.startIndex, 1)
-            return title.substringToIndex(range)
+            let anIndex = title.startIndex.advancedBy(1) //advance(title.startIndex, 1)
+            return title.substringToIndex(anIndex)
         }
         return nil
     }
@@ -241,7 +241,7 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("SelectionSell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("SelectionSell", forIndexPath: indexPath)// as! UITableViewCell
         
         cell.textLabel?.text = textForCellAtIndexPath(indexPath)
         cell.selectionStyle = UITableViewCellSelectionStyle.Gray

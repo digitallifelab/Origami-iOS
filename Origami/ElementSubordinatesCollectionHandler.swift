@@ -40,12 +40,12 @@ class ElementSubordinatesCollectionHandler: CollectionHandler
     
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let dashCount = self.dashElements.count
-        //println("Dash Elements Count = \(dashCount)")
+        //print("Dash Elements Count = \(dashCount)")
         return dashCount
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        var subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDashCell", forIndexPath: indexPath) as! DashCell
+        let subordinateCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDashCell", forIndexPath: indexPath) as! DashCell
         let element = elementForIndexPath(indexPath)
         subordinateCell.displayMode = self.displayMode
         subordinateCell.cellType = (element.isSignal.boolValue) ? .Signal : .Other

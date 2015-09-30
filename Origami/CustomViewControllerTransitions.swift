@@ -13,41 +13,43 @@ class FadeOpaqueAnimator : NSObject, UIViewControllerAnimatedTransitioning {
     
     var transitionDirection:FadedTransitionDirection = .FadeIn
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
         return 0.3
     }
     
     func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
         
-        let containerView = transitionContext.containerView()
-        let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
-        let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
-        
-        let finalToFrame:CGRect = transitionContext.finalFrameForViewController(toVC!)
-        
-        if transitionDirection == .FadeIn
+        if let containerView = transitionContext.containerView()
         {
-            toVC!.view.alpha = 0.0
-            containerView.insertSubview(toVC!.view, aboveSubview: fromVC!.view)
+            let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
+            let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
             
-            UIView.animateWithDuration(transitionDuration(transitionContext),
-                delay: 0.0,
-                options: UIViewAnimationOptions.CurveEaseInOut,
-                animations: { () -> Void in
-                toVC!.view.alpha = 1.0
-            }, completion: { (finished) -> Void in
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
-            })
-        }
-        else if transitionDirection == .FadeOut
-        {
-            containerView.insertSubview(fromVC!.view, aboveSubview: toVC!.view)
+            //let finalToFrame:CGRect = transitionContext.finalFrameForViewController(toVC!)
             
-            UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0.1, options: .CurveEaseInOut, animations: { () -> Void in
-                fromVC!.view.alpha = 0.0
-            }, completion: { (finished) -> Void in
-                transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
-            })
+            if transitionDirection == .FadeIn
+            {
+                toVC!.view.alpha = 0.0
+                containerView.insertSubview(toVC!.view, aboveSubview: fromVC!.view)
+                
+                UIView.animateWithDuration(transitionDuration(transitionContext),
+                    delay: 0.0,
+                    options: UIViewAnimationOptions.CurveEaseInOut,
+                    animations: { () -> Void in
+                        toVC!.view.alpha = 1.0
+                    }, completion: { (finished) -> Void in
+                        transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                })
+            }
+            else if transitionDirection == .FadeOut
+            {
+                containerView.insertSubview(fromVC!.view, aboveSubview: toVC!.view)
+                
+                UIView.animateWithDuration(transitionDuration(transitionContext), delay: 0.1, options: .CurveEaseInOut, animations: { () -> Void in
+                    fromVC!.view.alpha = 0.0
+                    }, completion: { (finished) -> Void in
+                        transitionContext.completeTransition(!transitionContext.transitionWasCancelled())
+                })
+            }
         }
     }
 }
@@ -60,7 +62,7 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
     var transitionDirection:FadedTransitionDirection = .FadeIn // used this enum to shorten enums quantity in project.  Better is to use some enum saying - "Display"<->"Hide"
     var shouldAnimate = true
     
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval
+    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval
     {
         return 0.25
     }
@@ -68,7 +70,12 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
     func animateTransition(transitionContext: UIViewControllerContextTransitioning)
     {
         
-        let containerView = transitionContext.containerView()
+        guard let containerView = transitionContext.containerView() else {
+            print(" no container view to perform transition.\n")
+            
+            return
+        }
+        
         let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
         let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
         
@@ -77,14 +84,14 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         var currentDeviceIdiom:UIUserInterfaceIdiom = .Phone
         
     
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            currentDeviceIdiom = UIDevice.currentDevice().userInterfaceIdiom
-        }
-        else
+        if #available (iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             currentDeviceIdiom  = currentTraitCollection.userInterfaceIdiom
+        }
+        else
+        {
+            currentDeviceIdiom = UIDevice.currentDevice().userInterfaceIdiom
         }
         
         var menuWidth:CGFloat = 210.0
@@ -106,7 +113,7 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         //perform the needed transition
         if transitionDirection == .FadeIn //show menu
         {
-            let hideMainViewFrame = CGRectOffset(fromVC!.view.frame, menuWidth, 0.0) // move to right HomeScreenVC`s view
+            //let hideMainViewFrame = CGRectOffset(fromVC!.view.frame, menuWidth, 0.0) // move to right HomeScreenVC`s view
             let menuFrame = CGRectMake(-menuWidth, 0, menuWidth, wholeFrame.size.height)
             toVC!.view.frame = menuFrame // now hidden to left
             
@@ -172,7 +179,12 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
 class menuRevealAnimator : MenuTransitionAnimator
 {
     override func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let containerView = transitionContext.containerView()
+        guard let containerView = transitionContext.containerView()
+            else{
+                print(" no container view to perform transition.\n")
+                
+                return
+        }
         let fromVC = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)
         let toVC = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)
         
@@ -181,14 +193,14 @@ class menuRevealAnimator : MenuTransitionAnimator
         var currentDeviceIdiom:UIUserInterfaceIdiom = .Phone
         
         
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            currentDeviceIdiom = UIDevice.currentDevice().userInterfaceIdiom
-        }
-        else
+        if #available (iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             currentDeviceIdiom  = currentTraitCollection.userInterfaceIdiom
+        }
+        else
+        {
+            currentDeviceIdiom = UIDevice.currentDevice().userInterfaceIdiom
         }
         
         var menuWidth:CGFloat = 210.0
@@ -211,7 +223,7 @@ class menuRevealAnimator : MenuTransitionAnimator
         if transitionDirection == .FadeIn //show menu
         {
             let hideMainViewFrame = CGRectOffset(fromVC!.view.frame, menuWidth, 0.0) // move to right HomeScreenVC`s view
-            let menuFrame = CGRectMake(-menuWidth, 0, menuWidth, wholeFrame.size.height)
+            //let menuFrame = CGRectMake(-menuWidth, 0, menuWidth, wholeFrame.size.height)
             //toVC!.view.frame = menuFrame // now hidden to left
             
             containerView.insertSubview(toVC!.view, aboveSubview: fromVC!.view)

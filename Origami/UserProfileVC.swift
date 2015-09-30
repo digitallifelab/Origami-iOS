@@ -76,11 +76,11 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                         }
                         else if let errorImage = error
                         {
-                            println(" - Error loading image drom disc: \(errorImage)")
+                            print(" - Error loading image drom disc: \(errorImage)")
                             if errorImage.code == 406 // "No File For Avatar."
                             {
                                 DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
-                                    if let anImage = image
+                                    if let _ = image //image exists
                                     {
                                         if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
                                         {
@@ -152,7 +152,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func configureNavigationControllerToolbarItems()
     {
-        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        let homeButton = UIButton(type: .System)//UIButton.buttonWithType(.System) as! UIButton
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
@@ -173,25 +173,25 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func configureLeftBarButtonItem()
     {
-        var leftButton = UIButton.buttonWithType(.System) as! UIButton
+        let leftButton = UIButton(type: .System)//UIButton.buttonWithType(.System) as! UIButton
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         //leftButton.tintColor = kDayNavigationBarBackgroundColor
         leftButton.addTarget(self, action: "menuTapped:", forControlEvents: .TouchUpInside)
-        var leftBarButton = UIBarButtonItem(customView: leftButton)
+        let leftBarButton = UIBarButtonItem(customView: leftButton)
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
     func configureRightBarButtonItem()
     {
-        var editButton = UIButton.buttonWithType(.System) as! UIButton
+        let editButton = UIButton(type: .System)//UIButton.buttonWithType(.System) as! UIButton
         editButton.frame = CGRectMake(0.0, 0.0, 40.0, 40.0)
         editButton.imageEdgeInsets = UIEdgeInsetsMake(0, 8, 0, -8)
         editButton.setImage(UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         //editButton.tintColor = kDayNavigationBarBackgroundColor
         editButton.addTarget(self, action: "toggleEditingMode", forControlEvents: .TouchUpInside)
-        var rightBarButton = UIBarButtonItem(customView: editButton)
+        let rightBarButton = UIBarButtonItem(customView: editButton)
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
     
@@ -238,20 +238,23 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         if let notifInfo = notification.userInfo
         {
             //prepare needed values
-            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue()
+            let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue
             let keyboardHeight = keyboardFrame.size.height
             //let animationOptionCurveNumber = notifInfo[UIKeyboardAnimationCurveUserInfoKey]! as! NSNumber
             //let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions.fromRaw(   animationOptionCurveNumber)
-            let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
-            let options = UIViewAnimationOptions(UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
-            var keyboardIsToShow = false
+            //let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
+           
+            //if let infoKeyInt = notifInfo[UIKeyboardAnimationCurveUserInfoKey] as? UInt
+            //{
+            //    let options = UIViewAnimationOptions(rawValue: infoKeyInt << 16)
+            //}
+            
+            //var keyboardIsToShow = false
             if notification.name == UIKeyboardWillShowNotification
             {
-                keyboardIsToShow = true
-                
+                //keyboardIsToShow = true
                 let edgeInsets = UIEdgeInsetsMake(0, 0, keyboardHeight, 0)
                 profileCollection.contentInset = edgeInsets
-                
             }
             else
             {
@@ -285,7 +288,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 
                 let nsString:NSString = textView.text
                 
-                var integerString = nsString.longLongValue
+                let integerString = nsString.longLongValue
                 
                 if integerString > 0 && integerString < INT64_MAX
                 {
@@ -345,7 +348,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         switch indexPath.item
         {
         case 0:
-            var avatarCell = collectionView.dequeueReusableCellWithReuseIdentifier(avatarCellIdentifier, forIndexPath: indexPath) as! UserProfileAvatarCollectionCell
+            let avatarCell = collectionView.dequeueReusableCellWithReuseIdentifier(avatarCellIdentifier, forIndexPath: indexPath) as! UserProfileAvatarCollectionCell
             avatarCell.delegate = self
             avatarCell.displayMode = self.displayMode
             if let image = self.currentAvatar
@@ -404,10 +407,9 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell?.textLabel?.text = nil
             if let userBirthDay = user?.birthDay as? String
             {
-                var date = userBirthDay.dateFromServerDateString()
-                if let existDate = date
+                if let date = userBirthDay.dateFromServerDateString()
                 {
-                    let birthDateString = existDate.dateStringMediumStyle()
+                    let birthDateString = date.dateStringMediumStyle()
                     textCell?.textLabel?.text = birthDateString
                 }
             }
@@ -463,7 +465,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
         }
         
-        if let datePickerHolder = self.view.viewWithTag(0xDA7E)
+        if let _ = self.view.viewWithTag(0xDA7E) //datePicker
         {
             datePickerCancels(nil)
         }
@@ -541,7 +543,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     {
         if let avatar = self.currentAvatar, avatarShowingVC = self.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
         {
-            avatarShowingVC.imageToDisplay = self.currentAvatar
+            avatarShowingVC.imageToDisplay = avatar//self.currentAvatar
             self.navigationController?.pushViewController(avatarShowingVC, animated: true)
         }
     }
@@ -556,7 +558,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func mediaPicker(picker: AnyObject, didPickMediaToAttach mediaFile: MediaFile) {
         
-        var lvData = mediaFile.data.copy() as! NSData
+        let lvData = mediaFile.data.copy() as! NSData
 
         if picker is UIViewController
         {
@@ -733,14 +735,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func showDatePickerView()
     {
         
-        var datePickerHolderView = UIView(frame: CGRectMake(0.0, CGRectGetMaxY(self.profileCollection.frame) - 280.0, CGRectGetWidth(self.view.bounds), 280.0))
-        datePickerHolderView.autoresizingMask = UIViewAutoresizing.FlexibleLeftMargin | .FlexibleRightMargin | .FlexibleTopMargin
+        let datePickerHolderView = UIView(frame: CGRectMake(0.0, CGRectGetMaxY(self.profileCollection.frame) - 280.0, CGRectGetWidth(self.view.bounds), 280.0))
+        datePickerHolderView.autoresizingMask = [UIViewAutoresizing.FlexibleLeftMargin , .FlexibleRightMargin , .FlexibleTopMargin]
         datePickerHolderView.tag = 0xDA7E // :-) DATE
         datePickerHolderView.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.7)
         
         let holderWidth = CGRectGetWidth(datePickerHolderView.bounds)
         
-        var datePicker = UIDatePicker(frame: CGRectMake(0, 50.0, datePickerHolderView.bounds.size.width, 200))
+        let datePicker = UIDatePicker(frame: CGRectMake(0, 50.0, datePickerHolderView.bounds.size.width, 200))
         datePicker.backgroundColor = UIColor.whiteColor()
         if let currentDate = user?.birthDay?.dateFromServerDateString()
         {
@@ -755,27 +757,27 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         
         datePickerHolderView.addSubview(datePicker)
         
-        var button = UIButton.buttonWithType(UIButtonType.System) as? UIButton
-        button?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
-        button?.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
-        button?.frame = CGRectMake(holderWidth - 60.0 , 0.0, 60, 44.0)
-        button?.setTitle("done".localizedWithComment(""), forState: .Normal)
-        button?.addTarget(self, action: "datePickerSubmitNewDate:", forControlEvents: .TouchUpInside)
-        if let b = button
-        {
-            datePickerHolderView.addSubview(button!)
-        }
+        let button = UIButton(type: .System)//UIButton.buttonWithType(UIButtonType.System) as? UIButton
+        button.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
+        button.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
+        button.frame = CGRectMake(holderWidth - 60.0 , 0.0, 60, 44.0)
+        button.setTitle("done".localizedWithComment(""), forState: .Normal)
+        button.addTarget(self, action: "datePickerSubmitNewDate:", forControlEvents: .TouchUpInside)
+//        if let b = button
+//        {
+            datePickerHolderView.addSubview(button)
+//        }
   
-        var cancelButton = UIButton.buttonWithType(.System) as? UIButton
-        cancelButton?.tintColor = button?.tintColor
-        cancelButton?.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
-        cancelButton?.frame = CGRectMake(0, 0, 60.0, 44.0)
-        cancelButton?.setTitle("cancel".localizedWithComment(""), forState: .Normal)
-        cancelButton?.addTarget(self, action: "datePickerCancels:", forControlEvents: .TouchUpInside)
-        if let cB = cancelButton
-        {
-            datePickerHolderView.addSubview(cancelButton!)
-        }
+        let cancelButton = UIButton(type: .System)//UIButton.buttonWithType(.System) as? UIButton
+        cancelButton.tintColor = button.tintColor
+        cancelButton.backgroundColor = (self.displayMode == .Day) ? UIColor.whiteColor() : UIColor.lightGrayColor()
+        cancelButton.frame = CGRectMake(0, 0, 60.0, 44.0)
+        cancelButton.setTitle("cancel".localizedWithComment(""), forState: .Normal)
+        cancelButton.addTarget(self, action: "datePickerCancels:", forControlEvents: .TouchUpInside)
+//        if let cB = cancelButton
+//        {
+            datePickerHolderView.addSubview(cancelButton)
+//        }
         
         self.view.insertSubview(datePickerHolderView, aboveSubview: profileCollection)
     }
@@ -801,33 +803,34 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             if let datePicker = holderView.viewWithTag(2) as? UIDatePicker
             {
                 let date = datePicker.date
-                var previousDate = DataSource.sharedInstance.user?.birthDay
-                DataSource.sharedInstance.user?.birthDay = date.dateForServer()
-                DataSource.sharedInstance.editUserInfo { (success, error) -> () in
-                    if success
-                    {
-                        //println(" -> UserProfileVC succeeded to edit user birth date.")
-                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                            if let weakSelf = self
-                            {
-                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
-                            }
-                        })
-                    }
-                    else if let anError = error
-                    {
-                        //println(" -> UserProfileVC failed to edit user birth date.")
-                        DataSource.sharedInstance.user?.birthDay = previousDate
-                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                            if let weakSelf = self
-                            {
-                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
-                                weakSelf.showAlertWithTitle("Error.", message: "Could not update your birthday.", cancelButtonTitle: "Close")
-                            }
-                        })
+                if let previousDate = DataSource.sharedInstance.user?.birthDay
+                {
+                    DataSource.sharedInstance.user?.birthDay = date.dateForServer()
+                    DataSource.sharedInstance.editUserInfo { (success, error) -> () in
+                        if success
+                        {
+                            //print(" -> UserProfileVC succeeded to edit user birth date.")
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let weakSelf = self
+                                {
+                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                                }
+                                })
+                        }
+                        else if let _ = error
+                        {
+                            //print(" -> UserProfileVC failed to edit user birth date.")
+                            DataSource.sharedInstance.user?.birthDay = previousDate
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let weakSelf = self
+                                {
+                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Age.rawValue, inSection: 0)])
+                                    weakSelf.showAlertWithTitle("Error.", message: "Could not update your birthday.", cancelButtonTitle: "Close")
+                                }
+                                })
+                        }
                     }
                 }
-                
             }
             //dismiss datePickerHolderView
             datePickerCancels(nil)
@@ -844,19 +847,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         let cancelTitle = "cancel".localizedWithComment("")
         let proceedTitle = "change".localizedWithComment("")
         
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            let alertView = UIAlertView(
-                title: title,
-                message: message,
-                delegate: self,
-                cancelButtonTitle: cancelTitle,
-                otherButtonTitles: proceedTitle)
-            alertView.tag = ProfileTextCellType.Password.rawValue
-            alertView.show()
-            
-        }
-        else
+        if #available(iOS 8.0, *)
         {
             let alertController = UIAlertController(
                 title: title,
@@ -869,19 +860,31 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                     weakSelf.tempPassword = nil
                     weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forRow: ProfileTextCellType.Password.rawValue, inSection: 0)])
                 }
-            })
+                })
             
             let alertActionChange = UIAlertAction(title: proceedTitle, style: .Default, handler: {[weak self] (alertAction) -> Void in
                 if let weakSelf = self
                 {
                     weakSelf.userDidConfirmPasswordChange()
                 }
-            })
+                })
             
             alertController.addAction(alertActionCancel)
             alertController.addAction(alertActionChange)
             
             self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else //FrameCounter.isLowerThanIOSVersion("8.0")
+        {
+            let alertView = UIAlertView(
+                title: title,
+                message: message,
+                delegate: self,
+                cancelButtonTitle: cancelTitle,
+                otherButtonTitles: proceedTitle)
+            alertView.tag = ProfileTextCellType.Password.rawValue
+            alertView.show()
+            
         }
     }
     
@@ -905,7 +908,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 
                 if success
                 {
-                    //println(" -> UserProfileVC succeeded to edit user Password: /n->Old Password: \(oldPassword) /n->New Password: \(password)")
+                    //print(" -> UserProfileVC succeeded to edit user Password: /n->Old Password: \(oldPassword) /n->New Password: \(password)")
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -922,13 +925,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
-                    //println(" -> UserProfileVC failed to edit user Password.")
+                    //print(" -> UserProfileVC failed to edit user Password.")
                     
                     if let anError = error
                     {
                         if let anError = error
                         {
-                            println("Error: \n ->\(anError)")
+                            print("Error: \n ->\(anError)")
                         }
                     }
                    
@@ -1010,18 +1013,18 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 if success
                 {
-                    //println(" -> UserProfileVC succeeded to edit user Country: /n->Old Country: \(oldName) /n->New Country: \(DataSource.sharedInstance.user?.country)")
+                    //print(" -> UserProfileVC succeeded to edit user Country: /n->Old Country: \(oldName) /n->New Country: \(DataSource.sharedInstance.user?.country)")
                     weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: ProfileTextCellType.Country.rawValue, inSection: 0)])
                 }
                 else
                 {
                     DataSource.sharedInstance.user?.country = oldName
                     DataSource.sharedInstance.user?.countryId = oldId
-                    //println(" -> UserProfileVC failed to edit user Country.")
+                    //print(" -> UserProfileVC failed to edit user Country.")
                     weakSelf.showAlertWithTitle("Error.", message: "Could not update your Country.", cancelButtonTitle: "Close")
                     if let anError = error
                     {
-                        println("Error: \n ->\(anError)")
+                        print("Error: \n ->\(anError)")
                     }
                 }
             }
@@ -1046,18 +1049,18 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 if success
                 {
-                    //println(" -> UserProfileVC succeeded to edit user Language: /n->Old Language: \(oldName) /n->New Language: \(DataSource.sharedInstance.user?.language)")
+                    //print(" -> UserProfileVC succeeded to edit user Language: /n->Old Language: \(oldName) /n->New Language: \(DataSource.sharedInstance.user?.language)")
                     weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: ProfileTextCellType.Language.rawValue, inSection: 0)])
                 }
                 else
                 {
                     DataSource.sharedInstance.user?.language = oldName
                     DataSource.sharedInstance.user?.languageId = oldId
-                    //println(" -> UserProfileVC failed to edit user Language.")
+                    //print(" -> UserProfileVC failed to edit user Language.")
                     weakSelf.showAlertWithTitle("Error.", message: "Could not update your Language.", cancelButtonTitle: "Close")
                     if let anError = error
                     {
-                        println("Error: \n ->\(anError)")
+                        print("Error: \n ->\(anError)")
                     }
                 }
             }
@@ -1119,7 +1122,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
                 if success
                 {
-                    //println(" -> UserProfileVC succeeded to edit user LastName: /n->Old FirstName: \(oldName) /n->New FirstName: \(DataSource.sharedInstance.user?.lastName)")
+                    //print(" -> UserProfileVC succeeded to edit user LastName: /n->Old FirstName: \(oldName) /n->New FirstName: \(DataSource.sharedInstance.user?.lastName)")
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -1129,11 +1132,11 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
-                    //println(" -> UserProfileVC failed to edit user FirstName.")
+                    //print(" -> UserProfileVC failed to edit user FirstName.")
                     
                     if let anError = error
                     {
-                        println("Error: \n ->\(anError)")
+                        print("Error: \n ->\(anError)")
                     }
                     
                     DataSource.sharedInstance.user?.password = oldName
@@ -1163,7 +1166,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             DataSource.sharedInstance.editUserInfo({ (success, error) -> () in
                 if success
                 {
-                    //println(" -> UserProfileVC succeeded to edit user LastName: /n->Old LastName: \(oldLastName) /n->New LastName: \(DataSource.sharedInstance.user?.lastName)")
+                    //print(" -> UserProfileVC succeeded to edit user LastName: /n->Old LastName: \(oldLastName) /n->New LastName: \(DataSource.sharedInstance.user?.lastName)")
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -1173,11 +1176,11 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 }
                 else
                 {
-                    //println(" -> UserProfileVC failed to edit user LastName.")
+                    //print(" -> UserProfileVC failed to edit user LastName.")
                     
                     if let anError = error
                     {
-                        println("Error: \n ->\(anError)")
+                        print("Error: \n ->\(anError)")
                     }
                     
                     DataSource.sharedInstance.user?.password = oldLastName
@@ -1215,7 +1218,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 if let anError = error
                 {
-                    println("Error: \n ->\(anError)")
+                    print("Error: \n ->\(anError)")
                 }
                 
                 DataSource.sharedInstance.user?.password = oldMood
@@ -1250,7 +1253,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             {
                 if let anError = error
                 {
-                    println("Error: \n ->\(anError)")
+                    print("Error: \n ->\(anError)")
                 }
                 
                 DataSource.sharedInstance.user?.sex = oldValue

@@ -24,8 +24,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
         passwordField.delegate = self
         // Do any additional setup after loading the view.
         
-        var userName = NSUserDefaults.standardUserDefaults().objectForKey(loginNameKey) as? String
-        var password = NSUserDefaults.standardUserDefaults().objectForKey(passwordKey) as? String
+        let userName = NSUserDefaults.standardUserDefaults().objectForKey(loginNameKey) as? String
+        let password = NSUserDefaults.standardUserDefaults().objectForKey(passwordKey) as? String
         
         nameField.text = userName
         passwordField.text = password
@@ -41,10 +41,17 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if !nameField.text.isEmpty && !passwordField.text.isEmpty
+        if let name = nameField.text, password = passwordField.text
         {
-            loginButtonPress(self.loginButton)
+            if !name.characters.isEmpty && !password.characters.isEmpty
+            {
+                loginButtonPress(self.loginButton)
+            }
         }
+//        if nameField.text?.characters.isEmpty && /*!*/passwordField.text/*.isEmpty*/
+//        {
+//            loginButtonPress(self.loginButton)
+//        }
     }
     
     @IBAction func loginButtonPress(sender:UIButton)
@@ -57,9 +64,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
                 {
                     weakSelf.userDidLogin(aUser)
                 }
-                else if let anError = error, let localizedDescription = error?.localizedDescription
+                else if let anError = error
                 {
-                    weakSelf.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:localizedDescription, cancelButtonTitle:"Close".localizedWithComment(""))
+                    weakSelf.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:anError.localizedDescription, cancelButtonTitle:"Close".localizedWithComment(""))
                 }
                 weakSelf.loginButton.enabled = true
             }
@@ -95,7 +102,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
         switch textField.tag
         {
         case 1:
-            if count(passwordField.text) > 0
+            if passwordField.text?.characters.count > 0
             {
                 textField.returnKeyType = UIReturnKeyType.Done
             }
@@ -104,7 +111,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
                 textField.returnKeyType = UIReturnKeyType.Next
             }
         case 2:
-            if count(nameField.text) > 0
+            if nameField.text?.characters.count > 0 //count(nameField.text) > 0
             {
                 textField.returnKeyType = UIReturnKeyType.Done
             }
@@ -123,16 +130,20 @@ class LoginVC: UIViewController , UITextFieldDelegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
-        if count(nameField.text) > 0 && count(passwordField.text) > 0
+        
+        if let name = nameField.text, password = passwordField.text
         {
-            loginButton.enabled = true
-            if textField.returnKeyType == .Done // autologin user
+            if name.characters.count > 0 && password.characters.count > 0
             {
-                loginButton.enabled = false
-                NSUserDefaults.standardUserDefaults().setObject(nameField.text, forKey: loginNameKey)
-                NSUserDefaults.standardUserDefaults().setObject(passwordField.text, forKey: passwordKey)
-                
-                loginButtonPress(loginButton)
+                loginButton.enabled = true
+                if textField.returnKeyType == .Done // autologin user
+                {
+                    loginButton.enabled = false
+                    NSUserDefaults.standardUserDefaults().setObject(nameField.text, forKey: loginNameKey)
+                    NSUserDefaults.standardUserDefaults().setObject(passwordField.text, forKey: passwordKey)
+                    
+                    loginButtonPress(loginButton)
+                }
             }
         }
         else

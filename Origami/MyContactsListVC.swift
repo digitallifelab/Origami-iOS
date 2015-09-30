@@ -164,20 +164,20 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func configureLeftBarButtonItem()
     {
-        var leftButton = UIButton.buttonWithType(.System) as! UIButton
+        let leftButton = UIButton(type:.System)
         leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
         leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         
-        var leftBarButton = UIBarButtonItem(customView: leftButton)
+        let leftBarButton = UIBarButtonItem(customView: leftButton)
         
         self.navigationItem.leftBarButtonItem = leftBarButton
     }
     
     func configureNavigationControllerToolbarItems()
     {
-        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        let homeButton = UIButton(type:.System)
         //homeButton.tintColor = kDayNavigationBarBackgroundColor
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
@@ -244,7 +244,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 else
                 {
                     //sort favourite contacts my lastName
-                    localFavContacts.sort({ (contact1, contact2) -> Bool in
+                    localFavContacts.sortInPlace({ (contact1, contact2) -> Bool in
                         if let
                             lastName1 = contact1.lastName as? String,
                             lastName2 = contact2.lastName as? String
@@ -294,7 +294,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         {
             let contactName = contactNameStringFromContact(contact)
             
-            var mainFrameWidth = UIScreen.mainScreen().bounds.size.width
+            let mainFrameWidth = UIScreen.mainScreen().bounds.size.width
             let nameFrame = contactName.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 17.0)!], context: nil)
             
             var moodFrame = CGRectZero
@@ -338,7 +338,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var contactCell = tableView.dequeueReusableCellWithIdentifier("MyContactCell", forIndexPath: indexPath) as! MyContactListCell
+        let contactCell = tableView.dequeueReusableCellWithIdentifier("MyContactCell", forIndexPath: indexPath) as! MyContactListCell
         contactCell.selectionStyle = .None
         
         configureCell(contactCell, forIndexPath:indexPath)
@@ -529,7 +529,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 }
                 else if let responseError = error
                 {
-                    println(" Some error while changing contact IsFavourite: \n\(responseError) ")
+                    print(" Some error while changing contact IsFavourite: \n\(responseError) ")
                 }
             })
         }

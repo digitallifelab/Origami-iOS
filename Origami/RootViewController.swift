@@ -22,7 +22,9 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate
+        let application = UIApplication.sharedApplication()
+        
+        if let appDelegate = application.delegate as? AppDelegate
         {
             appDelegate.rootViewController = self
         }
@@ -40,28 +42,25 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         tapToDismissRecognizer.numberOfTapsRequired = 1;
         tapToDismissRecognizer.numberOfTouchesRequired = 1;
 
+       
         
-        
-        var appDelegate = UIApplication.sharedApplication().delegate
-        var application = UIApplication.sharedApplication()
-        
-        if FrameCounter.isLowerThanIOSVersion("8.0")
+        if #available (iOS 8.0, *)
         {
-            var types:UIRemoteNotificationType = application.enabledRemoteNotificationTypes()
-            if (types == .None)
+            let types: UIUserNotificationType = application.currentUserNotificationSettings()!.types
+            if types.contains(.None)
             {
-                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+                let settings = UIUserNotificationSettings(forTypes: [.Alert , .Badge , .Sound], categories: nil) //(forTypes: .Alert | .Badge | .Sound, categories: nil)
+                
+                application.registerUserNotificationSettings(settings)
+                //application.registerForRemoteNotifications()
             }
         }
         else
         {
-            var types: UIUserNotificationType = application.currentUserNotificationSettings().types
-            if types == .None
+            let types:UIRemoteNotificationType = application.enabledRemoteNotificationTypes()
+            if types .contains(.None)
             {
-                let settings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
-                
-                application.registerUserNotificationSettings(settings)
-                //application.registerForRemoteNotifications()
+                application.registerForRemoteNotificationTypes([.Alert , .Badge , .Sound])
             }
         }
     }
@@ -76,7 +75,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        if let user = DataSource.sharedInstance.user
+        if let _ = DataSource.sharedInstance.user
         {
             //self.performSegueWithIdentifier("ShowHomeVC", sender: nil)
             
@@ -134,11 +133,11 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     {
         if recognizer.state == UIGestureRecognizerState.Began
         {
-            println("left pan.")
+            print("left pan.")
             let translationX = round(recognizer.translationInView(recognizer.view!).x)
             let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
-            println(" Horizontal Velocity: \(velocityX)")
-            println(" Horizontal Translation: \(translationX)")
+            print(" Horizontal Velocity: \(velocityX)")
+            print(" Horizontal Translation: \(translationX)")
             
             let ratio = ceil(velocityX / translationX)
             if  ratio > 3
@@ -214,9 +213,17 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                 if let weakSelf = self
                 {
                     //weakSelf.view.bringSubviewToFront(menu.view)
-                    println("Menu Frame: \(menu.view.frame)")
+                    print("Menu Frame: \(menu.view.frame)")
                     weakSelf.isShowingMenu = true
-                    navController.topViewController.view.addGestureRecognizer(weakSelf.tapToDismissRecognizer)
+                    if let topVC = navController.topViewController
+                    {
+                        topVC.view.addGestureRecognizer(weakSelf.tapToDismissRecognizer)
+                    }
+                    else
+                    {
+                        assert(false, "Could not instantiate top View Controller and add TapToDismiss recognizer.....")
+                    }
+                   
                 }
                 completion?()
             })
@@ -227,7 +234,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     {
         if let navController = self.currentNavigationController
         {
-            navController.topViewController.view.removeGestureRecognizer(self.tapToDismissRecognizer)
+            navController.topViewController?.view.removeGestureRecognizer(self.tapToDismissRecognizer)
             UIView.animateWithDuration(0.2,
                 delay: 0.0,
                 options: UIViewAnimationOptions.CurveEaseIn,

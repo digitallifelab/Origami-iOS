@@ -38,7 +38,7 @@ class DashCell: UICollectionViewCell
     @IBOutlet weak var taskIcon:UIImageView?
     @IBOutlet weak var decisionIcon:UIImageView?
     
-    required init(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         
         backColor = kDayCellBackgroundColor//UIColor.clearColor()
         titleColor = UIColor.blackColor()

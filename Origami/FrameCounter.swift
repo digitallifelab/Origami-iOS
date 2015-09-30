@@ -54,7 +54,7 @@ class FrameCounter
 //            let lastFrame = elementFrames.last!
 //            let maxY = CGRectGetMaxY(lastFrame)
 //            let frameToReturn = CGRectMake(0, 0, targetWidth, maxY)
-//            //println("\(frameToReturn)")
+//            //print("\(frameToReturn)")
 //            
 //            return elementFrames
 //        }
@@ -88,6 +88,7 @@ class FrameCounter
 //        return roundedSize
 //    }
     
+    @available(iOS 8.0, *)
     class func getCurrentTraitCollection() -> UITraitCollection
     {
         let traitCollection = UIScreen.mainScreen().traitCollection

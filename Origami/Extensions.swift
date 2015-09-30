@@ -65,7 +65,7 @@ extension NSDate
     
     func timeDateString() -> NSString
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .MediumStyle
         
@@ -75,7 +75,7 @@ extension NSDate
     }
     func timeDateStringShortStyle() -> NSString
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .ShortStyle
         dateFormatter.timeStyle = .ShortStyle
         
@@ -86,7 +86,7 @@ extension NSDate
     
     func timeDateStringForMediaName() -> String
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "YYYY-MM-dd_HH-MM-SS"
         let stringToReturn = dateFormatter.stringFromDate(self)
         
@@ -95,7 +95,7 @@ extension NSDate
     
     func timeStringShortStyle() -> String
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.timeStyle = .ShortStyle
         
         let toReturn = dateFormatter.stringFromDate(self)
@@ -105,7 +105,7 @@ extension NSDate
     
     func dateStringShortStyle() -> String
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .ShortStyle
         let toReturn = dateFormatter.stringFromDate(self)
         
@@ -114,7 +114,7 @@ extension NSDate
     
     func dateStringMediumStyle() -> String?
     {
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .NoStyle
         
@@ -126,16 +126,16 @@ extension NSDate
     func lessThanDayAgo() -> Bool
     {
         let cal = NSCalendar.currentCalendar();
-        let flags = NSCalendarUnit.YearCalendarUnit | NSCalendarUnit.MonthCalendarUnit | NSCalendarUnit.DayCalendarUnit
+        let flags:NSCalendarUnit = [ NSCalendarUnit.Year , NSCalendarUnit.Month , NSCalendarUnit.Day]
         let date = NSDate()
         
 //        let todayComps = cal.components(flags, fromDate:  date)
-        //println("today componetns day: \(todayComps.day)")
+        //print("today componetns day: \(todayComps.day)")
         let components = cal.components(flags, fromDate: date.dateByAddingTimeInterval(-1.days))
-        //println("today componetns day: \(components.day)")
+        //print("today componetns day: \(components.day)")
 //        
 //        let selfComponents = cal.components(flags, fromDate: self)
-        //println(" self  .day = \(selfComponents.day)")
+        //print(" self  .day = \(selfComponents.day)")
         if let yesterday = cal.dateFromComponents(components)
         {
             let comprarison = self.compareDateOnly(yesterday);
@@ -151,7 +151,7 @@ extension NSDate
     
     func compareDateOnly(dateToCompare:NSDate) -> NSComparisonResult
     {
-        let flags = NSCalendarUnit.YearCalendarUnit | NSCalendarUnit.MonthCalendarUnit | NSCalendarUnit.DayCalendarUnit
+        let flags:NSCalendarUnit = [NSCalendarUnit.Year, NSCalendarUnit.Month , NSCalendarUnit.Day]
         
         if let calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
         {
@@ -173,8 +173,8 @@ extension NSDate
 extension Int {
     var days: NSTimeInterval {
         let DAY_IN_SECONDS = 60 * 60 * 24
-        var days:Double = Double(DAY_IN_SECONDS) * Double(self)
-        return days
+        let aDays:Double = Double(DAY_IN_SECONDS) * Double(self)
+        return aDays
     }
 }
 
@@ -226,7 +226,7 @@ extension NSString
         let timeInterval = cleanString.doubleValue as NSTimeInterval
         let lvDate = NSDate(timeIntervalSince1970: timeInterval)
         
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .ShortStyle
         let toReturn = dateFormatter.stringFromDate(lvDate)
@@ -242,22 +242,22 @@ extension String
         let badCharacters = NSCharacterSet(charactersInString: "1234567890-+").invertedSet
         let dateUTCstring = self.stringByTrimmingCharactersInSet(badCharacters)
         
-        let lettersCount = count(dateUTCstring)
+        let lettersCount = dateUTCstring.characters.count
         if lettersCount < 5
         {
             return nil
         }
-        let stringIndex = advance(dateUTCstring.endIndex, -5)
+        let stringIndex = dateUTCstring.endIndex.advancedBy(-5)
         
         let preDateValueString = dateUTCstring.substringToIndex(stringIndex)
         
-        let newCount = count(preDateValueString)
+        let newCount = preDateValueString.characters.count
         if newCount < 3
         {
             return nil
         }
         
-        let nextStringIndex = advance(preDateValueString.endIndex, -3)
+        let nextStringIndex = preDateValueString.endIndex.advancedBy(-3)//advance(preDateValueString.endIndex, -3)
         
         let dateValueString = preDateValueString.substringToIndex(nextStringIndex)
         
@@ -286,7 +286,7 @@ extension String
         let timeInterval = cleanString.doubleValue as NSTimeInterval
         let lvDate = NSDate(timeIntervalSince1970: timeInterval)
         
-        var dateFormatter = NSDateFormatter()
+        let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .ShortStyle
         let toReturn = dateFormatter.stringFromDate(lvDate)
@@ -303,12 +303,13 @@ extension NSData
         {
             return nil
         }
-        var mutableData = NSMutableData(capacity: array.count)
+        
+        let mutableData = NSMutableData()// NSMutableData(capacity: array.count)
         for integer in array
         {
             var lvInteger = integer
             let lvOneByte = NSData(bytes: &lvInteger, length: 1)
-            mutableData?.appendData(lvOneByte)
+            mutableData.appendData(lvOneByte)//appendData(lvOneByte)
         }
         return mutableData
     }
@@ -365,7 +366,7 @@ extension UIImage{
     return scaledImage;
     }
     */
-    func scaleToSizeKeepAspect(newSize:CGSize) -> UIImage
+    func scaleToSizeKeepAspect(newSize:CGSize) -> UIImage?
     {
         UIGraphicsBeginImageContext(newSize)
         var widthRatio:CGFloat = newSize.width / self.size.width
@@ -382,7 +383,8 @@ extension UIImage{
             widthRatio = 1.0
         }
         
-        let context:CGContextRef = UIGraphicsGetCurrentContext()
+        if let context:CGContextRef = UIGraphicsGetCurrentContext()
+        {
         CGContextTranslateCTM(context, 0.0, newSize.height)
         CGContextScaleCTM(context, 1.0, -1.0)
         let rect = CGRectMake(newSize.width / 2 - (newSize.width * widthRatio) / 2, newSize.height / 2 - (newSize.height - heightRatio) / 2, newSize.width * widthRatio, newSize.height * heightRatio)
@@ -392,7 +394,10 @@ extension UIImage{
         
         UIGraphicsEndImageContext()
         
-        return scaledImage
+            return scaledImage
+        }
+        
+        return nil
     }
     
     func fixOrientation() -> UIImage
@@ -446,36 +451,44 @@ extension UIImage{
         
         // Now we draw the underlying CGImage into a new context, applying the transform
         // calculated above
+        //CGBitmapContextCreate(nil, Int(self.size.width), Int(self.size.height), CGImageGetBitsPerComponent(self.CGImage), 0, CGImageGetColorSpace(self.CGImage), <#T##bitmapInfo: UInt32##UInt32#>)
         
-        var context = CGBitmapContextCreate(nil, Int(self.size.width), Int(self.size.height), CGImageGetBitsPerComponent(self.CGImage), 0, CGImageGetColorSpace(self.CGImage), CGImageGetBitmapInfo(self.CGImage))
-        
-        CGContextConcatCTM(context, transform)
-        
-        switch selfOrientation
+        if let context = CGBitmapContextCreate(nil, Int(self.size.width), Int(self.size.height), CGImageGetBitsPerComponent(self.CGImage), 0, CGImageGetColorSpace(self.CGImage), CGImageGetBitmapInfo(self.CGImage).rawValue)
         {
-        case .Left:
-            fallthrough
-        case .LeftMirrored:
-            fallthrough
-        case .Right:
-            fallthrough
-        case .RightMirrored:
-            CGContextDrawImage(context, CGRectMake(0, 0, self.size.height, self.size.width), self.CGImage) //once again.. switch
-        default:
-            CGContextDrawImage(context, CGRectMake(0, 0, self.size.width, self.size.height), self.CGImage)
+        
+            CGContextConcatCTM(context, transform)
+            
+            switch selfOrientation
+            {
+            case .Left:
+                fallthrough
+            case .LeftMirrored:
+                fallthrough
+            case .Right:
+                fallthrough
+            case .RightMirrored:
+                CGContextDrawImage(context, CGRectMake(0, 0, self.size.height, self.size.width), self.CGImage) //once again.. switch
+            default:
+                CGContextDrawImage(context, CGRectMake(0, 0, self.size.width, self.size.height), self.CGImage)
+            }
+            
+            // And now we just create a new UIImage from the drawing context
+            
+            if let cgImageLV = CGBitmapContextCreateImage(context)
+            {
+                let toReturnFixed = UIImage(CGImage: cgImageLV)
+//                if toReturnFixed != nil
+//                {
+                    return toReturnFixed
+//                }
+            
+            }
+        
+            // if By some reason could not create image
+            return self;
         }
         
-        // And now we just create a new UIImage from the drawing context
-        
-        let imageRef:CGImageRef = CGBitmapContextCreateImage(context)
-        
-        if let toReturnFixed:UIImage = UIImage(CGImage: imageRef)
-        {
-            return toReturnFixed
-        }
-        
-        // if By some reason could not create image
-        return self;
+        return self
     }
 }
 
@@ -483,21 +496,22 @@ extension UIViewController
 {
     func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
     {
-        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
-        
-        switch comparisonResult
+//        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
+//        
+//        switch comparisonResult
+//        {
+//        case .OrderedSame, .OrderedDescending: // iOS 8 and More
+        if #available (iOS 8.0, *)
         {
-        case .OrderedSame, .OrderedDescending: // iOS 8 and More
             let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
             let alertController = UIAlertController(title: alertTitle, message: message, preferredStyle: .Alert)
             alertController.addAction(closeAction)
             
             self.presentViewController(alertController, animated: true, completion: nil)
-    
-        case .OrderedAscending: //iOS 7 and less
+        }
+        else
+        {
             UIAlertView(title: alertTitle, message: message, delegate: nil, cancelButtonTitle: cancelButtonTitle).show()
-            
-           
         }
     }
     
@@ -533,7 +547,7 @@ extension UIViewController
         {
             if currentVCs.count > 1
             {
-                if let rootIsHome = currentVCs.first as? HomeVC
+                if let _ = currentVCs.first as? HomeVC
                 {
                     self.navigationController?.popToRootViewControllerAnimated(true)
                 }

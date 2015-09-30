@@ -36,7 +36,9 @@ class ChatTextInputView: UIView, UITextViewDelegate {
         }
     }
     
-    let emptyAttributedText = NSAttributedString(string: "TapToType".localizedWithComment(""), attributes:[NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] as [NSObject:AnyObject])
+    let emptyAttributedText = NSAttributedString(string: "TapToType".localizedWithComment(""), attributes:[NSForegroundColorAttributeName:UIColor.lightGrayColor(), NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!] /*as [NSObject:AnyObject]*/)
+    
+    
     
     override func awakeFromNib() {
         self.sendButton.setImage(UIImage(named: "icon-send")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)

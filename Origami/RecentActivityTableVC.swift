@@ -14,7 +14,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     let kElementCellIdentifier = "ElementTableCell"
     var isReloadingTable = false {
         didSet{
-            println(" ->  isReloadingTable = \(isReloadingTable)")
+            print(" ->  isReloadingTable = \(isReloadingTable)")
         }
     }
     var elements:[Element]?
@@ -85,7 +85,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                             }
                             
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                if let visibleRowsPaths = weakerSelf.tableView?.indexPathsForVisibleRows() as? [NSIndexPath]
+                                if let visibleRowsPaths = weakerSelf.tableView?.indexPathsForVisibleRows//? // as? [NSIndexPath]
                                 {
                                     weakerSelf.tableView?.reloadRowsAtIndexPaths(visibleRowsPaths, withRowAnimation: .None)
                                 }
@@ -102,7 +102,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let elements = self.elements
+        if let _ = self.elements
         {
             if !isReloadingTable
             {
@@ -127,14 +127,14 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
             dispatch_async(bgQueue, { () -> Void in
                 if let elementsToFilter = elements
                 {
-                    var withoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsToFilter)
+                    let withoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsToFilter)
                     if let weakSelf = self
                     {
                         if !weakSelf.isReloadingTable
                         {
                             weakSelf.elements = withoutArchived
                             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                if let weakerSelf = self
+                                if let _ = self
                                 {
                                     completion?()
                                 }
@@ -180,7 +180,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         }
         
         
-        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        let homeButton = UIButton(type: .System)
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)

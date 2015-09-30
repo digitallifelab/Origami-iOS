@@ -40,14 +40,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        println(" ->removed observer SingleDashVC from Deinit.")
+        print(" ->removed observer SingleDashVC from Deinit.")
     }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
      
-        //println(" ...viewDidLoad....")
+        //print(" ...viewDidLoad....")
         
         //prepare our appearance
         self.fadeViewControllerAnimator = FadeOpaqueAnimator()
@@ -67,9 +67,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     if finished
                     {
-                        println("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
+                        print("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
                         aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElementIdInt)
-                        println("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
+                        print("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
                     }
                     else
                     {
@@ -94,7 +94,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         self.navigationController?.delegate = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
-        println(" --- Removed From observing new elements added...")
+        print(" --- Removed From observing new elements added...")
         super.viewWillAppear(animated)
         if afterViewDidLoad
         {
@@ -102,8 +102,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             afterViewDidLoad = false
         }
         
-        var currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
-        println("\n Refreshing attaches in viewWillAppear...")
+        let currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
+        print("\n Refreshing attaches in viewWillAppear...")
         if let elementIdInt = self.currentElement?.elementId?.integerValue
         {
             DataSource.sharedInstance.refreshAttachesForElement(elementIdInt, completion: { [weak self] (attachesArray) -> () in
@@ -113,26 +113,26 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     {
                         if let existAttaches = currentAttachesInDataSource
                         {
-                            var setOfExisting = Set(existAttaches)
-                            var setOfNew = Set(recievedAttaches)
+                            let setOfExisting = Set(existAttaches)
+                            let setOfNew = Set(recievedAttaches)
                             
                             let remainderSet = setOfNew.subtract(setOfExisting)
                             if remainderSet.isEmpty
                             {
-                                println("-> No new attach files loaded")
+                                print("-> No new attach files loaded")
                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                    println("\n Starting to Query attach previews in background..")
+                                    print("\n Starting to Query attach previews in background..")
                                     weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
                                 })
                                 
                             }
                             else
                             {
-                                println("-> Loaded \(remainderSet.count) new attaches")
+                                print("-> Loaded \(remainderSet.count) new attaches")
                                 weakSelf.prepareCollectionViewDataAndLayout()
                                 
                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                    println("\n Starting to Query EXIST attachInfo previews in background..")
+                                    print("\n Starting to Query EXIST attachInfo previews in background..")
                                     weakSelf.startLoadingDataForMissingAttaches(existAttaches)
                                 })
                                 
@@ -199,13 +199,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: Appearance --
     func configureRightBarButtonItem()
     {
-        var addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "optionsBarButtonTapped:")
+        let addButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "optionsBarButtonTapped:")
         self.navigationItem.rightBarButtonItem = addButton
     }
     
     func configureNavigationControllerToolbarItems()
     {
-        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        let homeButton = UIButton(type:.System)
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
@@ -250,10 +250,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         }
                         else
                         {
-                            println(" ERROR . \nCould not generate new layout for loaded attaches.")
+                            print(" ERROR . \nCould not generate new layout for loaded attaches.")
                         }
                     })
-                    println("\n SingleElementDashboardVC. ONLY FOE EXISTING INFO - startLoadingDataForMissingAttaches. \n")
+                    print("\n SingleElementDashboardVC. ONLY FOE EXISTING INFO - startLoadingDataForMissingAttaches. \n")
                     weakSelf.startLoadingDataForMissingAttaches(existingAttaches)
                     return
                 }
@@ -276,7 +276,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                 {
                                     if let weakSelf = self
                                     {
-                                        println("\n--> recieved \(arrayOfAttaches.count) attaches for current element\n")
+                                        print("\n--> recieved \(arrayOfAttaches.count) attaches for current element\n")
                                         if let existingAttachesHandler = weakSelf.collectionDataSource?.getElementAttachesHandler()
                                         {
                                             if let attachesCellPath = weakSelf.collectionDataSource?.indexPathForAttachesCell()
@@ -304,23 +304,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                         }
                                         else
                                         {
-                                            println(" ERROR . \nCould not generate new layout for loaded attaches.")
+                                            print(" ERROR . \nCould not generate new layout for loaded attaches.")
                                             
                                         }
                                         
-                                        println("\n SingleElementDashboardVC. FOR FRESHLY DOWNLOADED INFO startLoadingDataForMissingAttaches. \n")
+                                        print("\n SingleElementDashboardVC. FOR FRESHLY DOWNLOADED INFO startLoadingDataForMissingAttaches. \n")
                                         weakSelf.startLoadingDataForMissingAttaches(arrayOfAttaches)
                                     }
                                 }
                                 else
                                 {
-                                    println("\n-->Loaded Empty Attaches array for current element\n")
+                                    print("\n-->Loaded Empty Attaches array for current element\n")
                                     weakSelf.prepareCollectionViewDataAndLayout()
                                 }
                             }
                             else
                             {
-                                println("\n-->Loaded No Attaches for current element\n")
+                                print("\n-->Loaded No Attaches for current element\n")
                                 weakSelf.prepareCollectionViewDataAndLayout()
                             }
                         })
@@ -362,7 +362,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
             else
             {
-                println(" ! -> Some error occured while reloading collectionView with new lyout.")
+                print(" ! -> Some error occured while reloading collectionView with new lyout.")
             }
             collectionView.performBatchUpdates({ [weak self]() -> Void in
                 
@@ -512,7 +512,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementSignalToggled()
     {
-        //println("Signal element toggled.")
+        //print("Signal element toggled.")
         
         if let theElement = currentElement
         {
@@ -587,7 +587,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementArchivePressed()
     {
-        println("Archive element tapped.")
+        print("Archive element tapped.")
         
         if let element = self.currentElement
         {
@@ -626,13 +626,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementDeletePressed()
     {
-        //println("Delete element tapped.")
+        //print("Delete element tapped.")
         handleDeletingCurrentElement()
     }
     
     func elementIdeaPressed()
     {
-        println("Idea tapped.")
+        print("Idea tapped.")
         if let current = self.currentElement
         {
             if !current.isArchived()
@@ -642,7 +642,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
                 var editingElement = Element(info: self.currentElement!.toDictionary())
                 editingElement.typeId = NSNumber(integer: newOptions)
-                println("new element type id: \(editingElement.typeId)")
+                print("new element type id: \(editingElement.typeId)")
                 self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
             else
@@ -655,7 +655,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementTaskPressed()
     {
-        println("CheckMark tapped.")
+        print("CheckMark tapped.")
         
         let anOptionsConverter = ElementOptionsConverter()
        
@@ -683,7 +683,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                             case .FinishedBad, .FinishedGood:
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
                             case .InProcess:
-                                println(" Element is in process..\n")
+                                print(" Element is in process..\n")
                                 showFinishTaskPrompt()
                             }
                         } 
@@ -695,9 +695,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                             switch currentFinishState
                             {
                             case .Default:
-                                println("element is not owned. current user cannot assign task.")
+                                print("element is not owned. current user cannot assign task.")
                             case .FinishedBad , .FinishedGood:
-                                println("element is already finished. current user cannot update task.")
+                                print("element is already finished. current user cannot update task.")
                             case .InProcess:
                                 showFinishTaskPrompt()
                             }
@@ -729,14 +729,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                             case .FinishedBad , .FinishedGood :
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
                             case .InProcess:
-                                println(" Element is in process..")
+                                print(" Element is in process..")
                                 showFinishTaskPrompt()
                             }
                         }
                         
                         return
                     }
-                    println("\n Error: Element is not owned by current user.")
+                    print("\n Error: Element is not owned by current user.")
                 }
                 else
                 {
@@ -752,7 +752,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func elementDecisionPressed()
     {
-        println("Decision tapped.")
+        print("Decision tapped.")
         if let current = self.currentElement
         {
             if !current.isArchived()
@@ -761,7 +761,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 let newOptions = anOptionsConverter.toggleOptionChange(current.typeId.integerValue, selectedOption: 3)
                 var editingElement = current.createCopy()
                 editingElement.typeId = NSNumber(integer: newOptions)
-                println("new element type id: \(editingElement.typeId)")
+                print("new element type id: \(editingElement.typeId)")
                 self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
             else
@@ -787,13 +787,33 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "popoverItemTapped:", name: "PopupMenuItemPressed", object: leftTopMenuPopupVC)
             
-            if FrameCounter.isLowerThanIOSVersion("8.0")
+            if #available (iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
+            {
+                
+                leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
+                leftTopMenuPopupVC.modalInPopover = false//true // true disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
+                
+                
+                //var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
+                let popoverObject = leftTopMenuPopupVC.popoverPresentationController
+                popoverObject?.permittedArrowDirections = .Any
+                popoverObject?.barButtonItem = self.navigationItem.rightBarButtonItem
+                popoverObject?.delegate = self
+                
+                //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
+                leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 180.0)
+                self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
+                    
+                })
+
+            }
+            else
             {
                 if FrameCounter.getCurrentInterfaceIdiom() == .Pad
                 {
                     if let barItem = sender as? UIBarButtonItem
                     {
-                        var popoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
+                        let popoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
                         popoverController.popoverContentSize = CGSizeMake(200, 180.0)
                         self.iOS7PopoverController = popoverController
                         
@@ -804,24 +824,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     self.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
                 }
-            }
-            else
-            {
-                leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
-                leftTopMenuPopupVC.modalInPopover = false//true // true disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
                 
-                
-                //var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
-                var popoverObject = leftTopMenuPopupVC.popoverPresentationController
-                popoverObject?.permittedArrowDirections = .Any
-                popoverObject?.barButtonItem = self.navigationItem.rightBarButtonItem
-                popoverObject?.delegate = self
-                
-                //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
-                leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 180.0)
-                self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
-                    
-                })
             }
         }
     }
@@ -831,7 +834,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().removeObserver(self, name: "PopupMenuItemPressed", object: notification?.object)
         if let note = notification
         {
-            if let vc = note.object as? EditingMenuPopupVC
+            if let _ = note.object as? EditingMenuPopupVC
             {
                 var target:String? = nil
                 if let destinationTitle = note.userInfo?["title"] as? String
@@ -884,6 +887,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     
     //MARK: UIPopoverPresentationControllerDelegate
+    @available(iOS 8.0, *)
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.None
     }
@@ -933,8 +937,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     DataSource.sharedInstance.addSeveralContacts(passWhomSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
                         if !failedIDs.isEmpty
                         {
-                            println(" added to \(succeededIDs)")
-                            println(" failed to add to \(failedIDs)")
+                            print(" added to \(succeededIDs)")
+                            print(" failed to add to \(failedIDs)")
                             if let weakSelf = self
                             {
                                 weakSelf.showAlertWithTitle("ERROR.", message: "Could not add contacts to new element.", cancelButtonTitle: "Ok")
@@ -942,7 +946,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         }
                         else
                         {
-                            println(" added to \(succeededIDs)")
+                            print(" added to \(succeededIDs)")
                         }
                     })
                     
@@ -1044,7 +1048,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             // add contacts to element
             DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                println("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
+                print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                 if let aSelf = self
                 {
                     aSelf.currentElement?.passWhomIDs = Array(newPassWhomIDs)
@@ -1056,7 +1060,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             //remove all contacts from element
             DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!.integerValue, completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                println("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
+                print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
                 if let aSelf = self
                 {
                     aSelf.currentElement?.passWhomIDs.removeAll(keepCapacity: false)
@@ -1075,7 +1079,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                                                         fromElement: editingElement.elementId!.integerValue,
                                                                          completion: { [weak self](succeededIDs, failedIDs) -> () in
                                                                             
-                    println("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
+                    print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
                                                                             
                     if let aSelf = self
                     {
@@ -1100,7 +1104,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                                             toElement: editingElement.elementId!.integerValue,
                                                            completion: {[weak self] (succeededIDs, failedIDs) -> () in
                         
-                    println("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
+                    print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                     
                     if let aSelf = self
                     {
@@ -1126,7 +1130,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         toElement: editingElement.elementId!.integerValue,
                         completion: {[weak self] (succeededIDs, failedIDs) -> () in
                             
-                            println("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
+                            print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                             
                             if let aSelf = self
                             {
@@ -1201,7 +1205,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             if let info = notification.userInfo, attachName = info["fileName"] as? String
             {
-                println(" -> did Recieve Notification for saving Single attach file: \(attachName)")
+                print(" -> did Recieve Notification for saving Single attach file: \(attachName)")
                 if let currentDataSource = self.collectionDataSource?.attachesHandler
                 {
                     if currentDataSource.attachedItems.count > 0
@@ -1352,7 +1356,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     if error != nil
                     {
-                        println("Error Adding attach file: \n \(error)")
+                        print("Error Adding attach file: \n \(error)")
                     }
                     return
                 }
@@ -1361,7 +1365,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     DataSource.sharedInstance.refreshAttachesForElement(elementId_ToRefresh, completion: {[weak self] (attaches) -> () in
                         
-                        if let attachObjects = attaches
+                        if let _ = attaches
                         {
                             if let lvSelf = self
                             {
@@ -1389,8 +1393,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement:", name: kNewElementsAddedNotification, object: nil)
             
-            println(" -- > Added self to observe new element added")
-            
+            print(" -- > Added self to observe new element added\n")
             chatVC.currentElement = self.currentElement
             self.navigationController?.pushViewController(chatVC, animated: true)
         }
@@ -1406,20 +1409,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         var alertTitle = "startTaskPrompt".localizedWithComment("")
         var alertMessage = "startTaskMessage".localizedWithComment("")
-        var okButtonTitle = "start".localizedWithComment("")
+        let okButtonTitle = "start".localizedWithComment("")
         if shouldRestart
         {
             alertTitle = "restartTaskPrompt".localizedWithComment("")
             alertMessage = "restartTaskMessage".localizedWithComment("")
         }
         let cancelButtonTitle = "cancel".localizedWithComment("")
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            let alertView = UIAlertView(title: alertTitle, message: alertMessage, delegate: self, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: okButtonTitle)
-            alertView.tag = 0x7AF1
-            alertView.show()
-        }
-        else
+        
+        if #available(iOS 8.0, *) // FrameCounter.isLowerThanIOSVersion("8.0")
         {
             let cancelAction = UIAlertAction(title: cancelButtonTitle, style: .Cancel, handler: { (alertAction) -> Void in
                 
@@ -1430,7 +1428,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 {
                     weakSelf.showStartTaskVC()
                 }
-            })
+                })
             let alertController = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
             alertController.addAction(cancelAction)
             alertController.addAction(startTaskAction)
@@ -1438,6 +1436,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             self.presentViewController(alertController, animated: false, completion: { () -> Void in
                 
             })
+        }
+        else
+        {
+            let alertView = UIAlertView(title: alertTitle, message: alertMessage, delegate: self, cancelButtonTitle: cancelButtonTitle, otherButtonTitles: okButtonTitle)
+            alertView.tag = 0x7AF1
+            alertView.show()
         }
     }
     
@@ -1456,7 +1460,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     private func showStartTaskVC()
     {
         // when current user is owner of currentElement
-        if let element = self.currentElement
+        if let _ = self.currentElement
         {
             if let contactsPicker = self.storyboard?.instantiateViewControllerWithIdentifier("ContactsPickerVC") as? ContactsPickerVC
             {
@@ -1486,7 +1490,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         let prompt = FinishTaskResultView(frame: CGRectMake(0, 0, 300.0, 200.0))
         prompt.center = CGPointMake( CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds) )
         prompt.delegate = self
-        prompt.titleLabel.text = "FinishTaskPromptText".localizedWithComment("")
+        prompt.titleLabel?.text = "FinishTaskPromptText".localizedWithComment("")
         
         self.view.addSubview(prompt)
         prompt.showAnimated(true)
@@ -1501,63 +1505,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         resultView.hideAnimated(true)
         
         self.finishElementWithFinishState(.FinishedBad)
-        
-//        if let current = self.currentElement
-//        {
-//            if let elementIdInt = current.elementId?.integerValue, dateString = NSDate().dateForServer() as? String
-//            {
-//                let finishState = ElementFinishState.FinishedBad.rawValue
-//                DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
-//                    if edited
-//                    {
-//                        DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: {[weak self] (success) -> () in
-//                            if let weakSelf = self
-//                            {
-//                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-//                                })
-//                                if !success
-//                                {
-//                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                        weakSelf.showAlertWithTitle("Warning", message:" Finish date was not set", cancelButtonTitle: "close".localizedWithComment(""))
-//                                    })
-//                                }
-//                            }
-//                            
-//                        })
-//                    }
-//                })
-//            }
-//        }
     }
     
     func finishTaskResultViewDidPressGoodButton(resultView: FinishTaskResultView!) {
         resultView.hideAnimated(true)
         
         self.finishElementWithFinishState(.FinishedGood)
-//        if let current = self.currentElement
-//        {
-//            if let current = self.currentElement
-//            {
-//                if let elementIdInt = current.elementId?.integerValue
-//                {
-//                    let finishState = ElementFinishState.FinishedGood.rawValue
-//                    DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
-//                        if edited
-//                        {
-//                            if let weakSelf = self
-//                            {
-//                                weakSelf.currentElement?.finishState = NSNumber(integer: finishState)
-//                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-//                                })
-//                                
-//                            }
-//                        }
-//                    })
-//                }
-//            }
-//        }
+
     }
     
     func finishElementWithFinishState(state:ElementFinishState)
@@ -1661,17 +1615,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         {
                             if success
                             {
-                                println("\n -> Element finish date WAS updated.\n")
+                                print("\n -> Element finish date WAS updated.\n")
                                 if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
                                 {
-                                    println("\n exist element finish date : \(existElement.finishDate)")
-                                    println(" current element finish date : \(weakSelf.currentElement?.finishDate)")
-                                    println(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
+                                    print("\n exist element finish date : \(existElement.finishDate)")
+                                    print(" current element finish date : \(weakSelf.currentElement?.finishDate)")
+                                    print(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
                                 }
                             }
                             else
                             {
-                                println("\n -> Element finish date WAS NOT updated.\n")
+                                print("\n -> Element finish date WAS NOT updated.\n")
                             }
                         }
                     })

@@ -42,7 +42,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     }
                     else
                     {
-                        println(" Did not load avatar for contact.")
+                        print(" Did not load avatar for contact.")
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 })
@@ -63,7 +63,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func setupToolbarHomeButton()
     {
-        let homeButton = UIButton.buttonWithType(.System) as! UIButton
+        let homeButton = UIButton(type: .System)
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)

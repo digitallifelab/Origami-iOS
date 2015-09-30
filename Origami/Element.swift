@@ -175,7 +175,7 @@ class Element:NSObject
     
     func isArchived() -> Bool
     {
-        if let archiveDateString = self.archiveDate as? String, let archiveDate = archiveDateString.dateFromServerDateString()
+        if let archiveDateString = self.archiveDate as? String, let _ = archiveDateString.dateFromServerDateString()
         {
             return true
         }
@@ -208,7 +208,7 @@ class Element:NSObject
     
     func isFinished() -> Bool
     {
-        if let finishDateString = self.finishDate
+        if let _ = self.finishDate
         {
             return true
         }
@@ -217,8 +217,8 @@ class Element:NSObject
     
     func lastChangeDateReadableString() -> String?
     {
-        let todayDate = NSDate()
-        let yesterday = todayDate.dateByAddingTimeInterval(-1.days)
+        //let todayDate = NSDate()
+        //let yesterday = todayDate.dateByAddingTimeInterval(-1.days)
         
         if let changeDate = self.changeDate as? String,  date = changeDate.dateFromServerDateString()
         {
@@ -234,10 +234,11 @@ class Element:NSObject
         return nil
     }
     
-    func creationDateReadableString(shouldEvaluateCurrentDay:Bool = true) -> String?
+    func creationDateReadableString(shouldEvaluateCurrentDay shouldEvaluateCurrentDay:Bool = true) -> String?
     {
-        if let created = self.createDate as? String,  date = created.dateFromServerDateString(), readable = date.timeDateStringShortStyle() as? String
+        if let created = self.createDate as? String,  date = created.dateFromServerDateString()//, readable = date.timeDateStringShortStyle() as? String
         {
+            let readable:String = date.timeDateStringShortStyle() as String
             if shouldEvaluateCurrentDay
             {
                 //TODO: create string like "2 days ago" , "3 months ago"

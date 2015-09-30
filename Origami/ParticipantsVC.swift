@@ -174,13 +174,14 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         label.textAlignment = NSTextAlignment.Center
         label.textColor = kDayCellBackgroundColor
 //        var testFontNames = UIFont.fontNamesForFamilyName("Segoe UI")
-//        println("\(testFontNames)")
+//        print("\(testFontNames)")
         if let font = UIFont(name: "SegoeUI-Semibold", size: 18.0)
         {
             label.font = font
         }
         label.text = self.tableView(tableView, titleForHeaderInSection:section)
-        label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        //label.setTranslatesAutoresizingMaskIntoConstraints(false)
+        label.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(label)
         
         //create constraints for label

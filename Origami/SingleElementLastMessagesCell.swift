@@ -14,7 +14,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     var messages:[Message]?
         {
         didSet{
-            if let messagesArray = messages
+            if let _ = messages
             {
                 trytoGetContactsForLastMessages()
             }
@@ -56,7 +56,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         let chatIconBounds = chatIcon.bounds
         let roundedLeftBottomPath = UIBezierPath(roundedRect: chatIconBounds, byRoundingCorners: UIRectCorner.BottomLeft, cornerRadii: CGSizeMake(5, 5))
         
-        var shape = CAShapeLayer()
+        let shape = CAShapeLayer()
         shape.frame = chatIconBounds
         shape.path = roundedLeftBottomPath.CGPath
         
@@ -82,7 +82,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         self.layer.shadowColor = shadowColor
         self.layer.shadowOpacity = shadowOpacity
         self.layer.shadowRadius = 2.0
-        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: UIRectCorner.BottomLeft | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(5.0, 5.0))
+        let offsetPath = UIBezierPath(roundedRect: offsetShadowFrame, byRoundingCorners: [UIRectCorner.BottomLeft, UIRectCorner.BottomRight], cornerRadii: CGSizeMake(5.0, 5.0))
         self.layer.shadowPath = offsetPath.CGPath
         
         //self.layer.shouldRasterize = true
@@ -116,7 +116,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
+        let chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         chatCell.selectionStyle = .None
         chatCell.displayMode = self.displayMode
         chatCell.backgroundColor = UIColor.clearColor()
@@ -129,7 +129,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             
             if let messageDate = message.dateCreated
             {
-                var messageDateString = messageDate.timeDateStringShortStyle()
+                let messageDateString = messageDate.timeDateStringShortStyle()
                 chatCell.dateLabel.text = messageDateString as String
             }
             
@@ -167,7 +167,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                     if let contact = contactForMessage(message) , userName = contact.userName as? String
                     {
                         chatCell.nameLabel.text = (contact.firstName as? String ?? contact.lastName as? String) ?? "unknown"
-                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(contact.userName! as String)
+                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
                         {
                             chatCell.avatarView.image = UIImage(data: imageData)
                         }

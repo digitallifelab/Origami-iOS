@@ -67,7 +67,7 @@ class NewElementTextViewCell: UITableViewCell {
 
 //    func textViewDidChange(textView: UITextView) {
 //        let lvTestSize = textView.sizeThatFits( CGSizeMake( textView.bounds.size.width, CGFloat.max))
-//        println("textViewText: \(textView.text), test size: \(lvTestSize)")
+//        print("textViewText: \(textView.text), test size: \(lvTestSize)")
 //        if textView.bounds.size.height != lvTestSize.height
 //        {
 //            NSNotificationCenter.defaultCenter().postNotificationName("UpdateTextiewCell", object:textView , userInfo:["height":lvTestSize.height])

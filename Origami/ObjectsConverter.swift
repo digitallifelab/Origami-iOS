@@ -137,7 +137,7 @@ class ObjectsConverter {
         for lvDictionary in dictionaries
         {
             let lvNewMessage = Message(info: lvDictionary)
-            //println(lvDictionary)
+            //print(lvDictionary)
             if lvNewMessage.textBody == "User invited you!"
             {
                 continue
@@ -151,13 +151,13 @@ class ObjectsConverter {
             switch lvNewMessage.typeId!.integerValue
             {
             case 0:
-                break//println(" - Chat message: \" \(lvNewMessage.textBody) \"")
+                break//print(" - Chat message: \" \(lvNewMessage.textBody) \"")
             case 1:
-                println(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
+                print(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
             case 12:
-                println(" - service message - changed user info. \" \(lvNewMessage.textBody) \"")
+                print(" - service message - changed user info. \" \(lvNewMessage.textBody) \"")
             case 13:
-                println(" - Sevrice Message - changed user photo. \" \(lvNewMessage.textBody) \".")
+                print(" - Sevrice Message - changed user photo. \" \(lvNewMessage.textBody) \".")
             default:
                 break
             }
@@ -184,10 +184,10 @@ class ObjectsConverter {
                         let result = date1!.compare(date2!)
                         if result == NSComparisonResult.OrderedDescending
                         {
-                            //println("\n date1: \(date1) is older than date2: \(date2) ")
+                            //print("\n date1: \(date1) is older than date2: \(date2) ")
                             return true
                         }
-                        //println("date1: \(date1) is earlier than date2: \(date2) ")
+                        //print("date1: \(date1) is earlier than date2: \(date2) ")
                         return false
                         
                     }
@@ -201,10 +201,10 @@ class ObjectsConverter {
                         let result = date1!.compare(date2!)
                         if result == NSComparisonResult.OrderedDescending
                         {
-                            //println("\n date1: \(date1) is older than date2: \(date2) ")
+                            //print("\n date1: \(date1) is older than date2: \(date2) ")
                             return true
                         }
-                        //println("date1: \(date1) is earlier than date2: \(date2) ")
+                        //print("date1: \(date1) is earlier than date2: \(date2) ")
                         return false
                         
                     }

@@ -13,9 +13,10 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     lazy var attachedItems:[AttachFile] = [AttachFile]()
     lazy var attachData:[NSNumber:MediaFile] = [NSNumber:MediaFile]()
     
-    lazy var attachIconSound = UIImage(named: "icon-attach-sound")
-    lazy var attachIconDocument = UIImage(named: "icon-attach-document")
-    lazy var attachIconVideo = UIImage(named: "icon-attach-video")
+    //moved to in-place switch statement
+//    lazy var attachIconSound = UIImage(named: "icon-attach-sound")//UIImage(named: "icon-attach-sound")
+//    lazy var attachIconDocument = UIImage(named: "icon-attach-document")
+//    lazy var attachIconVideo = UIImage(named: "icon-attach-video")
     var attachTapDelegate:AttachmentSelectionDelegate?
     
     override init()
@@ -51,7 +52,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell
     {
-        var attachCell = collectionView.dequeueReusableCellWithReuseIdentifier("AttachedFileCell", forIndexPath: indexPath) as! ElementDashboardAttachedFileCell
+        let attachCell = collectionView.dequeueReusableCellWithReuseIdentifier("AttachedFileCell", forIndexPath: indexPath) as! ElementDashboardAttachedFileCell
         
         configureCell(attachCell, forIndexPath: indexPath)
 
@@ -84,11 +85,11 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
                         cell.attachIcon.image = attachImage
                     }
                 case .Document:
-                    cell.attachIcon.image = attachIconDocument
+                    cell.attachIcon.image = /*attachIconDocument*/ UIImage(named: "icon-attach-sound")
                 case .Sound:
-                    cell.attachIcon.image = attachIconSound
+                    cell.attachIcon.image = /*attachIconSound*/ UIImage(named: "icon-attach-document")
                 case .Video:
-                    cell.attachIcon.image = attachIconVideo
+                    cell.attachIcon.image = /*attachIconVideo*/ UIImage(named: "icon-attach-video")
                 }
             }
         }
@@ -96,14 +97,14 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     
     func createMediaFileForAttachIfNotExist(attachFile:AttachFile) -> Bool
     {
-        if let aMediaFile = attachData[attachFile.attachID!]
+        if let _ = attachData[attachFile.attachID!]
         {
             return true
         }
         
         if let filePreviewData = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(attachFile)
         {
-            var lvMediaFile = MediaFile()
+            let lvMediaFile = MediaFile()
             lvMediaFile.data = filePreviewData[attachFile]! // Attention! assigning small image data to MediaFile, not full size image data. !
             lvMediaFile.name = attachFile.fileName!
             lvMediaFile.type = .Image
@@ -158,7 +159,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             return
         }
         
-        println("\n -> Error: current attach handler does not have attach named \(fileName)\n")
+        print("\n -> Error: current attach handler does not have attach named \(fileName)\n")
     }
     
     func reloadCollectionWithData(newData:[AttachFile:MediaFile])
@@ -170,7 +171,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             setOfAttaches.insert(lvAttachFile)
         }
         var arrayOfAttaches = Array(setOfAttaches)
-        arrayOfAttaches.sort { (attach1, attach2) -> Bool in
+        arrayOfAttaches.sortInPlace { (attach1, attach2) -> Bool in
             if let dateString1 = attach1.createDate , dateString2 = attach2.createDate
             {
                 if let date1 = (dateString1 as NSString).dateFromServerDateString(), date2 = (dateString2 as NSString).dateFromServerDateString()
@@ -183,7 +184,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             
             return false
         }
-        println("\n ->>Reloading attaches collection cell <<- \n \n")
+        print("\n ->>Reloading attaches collection cell <<- \n \n")
         self.attachedItems = arrayOfAttaches
         self.collectionView?.reloadSections(NSIndexSet(index: 0))
     }
