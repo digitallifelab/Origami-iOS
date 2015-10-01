@@ -48,6 +48,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     @IBOutlet var labelDate:UILabel!
     @IBOutlet var favouriteButton:UIButton!
     @IBOutlet var titleTextView:UITextView!
+    @IBOutlet weak var responsibleNameLabel:UILabel?
     @IBAction func favoutireButtonTap(sender:UIButton)
     {
         let tapNotification = NSNotification(name: kElementFavouriteButtonTapped, object: self)

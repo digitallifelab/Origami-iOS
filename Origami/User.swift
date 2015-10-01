@@ -208,4 +208,30 @@ class User
         return ""
     }
     
+    func nameAndLastNameSpacedString() -> String?
+    {
+        var nameString = ""
+        if let firstName = self.firstName as? String
+        {
+            nameString += firstName
+        }
+        if let lastName = self.lastName as? String
+        {
+            if nameString.isEmpty
+            {
+                nameString = lastName
+            }
+            else
+            {
+                nameString += (" " + lastName)
+            }
+        }
+        
+        if nameString.isEmpty
+        {
+            return nil
+        }
+        return nameString
+    }
+    
 }

@@ -50,10 +50,7 @@ struct ElementDetailsStruct
         {
             self.messagesPreviewCell = messagesCell!
         }
-//        if buttonsCell != nil
-//        {
-//            self.buttonsCell = buttonsCell!
-//        }
+        
         if attachesCell != nil
         {
             self.attachesCell = attachesCell!

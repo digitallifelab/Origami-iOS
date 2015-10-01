@@ -47,7 +47,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 //        {
 //            
 //        }
-        if DataSource.sharedInstance.dataRefresher == nil
+        if DataSource.sharedInstance.dataRefresher == nil && DataSource.sharedInstance.user != nil
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             loadingAllElementsInProgress = true
@@ -157,6 +157,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             {
                 self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
             }
+        }
+        else
+        {
+            collectionDashboard.dataSource = nil
         }
     }
     

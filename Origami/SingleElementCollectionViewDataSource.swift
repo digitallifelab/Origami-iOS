@@ -383,7 +383,18 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                         }
                     }
                     
+                    if let aContact = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt]))?.first , aName = aContact.nameAndLastNameSpacedString()
+                    {
+                        titleCell.responsibleNameLabel?.text = aName
+                    }
+                    else if let user = DataSource.sharedInstance.user, aName = user.nameAndLastNameSpacedString()
+                    {
+                        titleCell.responsibleNameLabel?.text = aName
+                    }
                 }
+                
+                
+                
                 self.titleCell = titleCell
                 return titleCell
                 
