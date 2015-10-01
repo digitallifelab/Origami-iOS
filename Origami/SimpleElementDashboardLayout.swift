@@ -65,6 +65,8 @@ struct ElementDetailsStruct
                 self.subordinates = subordinateItems
             }
         }
+        
+        print(" -> SimpleElementDashboardLayout  strufct description:\n title: \"\(self.title)\",\n details :\" \(self.details) \",\n messagesContained: \(self.messagesPreviewCell), \n attaches: \(self.attachesCell),\n subordinates:  \(self.subordinates) <- \n")
     }
 }
 

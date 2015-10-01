@@ -1459,9 +1459,9 @@
                                                         <constraint firstAttribute="width" constant="40" id="ghS-1K-PSl"/>
                                                     </constraints>
                                                 </imageView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="faH-1Q-g4X" userLabel="checkboxIcon">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-unchecked" translatesAutoresizingMaskIntoConstraints="NO" id="faH-1Q-g4X" userLabel="checkboxIcon">
                                                     <rect key="frame" x="8" y="19" width="30" height="30"/>
-                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="tintColor" red="0.12941176469999999" green="0.58823529409999997" blue="0.95294117649999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="cMc-Wd-VSj"/>
                                                         <constraint firstAttribute="width" constant="30" id="njV-PD-xtM"/>
@@ -1540,7 +1540,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9a-zL-yqE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2213" y="1426"/>
+            <point key="canvasLocation" x="1096" y="1148"/>
         </scene>
         <!--Image Picking View Controller-->
         <scene sceneID="aTY-AU-tPj">
@@ -1931,7 +1931,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dcS-eQ-nT3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1845" y="1841"/>
+            <point key="canvasLocation" x="1494" y="1712"/>
         </scene>
         <!--MenuVC-->
         <scene sceneID="iTM-lz-AhN">
@@ -2320,7 +2320,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hZ5-AS-g0h" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6329" y="459"/>
+            <point key="canvasLocation" x="6352" y="439"/>
         </scene>
         <!--Editing Menu PopupVC-->
         <scene sceneID="02F-wx-24d">
@@ -2507,7 +2507,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5on-pj-Vxt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1667" y="1199"/>
+            <point key="canvasLocation" x="1088" y="1712"/>
         </scene>
         <!--Attach Image ViewerVC-->
         <scene sceneID="8ML-Ub-qk4">
@@ -2544,7 +2544,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LpZ-ia-ReM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2690" y="1426"/>
+            <point key="canvasLocation" x="3426" y="1345"/>
         </scene>
         <!--ChatVC-->
         <scene sceneID="Pxg-Zo-KNI">
@@ -3136,7 +3136,7 @@
         <!--Navigation Controller-->
         <scene sceneID="DVC-Xg-M5w">
             <objects>
-                <navigationController toolbarHidden="NO" id="gPT-tu-90L" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="DefaultNavigationController" toolbarHidden="NO" id="gPT-tu-90L" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Scu-4e-nwz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -3170,9 +3170,10 @@
         <image name="icon-send" width="50" height="50"/>
         <image name="icon-solution" width="50" height="50"/>
         <image name="icon-star" width="128" height="128"/>
+        <image name="icon-unchecked" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="2Og-vg-MiQ"/>
-        <segue reference="U7u-GC-E0t"/>
+        <segue reference="58k-gH-OsT"/>
     </inferredMetricsTieBreakers>
 </document>

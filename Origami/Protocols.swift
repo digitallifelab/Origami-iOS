@@ -76,3 +76,8 @@ protocol TableItemPickerDelegate
     func itemPicker(itemPicker:AnyObject, didPickItem item:AnyObject)
     func itemPickerDidCancel(itemPicker:AnyObject)
 }
+
+protocol AllContactsDelegate
+{
+    func reloadUserContactsSender(sender:UIViewController?)
+}

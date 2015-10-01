@@ -17,13 +17,24 @@ class AllContactsVCCell: UITableViewCell {
     
     var contactIsMine:Bool = false {
         didSet{
-            switch contactIsMine
-            {   case contactIsMine == true:
-                    selectionIndicator?.image = UIImage(named:"icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
-                case contactIsMine == false:
-                    selectionIndicator?.image = UIImage(named:"icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
-                default:break
+            print("current mine = \(self.contactIsMine)")
+            if contactIsMine{
+                selectionIndicator?.image = UIImage(named:"icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
             }
+            else{
+                selectionIndicator?.image = UIImage(named:"icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
+            }
+            
+//            switch contactIsMine
+//            {   case contactIsMine:// == true:
+//                    selectionIndicator?.image = UIImage(named:"icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
+//                
+//                case !contactIsMine:// == false:
+//                    selectionIndicator?.image = UIImage(named:"icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
+//                
+//                default:
+//                    selectionIndicator?.image = UIImage(named:"icon-unchecked")?.imageWithRenderingMode(.AlwaysTemplate)
+//            }
         }
     }
     

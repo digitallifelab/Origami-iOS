@@ -11,7 +11,7 @@ import UIKit
 class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var contactsTable:UITableView?
-    
+    var delegate:AllContactsDelegate?
     var allContacts:[Contact]?
     var contactImages = [String:UIImage]()
     
@@ -25,7 +25,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         
         if let existContacts = allContacts
         {
-            allContacts!.sortInPlace { (contact1, contact2) -> Bool in
+            self.allContacts = existContacts.sort { (contact1, contact2) -> Bool in
                 if let lastName1 = contact1.lastName as? String, lastName2 = contact2.lastName as? String
                 {
                     let comparisonResult = lastName1.caseInsensitiveCompare(lastName2)
@@ -132,9 +132,10 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     {
         if let contact = contactForIndexPath(indexPath)
         {
-            cell.contactIsMine = contactIsMine(contact)
+            let mine = contactIsMine(contact)
+            print(mine)
+            cell.contactIsMine = mine
 
-            
           
             cell.moodLabel?.text = contact.mood as? String//userMood /* "Warning once only: Detected a case where constraints ambiguous" */
             var contactName = ""
@@ -264,16 +265,15 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         if contactIsMine(contact)
         {
             DataSource.sharedInstance.deleteMyContact(contact, completion: { [weak self] (success, error) -> () in
-                if success
+                
+                if let weakSelf = self
                 {
-                    if let weakSelf = self
+                    if success
                     {
                         weakSelf.contactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                        weakSelf.delegate?.reloadUserContactsSender(weakSelf)
                     }
-                }
-                else
-                {
-                    if let weakSelf = self
+                    else
                     {
                         weakSelf.showAlertWithTitle("Warning", message: "Could not delete contact", cancelButtonTitle: "Close")
                     }
@@ -283,16 +283,14 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         else
         {
             DataSource.sharedInstance.addNewContactToMyContacts(contact, completion: { [weak self] (success, error) -> () in
-                if success
+                if let weakSelf = self
                 {
-                    if let weakSelf = self
+                    if success
                     {
                         weakSelf.contactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                        weakSelf.delegate?.reloadUserContactsSender(weakSelf)
                     }
-                }
-                else
-                {
-                    if let weakSelf = self
+                    else
                     {
                         weakSelf.showAlertWithTitle("Warning", message: "Could not add contact", cancelButtonTitle: "Close")
                     }

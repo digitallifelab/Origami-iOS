@@ -1746,7 +1746,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return nil
         }
         
-        print("returning existing contacts")
+        let counter = DataSource.sharedInstance.contacts.count
+        print("returning existing contacts (\(counter))")
         
         return DataSource.sharedInstance.contacts
     }

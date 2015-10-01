@@ -377,7 +377,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     }
     
     //MARK: Custom CollectionView Layout
-    func prepareCollectionLayoutForElement(element:Element?) -> UICollectionViewFlowLayout?
+    func prepareCollectionLayoutForElement(element:Element?) -> SimpleElementDashboardLayout?
     {
         if element == nil
         {
@@ -995,24 +995,30 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func handleEditingElement(editingElement:Element)
     {
+//        var hasDetails = false
+//        if let _ = self.currentElement?.details as? String
+//        {
+//            hasDetails = true
+//        }
         DataSource.sharedInstance.editElement(editingElement, completionClosure: {[weak self] (edited) -> () in
             if let aSelf = self
             {
                 if edited
                 {
-                    
                     aSelf.currentElement?.title = editingElement.title
                     aSelf.currentElement?.details = editingElement.details
+                    
                     aSelf.collectionDataSource?.handledElement = aSelf.currentElement
                    
-                    aSelf.collectionView.collectionViewLayout.invalidateLayout()
+                    //aSelf.collectionView.collectionViewLayout.invalidateLayout()
+                    if let layout = aSelf.prepareCollectionLayoutForElement(aSelf.currentElement)
+                    {
+                        aSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                    }
                     aSelf.collectionView.performBatchUpdates({ () -> Void in
                         aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
                     }, completion: { ( _ ) -> Void in
-                        if let layout = aSelf.prepareCollectionLayoutForElement(aSelf.currentElement)
-                        {
-                            aSelf.collectionView.setCollectionViewLayout(layout, animated: false)
-                        }
+                        
                     })
                     
                     

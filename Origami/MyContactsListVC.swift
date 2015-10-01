@@ -8,9 +8,9 @@
 
 import UIKit
 
-class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource,UIViewControllerTransitioningDelegate {
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource,UIViewControllerTransitioningDelegate, AllContactsDelegate {
 
-    @IBOutlet weak var myContactsTable:UITableView!
+    @IBOutlet weak var myContactsTable:UITableView?
     
     var myContacts:[Contact]?
     var favContacts:[Contact] = [Contact]()
@@ -66,15 +66,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     if !weakSelf.contactImages.isEmpty
                     {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            weakSelf.myContactsTable.reloadData()
+                            weakSelf.myContactsTable?.reloadData()
                             })
                     }
                 }
             }
         }
         //#endif
-        myContactsTable.estimatedRowHeight = 60
-        myContactsTable.rowHeight = UITableViewAutomaticDimension
+        myContactsTable?.estimatedRowHeight = 60
+        myContactsTable?.rowHeight = UITableViewAutomaticDimension
     }
 
     override func didReceiveMemoryWarning() {
@@ -113,7 +113,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 {
                     if !weakSelf.contactImages.isEmpty
                     {
-                        weakSelf.myContactsTable.reloadData()
+                        weakSelf.myContactsTable?.reloadData()
                     }
                 }
             })
@@ -197,16 +197,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     
-    //MARK: Dismiss
-//    func homeButtonPressed(sender:UIButton)
-//    {
-////        self.dismissViewControllerAnimated(true, completion: nil)
-//        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-//        {
-//            self.navigationController?.setViewControllers([home], animated: true)
-//        }
-//    }
-    
     //MARK: ------ menu displaying
     func menuButtonTapped(sender:AnyObject)
     {
@@ -218,6 +208,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
         {
             allContactsVC.allContacts = allContacts
+            allContactsVC.delegate = self
             self.navigationController?.pushViewController(allContactsVC, animated: true)
         }
     }
@@ -271,7 +262,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     {
         currentSelectedContactsIndex = sender.selectedSegmentIndex
         
-        self.myContactsTable.reloadData()
+        self.myContactsTable?.reloadData()
     }
     
     
@@ -349,10 +340,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     {
         if let contact = contactForIndexPath(indexPath)
         {
-            //cell.contentView.layer.borderWidth = 1.0
-            //cell.nameLabel.layer.borderWidth = 1.0
-            //cell.moodLabel?.layer.borderWidth = 1.0
-            //cell.favouriteButton.layer.borderWidth = 1.0
             //name field
             cell.nameLabel.text = contactNameStringFromContact(contact)
             
@@ -505,17 +492,17 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                             switch weakSelf.currentSelectedContactsIndex
                             {
                             case 0:
-                                  weakSelf.myContactsTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                                  weakSelf.myContactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
                             case 1:
                                 if favourite == false
                                 {
-                                    weakSelf.myContactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
+                                    weakSelf.myContactsTable?.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
                                     
                                     //this is needed to reassign favButton.tag s
                                     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3)), dispatch_get_main_queue(), { [weak self]() -> Void in
                                         if let weakSelf = self
                                         {
-                                            weakSelf.myContactsTable.reloadData()
+                                            weakSelf.myContactsTable?.reloadData()
                                         }
                                     })
                                     
@@ -533,6 +520,13 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 }
             })
         }
+    }
+    
+    //MARK: - AllContactsDelegate
+    func reloadUserContactsSender(sender: UIViewController?) {
+        self.myContacts = DataSource.sharedInstance.getMyContacts()
+        
+        self.myContactsTable?.reloadData()
     }
 
 }
