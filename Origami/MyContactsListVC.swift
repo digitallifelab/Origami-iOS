@@ -38,10 +38,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             {
                 if let allContacts = contacts
                 {
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    dispatch_async(dispatch_get_main_queue()) { () -> Void in
                         weakSelf.allContacts = allContacts
                         weakSelf.contactsSearchButton?.enabled = true
-                    })
+                    }
                     
                     
                     //download avatars for contacts
@@ -113,7 +113,9 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 {
                     if !weakSelf.contactImages.isEmpty
                     {
-                        weakSelf.myContactsTable?.reloadData()
+                        dispatch_async(dispatch_get_main_queue()){ _ in
+                            weakSelf.myContactsTable?.reloadData()
+                        }
                     }
                 }
             })

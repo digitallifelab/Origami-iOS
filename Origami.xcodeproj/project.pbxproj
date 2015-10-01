@@ -1411,7 +1411,7 @@
 				F8C93B311B861B94009D890E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		F8D456981B1DEFA100172667 /* Build configuration list for PBXProject "Origami" */ = {
 			isa = XCConfigurationList;
@@ -1420,7 +1420,7 @@
 				F8D456BB1B1DEFA100172667 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		F8D456BC1B1DEFA100172667 /* Build configuration list for PBXNativeTarget "Origami task manager" */ = {
 			isa = XCConfigurationList;
@@ -1429,7 +1429,7 @@
 				F8D456BE1B1DEFA100172667 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

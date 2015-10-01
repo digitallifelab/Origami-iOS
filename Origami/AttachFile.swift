@@ -42,7 +42,7 @@ class AttachFile :NSObject
                 self.fileSize = lvFileSize
             }
             
-            if let lvName = info["FileName"] as? NSString
+            if let lvName = info["FileName"] as? String
             {
                 self.fileName = lvName.stringByReplacingOccurrencesOfString("/", withString: "-")
             }

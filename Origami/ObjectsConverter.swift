@@ -98,7 +98,8 @@ class ObjectsConverter {
         //let lvDicts = dictionaries
         for lvDict in dictionaries
         {
-            attaches.append(AttachFile(info: lvDict))
+            let lvAttachFile = AttachFile(info: lvDict)
+            attaches.append(lvAttachFile)
         }
         return attaches
     }

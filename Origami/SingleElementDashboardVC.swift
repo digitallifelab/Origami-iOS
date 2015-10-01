@@ -157,7 +157,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementFavouriteToggled:", name: kElementFavouriteButtonTapped, object: nil)
       
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "startEditingElement:", name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "toggleMoreDetails:", name: kElementMoreDetailsNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "singleAttachDataWasLoaded:", name: kAttachDataDidFinishLoadingNotification, object: nil)
@@ -190,7 +190,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementActionButtonPressedNotification, object: nil)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementEditTextNotification, object: nil)
+        //NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementMoreDetailsNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachFileDataLoadingCompleted, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachDataDidFinishLoadingNotification, object:nil)
@@ -395,7 +395,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             }
         }
         return nil
-        
     }
     
     //MARK: UIViewControllerTransitioningDelegate
@@ -412,43 +411,38 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: Handling buttons and other elements tap in collection view
     func startEditingElement(notification:NSNotification?)
     {
-        if let editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController //
+        if let
+            editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController ,
+            currentEl = self.currentElement,
+            selfNav = self.navigationController
         {
-            if let rootElementId = self.currentElement?.rootElementId
-            {
-                editingVC.rootElementID = rootElementId.integerValue
-            }
-
-            if let _ = self.currentElement
-            {
-                //let copyElement = Element(info:  currentElement.toDictionary())
-                editingVC.composingDelegate = self
-                
-                self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-                
-                if let selfNav = self.navigationController
-                {
-                    selfNav.delegate = self
-                    selfNav.pushViewController(editingVC, animated: true)
-                }
-                else
-                {
-                    print("probably, some shit happened in simulator iOS 9.")
-                }
-            }
-           
+            editingVC.rootElementID = currentEl.rootElementId.integerValue
+            editingVC.composingDelegate = self
+            selfNav.delegate = self
+            self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
+            #if (arch(i386) || arch(x86_64)) && os(iOS) //detect iOS Simulator, because of some unknown bug
+                var currentVCs = selfNav.viewControllers
+                currentVCs.append(editingVC)
+                //selfNav.viewControllers = currentVCs
+                selfNav.setViewControllers( currentVCs, animated: true)
+                //arghhh. !  Still does not work in simulator
+                #else
+                selfNav.pushViewController(editingVC, animated: true)
+            #endif
         }
     }
-    
     
     func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
         if let editingVC = viewController as? NewElementComposerViewController
         {
-            let copyElement = Element(info:  self.currentElement!.toDictionary())
-            editingVC.newElement = copyElement
-            editingVC.editingStyle = .EditCurrent
+            if let copyElement = self.currentElement?.createCopy()
+            {
+                editingVC.newElement = copyElement
+                editingVC.editingStyle = .EditCurrent
+            }
         }
     }
+    
     func elementFavouriteToggled(notification:NSNotification)
     {
         if let element = currentElement, _ = element.elementId?.integerValue
@@ -461,12 +455,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             let favourite = element.isFavourite.boolValue
             let isFavourite = !favourite
             let elementCopy = Element(info: element.toDictionary())
-//            var titleCell:SingleElementTitleCell?
-//            
-//            if let titleCellCheck = notification.object as? SingleElementTitleCell
-//            {
-//                titleCell = titleCellCheck
-//            }
+
             DataSource.sharedInstance.updateElement(elementCopy, isFavourite: isFavourite) { [weak self] (edited) -> () in
                 
                 if let weakSelf = self

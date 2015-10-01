@@ -132,6 +132,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     AFNetworkReachabilityManager *manager = [[self alloc] initWithReachability:reachability];
     manager.networkReachabilityAssociation = AFNetworkReachabilityForName;
 
+    CFRelease(reachability);
     return manager;
 }
 
@@ -141,6 +142,7 @@ static void AFNetworkReachabilityReleaseCallback(const void *info) {
     AFNetworkReachabilityManager *manager = [[self alloc] initWithReachability:reachability];
     manager.networkReachabilityAssociation = AFNetworkReachabilityForAddress;
 
+    CFRelease(reachability);
     return manager;
 }
 

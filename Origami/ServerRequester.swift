@@ -847,32 +847,35 @@ class ServerRequester: NSObject
             let requestOperation = httpManager.GET(requestString,
                 parameters: nil,
                 success: {  (operation, result) -> Void in
-                    
-                    if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
-                    {
-                        NSOperationQueue().addOperationWithBlock({/* [weak self]*/() -> Void in
-
-                                if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
-                                {
-                                   dispatch_async(dispatch_get_main_queue(),{ () -> Void in
+                   
+                    let bgAttachConvertingQueue = dispatch_queue_create("com.Origami.Attach.Conerting.Queue", DISPATCH_QUEUE_SERIAL)
+                    dispatch_async(bgAttachConvertingQueue, { () -> Void in
+                        if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
+                        {
+                            if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
+                            {
+                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
                                     completion?(attaches, nil)
-                                    })
-                                }
-                                else
-                                {
-                                    
-                                    dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-                                       completion?(nil,nil)
-                                    })
+                                })
                             }
-
-                        })
-                    }
-                    else
-                    {
-                        let lvError = NSError(domain: "Attachment error", code: -45, userInfo: [NSLocalizedDescriptionKey:"Failed to convert recieved attaches data"])
-                        completion?(nil, lvError)
-                    }
+                            else
+                            {
+                                
+                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
+                                    completion?(nil,nil)
+                                })
+                            }
+                        }
+                        else
+                        {
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                let lvError = NSError(domain: "Attachment error", code: -45, userInfo: [NSLocalizedDescriptionKey:"Failed to convert recieved attaches data"])
+                                completion?(nil, lvError)
+                            })
+                         
+                        }
+                    })
+                    
                     
             },
                 failure: { (operation, error) -> Void in
@@ -1563,24 +1566,22 @@ class ServerRequester: NSObject
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
                 success: { (operation, result) -> Void in
-                    NSOperationQueue().addOperationWithBlock({ () -> Void in
-                        if let completionBlock = completion
+                    let queueBG = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
+                    dispatch_async(queueBG) { () -> Void in
+                        
+                        if let lvContactsArray = result["GetAllContactsResult"] as? [[String:AnyObject]]
                         {
-                            if let lvContactsArray = result["GetAllContactsResult"] as? [[String:AnyObject]]
-                            {
-                                let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)
-                                
-                                //print("Loaded all contacts:\(convertedContacts)")
-                                
-                                completionBlock(contacts:convertedContacts, error: nil)
-                            }
-                            else
-                            {
-                                let error = NSError(domain: "Contacts Reading Error.", code: -501, userInfo: [NSLocalizedDescriptionKey:"Could not read contacts raw info from response."])
-                                completionBlock(contacts:nil, error:error)
-                            }
+                            let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)
+                            
+                            
+                            completion?(contacts:convertedContacts, error: nil)
                         }
-                    })
+                        else
+                        {
+                            let error = NSError(domain: "Contacts Reading Error.", code: -501, userInfo: [NSLocalizedDescriptionKey:"Could not read contacts raw info from response."])
+                            completion?(contacts:nil, error:error)
+                        }
+                    }
                     
                 }, failure: { (operation, requestError) -> Void in
                     if let completionBlock = completion

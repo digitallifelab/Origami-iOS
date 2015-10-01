@@ -775,10 +775,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             ObjectsConverter.sortElementsByDate(&favouriteElements)
         
             //debug 
-            for lvFavourite in favouriteElements
-            {
-                print(lvFavourite.title!, lvFavourite.elementId!.integerValue)
-            }
+//            for lvFavourite in favouriteElements
+//            {
+//                print(lvFavourite.elementId!, lvFavourite.title!, lvFavourite.elementId!.integerValue)
+//            }
             
             
         
@@ -816,10 +816,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             
             var signalElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preSignalElementsArray)
-            for aSignal in signalElementsArray
-            {
-                assert(!aSignal.isArchived(), "\n Tried to insert archived element to main dashboard.")
-            }
+//            for aSignal in signalElementsArray
+//            {
+//                assert(!aSignal.isArchived(), "\n Tried to insert archived element to main dashboard.")
+//            }
             
             ObjectsConverter.sortElementsByDate(&signalElementsArray)
             
@@ -836,7 +836,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getAllElementsSortedByActivity( completion:((elements:[Element]?) -> ())? )
     {
-        NSLog("_________ Started gathering elements for RecentActivityTableVC.....")
+        //NSLog("_________ Started gathering elements for RecentActivityTableVC.....")
         
         let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
         dispatch_async(bgQueue, { () -> Void in
@@ -844,7 +844,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             var elementsToSort = DataSource.sharedInstance.elements
             
             ObjectsConverter.sortElementsByDate(&elementsToSort)
-            NSLog("_________ Finished gathering elements for RecentActivityTableVC.....")
+            NSLog("_________ Finished gathering elements ( 0 elements! )  for RecentActivityTableVC.....")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 completion?(elements: elementsToSort)
             })

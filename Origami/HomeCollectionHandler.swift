@@ -184,13 +184,17 @@ import UIKit
                 return signals![(lvRow - 2)]
             }
         case 1:
-            if favourites!.count > 0 && favourites!.count > lvRow
+            if let favCount = favourites?.count
             {
-                return favourites![lvRow]
-            }
-            else if other!.count > lvRow
-            {
-                return other![lvRow]
+                print("Home DashBoard CollectionDataSource .   Favourites: \(favCount)")
+                if favCount > 0 && favCount > lvRow
+                {
+                    return favourites![lvRow]
+                }
+                else if other!.count > lvRow
+                {
+                    return other![lvRow]
+                }
             }
         case 2:
             if other!.count > lvRow
