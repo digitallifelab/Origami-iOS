@@ -438,10 +438,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             //let composerHolder = UINavigationController(rootViewController: newElementCreator)
             
             newElementCreator.composingDelegate = self
-            
-//            composerHolder.modalPresentationStyle = .Custom
-//            composerHolder.transitioningDelegate = self
-            
+
             self.navigationController?.pushViewController(newElementCreator, animated: true)
             //newElementCreator.editingStyle = .AddNew - switched to be default
             if let tapView = self.view.viewWithTag(0xAD12)
@@ -713,35 +710,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
     }
     
-//    func setAppearanceForNightModeToggled(nightModeOn:Bool)
-//    {
-//        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
-//        self.navigationController?.navigationBar.translucent = false
-//        self.navigationController?.toolbar.translucent = false
-//        
-//        //    UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
-//        
-//       if nightModeOn
-//       {
-//            self.navigationController?.navigationBar.barStyle = UIBarStyle.Black
-//            self.navigationController?.navigationBar.barTintColor = kBlackColor
-//            self.view.backgroundColor = kBlackColor
-//            self.navigationController?.toolbar.tintColor = kWhiteColor
-//            self.navigationController?.toolbar.barTintColor = kBlackColor
-//       }
-//       else
-//       {
-//            self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
-//            self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor
-//            self.view.backgroundColor = kWhiteColor
-//            self.navigationController?.toolbar.tintColor = kWhiteColor
-//            self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor
-//       }
-//        
-//        self.collectionSource?.turnNightModeOn(nightModeOn)
-//        
-//    }
-    
     func didTapOnChatMessage(notification:NSNotification?)
     {
         // 1 - instantiate SinglElementDashboardVC
@@ -831,49 +799,5 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             })
         }
     }
-    
-    func showUserProfileVC()
-    {
-        if  let profileNavHolder = self.storyboard?.instantiateViewControllerWithIdentifier("ProfileNavController") as? UINavigationController,
-            _ = profileNavHolder.viewControllers.first as? UserProfileVC
-        {
-            profileNavHolder.modalPresentationStyle = .Custom
-            profileNavHolder.transitioningDelegate = self
-            profileNavHolder.toolbarHidden = false
-            
-            customTransitionAnimator = FadeOpaqueAnimator()
-            
-            self.presentViewController(profileNavHolder, animated: true, completion: nil)
-        }
-    }
-    
-    func showContactsVC()
-    {
-        if let contactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("MyContactsListVC") as? MyContactsListVC
-        {
-            let contactsNavHolderVC = UINavigationController(rootViewController: contactsVC)
-            
-            contactsNavHolderVC.modalPresentationStyle = .Custom
-            contactsNavHolderVC.transitioningDelegate = self
-            contactsNavHolderVC.toolbarHidden = false
-            customTransitionAnimator = FadeOpaqueAnimator()
-            
-            self.presentViewController(contactsNavHolderVC, animated: true, completion: nil)
-        }
-    }
-    
-    //MARK: UIGEstureRecognizerDelegate
-  
-    
-//    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-//        return true
-//    }
-//    
-//    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//        return true
-//    }
-    
-    
-    
     
 }

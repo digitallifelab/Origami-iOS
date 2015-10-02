@@ -1,0 +1,171 @@
+
+/* Class = "UILabel"; text = "Owner name"; ObjectID = "0J2-7A-j9p"; */
+"0J2-7A-j9p.text" = "Owner name";
+
+/* Class = "UILabel"; text = "3"; ObjectID = "0zZ-x0-oQP"; */
+"0zZ-x0-oQP.text" = "3";
+
+/* Class = "UILabel"; text = "element title"; ObjectID = "2Y4-fY-tDA"; */
+"2Y4-fY-tDA.text" = "element title";
+
+/* Class = "UILabel"; text = "19.06.2015 11:43"; ObjectID = "4Cd-4o-a9a"; */
+"4Cd-4o-a9a.text" = "19.06.2015 11:43";
+
+/* Class = "UILabel"; text = "Subordinate Title"; ObjectID = "5Fq-wn-KwM"; */
+"5Fq-wn-KwM.text" = "Subordinate Title";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "7az-Gp-NEg"; */
+"7az-Gp-NEg.text" = "Label";
+
+/* Class = "UILabel"; text = "message from me"; ObjectID = "8H9-w2-HGL"; */
+"8H9-w2-HGL.text" = "message from me";
+
+/* Class = "UILabel"; text = "firstName + lastName"; ObjectID = "9Lx-gk-VZV"; */
+"9Lx-gk-VZV.text" = "firstName + lastName";
+
+/* Class = "UILabel"; text = "firstName + lastName"; ObjectID = "9W8-RQ-YEr"; */
+"9W8-RQ-YEr.text" = "firstName + lastName";
+
+/* Class = "UITabBarItem"; title = "Home"; ObjectID = "A5W-o3-zcD"; */
+"A5W-o3-zcD.title" = "Home";
+
+/* Class = "UITextField"; placeholder = "email"; ObjectID = "AKb-PF-R3o"; */
+"AKb-PF-R3o.placeholder" = "email";
+
+/* Class = "UILabel"; text = "Title"; ObjectID = "BMG-Rp-Mb9"; */
+"BMG-Rp-Mb9.text" = "Title";
+
+/* Class = "UIViewController"; title = "Contact Profile"; ObjectID = "BcH-qV-dYv"; */
+"BcH-qV-dYv.title" = "Contact Profile";
+
+/* Class = "UITextView"; text = "element details text view. element details text view. element details text view. element details text view."; ObjectID = "Byz-Ko-oBd"; */
+"Byz-Ko-oBd.text" = "element details text view. element details text view. element details text view. element details text view.";
+
+/* Class = "UILabel"; text = "Message text"; ObjectID = "D09-U6-0Jc"; */
+"D09-U6-0Jc.text" = "Message text";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "DOH-i4-k5z"; */
+"DOH-i4-k5z.text" = "Label";
+
+/* Class = "UILabel"; text = "Name Lastname"; ObjectID = "E7I-zk-h2q"; */
+"E7I-zk-h2q.text" = "Name Lastname";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "FS5-ud-JMl"; */
+"FS5-ud-JMl.text" = "Label";
+
+/* Class = "UILabel"; text = "Юлия Бондаренко"; ObjectID = "G7E-5a-UJU"; */
+"G7E-5a-UJU.text" = "Юлия Бондаренко";
+
+/* Class = "UILabel"; text = "Archived"; ObjectID = "HKN-Ge-hVy"; */
+"HKN-Ge-hVy.text" = "Archived";
+
+/* Class = "UILabel"; text = "menu item name"; ObjectID = "KVD-ty-xaM"; */
+"KVD-ty-xaM.text" = "menu item name";
+
+/* Class = "UILabel"; text = "title"; ObjectID = "LG9-gz-wTP"; */
+"LG9-gz-wTP.text" = "title";
+
+/* Class = "UILabel"; text = "Message text from user in chat for this element. Single line and truncate"; ObjectID = "M6g-49-OvE"; */
+"M6g-49-OvE.text" = "Message text from user in chat for this element. Single line and truncate";
+
+/* Class = "UISegmentedControl"; MHy-Gy-Yry.segmentTitles[0] = "All"; ObjectID = "MHy-Gy-Yry"; */
+"MHy-Gy-Yry.segmentTitles[0]" = "All";
+
+/* Class = "UILabel"; text = "18.06.2015 12:27"; ObjectID = "OZB-6b-hhu"; */
+"OZB-6b-hhu.text" = "18.06.2015 12:27";
+
+/* Class = "UILabel"; text = "name or email or phone or else long title"; ObjectID = "PWk-AJ-c68"; */
+"PWk-AJ-c68.text" = "name or email or phone or else long title";
+
+/* Class = "UITextView"; text = "Титул элемента шрифтом сегое размером 30"; ObjectID = "RWq-EV-t1H"; */
+"RWq-EV-t1H.text" = "Титул элемента шрифтом сегое размером 30";
+
+/* Class = "UIButton"; normalTitle = "Login"; ObjectID = "Uxo-Jh-pfs"; */
+"Uxo-Jh-pfs.normalTitle" = "Login";
+
+/* Class = "UITextField"; placeholder = "password"; ObjectID = "Vhg-5m-q1o"; */
+"Vhg-5m-q1o.placeholder" = "password";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "WWm-VV-uAM"; */
+"WWm-VV-uAM.text" = "Label";
+
+/* Class = "UILabel"; text = "title"; ObjectID = "X0d-M8-Yhh"; */
+"X0d-M8-Yhh.text" = "title";
+
+/* Class = "UILabel"; text = "3"; ObjectID = "X69-zu-5f4"; */
+"X69-zu-5f4.text" = "3";
+
+/* Class = "UILabel"; text = "name or email or else"; ObjectID = "ZwB-2o-kyr"; */
+"ZwB-2o-kyr.text" = "name or email or else";
+
+/* Class = "UIButton"; normalTitle = "more"; ObjectID = "agd-AV-aTn"; */
+"agd-AV-aTn.normalTitle" = "more";
+
+/* Class = "UILabel"; text = "name"; ObjectID = "bxx-1T-kGe"; */
+"bxx-1T-kGe.text" = "name";
+
+/* Class = "UILabel"; text = "message from user"; ObjectID = "cXG-xX-3MC"; */
+"cXG-xX-3MC.text" = "message from user";
+
+/* Class = "UILabel"; text = "Warning once only: Detected"; ObjectID = "dU9-ou-pfV"; */
+"dU9-ou-pfV.text" = "Warning once only: Detected";
+
+/* Class = "UILabel"; text = "13:30, 2 Aug"; ObjectID = "dad-7V-46K"; */
+"dad-7V-46K.text" = "13:30, 2 Aug";
+
+/* Class = "UITextView"; text = "element details text view. element details text view. element details text view. element details text view."; ObjectID = "dbs-Ma-wcR"; */
+"dbs-Ma-wcR.text" = "element details text view. element details text view. element details text view. element details text view.";
+
+/* Class = "UILabel"; text = "title"; ObjectID = "gvy-2I-I3N"; */
+"gvy-2I-I3N.text" = "title";
+
+/* Class = "UILabel"; text = "name"; ObjectID = "iGB-EG-ehF"; */
+"iGB-EG-ehF.text" = "name";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "j4Y-V0-oUP"; */
+"j4Y-V0-oUP.text" = "Label";
+
+/* Class = "UILabel"; text = "element title"; ObjectID = "jH3-cQ-fuf"; */
+"jH3-cQ-fuf.text" = "element title";
+
+/* Class = "UILabel"; text = "Name Lastname"; ObjectID = "kyu-Lb-nDW"; */
+"kyu-Lb-nDW.text" = "Name Lastname";
+
+/* Class = "UILabel"; text = "R.E."; ObjectID = "lJe-M9-mYy"; */
+"lJe-M9-mYy.text" = "R.E.";
+
+/* Class = "UITextView"; text = " "; ObjectID = "luj-sS-CsY"; */
+"luj-sS-CsY.text" = " ";
+
+/* Class = "UILabel"; text = "27.07.2015"; ObjectID = "nsE-RP-MTO"; */
+"nsE-RP-MTO.text" = "27.07.2015";
+
+/* Class = "UISegmentedControl"; oae-c1-4Si.segmentTitles[0] = "Man"; ObjectID = "oae-c1-4Si"; */
+"oae-c1-4Si.segmentTitles[0]" = "Man";
+
+/* Class = "UISegmentedControl"; oae-c1-4Si.segmentTitles[1] = "Woman"; ObjectID = "oae-c1-4Si"; */
+"oae-c1-4Si.segmentTitles[1]" = "Woman";
+
+/* Class = "UILabel"; text = "what a nice day is it today, let`s make a picnick"; ObjectID = "rW0-kk-o1P"; */
+"rW0-kk-o1P.text" = "what a nice day is it today, let`s make a picnick";
+
+/* Class = "UILabel"; text = "Signals"; ObjectID = "rjN-dc-B59"; */
+"rjN-dc-B59.text" = "Signals";
+
+/* Class = "UILabel"; text = "22.09.15, 13:54"; ObjectID = "rt6-NH-KmU"; */
+"rt6-NH-KmU.text" = "22.09.15, 13:54";
+
+/* Class = "UILabel"; text = "12:30, 2 Aug 2015"; ObjectID = "sgw-dA-FiL"; */
+"sgw-dA-FiL.text" = "12:30, 2 Aug 2015";
+
+/* Class = "UILabel"; text = "13:30, 2 Aug"; ObjectID = "vXc-34-FCp"; */
+"vXc-34-FCp.text" = "13:30, 2 Aug";
+
+/* Class = "UILabel"; text = "Subordinate details go here"; ObjectID = "vbi-YH-E7f"; */
+"vbi-YH-E7f.text" = "Subordinate details go here";
+
+/* Class = "UILabel"; text = "Chat"; ObjectID = "wmB-xd-qK0"; */
+"wmB-xd-qK0.text" = "Chat";
+
+/* Class = "UILabel"; text = "menu item name"; ObjectID = "zMJ-w5-zdy"; */
+"zMJ-w5-zdy.text" = "menu item name";

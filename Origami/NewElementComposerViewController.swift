@@ -56,12 +56,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         didSet{
             switch displayMode{
                 case .Night:
-                    //self.toolbar.tintColor = UIColor.whiteColor()
-                    //self.toolbar.barTintColor = UIColor.blackColor()
                     self.view.backgroundColor = UIColor.blackColor()
                 case .Day:
-                    //self.toolbar.tintColor = kDayNavigationBarBackgroundColor
-                    //self.toolbar.barTintColor = kWhiteColor
                     self.view.backgroundColor = UIColor.whiteColor()
             }
         }
@@ -203,8 +199,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             //prepare needed values
             let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue
             let keyboardHeight = keyboardFrame.size.height
-            //let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
-            //let options = UIViewAnimationOptions(rawValue:UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
+           
             var keyboardIsToShow = false
             if notification.name == UIKeyboardWillShowNotification
             {

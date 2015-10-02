@@ -420,15 +420,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             editingVC.composingDelegate = self
             selfNav.delegate = self
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-            #if (arch(i386) || arch(x86_64)) && os(iOS) //detect iOS Simulator, because of some unknown bug
-                var currentVCs = selfNav.viewControllers
-                currentVCs.append(editingVC)
-                //selfNav.viewControllers = currentVCs
-                selfNav.setViewControllers( currentVCs, animated: true)
-                //arghhh. !  Still does not work in simulator
-                #else
-                selfNav.pushViewController(editingVC, animated: true)
-            #endif
+            selfNav.pushViewController(editingVC, animated: true)
         }
     }
     

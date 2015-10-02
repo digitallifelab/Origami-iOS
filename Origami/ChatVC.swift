@@ -214,19 +214,18 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             //prepare needed values
             let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue//()
             let keyboardHeight = keyboardFrame.size.height
-            //let animationOptionCurveNumber = notifInfo[UIKeyboardAnimationCurveUserInfoKey]! as! NSNumber
-            //let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions.fromRaw(   animationOptionCurveNumber)
             let animationTime = notifInfo[UIKeyboardAnimationDurationUserInfoKey]! as! NSTimeInterval
             let options = UIViewAnimationOptions(rawValue:UInt((notifInfo[UIKeyboardAnimationCurveUserInfoKey] as! NSNumber).integerValue << 16))
-            //var keyboardIsToShow = false
+          
             if notification.name == UIKeyboardWillShowNotification
             {
-                //keyboardIsToShow = true
                 textHolderBottomConstaint.constant = keyboardHeight //- self.navigationController!.toolbar.bounds.size.height
+                chatTable.contentInset.bottom = keyboardHeight
             }
             else
             {
                 textHolderBottomConstaint.constant = 0.0
+                chatTable.contentInset.bottom = 0.0
             }
             
             
@@ -236,13 +235,14 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 animations: {  [weak self]  in
                     if let weakSelf = self
                     {
-                        weakSelf.view.layoutIfNeeded()
+                        weakSelf.view.setNeedsLayout()
                     }
-             
-                
             },
-                completion: { /*[weak self]*/  (finished) -> () in
-
+                completion: { [weak self]  (finished) -> () in
+                    if let aSelf = self
+                    {
+                        aSelf.scrollToLastMessage(true)
+                    }
             })
         }
     }
@@ -264,13 +264,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 {
                     weakSelf.chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
                     
-                    weakSelf.chatTable.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
+                   // weakSelf.chatTable.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
                     
-                    weakSelf.scrollToLastMessage()
+                    weakSelf.scrollToLastMessage(true)
                 }
-           
             })
-            
         }
     }
 
@@ -330,32 +328,31 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         
         //chatTable.reloadData()
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [unowned self]() -> Void in
-            self.scrollToLastMessage()
+            self.scrollToLastMessage(true)
         })
-       
-        //chatTable.setNeedsLayout()
     }
     
-    func scrollToLastMessage()
+    func scrollToLastMessage(animated:Bool = false)
     {
-        let contentHeight = chatTable.contentSize.height
-        if contentHeight > chatTable.bounds.size.height
-        {
+        //let contentHeight = chatTable.contentSize.height
+        //let boundsHeight = chatTable.bounds.size.height
+        //if contentHeight > boundsHeight
+        //{
             if self.currentChatMessages.count > 1
             {
                 let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
                
-                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: false)
+                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: animated)
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [weak self]() -> Void in
-                    if let weakSelf = self
-                    {
-                        let newLastPath = NSIndexPath(forRow: weakSelf.currentChatMessages.count - 1, inSection: 0)
-                        weakSelf.chatTable.reloadRowsAtIndexPaths([newLastPath], withRowAnimation: .None)
-                    }
-                })
+//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [weak self]() -> Void in
+//                    if let weakSelf = self
+//                    {
+//                        let newLastPath = NSIndexPath(forRow: weakSelf.currentChatMessages.count - 1, inSection: 0)
+//                        weakSelf.chatTable.reloadRowsAtIndexPaths([newLastPath], withRowAnimation: .None)
+//                    }
+//                })
             }
-        }
+        //}
     }
     
     //MARK: UITableViewDataSource
