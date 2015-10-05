@@ -61,9 +61,13 @@ class DataRefresher
                 //let currentElementsCount = DataSource.sharedInstance.countExistingElements()
                 //let newElementsCount = sortedElements.count
                 
-                if let allCurrentElements = DataSource.sharedInstance.getAllElementsLocked()
+                if let _ = DataSource.sharedInstance.getAllElementsLocked()
                 {
+                    DataSource.sharedInstance.replaceAllElementsToNew(sortedElements)
                     
+                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                   
+                    /*
                     let existingSet = Set(allCurrentElements)
                     let newSet = Set(sortedElements)
         
@@ -181,7 +185,7 @@ class DataRefresher
                         
                         
                         DataSource.sharedInstance.addElementsLocked(arrayToIterate)
-                    }
+                    } */
                 }
             }
             
@@ -204,6 +208,7 @@ class DataRefresher
             }
         }
     }
+    
     func startNewRefreshLoop()
     {
         self.isInProgress = false

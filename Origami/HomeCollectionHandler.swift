@@ -93,8 +93,11 @@ import UIKit
         else
         {
             let dashCell:DashCell =  collectionView.dequeueReusableCellWithReuseIdentifier("DashCell", forIndexPath: indexPath) as! DashCell
+//            dashCell.layer.shouldRasterize = true
+//            dashCell.layer.rasterizationScale = UIScreen.mainScreen().scale
             dashCell.displayMode = (nightModeEnabled) ? .Night : .Day
             dashCell.cellType = cellType
+            
             if cellType == .SignalsToggleButton
             {
                 dashCell.signalsCountLabel?.text = "\(signals?.count ?? 0)"
@@ -105,6 +108,7 @@ import UIKit
             {
                 if let existingElement = elementForIndexPath(indexPath)
                 {
+                    
                     if let title = existingElement.title as? String
                     {
                         dashCell.titleLabel?.text = title.uppercaseString
@@ -113,22 +117,31 @@ import UIKit
                     {
                         dashCell.descriptionLabel?.text = lvDescription
                     }
-                    
-                     let isAsignal = existingElement.isSignal.boolValue
-                    
-                    if isAsignal
-                    {
-                        dashCell.signalDetectorView?.hidden = false
-                       // dashCell.signalDetectorView?.backgroundColor = kDaySignalColor
-                    }
-                    else
-                    {
-                        dashCell.signalDetectorView?.hidden = true
-                    }
+                
+                    dashCell.signalDetectorView?.hidden = !existingElement.isSignal.boolValue
                     
                     dashCell.currentElementType = existingElement.typeId.integerValue // will set visibility for icons
+//                    if existingElement.isTaskForCurrentUser()
+//                    {
+                        if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState.integerValue)
+                        {
+                            switch finishStateEnumValue
+                            {
+                            case .Default:
+                                //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
+                                break
+                            case .InProcess:
+                                dashCell.taskIcon?.image = UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate)
+                            case .FinishedBad:
+                                dashCell.taskIcon?.image = UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                            case .FinishedGood:
+                                dashCell.taskIcon?.image = UIImage(named: "task-in-good")?.imageWithRenderingMode(.AlwaysTemplate)
+                            }
+                        }
+//                    }
                 }
             }
+            
             
             return dashCell
         }

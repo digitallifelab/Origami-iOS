@@ -260,9 +260,11 @@ class Element:NSObject
             var titlesEqual = false
             var descriptionsEqual = false
             var elementIdIsEqual = false
-            var typeIdsEqual = false
             var isSignalEqual = false
+            //task especially
+            var typeIdsEqual = false
             var finishStateIsEqual = false
+            var responsiblesAreEqual = false
             
             if self.elementId != nil && lvElement.elementId != nil
             {
@@ -308,8 +310,23 @@ class Element:NSObject
                 finishStateIsEqual = true
             }
             
+            if self.responsible.integerValue == lvElement.responsible.integerValue
+            {
+                responsiblesAreEqual = true
+            }
             
-            let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual && finishStateIsEqual
+            
+            let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual && finishStateIsEqual && responsiblesAreEqual
+            //debug
+            if !equal
+            {
+                if self.elementId!.integerValue == lvElement.elementId!.integerValue
+                {
+                    print("\n -> Elements Not Equal: ")
+                    print("title: \(titlesEqual), \ndescription: \(descriptionsEqual), \n elementId self:\(self.elementId), elementId object: \(lvElement.elementId), \n typeIDs:\(self.typeId.integerValue) - \(lvElement.typeId.integerValue), \n signals: \(self.isSignal.boolValue) - \(lvElement.isSignal.boolValue),\n finishState: \(self.finishState.integerValue) - \(lvElement.finishState.integerValue) -> \n")
+                }
+            }
+            
             return equal
             
         }

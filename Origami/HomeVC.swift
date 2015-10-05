@@ -18,7 +18,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     var collectionSource:HomeCollectionHandler?
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
     private var loadingAllElementsInProgress = false
- 
+    private var refreshControl:UIRefreshControl?
     var shouldReloadCollection = false
     
     deinit
@@ -42,11 +42,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
+        configureRefreshControl()
+
         
-//        if let refresher = DataSource.sharedInstance.dataRefresher
-//        {
-//            
-//        }
         if DataSource.sharedInstance.dataRefresher == nil && DataSource.sharedInstance.user != nil
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -218,44 +216,77 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         //....
         let homeButton = UIButton(type:.System)
+        #if SHEVCHENKO
         homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        #else
+        homeButton.setImage(UIImage(named: "icon-home")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        #endif
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
     
         let homeImageButton = UIBarButtonItem(customView: homeButton)
         
+        let buttonImageInsets = UIEdgeInsetsMake(5, 5, 5, 5)
+        
         //....
         let filterButton = UIButton(type:.System)
         filterButton.setImage(UIImage(named: "menu-icon-sorting")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        filterButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        //filterButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         filterButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
         filterButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         filterButton.addTarget(self, action: "showSortedElements:", forControlEvents: .TouchUpInside)
-        
+        filterButton.imageEdgeInsets = buttonImageInsets
         let filterButtonItem = UIBarButtonItem(customView: filterButton)
         
         //....
         let recentActivityButton = UIButton(type:.System)
         recentActivityButton.setImage(UIImage(named: "menu-icon-recent")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        recentActivityButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        //recentActivityButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         recentActivityButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
         recentActivityButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         recentActivityButton.addTarget(self, action: "showRecentActivity:", forControlEvents: .TouchUpInside)
-        
+        recentActivityButton.imageEdgeInsets = buttonImageInsets
         let recentBarButton = UIBarButtonItem(customView: recentActivityButton)
         
-        //..
-        let flexibleSpaceLeft = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
-        let flexibleSpaceRight = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        //.
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
         
-        let currentToolbarItems:[UIBarButtonItem] = [filterButtonItem,flexibleSpaceLeft, homeImageButton, flexibleSpaceRight, recentBarButton]
-        
-        
-        
+        let currentToolbarItems:[UIBarButtonItem] = [filterButtonItem, flexibleSpace, homeImageButton, flexibleSpace, recentBarButton]
         
         //
         self.setToolbarItems(currentToolbarItems, animated: false)
+    }
+    
+    //MARK: UIRefreshControl
+    func startRefreshing(sender:UIRefreshControl)
+    {
+        refreshMainDashboard {[weak sender] () -> () in
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let weakRefreshControl = sender
+                {
+                    weakRefreshControl.endRefreshing()
+                }
+            })
+        }
+    }
+    
+    private func refreshMainDashboard(completion:(()->())?)
+    {
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5))
+        dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+            completion?()
+        })
+    }
+    
+    private func configureRefreshControl()
+    {
+        refreshControl = UIRefreshControl()
+        refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
+        refreshControl?.tintColor = kDaySignalColor
+        refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
+        self.collectionDashboard.addSubview(refreshControl!)
     }
     
     //MARK:-----

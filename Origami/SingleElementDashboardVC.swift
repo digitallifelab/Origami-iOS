@@ -161,6 +161,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "loadingAttachFileDataCompleted:", name: kAttachFileDataLoadingCompleted, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "singleAttachDataWasLoaded:", name: kAttachDataDidFinishLoadingNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshCurrentElementAfterElementChangedNotification:", name: kElementWasChangedNotification, object: nil)
         
         let chatPath = NSIndexPath(forItem: 1, inSection: 0)
         let chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
@@ -193,6 +194,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementMoreDetailsNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachFileDataLoadingCompleted, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachDataDidFinishLoadingNotification, object:nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasChangedNotification, object: nil)
     }
     
     //MARK: Appearance --
@@ -1216,7 +1218,28 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
-  
+    func refreshCurrentElementAfterElementChangedNotification(notif:NSNotification)
+    {
+        if let elementIdInt = self.currentElement?.elementId?.integerValue, existingOurElement = DataSource.sharedInstance.getElementById(elementIdInt)
+        {
+            dispatch_async(dispatch_get_main_queue(), { [weak self]() -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.currentElement = existingOurElement
+                    weakSelf.prepareCollectionViewDataAndLayout()
+                }
+            })
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                if let aSelf = self
+                {
+                    aSelf.navigationController?.popViewControllerAnimated(true)
+                }
+            })
+        }
+    }
     
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element) {

@@ -172,8 +172,25 @@ class SingleElementTitleCell: UICollectionViewCell {
     {
         if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue) as? UIButton
         {
+            signalButton.hidden = false
             signalButton.setImage((UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
-            signalButton.tintColor = (currentElement.isSignal.boolValue) ? kDaySignalColor : kWhiteColor
+            if currentElement.isSignal.boolValue
+            {
+                signalButton.hidden = false
+                signalButton.tintColor = kWhiteColor
+            }
+            else
+            {
+                if currentElement.isOwnedByCurrentUser()
+                {
+                    signalButton.hidden = false
+                    signalButton.tintColor = kElementAttributeIconsDisabledColor
+                }
+                else
+                {
+                    signalButton.hidden = true
+                }
+            }
         }
     }
     
@@ -181,35 +198,33 @@ class SingleElementTitleCell: UICollectionViewCell {
     {
         if let currentElement = self.handledElement, ideaButton = self.viewWithTag(ActionButtonCellType.Idea.rawValue)
         {
-            if (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
+            if currentElement.isArchived()
             {
-                if currentElement.isArchived() {
-                    ideaButton.tintColor = UIColor.lightGrayColor()
-                }
-                else {
-                    if currentElement.isOwnedByCurrentUser()
-                    {
-                        ideaButton.tintColor = kDaySignalColor
-                    }
-                    else
-                    {
-                        ideaButton.tintColor = kWhiteColor
-                    }
-                }
+                ideaButton.tintColor = UIColor.lightGrayColor()
             }
             else
             {
-                if currentElement.isOwnedByCurrentUser()
+                if (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
                 {
-                    ideaButton.tintColor = kWhiteColor
-                    if currentElement.isArchived()
-                    {
-                        ideaButton.tintColor = UIColor.lightGrayColor()
-                    }
+//                    if currentElement.isOwnedByCurrentUser()
+//                    {
+                        ideaButton.tintColor = kWhiteColor
+//                    }
+//                    else
+//                    {
+//                        ideaButton.tintColor = kElementAttributeIconsDisabledColor
+//                    }
                 }
                 else
                 {
-                    ideaButton.hidden = true
+                    if currentElement.isOwnedByCurrentUser()
+                    {
+                        ideaButton.tintColor = kElementAttributeIconsDisabledColor
+                    }
+                    else
+                    {
+                        ideaButton.hidden = true
+                    }
                 }
             }
         }
@@ -268,7 +283,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                     //self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
                     if !currentElement.isArchived()
                     {
-                        taskButton.tintColor = kWhiteColor
+                        taskButton.tintColor = kElementAttributeIconsDisabledColor
                     }
                     else
                     {
@@ -290,7 +305,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                         case .Default:
                             taskButton.hidden = true
                         case .InProcess:
-                            taskButton.tintColor = kDaySignalColor
+                            taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedGood:
                             taskButton.userInteractionEnabled = false
@@ -323,13 +338,13 @@ class SingleElementTitleCell: UICollectionViewCell {
                         case .Default:
                             taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .InProcess:
-                            taskButton.tintColor = kWhiteColor
+                            taskButton.tintColor = kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedGood:
-                            taskButton.tintColor = kWhiteColor
+                            taskButton.tintColor = kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedBad:
-                            taskButton.tintColor = kWhiteColor
+                            taskButton.tintColor = kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         }
                     }
@@ -352,14 +367,14 @@ class SingleElementTitleCell: UICollectionViewCell {
                 decisionButton.tintColor = kWhiteColor
                 if currentElement.isOwnedByCurrentUser()
                 {
-                    decisionButton.tintColor = kDaySignalColor
+                    decisionButton.tintColor = kWhiteColor
                 }
             }
             else
             {
                 if currentElement.isOwnedByCurrentUser()
                 {
-                    decisionButton.tintColor = kWhiteColor
+                    decisionButton.tintColor = kElementAttributeIconsDisabledColor
                     if currentElement.isArchived()
                     {
                         decisionButton.tintColor = UIColor.lightGrayColor()

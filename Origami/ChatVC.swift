@@ -50,7 +50,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             currentChatMessages = messages
         }
         
-        
         setupNavigationBar()
         refreshControl = UIRefreshControl()
         refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
@@ -441,17 +440,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             
         }
     }
-    
-//    func scrollViewDidScroll(scrollView: UIScrollView)
-//    {
-//        let currentOffset = scrollView.contentOffset.y
-//        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
-//        let deltaOffset = maximumOffset - currentOffset
-//        
-//        if deltaOffset <= 0 {
-//            loadMore()
-//        }
-//    }
     
     func loadPreviousMessages(completion:(()->())?)
     {

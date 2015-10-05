@@ -216,6 +216,20 @@ class ObjectsConverter {
         }
     }
     
+    class func sortElementsByElementId(inout elements:[Element])
+    {
+        if elements.count > 1
+        {
+            elements.sortInPlace({ (element1, element2) -> Bool in
+                if let elementIdInt1 = element1.elementId?.integerValue, elementIdInt2 = element2.elementId?.integerValue
+                {
+                    return elementIdInt1 <= elementIdInt2
+                }
+                return false
+            })
+        }
+    }
+    
     class func filterArchiveElements(archive:Bool, elements:[Element]) -> [Element]
     {
         var newElements = [Element]()

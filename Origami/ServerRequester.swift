@@ -234,9 +234,16 @@ class ServerRequester: NSObject
                                 let lvElement = Element(info: lvElementDict)
                                 elements.insert(lvElement)
                             }
-                            print("\n -> Server requester loaded \(elements.count) elements.. ")
-                            
-                            completion(Array(elements),nil)
+                            print("\n -> Server requester loaded \(elements.count) elements ... ")
+                            //debug
+                            var arrayOfRecievedElements = Array(elements)
+                            ObjectsConverter.sortElementsByElementId(&arrayOfRecievedElements)
+//                            for anElement in arrayOfRecievedElements
+//                            {
+//                                print(" loaded element: \(anElement.elementId!.integerValue)")
+//                            }
+//                            
+                            completion(arrayOfRecievedElements,nil)
                         }
                         else
                         {

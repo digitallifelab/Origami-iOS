@@ -1,34 +1,15 @@
 {
   "images" : [
     {
-      "idiom" : "iphone",
-      "scale" : "1x",
-      "filename" : "house-30.png"
-    },
-    {
-      "idiom" : "iphone",
-      "scale" : "2x",
-      "filename" : "House-60.png"
-    },
-    {
-      "idiom" : "iphone",
-      "scale" : "3x",
-      "filename" : "House-90.png"
-    },
-    {
-      "idiom" : "ipad",
-      "scale" : "1x",
-      "filename" : "house-30-1.png"
-    },
-    {
-      "idiom" : "ipad",
-      "scale" : "2x",
-      "filename" : "House-60-1.png"
+      "idiom" : "universal",
+      "filename" : "bottom O.pdf"
     }
   ],
   "info" : {
     "version" : 1,
-    "author" : "xcode",
+    "author" : "xcode"
+  },
+  "properties" : {
     "template-rendering-intent" : "template"
   }
 }

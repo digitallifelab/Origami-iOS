@@ -71,6 +71,7 @@ let kDayCellBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue:
 let serverURL = "http://shevchenkonw.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
 #else
 let kDayCellBackgroundColor =          UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0) //blue
+let kElementAttributeIconsDisabledColor = UIColor(red: 25.0/255.0, green: 117.0/255.0, blue: 190.0/255.0, alpha: 1.0)
 let kDayNavigationBarBackgroundColor = UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
 let serverURL = "http://cloudcraftt1.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
 #endif
@@ -112,6 +113,6 @@ let kLogoutNotificationName = "LogOutPressed"
 let kContactFavouriteButtonTappedNotification = "ContactFavouriteTapped"
 let kLongPressMessageNotification = "LongPressedMessage"
 let kNewElementsAddedNotification = "NewElementsAdded"
-
+let kElementWasChangedNotification = "ElementWasChanged"
 let kAttachDataDidFinishLoadingNotification = "DidLoadAttachFileData"
 let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"

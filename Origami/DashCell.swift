@@ -14,7 +14,7 @@ class DashCell: UICollectionViewCell
     var backColor:UIColor
         {
         didSet{
-            self.backgroundColor = backColor
+            self.contentView.backgroundColor = backColor
         }
     }
     var titleColor:UIColor {
@@ -47,7 +47,7 @@ class DashCell: UICollectionViewCell
         super.init(coder: aDecoder)
     }
     
-    var currentElementType:Int = 0{
+    var currentElementType:Int = 0 {
         didSet{
             if currentElementType > 0
             {
@@ -68,9 +68,9 @@ class DashCell: UICollectionViewCell
     
     
     override init(frame: CGRect) {
-        backColor = UIColor.clearColor()
-        titleColor = UIColor.blackColor()
-        descriptionColor = UIColor.grayColor()
+        self.backColor = UIColor.clearColor()
+        self.titleColor = UIColor.blackColor()
+        self.descriptionColor = UIColor.grayColor()
         super.init(frame: frame)
     }
     
@@ -156,10 +156,18 @@ class DashCell: UICollectionViewCell
     
     override func  awakeFromNib()
     {
-        backgroundColor = backColor
+        contentView.backgroundColor = backColor
         titleLabel?.textColor = titleColor
         descriptionLabel?.textColor = descriptionColor
-        self.layer.cornerRadius = 5.0
+        //self.layer.cornerRadius = 5.0
+        self.layer.shadowOffset = CGSizeMake(3, 3)
+        self.layer.shadowColor = kBlackColor.CGColor
+        self.layer.shadowOpacity = 0.7
+        self.contentView.layer.cornerRadius = 5.0// = true
+        self.contentView.layer.masksToBounds = true
+        self.layer.masksToBounds = false
+        self.layer.shouldRasterize = true
+        self.layer.rasterizationScale = UIScreen.mainScreen().scale
         
         ideaIcon?.hidden = true
         taskIcon?.hidden = true
@@ -176,7 +184,7 @@ class DashCell: UICollectionViewCell
     
     func updateAppearance()
     {
-        self.backgroundColor = backColor
+        self.contentView.backgroundColor = backColor
         titleLabel?.textColor = titleColor
         descriptionLabel?.textColor = descriptionColor
         dividerView?.backgroundColor = titleColor
