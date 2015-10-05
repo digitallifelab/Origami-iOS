@@ -246,6 +246,68 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
+    
+    
+    func loadLastMessages(completion:successErrorClosure?)
+    {
+        DataSource.sharedInstance.serverRequester.loadNewMessages { (messages, error) -> () in
+            if let anError = error
+            {
+                if let completionBlock = completion
+                {
+                    completionBlock(success: false, error: anError)
+                }
+            }
+            else
+            {
+                if let messagesArray = messages
+                {
+                    var lvMessagesHolder = [NSNumber:[Message]]()
+                    for lvMessage in messagesArray
+                    {
+                        print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
+                        if lvMessagesHolder[lvMessage.elementId!] != nil
+                        {
+                            lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
+                        }
+                        else
+                        {
+                            lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
+                        }
+                    }
+                    
+                    if !lvMessagesHolder.isEmpty
+                    {
+                        for (keyElementId, messages) in lvMessagesHolder
+                        {
+                            DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
+                        }
+                        
+                        
+                        if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
+                        {
+                            DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: { (lastMessages) -> () in
+                                
+                                if let lastMessagesReal = lastMessages
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        observerForHomeScreen.newMessagesAdded(lastMessagesReal)
+                                    })
+                                }
+                            })
+                        }
+                        
+                    }
+                }
+                
+                if let completionBlock = completion
+                {
+                    completionBlock(success: true, error: nil)
+                }
+            }
+        }
+    }
+    
     func sendNewMessage(message:Message, completion:errorClosure)
     {
         //can be not main queue
@@ -289,23 +351,24 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func addMessages(messageObjects:[Message], forElementId elementId:NSNumber, completion:voidClosure?)
     {
+        let messagesToAdd = ObjectsConverter.sortMessagesByMessageId(messageObjects)
         // add to our array container
-        if let existingMessages = messages[elementId]
+        if let existingMessages = DataSource.sharedInstance.messages[elementId]
         {
             var mutableExisting = existingMessages
-            mutableExisting += messageObjects// addObjectsFromArray:
+            mutableExisting += messagesToAdd
             //replace existing messages with new array
-            messages[elementId] = mutableExisting
+            DataSource.sharedInstance.messages[elementId] = mutableExisting
         }
         else
         {
-            messages[elementId] = messageObjects
+            DataSource.sharedInstance.messages[elementId] = messagesToAdd
         }
         
         // also check if there are any observers waiting for new messages
         if let observer =  getMessagesObserverForElementId(elementId)
         {
-           observer.newMessagesAdded(messageObjects)
+           observer.newMessagesAdded(messagesToAdd)
         }
         
         //return from function
@@ -324,94 +387,104 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
-    func getMessagesQuantyty(quantity:Int, forElementId elementId:NSNumber?, lastMessageId messageId:NSNumber?) -> [Message]?
+    func getMessagesQuantyty(quantity:Int, elementId:Int, lastMessageId:Int?) -> [Message]?
     {
-        if elementId == nil
-        {
-            return nil//[Message]()
-        }
+        print(" next queried portion of messages with params: \n quantity: \(quantity)\n elementId: \(elementId)\n lastMessageId: \(lastMessageId)")
         
-        let validQuantity = max(0, min(quantity, Int.max))
-        
-        
-        if let existingMessagesForElementId = DataSource.sharedInstance.getAllMessagesForElementId(elementId!)
-        {
-            var messagesToReturn:[Message] = [Message]()
-            let existingCount:Int = existingMessagesForElementId.count
+        let allMessagesForElement = DataSource.sharedInstance.getAllMessagesForElementId(NSNumber(integer: elementId))
             
-            if messageId != nil
+        if let unFilteredExistingMessagesForElementId = allMessagesForElement
+        {
+            var messagesToReturn = [Message]()
+            var aCount = Int(0)
+            if let presentLastMessageId = lastMessageId
             {
-                if validQuantity >= existingCount
+                let lastMessageIndex = unFilteredExistingMessagesForElementId.count - 1
+                
+                for var i = lastMessageIndex; i >= 0; i--
                 {
-                    messagesToReturn += existingMessagesForElementId
-                }
-                else
-                {
-                    let reversedArray = existingMessagesForElementId//.reverse()
-                    for var i = 0; i < validQuantity; i++
+                    
+                    let currentMessage = unFilteredExistingMessagesForElementId[i]
+                    if currentMessage.messageId >= presentLastMessageId
                     {
-                        let lvMessageToCheck = reversedArray[i]
-                        if lvMessageToCheck.messageId?.integerValue == messageId // stop adding messages to returning array and quit
-                        {
-                            break
-                        }
-                        messagesToReturn.insert(reversedArray[i], atIndex: 0)
+                        continue
+                    }
+                    
+                    if aCount < quantity
+                    {
+                        messagesToReturn.insert(currentMessage, atIndex: 0)
+                    }
+                    else
+                    {
+                        break
                     }
                 }
             }
-            else // no messageID specified returning last messages by quantity
+            else
             {
-                if validQuantity >= existingCount
+                for aMessage in unFilteredExistingMessagesForElementId.reverse()
                 {
-                    messagesToReturn += existingMessagesForElementId
-                }
-                else
-                {
-                    let reversedArray = existingMessagesForElementId//.reverse()
-                    for var i = 0; i < validQuantity; i++
+                    if aCount < quantity
                     {
-                        messagesToReturn.insert(reversedArray[i], atIndex: 0)
+                        messagesToReturn.insert(aMessage, atIndex: 0)
+                        aCount += 1
+                    }
+                    else
+                    {
+                        break
                     }
                 }
             }
-            messagesToReturn.sortInPlace({ (message1, message2) -> Bool in
-                return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
-            })
+            
+            if messagesToReturn.isEmpty
+            {
+                return nil
+            }
+            //debug print out filtered last messages
+            print("\n ---Returning message ids for chat: ")
+            for aFilteredMessage in messagesToReturn
+            {
+                print( "-> \(aFilteredMessage.messageId)")
+            }
             return messagesToReturn
+
         }
         else
         {
-            return nil //[Message]()//empty array
+            return nil
         }
+        
     }
     
     func getChatPreviewMessagesForElementId(elementId:NSNumber) -> [Message]?
     {
         let messagesQuantity:Int = 3
-        if let existingMessagesForElementId = DataSource.sharedInstance.getAllMessagesForElementId(elementId)
+        guard let existingMessagesForElementId = DataSource.sharedInstance.getAllMessagesForElementId(elementId) else
         {
-            let sorted = existingMessagesForElementId.sort { (message1, message2) -> Bool in
-                return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
-            }
-            let count = sorted.count
-            if count <= messagesQuantity
-            {
-                return sorted
-            }
-            else
-            {
-                var messagesToReturn = [Message]()
-                for var i = count - 1; i > count - (messagesQuantity + 1); i--
-                {
-                    let lastMessage = sorted[i]
-                    messagesToReturn.insert(lastMessage, atIndex: 0)
-                    //print(" i = \(i)")
-                }
-                
-                return messagesToReturn
-            }
+            return nil
         }
-        return nil
+        
+        let sorted = existingMessagesForElementId.sort { (message1, message2) -> Bool in
+            return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
+        }
+        let count = sorted.count
+        if count <= messagesQuantity
+        {
+            return sorted
+        }
+        else
+        {
+            var messagesToReturn = [Message]()
+            for var i = count - 1; i > count - (messagesQuantity + 1); i--
+            {
+                let lastMessage = sorted[i]
+                messagesToReturn.insert(lastMessage, atIndex: 0)
+                //print(" i = \(i)")
+            }
+            
+            return messagesToReturn
+        }
+        
     }
     
     func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
@@ -545,66 +618,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.isRemovingObsoleteMessages = false
     }
     
-    
-    func loadLastMessages(completion:successErrorClosure?)
-    {
-        DataSource.sharedInstance.serverRequester.loadNewMessages { (messages, error) -> () in
-            if let anError = error
-            {
-                if let completionBlock = completion
-                {
-                    completionBlock(success: false, error: anError)
-                }
-            }
-            else
-            {
-                if let messagesArray = messages
-                {
-                    var lvMessagesHolder = [NSNumber:[Message]]()
-                    for lvMessage in messagesArray
-                    {
-                        print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
-                        if lvMessagesHolder[lvMessage.elementId!] != nil
-                        {
-                            lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
-                        }
-                        else
-                        {
-                            lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
-                        }
-                    }
-                    
-                    if !lvMessagesHolder.isEmpty
-                    {
-                        for (keyElementId, messages) in lvMessagesHolder
-                        {
-                            DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
-                        }
-                        
-                        
-                        if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
-                        {
-                            DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: { (lastMessages) -> () in
-                                
-                                if let lastMessagesReal = lastMessages
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        observerForHomeScreen.newMessagesAdded(lastMessagesReal)
-                                    })
-                                }
-                            })
-                        }
-                        
-                    }
-                }
-                
-                if let completionBlock = completion
-                {
-                    completionBlock(success: true, error: nil)
-                }
-            }
-        }
-    }
     //MARK: Element
     /**
         submitNewElementToServer completion : Sends POST request to server to create new Element.
@@ -891,26 +904,26 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     if let anInt = anElement.elementId?.integerValue
                     {
-                        bgOperationQueue.addOperationWithBlock({ () -> Void in
-                            // load connected userIDs for element
+                        if !anElement.isArchived()
+                        {
+                            bgOperationQueue.addOperationWithBlock({ () -> Void in
+                                // load connected userIDs for element
+                                
+                                    DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
+                            })
                             
-                                DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
-                            
-                            
-                        })
-                        
-                        
-                        bgOperationQueue.addOperationWithBlock({ () -> Void in
-                            // load attach files info
-                            if !anElement.attachIDs.isEmpty
-                            {
-                                DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
-                            }
-                            else if anElement.hasAttaches.boolValue
-                            {
-                                DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
-                            }
-                        })
+                            bgOperationQueue.addOperationWithBlock({ () -> Void in
+                                // load attach files info
+                                if !anElement.attachIDs.isEmpty
+                                {
+                                    DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
+                                }
+                                else if anElement.hasAttaches.boolValue
+                                {
+                                    DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
+                                }
+                            })
+                        }
                     }
                 }
             }

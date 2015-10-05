@@ -31,6 +31,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         }
     }
     
+    var refreshControl:UIRefreshControl?
+    
     var newElementOptionsView:OptionsView?
     var newElementDetailsInfo:String?
     var newCreatedElement:Element?
@@ -41,12 +43,21 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         self.navigationController?.toolbarHidden = true
         bottomControlsContainerView.delegate = self
         // Do any additional setup after loading the view.
-        if let messages = DataSource.sharedInstance.getMessagesQuantyty(20, forElementId: currentElement!.elementId!, lastMessageId: nil)
+        if let
+            elementIdInt = self.currentElement?.elementId?.integerValue,
+            messages = DataSource.sharedInstance.getMessagesQuantyty(5, elementId: elementIdInt, lastMessageId: nil)
         {
             currentChatMessages = messages
         }
         
+        
         setupNavigationBar()
+        refreshControl = UIRefreshControl()
+        refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
+        refreshControl?.tintColor = kDaySignalColor
+        refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
+        self.chatTable.addSubview(refreshControl!)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -262,7 +273,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    weakSelf.chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .None)
+                    weakSelf.chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
                     
                    // weakSelf.chatTable.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
                     
@@ -334,25 +345,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func scrollToLastMessage(animated:Bool = false)
     {
-        //let contentHeight = chatTable.contentSize.height
-        //let boundsHeight = chatTable.bounds.size.height
-        //if contentHeight > boundsHeight
-        //{
-            if self.currentChatMessages.count > 1
-            {
-                let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
-               
-                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: animated)
-                
-//                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [weak self]() -> Void in
-//                    if let weakSelf = self
-//                    {
-//                        let newLastPath = NSIndexPath(forRow: weakSelf.currentChatMessages.count - 1, inSection: 0)
-//                        weakSelf.chatTable.reloadRowsAtIndexPaths([newLastPath], withRowAnimation: .None)
-//                    }
-//                })
-            }
-        //}
+        if self.currentChatMessages.count > 1
+        {
+            let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
+           
+            chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: animated)
+        }
     }
     
     //MARK: UITableViewDataSource
@@ -429,6 +427,88 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         bottomControlsContainerView.endEditing(true)
     }
+    //MARK: UIRefreshControl
+    func startRefreshing(sender:UIRefreshControl)
+    {
+        loadPreviousMessages {[weak sender] () -> () in
+     
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                if let weakRefreshControl = sender
+                {
+                    weakRefreshControl.endRefreshing()
+                }
+            })
+            
+        }
+    }
+    
+//    func scrollViewDidScroll(scrollView: UIScrollView)
+//    {
+//        let currentOffset = scrollView.contentOffset.y
+//        let maximumOffset = scrollView.contentSize.height - scrollView.frame.size.height
+//        let deltaOffset = maximumOffset - currentOffset
+//        
+//        if deltaOffset <= 0 {
+//            loadMore()
+//        }
+//    }
+    
+    func loadPreviousMessages(completion:(()->())?)
+    {
+        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
+        
+        guard let topMessage = self.currentChatMessages.first, messageElementId = topMessage.elementId?.integerValue else
+        {
+            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1))
+            dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+                completion?()
+            })
+            return
+        }
+        
+        let bgMessageQueue = dispatch_queue_create("com.Origami.ChatMessages.Queue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(bgMessageQueue) { [weak self]() -> Void in
+            
+            let theVeryFirstMessageIdInMessages = topMessage.messageId
+            if let previousMessagesPortion = DataSource.sharedInstance.getMessagesQuantyty(10, elementId: messageElementId, lastMessageId:theVeryFirstMessageIdInMessages), weakSelf = self
+            {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    let existingMessages = weakSelf.currentChatMessages
+                    weakSelf.currentChatMessages = previousMessagesPortion + existingMessages
+                    weakSelf.chatTable.reloadData()
+                   
+                    completion?()
+                })
+                
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
+                let bgQueue:dispatch_queue_t?
+                if #available (iOS 8.0, *)
+                {
+                    bgQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
+                }
+                else
+                {
+                    bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+                }
+                dispatch_after(timeout, bgQueue!, { () -> Void in
+                    DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
+                })
+             
+            }
+            else
+            {
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
+                dispatch_after(timeout, bgMessageQueue, { () -> Void in
+                     completion?()
+                    DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
+                })
+               
+            }
+        }
+      
+        
+    }
     
     //MARK: TableItemPickerDelegate
     func itemPickerDidCancel(itemPicker: AnyObject) {
@@ -500,19 +580,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         let originY = CGRectGetMaxY(self.view.bounds) - 200.0
         
         let optionsFame:CGRect = CGRectMake(originX, originY, 320, 200)
-        
-        //var currentWidth = self.view.bounds.size.width
-        //var currentHeight = self.view.bounds.size.height
-        
-//        if FrameCounter.isLowerThanIOSVersion("8.0")
-//        {
-//            let orientation = FrameCounter.getCurrentDeviceOrientation()
-//            if orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight
-//            {
-//                currentHeight = self.view.bounds.size.width
-//                currentWidth = self.view.bounds.size.height
-//            }
-//        }
         
         showOptionsView(optionsFame,
             params: [
@@ -595,22 +662,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     //MARK: ElementComposingDelegate
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
-       // self.dismissViewControllerAnimated(true, completion: nil)
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
         self.navigationController?.popViewControllerAnimated(true)
-
         self.handleAddingNewElement(newElement)
-        
-//        self.dismissViewControllerAnimated(true, completion: {[weak self] () -> Void in
-//             if let weakSelf = self
-//             {
-//                weakSelf.handleAddingNewElement(newElement)
-//                
-//            }
-//        })
     }
     
     func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {

@@ -146,8 +146,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     }
                     
                 }
-                })
-
+            })
         }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
     }

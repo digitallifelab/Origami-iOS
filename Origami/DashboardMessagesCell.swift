@@ -52,7 +52,7 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
         
-        DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: {[weak self] (messages) -> () in
+        DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount/*3 by default*/, completion: {[weak self] (messages) -> () in
             if let aSelf = self
             {
                 if let recievedMessages = messages, _ = aSelf.currentMessages

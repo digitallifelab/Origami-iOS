@@ -39,7 +39,7 @@ class MessagesLoader:NSObject
             dispatch_source_set_event_handler(source, {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    print("Fired a timer.")
+                    print("Fired a timer for messages.")
                     if let source = weakSelf.dispatchSource
                     {
                         dispatch_suspend(source)
@@ -48,7 +48,7 @@ class MessagesLoader:NSObject
                         
                         if let anError = error
                         {
-                            print("\n -> Error loading last messages:\(anError)\n")
+                            print("\n -> MessagesLoader. Error loading last messages:\(anError)\n")
                         }
                         if let weakerSelf = self
                         {

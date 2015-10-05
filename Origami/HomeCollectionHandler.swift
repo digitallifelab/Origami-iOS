@@ -186,7 +186,6 @@ import UIKit
         case 1:
             if let favCount = favourites?.count
             {
-                print("Home DashBoard CollectionDataSource .   Favourites: \(favCount)")
                 if favCount > 0 && favCount > lvRow
                 {
                     return favourites![lvRow]

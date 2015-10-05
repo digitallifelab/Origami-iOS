@@ -149,7 +149,7 @@ class ObjectsConverter {
             13 - changed user photo
             */
             
-            switch lvNewMessage.typeId!.integerValue
+            switch lvNewMessage.typeId
             {
             case 0:
                 break//print(" - Chat message: \" \(lvNewMessage.textBody) \"")
@@ -250,7 +250,24 @@ class ObjectsConverter {
                 
                 return (message1.compareToAnotherMessage(message2) == .OrderedAscending)
             }
+            print("\n -> sorting  Messages by date finished: ---->")
+//            for aMessage in messages
+//            {
+//                print(aMessage.elementId, aMessage.messageId, aMessage.dateCreated)
+//            }
         }
+    }
+    
+    
+    class func sortMessagesByMessageId(messages:[Message]) -> [Message]
+    {
+        if messages.count > 1
+        {
+            return messages.sort({ (message1, message2) -> Bool in
+                return message1.messageId < message2.messageId
+            })
+        }
+        return messages
     }
     
 }

@@ -23,10 +23,8 @@ class RecentActivityTableCell: UITableViewCell {
             {
             case .Day:
                 self.backgroundColor = kDayCellBackgroundColor
-                self.elementCreatorAvatar?.tintColor = kDayNavigationBarBackgroundColor
             case .Night:
                 self.backgroundColor = kBlackColor
-                self.elementCreatorAvatar?.tintColor = kWhiteColor
             }
             //self.setNeedsDisplay()
         }
@@ -35,6 +33,7 @@ class RecentActivityTableCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        self.elementCreatorAvatar?.tintColor = kWhiteColor
         elementCreatorAvatar?.maskToCircle()
         
     }

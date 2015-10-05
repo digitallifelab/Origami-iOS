@@ -22,8 +22,8 @@ class Message:NSObject
     13 - changed user photo,
     14 - definition QUESTION
     */
-    var typeId:NSNumber?
-    var messageId:NSNumber?
+    var typeId:Int = 0
+    var messageId:Int = 0
     var elementId:NSNumber?
     var creatorId:NSNumber?
     var isNew:NSNumber?
@@ -37,11 +37,11 @@ class Message:NSObject
         
         if info.count > 0
         {
-            if let lvTypeId = info["TypeId"] as? NSNumber
+            if let lvTypeId = info["TypeId"] as? Int
             {
                 self.typeId = lvTypeId
             }
-            if let lvMessageId = info["MessageId"] as? NSNumber
+            if let lvMessageId = info["MessageId"] as? Int
             {
                 self.messageId = lvMessageId
             }
@@ -80,10 +80,9 @@ class Message:NSObject
         {
             toReturn["Msg"] = message
         }
-        if let idMessage = messageId
-        {
-            toReturn["MessageId"] = idMessage
-        }
+        
+        toReturn["MessageId"] = self.messageId
+        
         if let lvElementId = self.elementId
         {
             toReturn["ElementId"] = lvElementId
@@ -96,10 +95,9 @@ class Message:NSObject
         {
             toReturn["IsNew"] = isNew
         }
-        if typeId != nil
-        {
-            toReturn["TypeId"] = typeId
-        }
+        
+        toReturn["TypeId"] = typeId
+        
         if firstName != nil
         {
             toReturn["FirstName"] = firstName
@@ -116,9 +114,9 @@ class Message:NSObject
     {
         if let message = object as? Message
         {
-            return (self.messageId?.integerValue == message.messageId?.integerValue &&
+            return (self.messageId == message.messageId &&
                 self.creatorId?.integerValue == message.creatorId?.integerValue &&
-                self.typeId?.integerValue == message.typeId?.integerValue)
+                self.typeId == message.typeId)
         }
         else
         {
@@ -128,9 +126,9 @@ class Message:NSObject
     
     override var hash:Int
         {
-            if self.messageId != nil
+            if self.messageId > 0
             {
-                return self.messageId!.hashValue ^ self.textBody!.hashValue
+                return self.messageId.hashValue ^ self.textBody!.hashValue
             }
             else
             {

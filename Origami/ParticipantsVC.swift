@@ -11,13 +11,15 @@ import UIKit
 class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet var contactsTable:UITableView!
-    @IBOutlet var topNavBarBackgroundView:UIView!
+    
     var currentElement:Element?
     var contacts:[Contact]?
     var checkedContacts:[Contact] = [Contact]()
     var uncheckedContacts:[Contact] = [Contact]()
     var selectionEnabled = false
     var displayMode:DisplayMode = .Day
+    
+    var contactAvatars = [Int:UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,6 +75,37 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 {
                     uncheckedContacts += contacts!
                     sortContactsAlphabeticaly(&uncheckedContacts)
+                }
+            }
+            
+            let bgQueue:dispatch_queue_t?
+            if #available (iOS 8.0, *)
+            {
+                bgQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
+            }
+            else
+            {
+                bgQueue = dispatch_queue_create("com.Origami.avatars.queue", DISPATCH_QUEUE_SERIAL)
+            }
+            
+            dispatch_async(bgQueue!) {[weak self] () -> Void in
+                var lvImagesDict = [Int:UIImage]()
+                for aContact in lvContacts
+                {
+                    if let integerId = aContact.contactId?.integerValue, avatarImage = DataSource.sharedInstance.getAvatarForUserId(integerId)
+                    {
+                        lvImagesDict[integerId] = avatarImage
+                    }
+                }
+                if !lvImagesDict.isEmpty
+                {
+                    if let weakSelf = self
+                    {
+                        weakSelf.contactAvatars = lvImagesDict
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            weakSelf.contactsTable.reloadData()
+                        })
+                    }
                 }
             }
             
@@ -196,37 +229,41 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let currentContact = contactForIndexPath(indexPath)
         var nameLabelText = ""
-        
-        if currentContact != nil
+        var currentAvatar = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+        if let currentContact = contactForIndexPath(indexPath)
         {
-            if let firstName = currentContact!.firstName as? String
+            if let firstName = currentContact.firstName as? String
             {
                 nameLabelText += firstName
-                if let lastName = currentContact!.lastName as? String
+                if let lastName = currentContact.lastName as? String
                 {
                     nameLabelText += " " + lastName
                 }
             }
-            else  if let lastName = currentContact!.lastName as? String
+            else  if let lastName = currentContact.lastName as? String
             {
                 nameLabelText += lastName
+            }
+            
+            if let contactIdInt = currentContact.contactId?.integerValue, avatarImage = self.contactAvatars[contactIdInt]
+            {
+                currentAvatar = avatarImage
             }
         }
         
         let contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
-        contactCell.nameLabel.text = nameLabelText
+        contactCell.nameLabel?.text = nameLabelText
         contactCell.displayMode = self.displayMode
         contactCell.selectionStyle = UITableViewCellSelectionStyle.None
-        
+        contactCell.avatar?.image = currentAvatar
         switch indexPath.section
         {
         case 0:
-            contactCell.checkBox.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+            contactCell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             return contactCell
         case 1:
-            contactCell.checkBox.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+            contactCell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             return contactCell
         default:
             let defaultCell = UITableViewCell(style: .Default, reuseIdentifier: "DummyCell") as UITableViewCell

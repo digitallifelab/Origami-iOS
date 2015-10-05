@@ -35,7 +35,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             if let _ = getElementLastMessages()
             {
-                //print("\n appended CHAT")
+                //print("\n appended CHAT\n")
                 options.append(.Chat)
             }
             if let details = getElementDetails()

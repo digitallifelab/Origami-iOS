@@ -163,7 +163,7 @@ class Element:NSObject
         toReturn["CreatorId"] = self.creatorId //?? NSNull()
         toReturn["ChangeDate"] = self.changeDate //?? NSNull()
         toReturn["ChangerId"] = self.changerId //?? NSNull()
-       
+                
         return toReturn
     }
     

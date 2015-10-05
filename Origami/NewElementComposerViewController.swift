@@ -320,11 +320,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             
             if let avatarImage = contactImages[lvContact.userName! as String]
             {
-                cell.avatar.image = avatarImage
+                cell.avatar?.image = avatarImage
             }
             else
             {
-                cell.avatar.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                cell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
             //set name text
             var nameLabelText = ""
@@ -341,16 +341,16 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 nameLabelText += lastName
             }
             
-            cell.nameLabel.text = nameLabelText
+            cell.nameLabel?.text = nameLabelText
             
             //set proper checkbox image
             if contactIDsToPass.contains(lvContact.contactId!.integerValue)
             {
-                cell.checkBox.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             }
             else
             {
-                cell.checkBox.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                cell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             }
             
             cell.displayMode = self.displayMode

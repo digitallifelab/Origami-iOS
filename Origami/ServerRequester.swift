@@ -271,6 +271,7 @@ class ServerRequester: NSObject
 //            NSOperationQueue().addOperationWithBlock({ [unowned self]() -> Void in
                 let elementDict = element.toDictionary()
            
+                               
                 let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
                 let params = ["element":elementDict]
                 

@@ -10,23 +10,23 @@ import UIKit
 
 class ContactCheckerCell: UITableViewCell {
 
-    @IBOutlet weak var checkBox:UIImageView!
-    @IBOutlet weak var nameLabel:UILabel!
-    @IBOutlet weak var avatar:UIImageView!
+    @IBOutlet weak var checkBox:UIImageView?
+    @IBOutlet weak var nameLabel:UILabel?
+    @IBOutlet weak var avatar:UIImageView?
     
     var displayMode:DisplayMode = .Day{
         didSet{
             if displayMode == .Day
             {
-                nameLabel.textColor = UIColor.blackColor()
-                checkBox.tintColor = kDayCellBackgroundColor
-                avatar.tintColor = kDayCellBackgroundColor
+                nameLabel?.textColor = UIColor.blackColor()
+                checkBox?.tintColor = kDayCellBackgroundColor
+                avatar?.tintColor = kDayCellBackgroundColor
             }
             else
             {
-                nameLabel.textColor = UIColor.lightGrayColor()
-                checkBox.tintColor = kWhiteColor
-                avatar.tintColor = kWhiteColor
+                nameLabel?.textColor = UIColor.lightGrayColor()
+                checkBox?.tintColor = kWhiteColor
+                avatar?.tintColor = kWhiteColor
             }
         }
     }
