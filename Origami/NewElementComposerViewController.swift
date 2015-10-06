@@ -34,7 +34,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     contactIDsToPass.insert(number.integerValue)
                 }
             }
-            self.table.reloadData()
+            self.table?.reloadData()
         }
     }
     
@@ -83,8 +83,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement?(self)
                 }
             }
-            configureBottomToolbar()
-            table.reloadData()
+            
+           configureBottomToolbar()
         }
     }
     
@@ -92,7 +92,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     var textViews = [NSIndexPath:UITextView]()
     
-    @IBOutlet var table:UITableView!
+    @IBOutlet weak var table:UITableView?
     
     //@IBOutlet var toolbar:UIToolbar!
     
@@ -102,10 +102,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
 
         // table view delegate and data source are set in interface builder
         //transitionAnimator = FadeOpaqueAnimator()
-        table.estimatedRowHeight = 80.0
-        table.rowHeight = UITableViewAutomaticDimension
+        table?.estimatedRowHeight = 80.0
+        table?.rowHeight = UITableViewAutomaticDimension
         
-        self.editingStyle = .AddNew
+        
+        //self.editingStyle = .AddNew
         
         
         let isNightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
@@ -139,12 +140,21 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+    }
+    
     override func viewDidAppear(animated: Bool)
     {
-        table.reloadData()
+        super.viewDidAppear(animated)
+        
+        table?.reloadData()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates:", name: "UpdateTextiewCell", object: nil)
         addObserversForKeyboard()
+        
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -185,7 +195,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             
             let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
             self.navigationItem.setLeftBarButtonItems([ cancelBarButton, flexibleSpace, archiveBarButton, flexibleSpace, deleteBarButton, flexibleSpace, doneBarButtonItem], animated: true)
-            self.navigationItem.setRightBarButtonItems([], animated: true)
+            self.navigationItem.rightBarButtonItem = nil
+          //  self.navigationItem.setRightBarButtonItems([], animated: true)
    
         }
     }
@@ -213,17 +224,24 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             
             if keyboardIsToShow
             {
-                let contentInsets = UIEdgeInsetsMake(table.contentInset.top, 0.0, keyboardHeight, 0.0)
-                table.contentInset = contentInsets
-                table.scrollIndicatorInsets = contentInsets
-                table.beginUpdates()
-                table.endUpdates()
+                if let table = self.table
+                {
+                    let contentInsets = UIEdgeInsetsMake(table.contentInset.top, 0.0, keyboardHeight, 0.0)
+                    table.contentInset = contentInsets
+                    table.scrollIndicatorInsets = contentInsets
+                    table.beginUpdates()
+                    table.endUpdates()
+                }
             }
             else
             {
-                let contentInsets = UIEdgeInsetsMake(table.contentInset.top, 0.0, 0.0, 0.0)
-                table.contentInset = contentInsets
-                table.scrollIndicatorInsets = contentInsets
+                if let aTable = self.table
+                {
+                    let contentInsets = UIEdgeInsetsMake(aTable.contentInset.top, 0.0, 0.0, 0.0)
+                    aTable.contentInset = contentInsets
+                    aTable.scrollIndicatorInsets = contentInsets
+                }
+                
             }
         }
     }
@@ -486,7 +504,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
             }
             
-            self.table.endEditing(false)
+            self.table?.endEditing(false)
         }
         else
         {
@@ -513,12 +531,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
         }
         
-        self.table.reloadData()
+        self.table?.reloadData()
     }
     
     //MARK: UIScrollViewDelegate
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        self.table.endEditing(false)
+        self.table?.endEditing(false)
     }
     
     //MARK: ButtonTapDelegate
@@ -547,8 +565,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                         break
                     }
                 }
-                table.beginUpdates()
-                table.endUpdates()
+                table?.beginUpdates()
+                table?.endUpdates()
                 
                 scrollCursorToVisibleIfNeededFor(targetIndexPath)
             }
@@ -557,18 +575,18 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func scrollCursorToVisibleIfNeededFor(indexPath:NSIndexPath?)
     {
-        if let path = indexPath, cell = table.cellForRowAtIndexPath(path) as? NewElementTextViewCell
+        if let path = indexPath, cell = table?.cellForRowAtIndexPath(path) as? NewElementTextViewCell
         {
             if let textPosition = cell.textView.selectedTextRange
             {
                 let cursorRect = cell.textView.caretRectForPosition(textPosition.start)
                 
-                _ = table.convertRect(cursorRect, fromView:cell.textView)
+                _ = table?.convertRect(cursorRect, fromView:cell.textView)
                 
                 if !rectVisible(cursorRect)
                 {
                     //cursorRect.size.height += 8; // To add some space underneath the cursor
-                    table.scrollRectToVisible(cursorRect, animated:true)
+                    table?.scrollRectToVisible(cursorRect, animated:true)
                 }
             }
         }
@@ -576,13 +594,18 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func rectVisible(rect:CGRect) -> Bool
     {
-        var visibleRect:CGRect = CGRectZero
-        visibleRect.origin = table.contentOffset;
-        visibleRect.origin.y += table.contentInset.top;
-        visibleRect.size = table.bounds.size;
-        visibleRect.size.height -= table.contentInset.top + table.contentInset.bottom;
-        
-        return CGRectContainsRect(visibleRect, rect);
+        if let aTable = self.table
+        {
+            var visibleRect:CGRect = CGRectZero
+            visibleRect.origin = aTable.contentOffset;
+            visibleRect.origin.y += aTable.contentInset.top;
+            visibleRect.size = aTable.bounds.size;
+            visibleRect.size.height -= aTable.contentInset.top + aTable.contentInset.bottom;
+            
+            return CGRectContainsRect(visibleRect, rect);
+        }
+       
+        return false
     }
     
     //MARK: UITextViewDelegate
@@ -647,9 +670,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         let textViewOriginalFrame = textView.frame
         let textViewFrame = textView.convertRect(textViewOriginalFrame, toView:self.table)
-        if let indexPaths = self.table.indexPathsForRowsInRect(textViewFrame), let firstIndexPath = indexPaths.first
+        if let indexPaths = self.table?.indexPathsForRowsInRect(textViewFrame), let firstIndexPath = indexPaths.first
         {
-            if let cell  = self.table.cellForRowAtIndexPath(firstIndexPath) as? NewElementTextViewCell
+            if let cell  = self.table?.cellForRowAtIndexPath(firstIndexPath) as? NewElementTextViewCell
             {
                 if cell.isTitleCell
                 {
@@ -668,7 +691,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func doneButtonTap(sender:AnyObject?)
     {
-        self.table.endEditing(false)
+        self.table?.endEditing(false)
         
         if let anElement = self.newElement, let currentTitle = newElement?.title as? String
         {

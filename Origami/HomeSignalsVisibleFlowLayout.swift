@@ -208,7 +208,7 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
     
     func configureAttributes()
     {
-        var viewWidth = UIScreen.mainScreen().bounds.size.width - 10.0
+        let viewWidth = UIScreen.mainScreen().bounds.size.width - 10.0
 
         var headerSize = self.headerReferenceSize
         if headerSize.height < 30.0

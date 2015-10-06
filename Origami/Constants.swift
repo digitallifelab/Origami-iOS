@@ -67,6 +67,7 @@ let kNightSignalColor = UIColor(red: 244.0/255.0, green: 71.0/255.0, blue: 71.0/
 
 #if SHEVCHENKO
 let kDayNavigationBarBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0) //green
+let kElementAttributeIconsDisabledColor = UIColor(red: 56.0/255.0, green: 124.0/255.0, blue: 110.0/255.0, alpha: 1.0)
 let kDayCellBackgroundColor = UIColor(red: 30.0/255.0, green: 158.0/255.0, blue: 110.0/255.0, alpha: 1.0)
 let serverURL = "http://shevchenkonw.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
 let kHomeButtonImageName = "icon-home-SH"

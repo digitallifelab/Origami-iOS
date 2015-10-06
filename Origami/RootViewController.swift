@@ -44,25 +44,29 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
 
        
         
-        if #available (iOS 8.0, *)
-        {
-            let types: UIUserNotificationType = application.currentUserNotificationSettings()!.types
-            if types.contains(.None)
+        #if (arch(i386) || arch(x86_64)) && os(iOS)
+        #else
+            if #available (iOS 8.0, *)
             {
-                let settings = UIUserNotificationSettings(forTypes: [.Alert , .Badge , .Sound], categories: nil) //(forTypes: .Alert | .Badge | .Sound, categories: nil)
-                
-                application.registerUserNotificationSettings(settings)
-                //application.registerForRemoteNotifications()
+                let types: UIUserNotificationType = application.currentUserNotificationSettings()!.types
+                if types.contains(.None)
+                {
+                    let settings = UIUserNotificationSettings(forTypes: [.Alert , .Badge , .Sound], categories: nil) //(forTypes: .Alert | .Badge | .Sound, categories: nil)
+                    
+                    application.registerUserNotificationSettings(settings)
+                    //application.registerForRemoteNotifications()
+                }
             }
-        }
-        else
-        {
-            let types:UIRemoteNotificationType = application.enabledRemoteNotificationTypes()
-            if types .contains(.None)
+            else
             {
-                application.registerForRemoteNotificationTypes([.Alert , .Badge , .Sound])
+                let types:UIRemoteNotificationType = application.enabledRemoteNotificationTypes()
+                if types .contains(.None)
+                {
+                    application.registerForRemoteNotificationTypes([.Alert , .Badge , .Sound])
+                }
             }
-        }
+        #endif
+        
     }
 
     override func didReceiveMemoryWarning()
@@ -84,16 +88,22 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             if let navController = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavigationController") as? HomeNavigationController
             {
                 self.currentNavigationController = navController
-                self.view.addSubview(navController.view)
-                if let homeVC = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+                if let _ = navController.viewControllers.first as? HomeVC
+                {
+                    
+                }
+                else if let homeVC = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
                 {
                     //navController.setViewControllers([homeVC], animated: true)
-                    if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
-                    {
-                        self.leftMenuVC = menuVC
-                        self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
-                    }
+                    
                     navController.setViewControllers([homeVC], animated: true)
+                }
+                self.view.addSubview(navController.view)
+                
+                if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
+                {
+                    self.leftMenuVC = menuVC
+                    self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
                 }
             }
             

@@ -16,13 +16,18 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     var collectionSource:HomeCollectionHandler?
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
-    private var loadingAllElementsInProgress = false
+    
     private var refreshControl:UIRefreshControl?
     var shouldReloadCollection = false
     
+//    required init?(coder aDecoder: NSCoder)
+//    {
+//        super.init(coder: aDecoder)
+//    }
+    
     deinit
     {
-        print("\n -> removing Home VC from NotificationCenter ->\n")
+        print("\n -> removing HomeVC from NotificationCenter ->\n")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -31,7 +36,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         super.viewDidLoad()
    
         //self.collectionDashboard.contentInset = UIEdgeInsetsMake(44.0, 0.0, 44.0, 0.0)
-        self.collectionDashboard.layer.borderWidth = 2.0
+        //self.collectionDashboard.layer.borderWidth = 2.0
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
@@ -45,11 +50,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureNavigationControllerToolbarItems()
         configureRefreshControl()
 
+        print("\(self)  viewDidLoad")
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)
         
-        if DataSource.sharedInstance.dataRefresher == nil && DataSource.sharedInstance.user != nil
+        if DataSource.sharedInstance.dataRefresher == nil && DataSource.sharedInstance.user != nil && DataSource.sharedInstance.loadingAllElementsInProgress == false
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            loadingAllElementsInProgress = true
+            print("-> Starting to load AllElementsInfo ....")
             DataSource.sharedInstance.loadAllElementsInfo {[weak self] (success, failure) -> () in
                 if let wSelf = self
                 {
@@ -71,7 +78,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         print("reloadDashboardView from viewDidLoad - success FALSE")
                         wSelf.reloadDashboardView()
                     }
-                    wSelf.loadingAllElementsInProgress = false
+                    //wSelf.loadingAllElementsInProgress = false
                     
                     let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
                     let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
@@ -79,8 +86,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         
                         if let _ = DataSource.sharedInstance.user?.userId
                         {
-                            DataSource.sharedInstance.dataRefresher = DataRefresher()
-                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+//                            DataSource.sharedInstance.dataRefresher = DataRefresher()
+//                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                             if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
                             {
 //                                if let aSelf = self
@@ -104,7 +111,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         // #if DEBUG
                         wSelf.showAlertWithTitle("Failed", message: " this is a non production error message. \n Did not load Elements for dashboard.", cancelButtonTitle: "Ok")
                         //#endif
-                        wSelf.loadingAllElementsInProgress = false
+//                        wSelf.loadingAllElementsInProgress = false
                     }
                 }
                 
@@ -116,6 +123,46 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @available(iOS 8.0, *)
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
+        coordinator.animateAlongsideTransition({[unowned self] (context) -> Void in
+                if size.width > size.height
+                {
+                    self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
+                }
+                else
+                {
+                    self.collectionDashboard.contentInset = UIEdgeInsetsZero
+                }
+            })
+            { (context) -> Void in
+                
+        }
+        
+        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    }
+    
+    @available(iOS 8.0, *)
+    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        
+        
+        if self.traitCollection.horizontalSizeClass == .Compact && newCollection.horizontalSizeClass == .Regular
+        {
+            self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
+            return
+        }
+        
+        if self.traitCollection.horizontalSizeClass == .Regular && newCollection.horizontalSizeClass == .Compact
+        {
+            self.collectionDashboard.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
+            return
+        }
+        
+        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+        
     }
     
     override func viewWillAppear(animated: Bool)
@@ -141,7 +188,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
             
-            if !loadingAllElementsInProgress
+            if !DataSource.sharedInstance.loadingAllElementsInProgress
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 print("-> reload collection view from viewDidAppear")
@@ -174,6 +221,26 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
+    }
+
+    
+    func recievedMessagesFinishedNotification(notification:NSNotification)
+    {
+       
+        if let currentElementsDataRefresher = DataSource.sharedInstance.dataRefresher
+        {
+            if currentElementsDataRefresher.isCancelled
+            {
+                currentElementsDataRefresher.startRefreshingElementsWithTimeoutInterval(30.0)
+            }
+        }
+        else if let _ = DataSource.sharedInstance.user?.userId?.integerValue
+        {
+            DataSource.sharedInstance.dataRefresher = DataRefresher()
+            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+        }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: notification.name, object: notification.object)
     }
     
     //MARK: ----- NavigationBarButtons
@@ -292,7 +359,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     func reloadDashboardView()
     {
         print("-> reloadDashboardView")
-        loadingAllElementsInProgress = true
+        //loadingAllElementsInProgress = true
             
         DataSource.sharedInstance.getDashboardElements({[weak self](dashboardElements) -> () in
             
@@ -434,7 +501,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                 })
                             }
                             
-                            aSelf.loadingAllElementsInProgress = false
+                            //aSelf.loadingAllElementsInProgress = false
                             aSelf.shouldReloadCollection = false
                         
                             UIApplication.sharedApplication().networkActivityIndicatorVisible = false

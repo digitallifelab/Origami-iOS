@@ -124,14 +124,14 @@ class ServerRequester: NSObject
         })
             { (operation, responseError) -> Void in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                let errorMessage = operation.responseString
-                
-                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:errorMessage])
-                    completion?(nil, lvError);
+//                let errorMessage = operation.responseString
+//                
+//                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:errorMessage])
+//                    completion?(nil, lvError);
                 
 //                else
 //                {
-//                    completion?(nil, responseError);
+                    completion?(nil, responseError);
 //                }
         }
         
@@ -213,6 +213,7 @@ class ServerRequester: NSObject
         if let tokenString = DataSource.sharedInstance.user?.token as? String
         {
             //let testUserId = DataSource.sharedInstance.user?.userId
+            print(" -> Starting to load all elements ...")
             let params = [tokenKey:tokenString]
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             let requestString = "\(serverURL)" + "\(getElementsUrlPart)"
@@ -235,14 +236,10 @@ class ServerRequester: NSObject
                                 elements.insert(lvElement)
                             }
                             print("\n -> Server requester loaded \(elements.count) elements ... ")
-                            //debug
+                            
                             var arrayOfRecievedElements = Array(elements)
                             ObjectsConverter.sortElementsByElementId(&arrayOfRecievedElements)
-//                            for anElement in arrayOfRecievedElements
-//                            {
-//                                print(" loaded element: \(anElement.elementId!.integerValue)")
-//                            }
-//                            
+                            
                             completion(arrayOfRecievedElements,nil)
                         }
                         else

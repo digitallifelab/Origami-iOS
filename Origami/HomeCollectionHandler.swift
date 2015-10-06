@@ -121,8 +121,7 @@ import UIKit
                     dashCell.signalDetectorView?.hidden = !existingElement.isSignal.boolValue
                     
                     dashCell.currentElementType = existingElement.typeId.integerValue // will set visibility for icons
-//                    if existingElement.isTaskForCurrentUser()
-//                    {
+
                         if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState.integerValue)
                         {
                             switch finishStateEnumValue
@@ -139,7 +138,6 @@ import UIKit
                                 dashCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                             }
                         }
-//                    }
                 }
             }
             

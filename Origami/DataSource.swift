@@ -66,6 +66,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var messagesLoader:MessagesLoader?
     var dataRefresher:DataRefresher?
     
+    var loadingAllElementsInProgress = false
+    
     private lazy var dataCache:NSCache = NSCache()
     lazy var pendingAttachFileDataDownloads = [NSNumber:Bool]()
     lazy var pendingUserAvatarsDownolads = [String:Int]()
@@ -867,6 +869,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func loadAllElementsInfo(completion:(success:Bool, failure:NSError?) ->())
     {
+        DataSource.sharedInstance.loadingAllElementsInProgress = true
+        
         DataSource.sharedInstance.serverRequester.loadAllElements {(result, error) -> () in
             
             if let allElements = result as? [Element]
@@ -889,17 +893,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     
                     DataSource.sharedInstance.elements += elementsArrayFromSet
                     print("\n -> Added Elements = \(elementsArrayFromSet.count)")
-                    //debug
-                    for anElement in elementsArrayFromSet
-                    {
-                        if let title = anElement.title as? String
-                        {
-                            if title == "Test User subordinate"
-                            {
-                                print(anElement.toDictionary().description)
-                            }
-                        }
-                    }
+//                    //debug
+//                    for anElement in elementsArrayFromSet
+//                    {
+//                        if let title = anElement.title as? String
+//                        {
+//                            if title == "Seva subordinate"
+//                            {
+//                                print(anElement.toDictionary().description)
+//                            }
+//                        }
+//                    }
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(success: true, failure: nil)
@@ -942,6 +946,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 completion(success: false, failure: error)
             }
+            
+            DataSource.sharedInstance.loadingAllElementsInProgress = false
         }
     }
     func countExistingElementsLocked() -> Int
@@ -2142,7 +2148,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         else
         {
             response = .Added
-            print(" -> Added avatar data for username: \(userName)")
+            //print(" -> Added avatar data for username: \(userName)")
         }
         DataSource.sharedInstance.avatarsHolder[userName] = avatarBytes
         

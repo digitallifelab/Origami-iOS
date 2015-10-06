@@ -17,6 +17,13 @@ class DataRefresher
     private var cancelled = false
     var isInProgress = false
     
+    init() {
+        print("DataRefresher Initialized.")
+    }
+    
+    deinit{
+        print("DataRefresher DeInitialized.")
+    }
     
     var isCancelled:Bool {
         return self.cancelled
@@ -24,188 +31,87 @@ class DataRefresher
     
     func startRefreshingElementsWithTimeoutInterval(timeout:NSTimeInterval)
     {
+        self.cancelled = false
         refreshInterval = timeout
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {[weak self] () -> Void in
-            if let weakSelf = self
-            {
-                weakSelf.loadElements()
-            }
-        })
+        if #available (iOS 8.0, *)
+        {
+            dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), { [weak self]() -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.loadElements()
+                }
+            })
+        }
+        else
+        {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), {[weak self] () -> Void in
+                if let weakSelf = self
+                {
+                    weakSelf.loadElements()
+                }
+            })
+        }
+        
     }
     
     func loadElements()
     {
-        isInProgress = true
-        
-        serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
+        if !self.cancelled
+        {
+            print("DataRefresher did Start refreshing elements with interval.")
+            isInProgress = true
             
-            if let weakSelf = self
-            {
-                if weakSelf.cancelled
-                {
-                    print("Stopped refreshing elements : SELF.cancelled")
-                    return
-                }
-            }
-            else
-            {
-                print("Stopped refreshing elements : no SELF")
-                return
-            }
-            
-            if let recievedElements = objects as? [Element]
-            {
-                var sortedElements = recievedElements
-                ObjectsConverter.sortElementsByDate(&sortedElements)
+            serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
                 
-                //let currentElementsCount = DataSource.sharedInstance.countExistingElements()
-                //let newElementsCount = sortedElements.count
-                
-                if let _ = DataSource.sharedInstance.getAllElementsLocked()
+                if let weakSelf = self
                 {
-                    DataSource.sharedInstance.replaceAllElementsToNew(sortedElements)
-                    
-                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
-                   
-                    /*
-                    let existingSet = Set(allCurrentElements)
-                    let newSet = Set(sortedElements)
-        
-                    let comonElementsSetForExisting = existingSet.intersect(newSet)
-                    let commonElementSetForNew = newSet.intersect(existingSet)
-                    
-                    if existingSet.count == newSet.count
+                    if weakSelf.cancelled
                     {
-                        if existingSet.isSubsetOf(newSet)
-                        {
-                            if let weakSelf = self
-                            {
-                                if !weakSelf.cancelled
-                                {
-                                    weakSelf.startNewRefreshLoop()
-                                    return
-                                }
-                                else
-                                {
-                                    print("Stopped refreshing elements : SELF.cancelled")
-                                    return
-                                }
-                            }
-                            else
-                            {
-                                print("Stopped refreshing elements : no SELF")
-                                return
-                            }
-                        }
-                        else
-                        {
-                            let changedElementsSet = newSet.subtract(existingSet)
-                            
-                            for changedOne in changedElementsSet
-                            {
-                                if let existingElement = DataSource.sharedInstance.getElementById(changedOne.elementId!.integerValue)
-                                {
-                                    existingElement.isSignal = changedOne.isSignal
-                                    existingElement.details = changedOne.details
-                                    existingElement.title = changedOne.title
-                                    existingElement.typeId = changedOne.typeId
-                                    existingElement.changeDate = NSDate().dateForServer()
-                                    if let rootElements = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
-                                    {
-                                        for aRoot in rootElements
-                                        {
-                                            aRoot.changeDate = existingElement.changeDate
-                                        }
-                                    }
-                                    DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-                                }
-                            }
-                            
-                            if DataSource.sharedInstance.shouldReloadAfterElementChanged
-                            {
-                                NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
-                            }
-                            else
-                            {
-                                var newTotalElementsArray = Array(newSet)
-                                ObjectsConverter.sortElementsByDate(&newTotalElementsArray)
-                                
-                                DataSource.sharedInstance.replaceAllElementsToNew(newTotalElementsArray)
-                            }
-                            
-                            
-                            
-                            if let weakSelf = self
-                            {
-                                if !weakSelf.cancelled
-                                {
-                                    weakSelf.startNewRefreshLoop()
-                                    return
-                                }
-                                else
-                                {
-                                    print("Stopped refreshing elements : SELF.cancelled")
-                                    return
-                                }
-                            }
-                            else
-                            {
-                                print("Stopped refreshing elements : no SELF")
-                                return
-                            }
-                        }
+                        print("Stopped refreshing elements : SELF.cancelled")
+                        return
                     }
-                    
-                    ///////-----/////
-                    let elementsToDelete = existingSet.subtract(comonElementsSetForExisting)
-                    if elementsToDelete.count > 0
-                    {
-                        var arrayToIterate = Array(elementsToDelete)
-                        ObjectsConverter.sortElementsByDate(&arrayToIterate)
-                        
-                        var ints = [Int]()
-                        for anElement in arrayToIterate
-                        {
-                            
-                            if let aNumber = anElement.elementId
-                            {
-                                ints.append(aNumber.integerValue)
-                            }
-                        }
-                        
-                        DataSource.sharedInstance.deleteElementsLocked(ints)
-                    }
-                    
-                    ///////-----/////
-                    let elementsToInsert = newSet.subtract(commonElementSetForNew)
-                    if elementsToInsert.count > 0
-                    {
-                        var arrayToIterate = Array(elementsToInsert)
-                        ObjectsConverter.sortElementsByDate(&arrayToIterate)
-                        
-                        
-                        DataSource.sharedInstance.addElementsLocked(arrayToIterate)
-                    } */
-                }
-            }
-            
-            if let weakSelf = self
-            {
-                if weakSelf.cancelled
-                {
-                    print("Stopped refreshing elements : SELF.cancelled")
-                    return
                 }
                 else
                 {
-                    weakSelf.startNewRefreshLoop()
+                    print("Stopped refreshing elements : no SELF")
+                    return
+                }
+                
+                if let recievedElements = objects as? [Element]
+                {
+                    var sortedElements = recievedElements
+                    ObjectsConverter.sortElementsByDate(&sortedElements)
+                    
+                    if let _ = DataSource.sharedInstance.getAllElementsLocked()
+                    {
+                        DataSource.sharedInstance.replaceAllElementsToNew(sortedElements)
+                        
+                        NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                    }
+                }
+                
+                if let weakSelf = self
+                {
+                    if weakSelf.cancelled
+                    {
+                        print("Stopped refreshing elements : SELF.cancelled")
+                        return
+                    }
+                    else
+                    {
+                        weakSelf.startNewRefreshLoop()
+                    }
+                }
+                else
+                {
+                    print("Stopped refreshing elements : no SELF")
+                    return
                 }
             }
-            else
-            {
-                print("Stopped refreshing elements : no SELF")
-                return
-            }
+        }
+        else
+        {
+            print("\n  Oops \(self)  is Cancelled. will not start loadnig all elements again.")
         }
     }
     
@@ -215,9 +121,22 @@ class DataRefresher
         
         if self.refreshInterval > 0
         {
-            let when = dispatch_time(DISPATCH_TIME_NOW, Int64(self.refreshInterval * Double(NSEC_PER_SEC)))
-            let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)
-            dispatch_after(when, globalQueue, {[weak self] () -> Void in
+            
+            var globalQueue:dispatch_queue_t?
+            
+            if #available (iOS 8.0, *)
+            {
+                globalQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
+            }
+            else
+            {
+                globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+            }
+            
+            if let aQueue = globalQueue
+            {
+                let when = dispatch_time(DISPATCH_TIME_NOW, Int64(refreshInterval * Double(NSEC_PER_SEC)))
+                dispatch_after(when, aQueue, {[weak self] () -> Void in
                 if let aSelf = self
                 {
                     if !aSelf.cancelled
@@ -225,14 +144,20 @@ class DataRefresher
                         aSelf.loadElements()
                     }
                 }
-            })
+                })
+            }
         }
 
     }
+    
     func stopRefreshingElements()
     {
         self.cancelled = true
         self.refreshInterval = 0.0
+        self.isInProgress = false
+        
+        
+        print("DataRefresher did stop refreshing elements with interval.")
     }
     
     

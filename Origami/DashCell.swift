@@ -172,7 +172,7 @@ class DashCell: UICollectionViewCell
         
         ideaIcon?.hidden = true
         taskIcon?.hidden = true
-        decisionIcon?.hidden = true
+        decisionIcon?.hidden = true        
     }
     
     override func prepareForReuse()

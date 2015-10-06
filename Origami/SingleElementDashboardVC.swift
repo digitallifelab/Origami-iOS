@@ -49,6 +49,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
      
         //print(" ...viewDidLoad....")
    
+       
         //prepare our appearance
         self.fadeViewControllerAnimator = FadeOpaqueAnimator()
         configureRightBarButtonItem()
@@ -103,7 +104,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
         
         let currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
-        print("\n Refreshing attaches in viewWillAppear...")
+        //print("\n Refreshing attaches in viewWillAppear...")
         if let elementIdInt = self.currentElement?.elementId?.integerValue
         {
             DataSource.sharedInstance.refreshAttachesForElement(elementIdInt, completion: { [weak self] (attachesArray) -> () in
@@ -149,6 +150,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             })
         }
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
+        
+        if let navController = self.navigationController
+        {
+            navController.delegate = self
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -418,22 +424,34 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         {
             editingVC.rootElementID = currentEl.rootElementId.integerValue
             editingVC.composingDelegate = self
-            selfNav.delegate = self
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
+              editingVC.editingStyle = .EditCurrent
             selfNav.pushViewController(editingVC, animated: true)
         }
     }
     
-    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        
         if let editingVC = viewController as? NewElementComposerViewController
         {
-            if let copyElement = self.currentElement?.createCopy()
+            if editingVC.editingStyle == .EditCurrent
             {
-                editingVC.newElement = copyElement
-                editingVC.editingStyle = .EditCurrent
+                if let copyElement = self.currentElement?.createCopy()
+                {
+                    editingVC.newElement = copyElement
+                    //editingVC.editingStyle = .EditCurrent
+                }
             }
         }
+        else if viewController == self
+        {
+            print("\(self.currentElement?.title)")
+        }
     }
+    
+//    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+//        return UIInterfaceOrientationMask.Portrait
+//    }
     
     func elementFavouriteToggled(notification:NSNotification)
     {
@@ -541,6 +559,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
+            newElementCreator.editingStyle = .AddNew
             if let elementId = currentElement?.elementId
             {
                 newElementCreator.composingDelegate = self
@@ -558,13 +577,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     }
                    
                 }
-//                newElementCreator.modalPresentationStyle = .Custom
-//                newElementCreator.transitioningDelegate = self
+
 
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
-//                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
-//                    newElementCreator.editingStyle = .AddNew
-//                })
+
             }
         }
     }
@@ -884,6 +900,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
         self.navigationController?.popViewControllerAnimated(true)
+    
+        DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
         
         switch composer.editingStyle
         {
@@ -954,6 +972,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     weakSelf.showAlertWithTitle("ERROR.", message: "Could not create new element.", cancelButtonTitle: "Ok")
                 }
             }
+            
+            if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled
+            {
+                if cancelledValue == true
+                {
+                    DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                }
+            }
+            else
+            {
+                // no data refresher.
+            }
         })
     }
     
@@ -971,16 +1001,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
                 }
             }
-            })
+        })
     }
     
     func handleEditingElement(editingElement:Element)
     {
-//        var hasDetails = false
-//        if let _ = self.currentElement?.details as? String
-//        {
-//            hasDetails = true
-//        }
         DataSource.sharedInstance.editElement(editingElement, completionClosure: {[weak self] (edited) -> () in
             if let aSelf = self
             {
@@ -1009,6 +1034,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
                 }
             }
+            if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled
+            {
+                if cancelledValue
+                {
+                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
+                    dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+                        DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                    })
+                }
+            }
+            
         })
         
         

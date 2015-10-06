@@ -515,19 +515,9 @@ extension UIViewController
     {
         if let currentVCs = self.navigationController?.viewControllers
         {
-            if currentVCs.count > 1
+            if let _ = currentVCs.first as? HomeVC
             {
-                if let _ = currentVCs.first as? HomeVC
-                {
-                    self.navigationController?.popToRootViewControllerAnimated(true)
-                }
-                else
-                {
-                    if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-                    {
-                        self.navigationController?.setViewControllers([home], animated: true)
-                    }
-                }
+                self.navigationController?.popToRootViewControllerAnimated(true)
             }
             else
             {
@@ -538,5 +528,4 @@ extension UIViewController
             }
         }
     }
-    
 }

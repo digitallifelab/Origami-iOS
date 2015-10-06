@@ -64,7 +64,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         
         //rotate chatIcon
         let angle = CGFloat(-90.0 * CGFloat(M_PI) / 180.0)
-        chatIcon.layer.anchorPoint = CGPointMake(0.0, 1.0)
+        chatIcon.layer.anchorPoint = CGPointMake(0.2, 0.8)
         chatIcon.transform = CGAffineTransformMakeRotation(angle)
     
         self.messagesTable.dataSource = self

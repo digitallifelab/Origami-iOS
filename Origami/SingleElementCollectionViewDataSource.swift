@@ -484,6 +484,25 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 let signalFlag = lvElement.isSignal.boolValue
                 subordinateCell.signalDetectorView?.hidden = !signalFlag
                 
+                subordinateCell.currentElementType = lvElement.typeId.integerValue // will set visibility for icons
+                
+                if let finishStateEnumValue = ElementFinishState(rawValue: lvElement.finishState.integerValue)
+                {
+                    switch finishStateEnumValue
+                    {
+                    case .Default:
+                        //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
+                        subordinateCell.taskIcon?.image = nil
+                        break
+                    case .InProcess:
+                        subordinateCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
+                    case .FinishedBad:
+                        subordinateCell.taskIcon?.image = UIImage(named: "tile-task--bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                    case .FinishedGood:
+                        subordinateCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
+                    }
+                }
+                
             }
             return subordinateCell
         }

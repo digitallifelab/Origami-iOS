@@ -83,15 +83,6 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
 
-    //MARK: Dismiss
-//    func homeButtonPressed(sender:UIButton)
-//    {
-//        //        self.dismissViewControllerAnimated(true, completion: nil)
-//        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-//        {
-//            self.navigationController?.setViewControllers([home], animated: true)
-//        }
-//    }
     
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

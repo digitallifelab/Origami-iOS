@@ -63,7 +63,7 @@ struct ElementDetailsStruct
             }
         }
         
-        print(" -> SimpleElementDashboardLayout  strufct description:\n title: \"\(self.title)\",\n details :\" \(self.details) \",\n messagesContained: \(self.messagesPreviewCell), \n attaches: \(self.attachesCell),\n subordinates:  \(self.subordinates) <- \n")
+        //print(" -> SimpleElementDashboardLayout  struct description:\n title: \"\(self.title)\",\n details :\" \(self.details) \",\n messagesContained: \(self.messagesPreviewCell), \n attaches: \(self.attachesCell),\n subordinates:  \(self.subordinates) <- \n")
     }
 }
 
@@ -233,14 +233,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                         var boundingSize = CGSizeMake(mainFrame.width - (50 + 16), CGFloat(FLT_MAX) )
                         //if aDataSource.elementIsTask()
                         //{
-                            boundingSize.width -= 48.0
+                            boundingSize.width -= (8 + 45 + 16)
                         //}
                         let textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
                         size.height =  ceil(textLabelSize.height) + 60 + 55
                     }
                     
                     titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
-                    print("-> Title Cell Size:\(titleFrame.size)")
+                    //print("-> Title Cell Size:\(titleFrame.size)")
                 }
                 else // .Dates
                 {
