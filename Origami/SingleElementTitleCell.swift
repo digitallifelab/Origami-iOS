@@ -174,7 +174,8 @@ class SingleElementTitleCell: UICollectionViewCell {
         {
             signalButton.hidden = false
             signalButton.setImage((UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
-            if currentElement.isSignal.boolValue
+            
+            if currentElement.isSignal.boolValue == true
             {
                 signalButton.hidden = false
                 signalButton.tintColor = kWhiteColor
@@ -206,14 +207,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             {
                 if (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
                 {
-//                    if currentElement.isOwnedByCurrentUser()
-//                    {
-                        ideaButton.tintColor = kWhiteColor
-//                    }
-//                    else
-//                    {
-//                        ideaButton.tintColor = kElementAttributeIconsDisabledColor
-//                    }
+                    ideaButton.tintColor = kWhiteColor
                 }
                 else
                 {
@@ -365,10 +359,6 @@ class SingleElementTitleCell: UICollectionViewCell {
             if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue))
             {
                 decisionButton.tintColor = kWhiteColor
-                if currentElement.isOwnedByCurrentUser()
-                {
-                    decisionButton.tintColor = kWhiteColor
-                }
             }
             else
             {

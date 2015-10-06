@@ -216,11 +216,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         //....
         let homeButton = UIButton(type:.System)
-        #if SHEVCHENKO
-        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        #else
-        homeButton.setImage(UIImage(named: "icon-home")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        #endif
+       
+        homeButton.setImage(UIImage(named: kHomeButtonImageName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+       
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)

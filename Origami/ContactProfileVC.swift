@@ -64,13 +64,9 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func setupToolbarHomeButton()
     {
         let homeButton = UIButton(type: .System)
-        //homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        #if SHEVCHENKO
-            homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-            #else
-            homeButton.setImage(UIImage(named: "icon-home")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-        #endif
-        
+     
+        homeButton.setImage(UIImage(named:kHomeButtonImageName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+    
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight

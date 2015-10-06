@@ -95,7 +95,7 @@ class ServerRequester: NSObject
         editOperation?.start()
     }
     
-    func loginWith(userName:String, password:String, completion:networkResult)
+    func loginWith(userName:String, password:String, completion:networkResult?)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         let requestString:String = "\(serverURL)" + "\(loginUserUrlPart)"
@@ -113,26 +113,26 @@ class ServerRequester: NSObject
                     userDict = dictionary["LoginResult"] as? [String:AnyObject]
                 {
                     let user = User(info: userDict)
-                    completion(user, nil)
+                    completion?(user, nil)
                 }
                 else
                 {
                     let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:"Could not login, please try once more"])
-                    completion(nil, lvError)
+                    completion?(nil, lvError)
                 }
                 
         })
             { (operation, responseError) -> Void in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                if let errorMessage = operation.responseString
-                {
+                let errorMessage = operation.responseString
+                
                     let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:errorMessage])
-                    completion(nil, lvError);
-                }
-                else
-                {
-                    completion(nil, responseError);
-                }
+                    completion?(nil, lvError);
+                
+//                else
+//                {
+//                    completion?(nil, responseError);
+//                }
         }
         
         loginOperation?.start()

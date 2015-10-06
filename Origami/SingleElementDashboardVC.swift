@@ -207,7 +207,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     func configureNavigationControllerToolbarItems()
     {
         let homeButton = UIButton(type:.System)
-        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.setImage(UIImage(named: kHomeButtonImageName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight

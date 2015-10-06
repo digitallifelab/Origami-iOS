@@ -153,7 +153,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func configureNavigationControllerToolbarItems()
     {
         let homeButton = UIButton(type: .System)//UIButton.buttonWithType(.System) as! UIButton
-        homeButton.setImage(UIImage(named: "icon-home-SH")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        homeButton.setImage(UIImage(named: kHomeButtonImageName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
         homeButton.autoresizingMask = UIViewAutoresizing.FlexibleHeight
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
