@@ -129,13 +129,14 @@ import UIKit
                             {
                             case .Default:
                                 //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
+                                dashCell.taskIcon?.image = nil
                                 break
                             case .InProcess:
-                                dashCell.taskIcon?.image = UIImage(named: "task-in-process")?.imageWithRenderingMode(.AlwaysTemplate)
+                                dashCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
                             case .FinishedBad:
-                                dashCell.taskIcon?.image = UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                                dashCell.taskIcon?.image = UIImage(named: "tile-task--bad")?.imageWithRenderingMode(.AlwaysTemplate)
                             case .FinishedGood:
-                                dashCell.taskIcon?.image = UIImage(named: "task-in-good")?.imageWithRenderingMode(.AlwaysTemplate)
+                                dashCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                             }
                         }
 //                    }

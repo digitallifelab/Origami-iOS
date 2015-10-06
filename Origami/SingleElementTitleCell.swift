@@ -173,7 +173,7 @@ class SingleElementTitleCell: UICollectionViewCell {
         if let currentElement = self.handledElement, signalButton = self.viewWithTag(ActionButtonCellType.Signal.rawValue) as? UIButton
         {
             signalButton.hidden = false
-            signalButton.setImage((UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
+            signalButton.setImage((UIImage(named: "icon-signal")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
             
             if currentElement.isSignal.boolValue == true
             {

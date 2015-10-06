@@ -12,8 +12,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 {
 
     @IBOutlet var collectionDashboard:UICollectionView!
-    @IBOutlet weak var navigationBackgroundView:UIView?
-    @IBOutlet var bottomHomeToolBarButton:UIBarButtonItem!
+    //@IBOutlet var bottomHomeToolBarButton:UIBarButtonItem!
     
     var collectionSource:HomeCollectionHandler?
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
@@ -31,6 +30,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         super.viewDidLoad()
    
+        //self.collectionDashboard.contentInset = UIEdgeInsetsMake(44.0, 0.0, 44.0, 0.0)
+        self.collectionDashboard.layer.borderWidth = 2.0
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         

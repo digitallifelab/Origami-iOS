@@ -160,7 +160,7 @@ class DashCell: UICollectionViewCell
         titleLabel?.textColor = titleColor
         descriptionLabel?.textColor = descriptionColor
         //self.layer.cornerRadius = 5.0
-        self.layer.shadowOffset = CGSizeMake(1, 1)
+        self.layer.shadowOffset = CGSizeMake(2, 2)
         self.layer.shadowColor = UIColor.grayColor().colorWithAlphaComponent(0.7).CGColor
         self.layer.shadowRadius = 1.0
         self.layer.shadowOpacity = 1.0

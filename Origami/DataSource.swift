@@ -889,6 +889,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     
                     DataSource.sharedInstance.elements += elementsArrayFromSet
                     print("\n -> Added Elements = \(elementsArrayFromSet.count)")
+                    //debug
+                    for anElement in elementsArrayFromSet
+                    {
+                        if let title = anElement.title as? String
+                        {
+                            if title == "Test User subordinate"
+                            {
+                                print(anElement.toDictionary().description)
+                            }
+                        }
+                    }
                     
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(success: true, failure: nil)

@@ -48,7 +48,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         super.viewDidLoad()
      
         //print(" ...viewDidLoad....")
-        
+   
         //prepare our appearance
         self.fadeViewControllerAnimator = FadeOpaqueAnimator()
         configureRightBarButtonItem()
@@ -190,7 +190,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementFavouriteButtonTapped, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementActionButtonPressedNotification, object: nil)
-        //NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementEditTextNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementMoreDetailsNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachFileDataLoadingCompleted, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachDataDidFinishLoadingNotification, object:nil)

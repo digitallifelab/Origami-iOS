@@ -504,7 +504,7 @@ extension UIViewController
         else
         {
             self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
-            self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor
+            self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.4)
             self.view.backgroundColor = kWhiteColor
             self.navigationController?.toolbar.tintColor = kWhiteColor
             self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.5)

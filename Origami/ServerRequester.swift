@@ -277,8 +277,9 @@ class ServerRequester: NSObject
 //            })
 //            NSOperationQueue().addOperationWithBlock({ [unowned self]() -> Void in
                 let elementDict = element.toDictionary()
-           
-                               
+                print(" Submitting new element to server: \n")
+                print(elementDict)
+                print("\n<--")
                 let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
                 let params = ["element":elementDict]
                 

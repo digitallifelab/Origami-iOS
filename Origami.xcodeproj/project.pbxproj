@@ -234,6 +234,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F800022E1BC3E57C00E6E2E7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F8016FF01B304614002A1620 /* FrameCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCounter.swift; sourceTree = "<group>"; };
 		F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileAvatarCell.swift; sourceTree = "<group>"; };
 		F80597481B8DB13200D2A611 /* ContactProfileTextInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileTextInfoCell.swift; sourceTree = "<group>"; };
@@ -1210,6 +1211,7 @@
 			children = (
 				F8D456A71B1DEFA100172667 /* Base */,
 				F86E47D41BBE73CD00DA5B6D /* en */,
+				F800022E1BC3E57C00E6E2E7 /* ru */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";

@@ -18,6 +18,11 @@ enum CurrentEditingConfiguration:Int
 class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UITextViewDelegate, UIAlertViewDelegate {
 
     var rootElementID:Int = 0
+        {
+        didSet{
+            print("\(self),  rootElementId: \(rootElementID)")
+        }
+    }
     var composingDelegate:ElementComposingDelegate?
     lazy var contactIDsToPass:Set<Int> = Set([Int]())
     var newElement:Element? {
@@ -387,14 +392,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             label.font = font
         }
         label.text = self.tableView(tableView, titleForHeaderInSection:section)
-//        if #available (iOS 6.0, 8.4.1)
-//        {
-//            label.setTranslatesAutoresizingMaskIntoConstraints(false)
-//        }
-//        else
-//        {
-            label.translatesAutoresizingMaskIntoConstraints = false
-//        }
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+
         view.addSubview(label)
         
         //create constraints for label

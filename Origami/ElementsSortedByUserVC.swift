@@ -41,7 +41,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
     }
     
-    @IBOutlet weak var segmentedConteol:UISegmentedControl?
+    @IBOutlet weak var segmentedControl:UISegmentedControl?
     @IBOutlet weak var topToolbar:UIToolbar?
     
     var archivedVisible = false{
@@ -266,7 +266,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             signalButton.toggleType = .ToggledOff(filterType: .Signal)
         }
         signalButton.frame = CGRectMake(0, 0, 44, 44)
-        signalButton.setImage(UIImage(named: "icon-flag")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        signalButton.setImage(UIImage(named: "icon-signal")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         signalButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let signalBarItem = UIBarButtonItem(customView: signalButton)
         
@@ -295,7 +295,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             taskButton.toggleType = .ToggledOff(filterType: .Task)
         }
         taskButton.frame = CGRectMake(0, 0, 44, 44)
-        taskButton.setImage(UIImage(named: "icon-okey")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+        taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         taskButton.addTarget(self, action: "filterButtonTapped:", forControlEvents: .TouchUpInside)
         let taskBarItem = UIBarButtonItem(customView: taskButton)
         

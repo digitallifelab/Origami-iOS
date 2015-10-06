@@ -150,25 +150,25 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         
         /* - fix top offset in iPhone 6,5,4- */
 
-        if #available (iOS 8.0, *)
-        {
-            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
-            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
-            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
-            
-            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
-            {
-                offsetY += 40.0
-            }
-            else if currentTraitCollectionWidth == .Regular && currentTraitCollectionHeight == .Compact
-            {
-                offsetY += 20.0
-            }
-        }
-        else
-        {
-             offsetY += 0.0
-        }
+//        if #available (iOS 8.0, *)
+//        {
+//            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
+//            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
+//            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
+//            
+//            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
+//            {
+//                offsetY += 40.0
+//            }
+//            else if currentTraitCollectionWidth == .Regular && currentTraitCollectionHeight == .Compact
+//            {
+//                offsetY += 20.0
+//            }
+//        }
+//        else
+//        {
+//             offsetY += 44.0
+//        }
         
        
         /*---------*/

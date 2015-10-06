@@ -219,44 +219,44 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         var offsetX:CGFloat = self.minimumInteritemSpacing
         var offsetY:CGFloat = self.minimumLineSpacing
         /* - fix top offset in iPhone 6,5,4- */
-        if  #available(iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
-            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
-            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
-            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
-            {
-                offsetY += 40.0
-            }
-        }
-        else
-        {
-
-            var currentWidth = UIScreen.mainScreen().bounds.size.width
-            var currentHeight = UIScreen.mainScreen().bounds.size.height
-            
-            let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
-            switch currentDeviceOrentation
-            {
-            case UIInterfaceOrientation.Unknown:
-                break
-            case UIInterfaceOrientation.Portrait:
-                fallthrough
-            case UIInterfaceOrientation.PortraitUpsideDown:
-                break
-            case UIInterfaceOrientation.LandscapeLeft:
-                fallthrough
-            case UIInterfaceOrientation.LandscapeRight:
-                currentWidth = currentHeight
-                currentHeight = UIScreen.mainScreen().bounds.size.width
-                viewWidth = currentWidth - 10.0
-            }
-            
-            if currentWidth > currentHeight
-            {
-                offsetY += 20.0
-            }
-        }
+//        if  #available(iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
+//        {
+//            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
+//            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
+//            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
+//            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
+//            {
+//                offsetY += 40.0
+//            }
+//        }
+//        else
+//        {
+//
+//            var currentWidth = UIScreen.mainScreen().bounds.size.width
+//            var currentHeight = UIScreen.mainScreen().bounds.size.height
+//            
+//            let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
+//            switch currentDeviceOrentation
+//            {
+//            case UIInterfaceOrientation.Unknown:
+//                break
+//            case UIInterfaceOrientation.Portrait:
+//                fallthrough
+//            case UIInterfaceOrientation.PortraitUpsideDown:
+//                break
+//            case UIInterfaceOrientation.LandscapeLeft:
+//                fallthrough
+//            case UIInterfaceOrientation.LandscapeRight:
+//                currentWidth = currentHeight
+//                currentHeight = UIScreen.mainScreen().bounds.size.width
+//                viewWidth = currentWidth - 10.0
+//            }
+//            
+//            if currentWidth > currentHeight
+//            {
+//                offsetY += 20.0
+//            }
+//        }
        
         /*---*/
         

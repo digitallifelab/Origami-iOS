@@ -35,17 +35,17 @@ class SideMenuCell: UITableViewCell
     @IBOutlet var menuIcon:UIImageView?
     var switcher:UISwitch?
     var switchDelegate:SwitchDelegate?
-    var displayMode:DisplayMode = .Day{
-        didSet{
-            switch displayMode
-            {
-            case .Day:
-                self.label.textColor = kBlackColor
-            case .Night:
-                self.label.textColor = kWhiteColor
-            }
-        }
-    }
+//    var displayMode:DisplayMode = .Day{
+//        didSet{
+//            switch displayMode
+//            {
+//            case .Day:
+//                self.label.textColor = kBlackColor
+//            case .Night:
+//                self.label.textColor = kWhiteColor
+//            }
+//        }
+//    }
     override func prepareForReuse()
     {
         self.cellType = .Regular
@@ -57,6 +57,7 @@ class SideMenuCell: UITableViewCell
     {
         super.awakeFromNib()
         self.backgroundColor = UIColor.clearColor()
+        self.label.textColor = kWhiteColor
     }
     
     override func layoutSubviews()
@@ -166,7 +167,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         if let cellTitle = titleForMenuCellAtIndexPath(indexPath)
         {
             cell.label.text = cellTitle
-            cell.displayMode = self.displayMode
+            //cell.displayMode = self.displayMode
             if cellTitle == "Display Mode".localizedWithComment("")
             {
                 cell.cellType = .DisplayModeSwitch

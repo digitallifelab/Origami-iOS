@@ -68,8 +68,9 @@
 /* Class = "UILabel"; text = "Message text from user in chat for this element. Single line and truncate"; ObjectID = "M6g-49-OvE"; */
 "M6g-49-OvE.text" = "Message text from user in chat for this element. Single line and truncate";
 
-/* Class = "UISegmentedControl"; MHy-Gy-Yry.segmentTitles[0] = "All"; ObjectID = "MHy-Gy-Yry"; */
+/* Class = "UISegmentedControl"; MHy-Gy-Yry.segmentTitles[0] = "All"; "MHy-Gy-Yry.segmentTitles[1]" = "Archived"; ObjectID = "MHy-Gy-Yry"; */
 "MHy-Gy-Yry.segmentTitles[0]" = "All";
+"MHy-Gy-Yry.segmentTitles[1]" = "Archived";
 
 /* Class = "UILabel"; text = "18.06.2015 12:27"; ObjectID = "OZB-6b-hhu"; */
 "OZB-6b-hhu.text" = "18.06.2015 12:27";

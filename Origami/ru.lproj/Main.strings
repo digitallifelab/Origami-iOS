@@ -39,7 +39,7 @@
 "FS5-ud-JMl.text" = "Label";
 
 /* Class = "UILabel"; text = "Archived"; ObjectID = "HKN-Ge-hVy"; */
-"HKN-Ge-hVy.text" = "Archived";
+"HKN-Ge-hVy.text" = "Архивные";
 
 /* Class = "UILabel"; text = "menu item name"; ObjectID = "KVD-ty-xaM"; */
 "KVD-ty-xaM.text" = "пункт меню";
@@ -121,3 +121,7 @@
 
 /* Class = "UILabel"; text = "menu item name"; ObjectID = "zMJ-w5-zdy"; */
 "zMJ-w5-zdy.text" = "menu item name";
+
+/* Class = "UISegmentedControl";  ObjectID = "MHy-Gy-Yry"; */
+"MHy-Gy-Yry.segmentTitles[0]" = "Все";
+"MHy-Gy-Yry.segmentTitles[1]" = "Архивные";
