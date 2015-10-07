@@ -97,7 +97,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                     })
             })
         }
-        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -109,6 +108,25 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
+        
+//        if  #available (iOS 8.0, *)
+//        {
+//            
+//        }
+//        else
+//        {
+//            //self.profileCollection.collectionViewLayout.invalidationContextForBoundsChange(CGRectMake(0, 0, self.view.bounds.size.width, 200.0))
+//            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
+//            dispatch_after(timeout, dispatch_get_main_queue(), {[weak self] () -> Void in
+//                if let aSelf = self
+//                {
+//                    if let avatarCell = aSelf.profileCollection.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserProfileAvatarCollectionCell
+//                    {
+//                        avatarCell.avatarImageView?.maskToCircle()
+//                    }
+//                }
+//            })
+//        }
     }
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -130,26 +148,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
    
     
     //MARK: --- Appearance
-//    func addNavigationBarBackgroundView()
-//    {
-//        let navView = UIView()
-//        navView.setTranslatesAutoresizingMaskIntoConstraints(false)
-//        self.view.addSubview(navView)
-//        
-//        //constraints
-//        
-//        let viewsDict = ["navView":navView]
-//        
-//        let horConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[navView]|", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
-//        let vertConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[navView(64)]", options: NSLayoutFormatOptions.AlignAllLeading, metrics: nil, views: viewsDict)
-//        
-//        self.view.addConstraints(horConstraints)
-//        self.view.addConstraints(vertConstraints)
-//        
-//        //store to use
-//        self.navigationBackgroundView = navView
-//    }
-    
     func configureNavigationControllerToolbarItems()
     {
         let homeButton = UIButton(type: .System)//UIButton.buttonWithType(.System) as! UIButton
@@ -169,7 +167,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         //
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
-    
     
     func configureLeftBarButtonItem()
     {
@@ -202,16 +199,6 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         profileCollection.reloadSections(NSIndexSet(index: 0))
     }
     
-    //MARK: Dismiss
-//    func homeButtonPressed(sender:UIButton)
-//    {
-//        //self.dismissViewControllerAnimated(true, completion: nil)
-//        
-//        if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-//        {
-//            self.navigationController?.setViewControllers([home], animated: true)
-//        }
-//    }
     
     //MARK: Menu show
     func menuTapped(sender:UIButton)
@@ -360,6 +347,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 avatarCell.avatarImageView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
             avatarCell.editingEnabled = editingProfile
+            
             return avatarCell
             
         case ProfileTextCellType.Mood.rawValue:
@@ -453,6 +441,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         
         return UserProfileTextContainerCell()
     }
+    
+//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+//        if let avatarCell = cell as? UserProfileAvatarCollectionCell
+//        {
+//            //avatarCell.avatarImageView?.maskToCircle()
+//        }
+//    }
     
     //MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {

@@ -38,5 +38,7 @@ class ContactProfileAvatarCell: UITableViewCell {
 //        favIcon.image = UIImage(named: "icon-favourite")?.imageWithRenderingMode(.AlwaysTemplate)
 //        favIcon.tintColor = kDayCellBackgroundColor
         //favIcon.backgroundColor = kWhiteColor
+        
+        avatar?.maskToCircle()
     }
 }

@@ -32,6 +32,13 @@ class LoginVC: UIViewController , UITextFieldDelegate
         
         loginButton.setTitle("LoginButtonTitle".localizedWithComment(""), forState: .Normal)
         self.view.backgroundColor = kDayNavigationBarBackgroundColor
+        
+        let leftViewName = UIView(frame: CGRectMake(0, 0, 16, 10))
+        nameField.leftViewMode = .Always
+        nameField.leftView = leftViewName
+        let leftViewPass = UIView(frame: CGRectMake(0, 0, 16, 10))
+        passwordField.leftViewMode = .Always
+        passwordField.leftView = leftViewPass
     }
 
     override func didReceiveMemoryWarning() {

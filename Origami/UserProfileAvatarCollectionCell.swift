@@ -44,9 +44,22 @@ class UserProfileAvatarCollectionCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        avatarImageView?.clipsToBounds = true
-        avatarImageView?.layer.borderWidth = 0.0
-        avatarButton?.layer.borderWidth = 0.0
+
+//        if #available(iOS 8.0, *)
+//        {
+//            if let avatarImageView = self.avatarImageView
+//            {
+//              
+//            }
+//        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        //if #available( iOS 8.0, *)
+       // {
+            avatarImageView?.maskToCircle()
+        //}
     }
     
     @IBAction func avatarPressed(sender:UIButton)
