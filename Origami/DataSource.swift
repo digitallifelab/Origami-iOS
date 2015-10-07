@@ -892,19 +892,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
                     
                     DataSource.sharedInstance.elements += elementsArrayFromSet
-                    print("\n -> Added Elements = \(elementsArrayFromSet.count)")
-//                    //debug
-//                    for anElement in elementsArrayFromSet
-//                    {
-//                        if let title = anElement.title as? String
-//                        {
-//                            if title == "Seva subordinate"
-//                            {
-//                                print(anElement.toDictionary().description)
-//                            }
-//                        }
-//                    }
-                    
+                    print("\n -> Added Elements = \(elementsArrayFromSet.count)")                
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completion(success: true, failure: nil)
                     })
@@ -915,17 +903,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 bgOperationQueue.maxConcurrentOperationCount = 3
                 
                 
-                for anElement in DataSource.sharedInstance.elements
+                for anElement in allElements//DataSource.sharedInstance.elements
                 {
                     if let anInt = anElement.elementId?.integerValue
                     {
                         if !anElement.isArchived()
                         {
-                            bgOperationQueue.addOperationWithBlock({ () -> Void in
-                                // load connected userIDs for element
-                                
-                                    DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
-                            })
+//                            bgOperationQueue.addOperationWithBlock({ () -> Void in
+//                                // load connected userIDs for element
+//                                
+//                                    DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
+//                            })
                             
                             bgOperationQueue.addOperationWithBlock({ () -> Void in
                                 // load attach files info
@@ -1156,12 +1144,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if let anId = elementId, existingElement = DataSource.sharedInstance.getElementById(anId)
                     {
                         existingElement.isFavourite = NSNumber(bool: favourite)
-                        let date = NSDate()
-                        if let currentStringDate = date.dateForServer()
-                        {
-                            existingElement.changeDate = currentStringDate
-                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-                        }
+//                        let date = NSDate()
+//                        if let currentStringDate = date.dateForServer()
+//                        {
+//                            existingElement.changeDate = currentStringDate
+//                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+//                        }
+                        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
                 })
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in

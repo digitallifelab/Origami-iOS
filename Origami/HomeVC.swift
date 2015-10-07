@@ -537,7 +537,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             newElementCreator.composingDelegate = self
 
             self.navigationController?.pushViewController(newElementCreator, animated: true)
-            //newElementCreator.editingStyle = .AddNew - switched to be default
+            newElementCreator.editingStyle = .AddNew //- switched to be default
             if let tapView = self.view.viewWithTag(0xAD12)
             {
                 tapView.removeFromSuperview()
@@ -634,15 +634,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     //MARK: ElementSelectionDelegate
     func didTapOnElement(element: Element)
     {
-
         self.presentNewSingleElementVC(element)
-        
     }
     
     func presentNewSingleElementVC(element:Element)
     {
-        //let rootId = element.rootElementId.integerValue
-
         if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
         {
             newVC.currentElement = element

@@ -23,6 +23,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var attachesHandler:ElementAttachedFilesCollectionHandler?
     var subordinatesByIndexPath:[NSIndexPath : Element]?
+    var taskUserAvatar:UIImage?
     
     weak var handledElement:Element? {
         didSet {
@@ -365,35 +366,98 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
               
                 if let currentelement = self.handledElement
                 {
-                
-                    let responsibleIdInt = currentelement.responsible.integerValue
-                    titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
-                    if responsibleIdInt > 0
-                    {
-                        if let image = DataSource.sharedInstance.getAvatarForUserId(responsibleIdInt)
-                        {
-                            titleCell.responsiblePersonAvatarIcon?.image = image
-                        }
-                    }
-                    else if currentelement.creatorId.integerValue > 0
-                    {
-                        if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(currentelement.creatorId.integerValue)
-                        {
-                            titleCell.responsiblePersonAvatarIcon?.image = ownerAvatar
-                        }
-                    }
+                    let avatarIconView = titleCell.responsiblePersonAvatarIcon
                     
-                    if let aContact = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt]))?.first , aName = aContact.nameAndLastNameSpacedString()
+                    let responsibleIdInt = currentelement.responsible.integerValue
+                    let creatorId = currentelement.creatorId.integerValue
+                    
+                    titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+
+                    if let user = DataSource.sharedInstance.user, currentUserIDInt = user.userId?.integerValue
                     {
-                        titleCell.responsibleNameLabel?.text = aName
+                        if responsibleIdInt > 0 //show responsible`s avatar and name
+                        {
+                            if creatorId == responsibleIdInt
+                            {
+                                if creatorId == currentUserIDInt //user sees own element in which he is responsible
+                                {
+//                                    if let aName = user.nameAndLastNameSpacedString()
+//                                    {
+                                        titleCell.responsibleNameLabel?.text = "Your Own Task"
+//                                    }
+                                }
+                                else //contact`s element in which this contact is responsible
+                                {
+                                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt])), aContact = contacts.first //as? Contact
+                                    {
+                                        if let contactName = aContact.nameAndLastNameSpacedString()
+                                        {
+                                            titleCell.responsibleNameLabel?.text = contactName
+                                        }
+                                    }
+                                }
+                            }
+                            else //responsible for task is current user or another contact
+                            {
+                                if responsibleIdInt == currentUserIDInt //user sees not owned element in which he is responsible
+                                {
+                                    titleCell.responsibleNameLabel?.text = "Task for You"
+                                }
+                                else //user sees now owned element in which another contact in responsible
+                                {
+                                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt])), aContact = contacts.first //as? Contact
+                                    {
+                                        if let contactName = aContact.nameAndLastNameSpacedString()
+                                        {
+                                            titleCell.responsibleNameLabel?.text = contactName
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak avatarIconView]() -> Void in
+                                if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(responsibleIdInt), imageView = avatarIconView
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        imageView.image = ownerAvatar
+                                    })
+                                }
+                            })
+                        }
+                        else
+                        {
+                            //show current user`s data
+                            if creatorId == currentUserIDInt //user sees own element
+                            {
+//                                if let aName = user.nameAndLastNameSpacedString()
+//                                {
+                                    titleCell.responsibleNameLabel?.text = "Your Own Element"
+//                                }
+                            }
+                            else //contact`s data
+                            {
+                                if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), aContact = contacts.first //as? Contact
+                                {
+                                    if let contactName = aContact.nameAndLastNameSpacedString()
+                                    {
+                                        titleCell.responsibleNameLabel?.text = contactName
+                                    }
+                                }
+                            }
+                            //load avatar by element`s creator id
+                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak avatarIconView]() -> Void in
+                                if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorId), weakAvatarIcon = avatarIconView
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        weakAvatarIcon.image = ownerAvatar
+                                    })
+                                }
+                            })                            
+                        }
+                       
                     }
-                    else if let user = DataSource.sharedInstance.user, aName = user.nameAndLastNameSpacedString()
-                    {
-                        titleCell.responsibleNameLabel?.text = aName
-                    }
+                   
                 }
-                
-                
                 
                 self.titleCell = titleCell
                 return titleCell

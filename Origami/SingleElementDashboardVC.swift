@@ -385,21 +385,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     //MARK: Custom CollectionView Layout
     func prepareCollectionLayoutForElement(element:Element?) -> SimpleElementDashboardLayout?
     {
-        if element == nil
+        guard let _ = element else
         {
             return nil
         }
         
-        if let readyDataSource = self.collectionDataSource
+        if let readyDataSource = self.collectionDataSource, infoStruct = readyDataSource.getLayoutInfo(), aLayout = SimpleElementDashboardLayout(infoStruct: infoStruct)
         {
-            if let infoStruct = readyDataSource.getLayoutInfo()
-            {
-                if let layout = SimpleElementDashboardLayout(infoStruct: infoStruct)
-                {
-                    return layout
-                }
-            }
+            return aLayout
         }
+        
         return nil
     }
     

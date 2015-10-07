@@ -925,7 +925,7 @@
                                                         <constraint firstAttribute="width" constant="45" id="x2z-3R-hkD"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bxx-1T-kGe" userLabel="responsibleNameLabel">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="unknown" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bxx-1T-kGe" userLabel="responsibleNameLabel">
                                                     <rect key="frame" x="154" y="13" width="150" height="19"/>
                                                     <animations/>
                                                     <constraints>
@@ -2250,13 +2250,27 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon-contacts" translatesAutoresizingMaskIntoConstraints="NO" id="inC-rE-oWm" userLabel="avatarImageView">
-                                                    <rect key="frame" x="8" y="10" width="77" height="77"/>
+                                                    <rect key="frame" x="112" y="10" width="77" height="77"/>
                                                     <animations/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                                                 </imageView>
+                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2m-qv-hbH" userLabel="editButton">
+                                                    <rect key="frame" x="264" y="8" width="30" height="30"/>
+                                                    <animations/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="30" id="DB5-9c-Lpx"/>
+                                                        <constraint firstAttribute="width" constant="30" id="TW1-ee-Zxq"/>
+                                                    </constraints>
+                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <state key="normal" image="icon-edit"/>
+                                                    <connections>
+                                                        <action selector="changeAvatarPressed:" destination="mWG-cw-aRa" eventType="touchUpInside" id="UVW-Rt-un5"/>
+                                                    </connections>
+                                                </button>
                                                 <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cm5-14-koX" userLabel="imageButton">
-                                                    <rect key="frame" x="8" y="10" width="77" height="77"/>
+                                                    <rect key="frame" x="112" y="10" width="77" height="77"/>
                                                     <animations/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
@@ -2272,20 +2286,6 @@
                                                         <action selector="avatarPressed:" destination="mWG-cw-aRa" eventType="touchUpInside" id="t8h-ia-crA"/>
                                                     </connections>
                                                 </button>
-                                                <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2m-qv-hbH" userLabel="editButton">
-                                                    <rect key="frame" x="264" y="8" width="30" height="30"/>
-                                                    <animations/>
-                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="30" id="DB5-9c-Lpx"/>
-                                                        <constraint firstAttribute="width" constant="30" id="TW1-ee-Zxq"/>
-                                                    </constraints>
-                                                    <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <state key="normal" image="icon-edit"/>
-                                                    <connections>
-                                                        <action selector="changeAvatarPressed:" destination="mWG-cw-aRa" eventType="touchUpInside" id="UVW-Rt-un5"/>
-                                                    </connections>
-                                                </button>
                                             </subviews>
                                             <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2295,7 +2295,9 @@
                                         <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstItem="inC-rE-oWm" firstAttribute="centerX" secondItem="cm5-14-koX" secondAttribute="centerX" id="6JI-nu-fdv"/>
+                                            <constraint firstItem="inC-rE-oWm" firstAttribute="centerX" secondItem="mWG-cw-aRa" secondAttribute="centerX" id="6Tz-18-djU"/>
                                             <constraint firstItem="inC-rE-oWm" firstAttribute="top" secondItem="mWG-cw-aRa" secondAttribute="topMargin" constant="2" id="GxG-Ua-kEa"/>
+                                            <constraint firstItem="cm5-14-koX" firstAttribute="centerX" secondItem="mWG-cw-aRa" secondAttribute="centerX" id="Jbd-u0-URj"/>
                                             <constraint firstAttribute="bottomMargin" secondItem="cm5-14-koX" secondAttribute="bottom" constant="2" id="Nfs-H8-4ZE"/>
                                             <constraint firstItem="inC-rE-oWm" firstAttribute="leading" secondItem="mWG-cw-aRa" secondAttribute="leadingMargin" id="O2l-IF-q88"/>
                                             <constraint firstItem="inC-rE-oWm" firstAttribute="width" secondItem="cm5-14-koX" secondAttribute="width" id="SaF-Tj-7FK"/>
@@ -2313,7 +2315,9 @@
                                         <size key="customSize" width="300" height="97"/>
                                         <variation key="default">
                                             <mask key="constraints">
+                                                <exclude reference="f58-E6-jpl"/>
                                                 <exclude reference="6JI-nu-fdv"/>
+                                                <exclude reference="O2l-IF-q88"/>
                                                 <exclude reference="eAb-3S-iTd"/>
                                                 <exclude reference="gig-bx-mwZ"/>
                                                 <exclude reference="hF2-EU-eWY"/>
@@ -2345,16 +2349,6 @@
                                                     <color key="tintColor" red="0.1176470588" green="0.61960784310000006" blue="0.43137254899999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <state key="normal" image="icon-edit"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvy-2I-I3N" userLabel="titleLabel">
-                                                    <rect key="frame" x="8" y="8" width="24" height="19"/>
-                                                    <animations/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="19" id="EEN-6p-F15"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
-                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
                                                 <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="248" verticalHuggingPriority="248" horizontalCompressionResistancePriority="742" verticalCompressionResistancePriority="400" text="name or email or phone or else long title" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PWk-AJ-c68">
                                                     <rect key="frame" x="8" y="47" width="264" height="43"/>
                                                     <animations/>
@@ -2381,6 +2375,16 @@
                                                         <rect key="frame" x="8" y="54" width="142" height="38"/>
                                                     </variation>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gvy-2I-I3N" userLabel="titleLabel">
+                                                    <rect key="frame" x="128" y="8" width="24" height="19"/>
+                                                    <animations/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="19" id="EEN-6p-F15"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <animations/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2396,8 +2400,14 @@
                                             <constraint firstItem="gvy-2I-I3N" firstAttribute="leading" secondItem="hgz-Hx-Jgh" secondAttribute="leadingMargin" id="TAP-uo-kWT"/>
                                             <constraint firstAttribute="trailing" secondItem="PWk-AJ-c68" secondAttribute="trailing" constant="8" id="lfc-ov-aeO"/>
                                             <constraint firstItem="PWk-AJ-c68" firstAttribute="leading" secondItem="hgz-Hx-Jgh" secondAttribute="leading" constant="8" id="p8J-wa-ZZb"/>
+                                            <constraint firstItem="gvy-2I-I3N" firstAttribute="centerX" secondItem="hgz-Hx-Jgh" secondAttribute="centerX" id="wfP-ni-Xqm"/>
                                         </constraints>
                                         <size key="customSize" width="280" height="95"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="TAP-uo-kWT"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
                                             <outlet property="editButton" destination="hMi-Wk-bSo" id="zDa-gp-wqy"/>
                                             <outlet property="textLabel" destination="PWk-AJ-c68" id="3jL-qP-WiH"/>
@@ -2411,9 +2421,12 @@
                                             <rect key="frame" x="0.0" y="0.0" width="185" height="101"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j4Y-V0-oUP">
-                                                    <rect key="frame" x="8" y="8" width="33" height="19"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j4Y-V0-oUP">
+                                                    <rect key="frame" x="76" y="8" width="33" height="19"/>
                                                     <animations/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="19" id="t8c-cf-vVL"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
@@ -2437,8 +2450,16 @@
                                             <constraint firstItem="j4Y-V0-oUP" firstAttribute="top" secondItem="Ghn-Aa-qVB" secondAttribute="topMargin" id="EnO-y9-XeZ"/>
                                             <constraint firstAttribute="centerY" secondItem="oae-c1-4Si" secondAttribute="centerY" constant="-0.5" id="Mty-Ze-m71"/>
                                             <constraint firstAttribute="centerX" secondItem="oae-c1-4Si" secondAttribute="centerX" id="fpp-OX-IOH"/>
+                                            <constraint firstItem="j4Y-V0-oUP" firstAttribute="centerY" secondItem="Ghn-Aa-qVB" secondAttribute="centerY" id="lmi-zh-it4"/>
+                                            <constraint firstItem="j4Y-V0-oUP" firstAttribute="centerX" secondItem="Ghn-Aa-qVB" secondAttribute="centerX" id="pHF-CN-ito"/>
                                         </constraints>
                                         <size key="customSize" width="185" height="101"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="3QU-0f-gqr"/>
+                                                <exclude reference="lmi-zh-it4"/>
+                                            </mask>
+                                        </variation>
                                         <connections>
                                             <outlet property="switcher" destination="oae-c1-4Si" id="Rjp-xB-trz"/>
                                             <outlet property="titleLabel" destination="j4Y-V0-oUP" id="y0C-0R-vG8"/>
