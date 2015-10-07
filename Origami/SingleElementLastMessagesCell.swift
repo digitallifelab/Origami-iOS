@@ -54,7 +54,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         super.layoutSubviews()
         
         let chatIconBounds = chatIcon.bounds
-        let roundedLeftBottomPath = UIBezierPath(roundedRect: chatIconBounds, byRoundingCorners: UIRectCorner.BottomLeft, cornerRadii: CGSizeMake(5, 5))
+        let roundedLeftBottomPath = UIBezierPath(roundedRect: chatIconBounds, byRoundingCorners: UIRectCorner.BottomLeft, cornerRadii: CGSizeMake(6, 6))
         
         let shape = CAShapeLayer()
         shape.frame = chatIconBounds
@@ -64,9 +64,22 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         
         //rotate chatIcon
         let angle = CGFloat(-90.0 * CGFloat(M_PI) / 180.0)
-        chatIcon.layer.anchorPoint = CGPointMake(0.2, 0.8)
-        chatIcon.transform = CGAffineTransformMakeRotation(angle)
-    
+        //chatIcon.layer.anchorPoint = CGPointMake(0.0, 0.0)
+        let rotation = CGAffineTransformMakeRotation(angle)
+        
+        if #available (iOS 8.0, *)
+        {
+            let moveTransform = CGAffineTransformMakeTranslation(-chatIconBounds.size.height / 2.0, 6.0) //to the left and down by 2 points
+            let newTransform = CGAffineTransformConcat(rotation, moveTransform)
+            self.chatIcon.transform = newTransform
+        }
+        else
+        {
+            let moveTransform = CGAffineTransformMakeTranslation(-chatIconBounds.size.height / 2.0, -5.0)
+            let newTransform = CGAffineTransformConcat(rotation, moveTransform)
+            self.chatIcon.transform = newTransform
+        }
+        
         self.messagesTable.dataSource = self
         self.messagesTable.delegate = self
         
