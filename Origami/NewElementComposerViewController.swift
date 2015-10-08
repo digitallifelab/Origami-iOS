@@ -126,7 +126,11 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 for lvContact in contacts
                 {
                     //set avatar image
-                    if let userName = lvContact.userName as? String, avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName), avatar = UIImage(data: avatarData), weakSelf = self
+                    if let
+                        userName = lvContact.userName ,//as? String,
+                        avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName),
+                        avatar = UIImage(data: avatarData),
+                        weakSelf = self
                     {
                         weakSelf.contactImages[userName] = avatar
                     }
@@ -351,15 +355,15 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             }
             //set name text
             var nameLabelText = ""
-            if let firstName = lvContact.firstName as? String
+            if let firstName = lvContact.firstName //as? String
             {
                 nameLabelText += firstName
-                if let lastName = lvContact.lastName as? String
+                if let lastName = lvContact.lastName// as? String
                 {
                     nameLabelText += " " + lastName
                 }
             }
-            else  if let lastName = lvContact.lastName as? String
+            else  if let lastName = lvContact.lastName// as? String
             {
                 nameLabelText += lastName
             }

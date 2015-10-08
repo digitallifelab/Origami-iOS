@@ -48,7 +48,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     for lvContact in allContacts
                     {
                         //set avatar image
-                        if let userName = lvContact.userName as? String
+                        if let userName = lvContact.userName// as? String
                         {
             
                             if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
@@ -92,7 +92,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 for lvContact in existContacts
                 {
                     //set avatar image
-                    if let userName = lvContact.userName as? String
+                    if let userName = lvContact.userName// as? String
                     {
                         //set avatar image
                         if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
@@ -239,8 +239,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     //sort favourite contacts my lastName
                     localFavContacts.sortInPlace({ (contact1, contact2) -> Bool in
                         if let
-                            lastName1 = contact1.lastName as? String,
-                            lastName2 = contact2.lastName as? String
+                            lastName1 = contact1.lastName,// as? String,
+                            lastName2 = contact2.lastName //as? String
                         {
                             return (lastName1.caseInsensitiveCompare(lastName2) == .OrderedAscending)
                         }
@@ -346,7 +346,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             cell.nameLabel.text = contactNameStringFromContact(contact)
             
             // mood field
-            cell.moodLabel?.text = contact.mood as? String
+            cell.moodLabel?.text = contact.mood// as? String
             
             //favourite
             if contact.isFavourite.boolValue
@@ -448,11 +448,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     private func contactNameStringFromContact(contact:Contact) -> String
     {
         var nameString = ""
-        if let firstName = contact.firstName as? String
+        if let firstName = contact.firstName// as? String
         {
             nameString += firstName
         }
-        if let lastName = contact.lastName as? String
+        if let lastName = contact.lastName// as? String
         {
             if nameString.isEmpty
             {

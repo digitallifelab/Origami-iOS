@@ -26,7 +26,9 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         if let existContacts = allContacts
         {
             self.allContacts = existContacts.sort { (contact1, contact2) -> Bool in
-                if let lastName1 = contact1.lastName as? String, lastName2 = contact2.lastName as? String
+                if let
+                    lastName1 = contact1.lastName,// as? String, 
+                    lastName2 = contact2.lastName //as? String
                 {
                     let comparisonResult = lastName1.caseInsensitiveCompare(lastName2)
                     return comparisonResult == .OrderedAscending
@@ -42,7 +44,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 
                 for lvContact in existContacts
                 {
-                    if let userName = lvContact.userName as? String
+                    if let userName = lvContact.userName //as? String
                     {
                         dispatch_group_enter(bgGroup)
                         DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
@@ -137,14 +139,14 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             cell.contactIsMine = mine
 
           
-            cell.moodLabel?.text = contact.mood as? String//userMood /* "Warning once only: Detected a case where constraints ambiguous" */
+            cell.moodLabel?.text = contact.mood //as? String//userMood /* "Warning once only: Detected a case where constraints ambiguous" */
             var contactName = ""
             
-            if let firstName = contact.firstName as? String
+            if let firstName = contact.firstName //as? String
             {
                 contactName = firstName
             }
-            if let lastName = contact.lastName as? String
+            if let lastName = contact.lastName //as? String
             {
                 if contactName.isEmpty
                 {
@@ -240,22 +242,25 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     private func contactNameStringFromContact(contact:Contact) -> String
     {
         var nameString = ""
-        if let firstName = contact.firstName as? String
+//        if let firstName = contact.firstName as? String
+//        {
+//            nameString += firstName
+//        }
+//        if let lastName = contact.lastName as? String
+//        {
+//            if nameString.isEmpty
+//            {
+//                nameString = lastName
+//            }
+//            else
+//            {
+//                nameString += (" " + lastName)
+//            }
+//        }
+        if let lvNameString = contact.nameAndLastNameSpacedString()
         {
-            nameString += firstName
+            nameString = lvNameString
         }
-        if let lastName = contact.lastName as? String
-        {
-            if nameString.isEmpty
-            {
-                nameString = lastName
-            }
-            else
-            {
-                nameString += (" " + lastName)
-            }
-        }
-        
         return nameString
     }
     

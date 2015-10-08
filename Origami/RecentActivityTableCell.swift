@@ -14,6 +14,11 @@ class RecentActivityTableCell: UITableViewCell {
     @IBOutlet weak var elementTitleLabel:UILabel?
     @IBOutlet weak var elementDetailsTextView:UITextView?
     @IBOutlet weak var elementCreatorAvatar:UIImageView?
+    @IBOutlet weak var ideaIcon:UIImageView?
+    @IBOutlet weak var taskIcon:UIImageView?
+    @IBOutlet weak var decisionIcon:UIImageView?
+    @IBOutlet weak var nameLabel:UILabel?
+    
     var aTextColor = kWhiteColor
     
     var displayMode:DisplayMode = .Day

@@ -150,7 +150,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             {
                 if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
                 {
-                    if let username = DataSource.sharedInstance.user!.userName as? String
+                    if let username = DataSource.sharedInstance.user!.userName// as? String
                     {
                         if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(username)
                         {
@@ -173,13 +173,13 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                           
                         }
                     }
-                    chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
+                    chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName/* as? String*/ ?? DataSource.sharedInstance.user?.lastName// as? String
                 }
                 else
                 {
-                    if let contact = contactForMessage(message) , userName = contact.userName as? String
+                    if let contact = contactForMessage(message) , userName = contact.userName// as? String
                     {
-                        chatCell.nameLabel.text = (contact.firstName as? String ?? contact.lastName as? String) ?? "unknown"
+                        chatCell.nameLabel.text = (contact.firstName /* as? String*/ ?? contact.lastName /*as? String*/) ?? "unknown"
                         if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
                         {
                             chatCell.avatarView.image = UIImage(data: imageData)

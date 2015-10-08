@@ -122,22 +122,22 @@ import UIKit
                     
                     dashCell.currentElementType = existingElement.typeId.integerValue // will set visibility for icons
 
-                        if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState.integerValue)
+                    if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState.integerValue)
+                    {
+                        switch finishStateEnumValue
                         {
-                            switch finishStateEnumValue
-                            {
-                            case .Default:
-                                //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
-                                dashCell.taskIcon?.image = nil
-                                break
-                            case .InProcess:
-                                dashCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
-                            case .FinishedBad:
-                                dashCell.taskIcon?.image = UIImage(named: "tile-task--bad")?.imageWithRenderingMode(.AlwaysTemplate)
-                            case .FinishedGood:
-                                dashCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
-                            }
+                        case .Default:
+                            //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
+                            dashCell.taskIcon?.image = nil
+                            break
+                        case .InProcess:
+                            dashCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
+                        case .FinishedBad:
+                            dashCell.taskIcon?.image = UIImage(named: "tile-task--bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                        case .FinishedGood:
+                            dashCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                         }
+                    }
                 }
             }
             

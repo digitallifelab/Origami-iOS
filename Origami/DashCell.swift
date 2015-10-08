@@ -68,8 +68,8 @@ class DashCell: UICollectionViewCell
     
     
     override init(frame: CGRect) {
-        self.backColor = UIColor.clearColor()
-        self.titleColor = UIColor.blackColor()
+        self.backColor = kDayCellBackgroundColor
+        self.titleColor = kBlackColor
         self.descriptionColor = UIColor.grayColor()
         super.init(frame: frame)
     }
@@ -108,11 +108,11 @@ class DashCell: UICollectionViewCell
                             backColor = kNightSignalColor
                             descriptionColor = kWhiteColor
                         case .Other :
-                            backColor = UIColor.clearColor()
+                            backColor = kBlackColor
                             titleColor = kWhiteColor
                             descriptionColor = kWhiteColor.colorWithAlphaComponent(0.6)
                         case .Messages:
-                            backColor = UIColor.clearColor()
+                            backColor = kBlackColor//UIColor.clearColor()
                         
                     }
             }
@@ -144,7 +144,7 @@ class DashCell: UICollectionViewCell
                     descriptionColor = kWhiteColor.colorWithAlphaComponent(0.6) // (self.displayMode == .Day) ? UIColor.grayColor() : UIColor(white: 0.5, alpha: 1.0)
                     flagIcon?.image = nil
                     signalsCountLabel?.text = nil
-                    backColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : UIColor.clearColor()
+                    backColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kBlackColor
                 
                 
             default: break

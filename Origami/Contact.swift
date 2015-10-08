@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class Contact:NSObject
+class Contact:Person
 {
     var birthDay:NSString?
     var phone:NSString?
@@ -16,14 +16,14 @@ class Contact:NSObject
     var language:NSString?
     var languageId:NSNumber?
     
-    var firstName:NSString?
-    var lastName:NSString?
-    var userName:NSString?
+//    var firstName:NSString?
+//    var lastName:NSString?
+//    var userName:NSString?
     
     var lastSync:NSString?
     var contactId:NSNumber?
     
-    var mood:NSString?
+    //var mood:NSString?
     var state:NSNumber?
     var sex:NSNumber?
     var regDate:NSString?
@@ -37,17 +37,17 @@ class Contact:NSObject
     {
         self.init()
         
-        if let name = info["FirstName"] as? NSString
+        if let name = info["FirstName"] as? String
         {
             let fixedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.firstName = fixedName
         }
-        if let last = info["LastName"] as? NSString
+        if let last = info["LastName"] as? String
         {
             let fixedSurname = last.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.lastName = fixedSurname
         }
-        if let uName = info["LoginName"] as? NSString
+        if let uName = info["LoginName"] as? String
         {
             let fixedUserName = uName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.userName = fixedUserName
@@ -85,7 +85,7 @@ class Contact:NSObject
         {
             self.sex = lvSex
         }
-        if let lvMood = info["Mood"] as? NSString
+        if let lvMood = info["Mood"] as? String
         {
             self.mood = lvMood
         }
@@ -170,32 +170,32 @@ class Contact:NSObject
         }
         return nil
     }
-    
-    func nameAndLastNameSpacedString() -> String?
-    {
-        var nameString = ""
-        if let firstName = self.firstName as? String
-        {
-            nameString += firstName
-        }
-        if let lastName = self.lastName as? String
-        {
-            if nameString.isEmpty
-            {
-                nameString = lastName
-            }
-            else
-            {
-                nameString += (" " + lastName)
-            }
-        }
-        
-        if nameString.isEmpty
-        {
-            return nil
-        }
-        return nameString
-    }
+//    
+//    func nameAndLastNameSpacedString() -> String?
+//    {
+//        var nameString = ""
+//        if let firstName = self.firstName as? String
+//        {
+//            nameString += firstName
+//        }
+//        if let lastName = self.lastName as? String
+//        {
+//            if nameString.isEmpty
+//            {
+//                nameString = lastName
+//            }
+//            else
+//            {
+//                nameString += (" " + lastName)
+//            }
+//        }
+//        
+//        if nameString.isEmpty
+//        {
+//            return nil
+//        }
+//        return nameString
+//    }
     
     //MARK: Set , NSSet stuff
     override func isEqual(contact:AnyObject?)->Bool
@@ -215,7 +215,7 @@ class Contact:NSObject
     }
     
     override var hash:Int
-        {
+    {
             return self.userName!.hashValue ^ self.contactId!.hashValue
     }
     

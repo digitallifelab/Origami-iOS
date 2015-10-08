@@ -509,7 +509,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         }
                         else
                         {
-                            if let _ = DataSource.sharedInstance.user?.token as? String
+                            if let _ = DataSource.sharedInstance.user?.token //as? String
                             {
                                 aSelf.showAddTheVeryFirstElementPlus()
                             }

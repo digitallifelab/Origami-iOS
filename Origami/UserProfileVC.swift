@@ -58,7 +58,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             profileCollection.setCollectionViewLayout(layout, animated: false) //we are in view did load, so false
         }
      
-        if let userName = DataSource.sharedInstance.user?.userName as? String
+        if let userName = DataSource.sharedInstance.user?.userName// as? String
         {
             if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
             {
@@ -354,13 +354,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.cellType = .Mood
             textCell?.titleLabel?.text = "mood".localizedWithComment("")
-            textCell?.textLabel?.text = user?.mood as? String
+            textCell?.textLabel?.text = user?.mood //as? String
             
         case ProfileTextCellType.Email.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.cellType = .Email
             textCell?.titleLabel?.text = "email".localizedWithComment("")
-            textCell?.textLabel?.text = user?.userName as? String
+            textCell?.textLabel?.text = user?.userName// as? String
             textCell?.editingEnabled = false
             shouldBeDelegate = false
             
@@ -368,13 +368,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.titleLabel?.text = "firstName".localizedWithComment("")
             textCell?.cellType = .Name
-            textCell?.textLabel?.text = user?.firstName as? String
+            textCell?.textLabel?.text = user?.firstName// as? String
             
         case ProfileTextCellType.LastName.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.titleLabel?.text = "lastName".localizedWithComment("")
             textCell?.cellType = .LastName
-            textCell?.textLabel?.text = user?.lastName as? String
+            textCell?.textLabel?.text = user?.lastName// as? String
             
         case ProfileTextCellType.Country.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
@@ -641,7 +641,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         let indexPath = NSIndexPath(forItem: ProfileTextCellType.Mood.rawValue, inSection: 0)
         if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
         {
-            textCell.enableTextView(DataSource.sharedInstance.user?.mood as? String)
+            textCell.enableTextView(DataSource.sharedInstance.user?.mood) //as? String)
             textCell.textView?.delegate = self
             
             textCell.startEditingText()
@@ -1104,7 +1104,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     {
         if let newname = newFirstName
         {
-            let oldName = DataSource.sharedInstance.user?.firstName as? String
+            let oldName = DataSource.sharedInstance.user?.firstName// as? String
             if oldName == newname
             {
                 return
@@ -1148,7 +1148,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     {
         if let newname = newLastName
         {
-            let oldLastName = DataSource.sharedInstance.user?.lastName as? String
+            let oldLastName = DataSource.sharedInstance.user?.lastName //as? String
             if oldLastName == newname
             {
                 return
@@ -1190,7 +1190,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     
     func userDidchangeMood(newMood:String)
     {
-        let oldMood = DataSource.sharedInstance.user?.mood as? String
+        let oldMood = DataSource.sharedInstance.user?.mood //as? String
         if oldMood == newMood
         {
             return

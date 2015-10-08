@@ -293,11 +293,33 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     if creatorIdInt > 0
                     {
                         let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
-                        dispatch_async(bgQueue, { () -> Void in
-                            DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
+                        dispatch_async(bgQueue, {[weak self] () -> Void in
+                            if let imageAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
+                            {
+                                if let aSelf = self
+                                {
+                                    aSelf.avatarForElementHolder[creatorIdInt] = imageAvatar
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        aSelf.tableView?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                                    })
+                                }
+                            }
                         })
                     }
                 }
+                
+                if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.creatorId.integerValue])), currentContact = contacts.first
+                {
+                    activityCell.nameLabel?.text = currentContact.initialsString()
+                }
+                else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
+                {
+                    if userIdInt == element.creatorId.integerValue
+                    {
+                        activityCell.nameLabel?.text = user.initialsString()
+                    }
+                }
+                
                 return activityCell
             }
         }
@@ -318,7 +340,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 100.0
+        return 110.0
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {

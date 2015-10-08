@@ -612,7 +612,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
-            if let elementId = currentElement?.elementId
+            if let elementIdInt = currentElement?.elementId?.integerValue
             {
                 if let textBody = message?.textBody
                 {
@@ -620,7 +620,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 }
                 
                 newElementCreator.composingDelegate = self
-                newElementCreator.rootElementID = elementId.integerValue
+                newElementCreator.rootElementID = elementIdInt
+                
                 if let passwhomIDs = currentElement?.passWhomIDs
                 {
                     if passwhomIDs.count > 0
@@ -636,10 +637,13 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 }
               
                 newElementCreator.currentElementType = type
+                
+                newElementCreator.editingStyle = .AddNew
+                
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
                 dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                    newElementCreator.editingStyle = .AddNew
+                    
                 })
 //                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
 //                    newElementCreator.editingStyle = .AddNew

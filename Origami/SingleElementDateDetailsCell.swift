@@ -56,51 +56,54 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         self.editButton?.setImage((UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
         if let creatorId = self.handledElement?.creatorId
         {
-            var ownerNameToDisplay = String()
+            var ownerNameToDisplay:String?// = String()
             
             if creatorId == DataSource.sharedInstance.user?.userId
             {
-                if let name = DataSource.sharedInstance.user?.firstName as? String
-                {
-                    ownerNameToDisplay += name
-                }
-                if let lastName = DataSource.sharedInstance.user?.lastName as? String
-                {
-                    if ownerNameToDisplay.isEmpty
-                    {
-                        ownerNameToDisplay += lastName
-                    }
-                    else
-                    {
-                        ownerNameToDisplay += (" " + lastName)
-                    }
-                }
+//                if let name = DataSource.sharedInstance.user?.firstName //as? String
+//                {
+//                    ownerNameToDisplay += name
+//                }
+//                if let lastName = DataSource.sharedInstance.user?.lastName //as? String
+//                {
+//                    if ownerNameToDisplay.isEmpty
+//                    {
+//                        ownerNameToDisplay += lastName
+//                    }
+//                    else
+//                    {
+//                        ownerNameToDisplay += (" " + lastName)
+//                    }
+//                }
+                ownerNameToDisplay = DataSource.sharedInstance.user?.nameAndLastNameSpacedString()
             }
             else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId.integerValue]))
             {
-                let owner = contacts.first
-                
-                if let name = owner?.firstName as? String
+                if let owner = contacts.first
                 {
-                    ownerNameToDisplay += name
+                    ownerNameToDisplay = owner.nameAndLastNameSpacedString()
                 }
-                if let lastName = owner?.lastName as? String
-                {
-                    if ownerNameToDisplay.isEmpty
-                    {
-                        ownerNameToDisplay += lastName
-                    }
-                    else
-                    {
-                        ownerNameToDisplay += (" " + lastName)
-                    }
-                }
+//                if let name = owner?.firstName //as? String
+//                {
+//                    ownerNameToDisplay += name
+//                }
+//                if let lastName = owner?.lastName //as? String
+//                {
+//                    if ownerNameToDisplay.isEmpty
+//                    {
+//                        ownerNameToDisplay += lastName
+//                    }
+//                    else
+//                    {
+//                        ownerNameToDisplay += (" " + lastName)
+//                    }
+//                }
             }
             
-            if !ownerNameToDisplay.isEmpty
-            {
+//            if !ownerNameToDisplay.isEmpty
+//            {
                 ownerNameLabel?.text = ownerNameToDisplay
-            }
+//            }
             ownerLocalizedLabel?.text = "creator".localizedWithComment("")
         }
     }
@@ -127,7 +130,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let datesCell = tableView.dequeueReusableCellWithIdentifier("DatesTableHolderCell", forIndexPath: indexPath) as! ElementDashboardDatesCell
-        datesCell.displayMode = self.displayMode
+        //datesCell.displayMode = self.displayMode
         datesCell.backgroundColor = UIColor.clearColor()
         configureDateCellForRow(indexPath.row, cell: datesCell)
         

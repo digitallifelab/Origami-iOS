@@ -30,6 +30,8 @@
 		F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
 		F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
+		F84BC0A01BC57DCC0065D5CC /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84BC09F1BC57DCC0065D5CC /* Person.swift */; settings = {ASSET_TAGS = (); }; };
+		F84BC0A11BC57DCC0065D5CC /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84BC09F1BC57DCC0065D5CC /* Person.swift */; settings = {ASSET_TAGS = (); }; };
 		F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */; };
 		F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
@@ -254,6 +256,7 @@
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
 		F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinishTaskResultView.xib; sourceTree = "<group>"; };
+		F84BC09F1BC57DCC0065D5CC /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
 		F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterAttributeButton.swift; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPickerVC.swift; sourceTree = "<group>"; };
@@ -426,6 +429,7 @@
 				F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */,
 				F86F237A1B208AEE00234EFD /* Constants.swift */,
 				F86F23801B20A29600234EFD /* Protocols.swift */,
+				F84BC09F1BC57DCC0065D5CC /* Person.swift */,
 				F880D17A1B2583CE00E702D3 /* Extensions.swift */,
 				F8D2FF2B1B283DE900584B8D /* Enumerations.swift */,
 				F8DEE7EF1B68FCC60004F0CB /* Structs.swift */,
@@ -599,12 +603,12 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
+				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F87637791B56604100AFE376 /* Menu */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
 				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
 				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
-				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F86F74261B56835E00E48E13 /* UserProfile */,
 				F86F74251B56834E00E48E13 /* Contacts */,
 				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
@@ -1003,6 +1007,7 @@
 				F8C93AC71B861B94009D890E /* HomeVC.swift in Sources */,
 				F8C65F441B98AA5A001EDEA6 /* AFURLConnectionOperation.m in Sources */,
 				F8C93ACA1B861B94009D890E /* SingleElementLastMessagesCell.swift in Sources */,
+				F84BC0A11BC57DCC0065D5CC /* Person.swift in Sources */,
 				F8C93ACB1B861B94009D890E /* AttachVideoPlayerVC.swift in Sources */,
 				F8C93ACD1B861B94009D890E /* AttachImageViewerVC.swift in Sources */,
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
@@ -1108,6 +1113,7 @@
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C65F451B98AA5A001EDEA6 /* AFURLRequestSerialization.m in Sources */,
 				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
+				F84BC0A01BC57DCC0065D5CC /* Person.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,

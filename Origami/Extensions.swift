@@ -495,7 +495,7 @@ extension UIViewController
         
         if nightModeOn
         {
-            self.navigationController?.navigationBar.barStyle = UIBarStyle.Black
+            self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
             self.navigationController?.navigationBar.barTintColor = kBlackColor
             self.view.backgroundColor = kBlackColor
             self.navigationController?.toolbar.tintColor = kWhiteColor

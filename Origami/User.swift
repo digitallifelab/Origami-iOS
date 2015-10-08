@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class User
+class User:Person
 {
     var birthDay:NSString? //
     var phone:NSString? //
@@ -16,15 +16,15 @@ class User
     var language:NSString? //
     var languageId:NSNumber? //
     
-    var firstName:NSString? //
-    var lastName:NSString? //
-    var userName:NSString? //
+    //var firstName:NSString? //
+    //var lastName:NSString? //
+    //var userName:NSString? //
     var password:NSString? //
     var lastSync:NSString? //
-    var token:NSString? //
+    var token:String? //
     var userId:NSNumber? //
     
-    var mood:NSString? //
+    //var mood:NSString? //
     var state:NSNumber? //
     var sex:NSNumber? //
     var regDate:NSString? //
@@ -36,19 +36,19 @@ class User
         
         if info.count > 0
         {
-            if let userName = info["LoginName"] as? NSString
+            if let userName = info["LoginName"] as? String
             {
                 self.userName = userName
             }
-            if let lastName = info["LastName"] as? NSString
+            if let lastName = info["LastName"] as? String
             {
                 self.lastName = lastName
             }
-            if let firstName = info["FirstName"] as? NSString
+            if let firstName = info["FirstName"] as? String
             {
                 self.firstName = firstName
             }
-            if let token = info["Token"] as? NSString
+            if let token = info["Token"] as? String
             {
                 self.token = token
             }
@@ -60,7 +60,7 @@ class User
             {
                 self.userId = userId
             }
-            if let mood = info["Mood"] as? NSString
+            if let mood = info["Mood"] as? String
             {
                 self.mood = mood
             }
@@ -125,17 +125,17 @@ class User
             toReturn["LastSync"]  = syncDate
         }
         
-        if let fName = self.firstName as? String
+        if let fName = self.firstName// as? String
         {
             toReturn["FirstName"] = fName
         }
         
-        if let lName = self.lastName as? String
+        if let lName = self.lastName// as? String
         {
             toReturn["LastName"] = lName
         }
         
-        if let token = self.token as? String
+        if let token = self.token //as? String
         {
             toReturn["Token"] = token
         }
@@ -208,30 +208,52 @@ class User
         return ""
     }
     
-    func nameAndLastNameSpacedString() -> String?
-    {
-        var nameString = ""
-        if let firstName = self.firstName as? String
-        {
-            nameString += firstName
-        }
-        if let lastName = self.lastName as? String
-        {
-            if nameString.isEmpty
-            {
-                nameString = lastName
-            }
-            else
-            {
-                nameString += (" " + lastName)
-            }
-        }
-        
-        if nameString.isEmpty
-        {
-            return nil
-        }
-        return nameString
-    }
+//    func nameAndLastNameSpacedString() -> String?
+//    {
+//        var nameString = ""
+//        if let firstName = self.firstName as? String
+//        {
+//            nameString += firstName
+//        }
+//        if let lastName = self.lastName as? String
+//        {
+//            if nameString.isEmpty
+//            {
+//                nameString = lastName
+//            }
+//            else
+//            {
+//                nameString += (" " + lastName)
+//            }
+//        }
+//        
+//        if nameString.isEmpty
+//        {
+//            return nil
+//        }
+//        return nameString
+//    }
+//    
+//    func initialsString() -> String?
+//    {
+//        if let fullnameString = self.nameAndLastNameSpacedString()
+//        {
+//            var stringToReturn = ""
+//            let array = fullnameString.componentsSeparatedByString(" ")
+//            for aString in array
+//            {
+//                if let firstCharacter = aString.characters.first
+//                {
+//                    stringToReturn.append(firstCharacter)
+//                    stringToReturn += "."
+//                }
+//            }
+//            if !stringToReturn.isEmpty
+//            {
+//                return stringToReturn
+//            }
+//        }
+//        return nil
+//    }
     
 }

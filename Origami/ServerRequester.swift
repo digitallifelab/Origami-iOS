@@ -210,7 +210,7 @@ class ServerRequester: NSObject
     //MARK: Elements
     func loadAllElements(completion:networkResult)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token as? String
+        if let tokenString = DataSource.sharedInstance.user?.token// as? String
         {
             //let testUserId = DataSource.sharedInstance.user?.userId
             print(" -> Starting to load all elements ...")
@@ -266,7 +266,7 @@ class ServerRequester: NSObject
     
     func submitNewElement(element:Element, completion:networkResult)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token as? String
+        if let tokenString = DataSource.sharedInstance.user?.token// as? String
         {
             let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
             dispatch_async(bgQueue, { [unowned self] () -> Void in
@@ -331,7 +331,7 @@ class ServerRequester: NSObject
     
     func editElement(element:Element, completion completonClosure:(success:Bool, error:NSError?) -> () )
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             var requestError:NSError?
             
@@ -400,7 +400,7 @@ class ServerRequester: NSObject
     
     func setElementWithId(elementId:NSNumber, favourite isFavourite:Bool, completion completionClosure:(success:Bool, error:NSError?)->())
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             
             NSOperationQueue().addOperationWithBlock({ () -> Void in
@@ -457,7 +457,7 @@ class ServerRequester: NSObject
     
     func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:((Set<NSNumber>?, NSError?)->())? )
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token// as? String
         {
             
             let requestString = "\(serverURL)" + "\(passWhomelementUrlPart)" + "?elementId=" + "\(elementId)" + "&token=" + "\(userToken)"
@@ -596,7 +596,7 @@ class ServerRequester: NSObject
     func setElementFinished(elementId:Int, finishDate:String, completion:((success:Bool)->())?)
     {
         //SetFinished
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token// as? String
         {
             let requestString = serverURL + finishDateUrlPart + "?token=" + userToken + "&elementId=" + "\(elementId)" //+ "&date=" + "\(finishDate)"
             if let url = NSURL(string: requestString)
@@ -687,7 +687,7 @@ class ServerRequester: NSObject
     {
         //SetFinishState
         
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token// as? String
         {
             let requestString = serverURL + finishStateUrlPart + "?token=" + userToken + "&elementId=" + "\(elementId)" + "&finishState=" + "\(finishState)"
             if let url = NSURL(string: requestString)
@@ -740,7 +740,7 @@ class ServerRequester: NSObject
     //MARK: Messages
     func loadAllMessages(completion:networkResult)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token as? String
+        if let tokenString = DataSource.sharedInstance.user?.token //as? String
         {
             let urlString = "\(serverURL)" + "\(getAllMessagesPart)" + "?token=" + "\(tokenString)"
             
@@ -785,7 +785,7 @@ class ServerRequester: NSObject
         print(" -> sendMessage Called.")
         //POST
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        if let tokenString = DataSource.sharedInstance.user?.token as? String
+        if let tokenString = DataSource.sharedInstance.user?.token //as? String
         {
             let postUrlString =  "\(serverURL)" + "\(sendMessageUrlPart)" + "?token=" + "\(tokenString)" + "&elementId=" + "\(elementId.integerValue)"
             print("sending message to element: \(elementId)")
@@ -847,7 +847,7 @@ class ServerRequester: NSObject
     
     func loadNewMessages(completion:((messages:[Message]?, error:NSError?)->())?)
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let newMessagesURLString = serverURL + getNewMessagesUrlPart + "?token=" + userToken
             
@@ -909,7 +909,7 @@ class ServerRequester: NSObject
     {
         //"GetElementAttaches?elementId={elementId}&token={token}"
         //NSString *urlString = [NSString stringWithFormat:@"%@GetElementAttaches?elementId=%@&token=%@", BasicURL, elementId, _currentUser.token];
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let requestString = "\(serverURL)" + getElementAttachesUrlPart + "?elementId=" + "\(elementId)" + "&token=" + userToken
             
@@ -974,7 +974,7 @@ class ServerRequester: NSObject
     
     func loadDataForAttach(attachId:NSNumber, completion completionClosure:((attachFileData:NSData?, error:NSError?)->())? )
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let requestString = serverURL + getAttachFileUrlPart + "?fileId=" + "\(attachId)" + "&token=" + userToken
             if let requestURL = NSURL(string: requestString)
@@ -1217,7 +1217,8 @@ class ServerRequester: NSObject
         [removeOp start]
         
         */
-        if let userToken = DataSource.sharedInstance.user?.token as? String {
+        if let userToken = DataSource.sharedInstance.user?.token// as? String
+        {
             
             let requestString = "\(serverURL)" + unAttachFileUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(name)" + "&token=" + "\(userToken)"
             let requestOperation = httpManager.GET(requestString,
@@ -1372,7 +1373,7 @@ class ServerRequester: NSObject
             return
         }
         
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token// as? String
         {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             let requestString = serverURL + "SetPhoto" + "?token=" + userToken
@@ -1435,7 +1436,7 @@ class ServerRequester: NSObject
     */
     func downloadMyContacts(completion completionClosure:((contacts:[Contact]?, error:NSError?) -> () )? = nil )
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let requestString = serverURL + myContactsURLPart + "?token=" + userToken
             
@@ -1487,7 +1488,7 @@ class ServerRequester: NSObject
         let elementIdInteger = (delete) ? elementId.integerValue * -1 : elementId.integerValue
         let rightElementId = NSNumber(integer: elementIdInteger)
         
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let requestString = serverURL + passElementUrlPart + "?token=" + userToken + "&elementId=" + "\(rightElementId)" + "&userPassTo=" + "\(contactId)"
             
@@ -1541,7 +1542,8 @@ class ServerRequester: NSObject
     
     func passElement(elementId : Int, toSeveratContacts contactIDs:Set<Int>, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())?)
     {
-        guard let token = DataSource.sharedInstance.user?.token as? String else
+        guard let token = DataSource.sharedInstance.user?.token //as? String
+            else
         {
             print(" -> no user token")
             completionClosure?(succeededIDs: [], failedIDs: Array(contactIDs))
@@ -1628,7 +1630,7 @@ class ServerRequester: NSObject
     
     func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)
     {
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let requestString = serverURL + allContactsURLPart + "?token=" + userToken
             
@@ -1681,7 +1683,7 @@ class ServerRequester: NSObject
     func toggleContactFavourite(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let favUrlString = serverURL + favContactURLPart + "?token=" + userToken + "&contactId=" + "\(contactId)"
             
@@ -1716,7 +1718,7 @@ class ServerRequester: NSObject
     func removeMyContact(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let removeUrlString = serverURL + "RemoveContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
             let removeContactOperation = httpManager.GET(removeUrlString, parameters: nil, success: { (operation, response) -> Void in
@@ -1750,7 +1752,7 @@ class ServerRequester: NSObject
     func addToMyContacts(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        if let userToken = DataSource.sharedInstance.user?.token as? String
+        if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let addUrlString = serverURL + "AddContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
             let addContactOperation = httpManager.GET(addUrlString, parameters: nil, success: { (operation, response) -> Void in

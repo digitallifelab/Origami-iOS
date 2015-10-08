@@ -97,9 +97,9 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         {
             if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
             {
-                chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName as? String ?? DataSource.sharedInstance.user?.lastName as? String
+                chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName /*as? String*/ ?? DataSource.sharedInstance.user?.lastName //as? String
                 
-                if let username = DataSource.sharedInstance.user!.userName as? String
+                if let username = DataSource.sharedInstance.user!.userName //as? String
                 {
                     if let image = self.currentAvatars[username]
                     {
@@ -115,9 +115,9 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             }
             else
             {
-                if let contact = contactForMessage(message) , contactName = contact.userName as? String
+                if let contact = contactForMessage(message) , contactName = contact.userName //as? String
                 {
-                    chatCell.nameLabel.text = (contact.firstName as? String ?? contact.lastName as? String) ?? "unknown"
+                    chatCell.nameLabel.text = (contact.firstName /*as? String*/ ?? contact.lastName /* as? String*/) ?? "unknown"
                     
                     if let image = self.currentAvatars[contactName]
                     {

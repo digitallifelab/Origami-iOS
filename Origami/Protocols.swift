@@ -53,10 +53,18 @@ protocol ChatInputViewDelegate
     func newElementComposerWantsToCancel(composer:NewElementComposerViewController)
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
     
-    optional func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String?
-    optional func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?
-    optional func newElementForComposer(composer:NewElementComposerViewController) -> Element?
+
+    optional func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
+    optional func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
+    optional func newElementForComposer(composer:NewElementComposerViewController) -> Element?// { return nil }
 }
+//extension ElementComposingDelegate
+//{
+//    func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
+//    func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
+//    func newElementForComposer(composer:NewElementComposerViewController) -> Element? { return nil }
+//}
+
 
 protocol MessageTapDelegate
 {
@@ -81,3 +89,4 @@ protocol AllContactsDelegate
 {
     func reloadUserContactsSender(sender:UIViewController?)
 }
+

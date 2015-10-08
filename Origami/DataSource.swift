@@ -2066,7 +2066,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
                 
                 let sorted = Array(currentContacts).sort({ (contact1, contact2) -> Bool in
-                    if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
+                    if let
+                        firstName1 = contact1.firstName, //as? String,
+                        firstName2 = contact2.firstName //as? String
                     {
                         return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
                     }
@@ -2100,7 +2102,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
                 
                 let sorted = Array(currentContacts).sort({ (contact1, contact2) -> Bool in
-                    if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
+                    if let
+                        firstName1 = contact1.firstName,// as? String,
+                        firstName2 = contact2.firstName //as? String
                     {
                         return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
                     }
@@ -2189,12 +2193,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             if userIdInt == currentUserId
             {
-                if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(DataSource.sharedInstance.user?.userName as? String)
+                if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(DataSource.sharedInstance.user?.userName /*as? String*/)
                 {
                     return UIImage(data: data)
                 }
             }
-            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])), firstContact = contacts.first, contactUserName = firstContact.userName as? String, cData = DataSource.sharedInstance.getAvatarDataForContactUserName(contactUserName)
+            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])), firstContact = contacts.first, contactUserName = firstContact.userName /*as? String*/, cData = DataSource.sharedInstance.getAvatarDataForContactUserName(contactUserName)
             {
                 let image = UIImage(data: cData)
                 return image
@@ -2362,7 +2366,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 completionBlock?(success: true, error: nil)
                 
                 //save to disc
-                if let userName = DataSource.sharedInstance.user?.userName as? String
+                if let userName = DataSource.sharedInstance.user?.userName //as? String
                 {
                     let fileHandler = FileHandler()
                     fileHandler.saveAvatar(data, forLoginName: userName, completion: { (error) -> Void in

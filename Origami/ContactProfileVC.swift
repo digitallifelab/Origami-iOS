@@ -22,7 +22,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
 
         // Do any additional setup after loading the view.
         
-        if let contactLoginName = self.contact?.userName as? String
+        if let contactLoginName = self.contact?.userName //as? String
         {
             if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(contactLoginName)
             {
@@ -141,7 +141,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
             {
                 case 1:
                     toReturnInfo[titleInfoKey] = "mood".localizedWithComment("")
-                    if let contactMood = contact.mood as? String
+                    if let contactMood = contact.mood// as? String
                     {
                         toReturnInfo[detailsInfoKey] = contactMood
                     }
@@ -153,7 +153,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     }
                 case 3:
                     toReturnInfo[titleInfoKey] = "email".localizedWithComment("")
-                    if let email = contact.userName as? String
+                    if let email = contact.userName// as? String
                     {
                         toReturnInfo[detailsInfoKey] = email
                     }

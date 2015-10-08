@@ -15,18 +15,18 @@ class ElementDashboardDatesCell: UITableViewCell //cell containc information abo
     @IBOutlet var titleLabel:UILabel!
     @IBOutlet var dateLael:UILabel!
     
-    var displayMode:DisplayMode = .Day{
-        didSet{
-            if displayMode == .Night
-            {
-                dateLael.textColor = UIColor.whiteColor()
-            }
-            else
-            {
-                dateLael.textColor = UIColor.blackColor()
-            }
-        }
-    }
+//    var displayMode:DisplayMode = .Day{
+//        didSet{
+//            if displayMode == .Night
+//            {
+//                dateLael.textColor = UIColor.whiteColor()
+//            }
+//            else
+//            {
+//                dateLael.textColor = UIColor.blackColor()
+//            }
+//        }
+//    }
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

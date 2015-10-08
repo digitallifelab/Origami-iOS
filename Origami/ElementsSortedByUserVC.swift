@@ -65,20 +65,22 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        
-        DataSource.sharedInstance.loadAvatarForLoginName(DataSource.sharedInstance.user!.userName as! String, completion: { [weak self] (image) -> () in
-            if let weakSelf = self
-            {
-                if let anImage = image
+        if let userName = DataSource.sharedInstance.user?.userName
+        {
+            DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: { [weak self] (image) -> () in
+                if let weakSelf = self
                 {
-                    if weakSelf.selectedUserId.isEqualToNumber(DataSource.sharedInstance.user!.userId!)
+                    if let anImage = image
                     {
-                        weakSelf.currentSelectedUserAvatar = anImage
-                        weakSelf.configureCurrentRightButtonImage()
+                        if weakSelf.selectedUserId.isEqualToNumber(DataSource.sharedInstance.user!.userId!)
+                        {
+                            weakSelf.currentSelectedUserAvatar = anImage
+                            weakSelf.configureCurrentRightButtonImage()
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
         
         configureCurrentRightTopButton()
         //configureTopToolbarItems()
@@ -524,7 +526,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             var currentUserName:String?
             if selectedUserId.isEqualToNumber(DataSource.sharedInstance.user!.userId!)
             {
-                currentUserName = DataSource.sharedInstance.user?.userName as? String
+                currentUserName = DataSource.sharedInstance.user?.userName //as? String
             }
             else
             {
@@ -532,7 +534,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 if let contacts = DataSource.sharedInstance.getContactsByIds(aSet)
                 {
                     let contact = contacts.first!
-                    if let userName = contact.userName as? String
+                    if let userName = contact.userName // as? String
                     {
                         currentUserName = userName
                     }

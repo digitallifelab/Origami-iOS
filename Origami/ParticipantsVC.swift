@@ -119,17 +119,22 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     func sortContactsAlphabeticaly(inout contactArray:[Contact])
     {
         contactArray.sortInPlace({ (contact1, contact2) -> Bool in
-            if let firstName1 = contact1.firstName as? String, firstName2 = contact2.firstName as? String
+            if let
+                firstName1 = contact1.firstName,// as? String,
+                firstName2 = contact2.firstName //as? String
             {
                 return firstName1 >= firstName2
             }
             
-            if let lastName1 = contact1.lastName as? String, lastName2 = contact2.lastName as? String
+            if let
+                lastName1 = contact1.lastName, //as? String,
+                lastName2 = contact2.lastName //as? String
             {
                 return lastName1 > lastName2
             }
             
-            if let userName1 = contact1.userName as? String , userName2 = contact2.userName as? String
+            if let userName1 = contact1.userName,// as? String ,
+                userName2 = contact2.userName //as? String
             {
                 return userName1 >= userName2
             }
@@ -229,23 +234,23 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        var nameLabelText = ""
+        var nameLabelText:String?
         var currentAvatar = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
         if let currentContact = contactForIndexPath(indexPath)
         {
-            if let firstName = currentContact.firstName as? String
-            {
-                nameLabelText += firstName
-                if let lastName = currentContact.lastName as? String
-                {
-                    nameLabelText += " " + lastName
-                }
-            }
-            else  if let lastName = currentContact.lastName as? String
-            {
-                nameLabelText += lastName
-            }
-            
+//            if let firstName = currentContact.firstName as? String
+//            {
+//                nameLabelText += firstName
+//                if let lastName = currentContact.lastName as? String
+//                {
+//                    nameLabelText += " " + lastName
+//                }
+//            }
+//            else  if let lastName = currentContact.lastName as? String
+//            {
+//                nameLabelText += lastName
+//            }
+            nameLabelText = currentContact.nameAndLastNameSpacedString()
             if let contactIdInt = currentContact.contactId?.integerValue, avatarImage = self.contactAvatars[contactIdInt]
             {
                 currentAvatar = avatarImage
