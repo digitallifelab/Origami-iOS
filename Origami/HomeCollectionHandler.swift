@@ -133,7 +133,7 @@ import UIKit
                         case .InProcess:
                             dashCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
                         case .FinishedBad:
-                            dashCell.taskIcon?.image = UIImage(named: "tile-task--bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                            dashCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
                         case .FinishedGood:
                             dashCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                         }

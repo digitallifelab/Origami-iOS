@@ -33,6 +33,10 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     
+    let optionsConverter = ElementOptionsConverter()
+    
+    let currentSystemUser = DataSource.sharedInstance.user!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView?.backgroundColor = UIColor.clearColor()
@@ -281,42 +285,106 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 {
                     activityCell.backgroundColor = UIColor.lightGrayColor()
                 }
-                if let avatar = avatarForElementHolder[element.creatorId.integerValue]
+                
+                //setup decision Icon Image
+                if self.optionsConverter.isOptionEnabled(.Decision, forCurrentOptions: element.typeId.integerValue)
                 {
-                    activityCell.elementCreatorAvatar?.image = avatar
+                    activityCell.decisionIcon?.image = UIImage(named: "tile-decision")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
                 else
                 {
-                    activityCell.elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
-                    //and try to query avatar from ram again
-                    let creatorIdInt = element.creatorId.integerValue
-                    if creatorIdInt > 0
-                    {
-                        let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
-                        dispatch_async(bgQueue, {[weak self] () -> Void in
-                            if let imageAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
-                            {
-                                if let aSelf = self
-                                {
-                                    aSelf.avatarForElementHolder[creatorIdInt] = imageAvatar
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        aSelf.tableView?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                                    })
-                                }
-                            }
-                        })
-                    }
+                    activityCell.decisionIcon?.image = nil
                 }
                 
-                if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.creatorId.integerValue])), currentContact = contacts.first
+                //setup idea icon image
+                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.typeId.integerValue)
                 {
-                    activityCell.nameLabel?.text = currentContact.initialsString()
+                    activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
-                else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
+                else
                 {
-                    if userIdInt == element.creatorId.integerValue
+                    activityCell.ideaIcon?.image = nil
+                }
+                
+                //setup avatar, name and task Icon image depending on Task property of element
+                if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.typeId.integerValue)
+                {
+                    if let finishState = ElementFinishState(rawValue: element.finishState.integerValue)
                     {
-                        activityCell.nameLabel?.text = user.initialsString()
+                        switch finishState
+                        {
+                        case .Default:
+                            activityCell.taskIcon?.image = nil
+                        case .InProcess:
+                            activityCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
+                        case .FinishedGood:
+                            activityCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
+                        case .FinishedBad:
+                            activityCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                        
+                        }
+                    }
+                    
+                    //setup avatar
+                    if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(element.responsible.integerValue)
+                    {
+                        activityCell.elementCreatorAvatar?.image = avatarImage
+                    }
+                    
+                    
+                    
+                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.responsible.integerValue])), currentContact = contacts.first
+                    {
+                        activityCell.nameLabel?.text = currentContact.initialsString()
+                    }
+                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
+                    {
+                        if userIdInt == element.creatorId.integerValue
+                        {
+                            activityCell.nameLabel?.text = user.initialsString()
+                        }
+                    }
+                }
+                else //no task
+                {
+                    activityCell.taskIcon?.image = nil
+                    if let avatar = avatarForElementHolder[element.creatorId.integerValue]
+                    {
+                        activityCell.elementCreatorAvatar?.image = avatar
+                    }
+                    else
+                    {
+                        activityCell.elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                        //and try to query avatar from ram again
+                        let creatorIdInt = element.creatorId.integerValue
+                        if creatorIdInt > 0
+                        {
+                            let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
+                            dispatch_async(bgQueue, {[weak self] () -> Void in
+                                if let imageAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
+                                {
+                                    if let aSelf = self
+                                    {
+                                        aSelf.avatarForElementHolder[creatorIdInt] = imageAvatar
+                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                            aSelf.tableView?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                                        })
+                                    }
+                                }
+                                })
+                        }
+                    }
+                    
+                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.creatorId.integerValue])), currentContact = contacts.first
+                    {
+                        activityCell.nameLabel?.text = currentContact.initialsString()
+                    }
+                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
+                    {
+                        if userIdInt == element.creatorId.integerValue
+                        {
+                            activityCell.nameLabel?.text = user.initialsString()
+                        }
                     }
                 }
                 

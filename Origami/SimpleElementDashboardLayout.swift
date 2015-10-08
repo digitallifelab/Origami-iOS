@@ -20,6 +20,12 @@ enum SubordinateItemLayoutWidth
 {
     case Normal
     case Wide
+    
+    mutating func changeTo(newWidth:SubordinateItemLayoutWidth) -> SubordinateItemLayoutWidth
+    {
+        self = newWidth
+        return self
+    }
 }
 
 struct ElementDetailsStruct
@@ -177,6 +183,13 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         return false
     }
     
+    func setNewLayoutInfo(infoStruct:ElementDetailsStruct)
+    {
+        self.elementStruct = infoStruct
+        self.invalidateLayout()
+    }
+    
+    
     func performLayoutCalculating()
     {
         //let currentScreenInfo = FrameCounter.getCurrentTraitCollection()
@@ -185,33 +198,27 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         if FrameCounter.isLowerThanIOSVersion("8.0")
         {
-            //let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-//            if currentIdiom == .Phone
-//            {
-                var currentWidth = UIScreen.mainScreen().bounds.size.width
-                var currentHeight = UIScreen.mainScreen().bounds.size.height
-                
-                let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
-                switch currentDeviceOrentation
-                {
-                case UIInterfaceOrientation.Unknown:
-                    break
-                case UIInterfaceOrientation.Portrait:
-                    fallthrough
-                case UIInterfaceOrientation.PortraitUpsideDown:
-                    break
-                case UIInterfaceOrientation.LandscapeLeft:
-                    fallthrough
-                case UIInterfaceOrientation.LandscapeRight:
-                    currentWidth = currentHeight
-                    currentHeight = UIScreen.mainScreen().bounds.size.width
-                    currentScreenWidth = currentWidth
-                }
-//            }
+
+            var currentWidth = UIScreen.mainScreen().bounds.size.width
+            var currentHeight = UIScreen.mainScreen().bounds.size.height
+            
+            let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
+            switch currentDeviceOrentation
+            {
+            case UIInterfaceOrientation.Unknown:
+                break
+            case UIInterfaceOrientation.Portrait:
+                fallthrough
+            case UIInterfaceOrientation.PortraitUpsideDown:
+                break
+            case UIInterfaceOrientation.LandscapeLeft:
+                fallthrough
+            case UIInterfaceOrientation.LandscapeRight:
+                currentWidth = currentHeight
+                currentHeight = UIScreen.mainScreen().bounds.size.width
+                currentScreenWidth = currentWidth
+            }
         }
-        
-        //var itemWidth = currentScreenWidth //- itemMargin
-        
         
         let mainFrameWidth = currentScreenWidth
         let mainFrame = CGRectMake(0.0, 0, mainFrameWidth, 100)// the height is not important
@@ -219,34 +226,30 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         var offsetX = mainFrame.origin.x
         var offsetY = mainFrame.origin.y
         var titleFrame = CGRectMake(offsetX, offsetY, mainFrame.width, 150.0)
-        //let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
+
         if let aDataSource = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
         {
-//            if let titleCellFromDataSource = aDataSource.titleCell
-//            {
-                if aDataSource.titleCellMode == .Title
+            if aDataSource.titleCellMode == .Title
+            {
+                var size = CGSizeMake(mainFrame.width, 200.0)
+                
+                if let nsStringTitleText =  self.elementStruct?.title, font = UIFont(name: "SegoeUI", size: 30.0)
                 {
-                    var size = CGSizeMake(mainFrame.width, 200.0)
+                    var boundingSize = CGSizeMake(mainFrame.width - (50 + 16), CGFloat(FLT_MAX) )
                     
-                    if let nsStringTitleText =  self.elementStruct?.title, font = UIFont(name: "SegoeUI", size: 30.0)
-                    {
-                        var boundingSize = CGSizeMake(mainFrame.width - (50 + 16), CGFloat(FLT_MAX) )
-                        //if aDataSource.elementIsTask()
-                        //{
-                            boundingSize.width -= (8 + 45 + 16)
-                        //}
-                        let textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
-                        size.height =  ceil(textLabelSize.height) + 60 + 55
-                    }
+                        boundingSize.width -= (8 + 45 + 16)
                     
-                    titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
-                    //print("-> Title Cell Size:\(titleFrame.size)")
+                    let textLabelSize = nsStringTitleText.boundingRectWithSize(boundingSize, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:font], context: nil).size
+                    size.height =  ceil(textLabelSize.height) + 60 + 55
                 }
-                else // .Dates
-                {
-                    titleFrame.size = CGSizeMake(mainFrame.width, 140.0)
-                }
-//            }
+                
+                titleFrame.size = CGSizeMake(mainFrame.size.width, size.height )
+                //print("-> Title Cell Size:\(titleFrame.size)")
+            }
+            else // .Dates
+            {
+                titleFrame.size = CGSizeMake(mainFrame.width, 140.0)
+            }
         }
         
         let titleIndexPath = NSIndexPath(forItem: 0, inSection: 0)

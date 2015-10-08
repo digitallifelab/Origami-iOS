@@ -144,18 +144,22 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         if let userName = NSUserDefaults.standardUserDefaults().objectForKey(loginNameKey) as? String, let password = NSUserDefaults.standardUserDefaults().objectForKey(passwordKey) as? String
         {
-            serverRequester.loginWith(userName, password: password, completion: { (userResult, loginError) -> () in
-                if let lvUser = userResult as? User
-                {
-                    DataSource.sharedInstance.user = lvUser
-                    completion(user: DataSource.sharedInstance.user, error: nil)
-                }
-                else
-                {
-                    completion(user: nil, error: loginError)
-                }
+            DataSource.sharedInstance.serverRequester.loginWith(userName, password: password, completion: { (userResult, loginError) -> () in
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    if let lvUser = userResult as? User
+                    {
+                        DataSource.sharedInstance.user = lvUser
+                        completion(user: DataSource.sharedInstance.user, error: nil)
+                    }
+                    else
+                    {
+                        completion(user: nil, error: loginError)
+                    }
+                })
+             
             })
         }
+        
         let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
         dispatch_async(queue, { () -> Void in
             if let info = FileHandler().getAllExistingAvatarsPreviews() as? [String:NSData]
@@ -315,7 +319,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         //can be not main queue
         let elementId = message.elementId?.integerValue
 
-        serverRequester.sendMessage(message, toElement: message.elementId!) { (result, error) -> () in
+        DataSource.sharedInstance.serverRequester.sendMessage(message, toElement: message.elementId!) { (result, error) -> () in
             
             //main queue
             if error != nil
@@ -1137,7 +1141,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         let elementId = element.elementId?.integerValue
        
         
-        serverRequester.setElementWithId(element.elementId!, favourite: favourite) { (success, error) -> () in
+        DataSource.sharedInstance.serverRequester.setElementWithId(element.elementId!, favourite: favourite) { (success, error) -> () in
             
             if success{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
@@ -1389,7 +1393,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return
         }
         
-        serverRequester.attachFile(file, toElement: elementId!) { (successAttached, attachId ,errorAttached) -> () in
+        DataSource.sharedInstance.serverRequester.attachFile(file, toElement: elementId!) { (successAttached, attachId ,errorAttached) -> () in
             
             if successAttached {
                 
@@ -1428,7 +1432,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func deleteAttachedFileNamed(fileName:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? ) {
         
         //response key "RemoveFileFromElementResult"
-        serverRequester.unAttachFile(fileName, fromElement: elementId) { (success, fromServerError) -> () in
+        DataSource.sharedInstance.serverRequester.unAttachFile(fileName, fromElement: elementId) { (success, fromServerError) -> () in
             let backgroundQueue = NSOperationQueue()
             backgroundQueue.maxConcurrentOperationCount = 1
             if success

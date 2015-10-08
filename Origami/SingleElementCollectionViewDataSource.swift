@@ -25,6 +25,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     var subordinatesByIndexPath:[NSIndexPath : Element]?
     var taskUserAvatar:UIImage?
     
+    weak var handledCollectionView:UICollectionView?
+    
     weak var handledElement:Element? {
         didSet {
             // detect visible cells by checking options
@@ -64,6 +66,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             self.currentCellsOptions = ElementCellsOptions(types: Set(options))
             
             calculateAllCellTypes()
+            
         }
     }
     
@@ -561,7 +564,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     case .InProcess:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
                     case .FinishedBad:
-                        subordinateCell.taskIcon?.image = UIImage(named: "tile-task--bad")?.imageWithRenderingMode(.AlwaysTemplate)
+                        subordinateCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
                     case .FinishedGood:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                     }
@@ -571,79 +574,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return subordinateCell
         }
     }
-    
-//    func createActionButtonModels() -> [ActionButtonModel]?
-//    {
-//        //check
-//        var elementIsOwned = self.elementIsOwned()
-//        if !elementIsOwned //don`t show SingleElementButtons cell
-//        {
-//            return nil
-//        }
-//        
-//        //try to add models
-//        var toReturn = [ActionButtonModel]()
-//        for var i = 0; i < 8; i++
-//        {
-//            var model = ActionButtonModel()
-//            model.enabled = (i == 1) ? true : elementIsOwned //we allow user to add new subordinate element
-//            
-//            if let buttonType = ActionButtonCellType(rawValue: i)
-//            {
-//                model.type = buttonType
-//                
-//            if model.enabled
-//            {
-//                switch model.type
-//                {
-//                case .Edit:
-//                    model.backgroundColor = UIColor(red: 19.0/255.0, green: 195.0/255.0, blue: 28.0/255.0, alpha: 1.0)
-//                case .Add:
-//                    model.backgroundColor = UIColor(red: 204.0/255.0, green: 201.0/255.0, blue: 20.0/255.0, alpha: 1.0)
-//                case .Delete:
-//                    model.backgroundColor = UIColor.magentaColor()
-//                case .Archive:
-//                    model.backgroundColor = UIColor.blueColor()
-//                case .Signal:
-//                    model.backgroundColor = kDaySignalColor
-//                    if let signalFlag = handledElement?.isSignal
-//                    {
-//                        if signalFlag.boolValue
-//                        {
-//                            model.tintColor = UIColor.redColor()
-//                        }
-//                        
-//                    }
-//                default :
-//                    break  // by default model.backgroundColor is lighGrayColor
-//                }
-//            }
-//            else
-//            {
-//                switch model.type
-//                {
-//                
-//                case .Add:
-//                    model.backgroundColor = UIColor.yellowColor()
-//                default:
-//                    break // by default model.backgroundColor is lighGrayColor
-//                }
-//            }
-//                
-//                
-//            }
-//            
-//            toReturn.append(model)
-//        }
-//        
-//        //return properly
-//        if !toReturn.isEmpty
-//        {
-//            return toReturn
-//        }
-//        return nil
-//        
-//    }
     
     func elementIsOwned() -> Bool
     {

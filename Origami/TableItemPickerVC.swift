@@ -22,6 +22,27 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+//        switch self.pickerType
+//        {
+//        case .Country:
+//            currentItems = createIndexedDataSourceForCountries(startItems as? [Country])
+//        case .Language:
+//            currentItems = createIndexedDataSourceForLanguages(startItems as? [Language])
+//        }
+//        
+//        //self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
+//        
+//        tableView.delegate = self
+//        tableView.dataSource = self
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
         switch self.pickerType
         {
         case .Country:
@@ -30,17 +51,16 @@ class TableItemPickerVC: UIViewController , UITableViewDataSource, UITableViewDe
             currentItems = createIndexedDataSourceForLanguages(startItems as? [Language])
         }
         
-        self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
+        //self.navigationController?.navigationBar.tintColor = kDayNavigationBarBackgroundColor
         
         tableView.delegate = self
         tableView.dataSource = self
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
+        dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
+        
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
 
     
 

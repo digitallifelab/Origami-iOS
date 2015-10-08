@@ -48,7 +48,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
-        configureRefreshControl()
+        //configureRefreshControl()
 
         print("\(self)  viewDidLoad")
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)
@@ -125,45 +125,45 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         // Dispose of any resources that can be recreated.
     }
     
-    @available(iOS 8.0, *)
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        
-        coordinator.animateAlongsideTransition({[unowned self] (context) -> Void in
-                if size.width > size.height
-                {
-                    self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-                }
-                else
-                {
-                    self.collectionDashboard.contentInset = UIEdgeInsetsZero
-                }
-            })
-            { (context) -> Void in
-                
-        }
-        
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-    }
-    
-    @available(iOS 8.0, *)
-    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        
-        
-        if self.traitCollection.horizontalSizeClass == .Compact && newCollection.horizontalSizeClass == .Regular
-        {
-            self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-            return
-        }
-        
-        if self.traitCollection.horizontalSizeClass == .Regular && newCollection.horizontalSizeClass == .Compact
-        {
-            self.collectionDashboard.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
-            return
-        }
-        
-        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
-        
-    }
+//    @available(iOS 8.0, *)
+//    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+//        
+//        coordinator.animateAlongsideTransition({[unowned self] (context) -> Void in
+//                if size.width > size.height
+//                {
+//                    self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
+//                }
+//                else
+//                {
+//                    self.collectionDashboard.contentInset = UIEdgeInsetsZero
+//                }
+//            })
+//            { (context) -> Void in
+//                
+//        }
+//        
+//        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+//    }
+//    
+//    @available(iOS 8.0, *)
+//    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+//        
+//        
+//        if self.traitCollection.horizontalSizeClass == .Compact && newCollection.horizontalSizeClass == .Regular
+//        {
+//            self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
+//            return
+//        }
+//        
+//        if self.traitCollection.horizontalSizeClass == .Regular && newCollection.horizontalSizeClass == .Compact
+//        {
+//            self.collectionDashboard.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
+//            return
+//        }
+//        
+//        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+//        
+//    }
     
     override func viewWillAppear(animated: Bool)
     {
@@ -348,11 +348,33 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     private func configureRefreshControl()
     {
-        refreshControl = UIRefreshControl()
-        refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
-        refreshControl?.tintColor = kDaySignalColor
-        refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
-        self.collectionDashboard.addSubview(refreshControl!)
+        let refreshControlTintColor = (self.view.backgroundColor == kWhiteColor) ? kDayNavigationBarBackgroundColor : kWhiteColor
+        if let refresher = refreshControl
+        {
+            refresher.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!, NSForegroundColorAttributeName:refreshControlTintColor])
+            refresher.tintColor = refreshControlTintColor
+        }
+        else
+        {
+            refreshControl = UIRefreshControl()
+            
+            refreshControl?.attributedTitle = NSAttributedString(
+                string: "refreshing".localizedWithComment(""),
+                attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!, NSForegroundColorAttributeName:refreshControlTintColor])
+            
+            refreshControl?.tintColor = refreshControlTintColor
+            
+            refreshControl?.addTarget(self,
+                action: "startRefreshing:",
+                forControlEvents: .ValueChanged)
+            
+            self.collectionDashboard.addSubview(refreshControl!)
+        }
+        
+        if !refreshControl!.refreshing
+        {
+            refreshControl?.endRefreshing()
+        }
     }
     
     //MARK:-----
@@ -360,7 +382,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         print("-> reloadDashboardView")
         //loadingAllElementsInProgress = true
-            
+        //let currentOffset = self.collectionDashboard.contentOffset
         DataSource.sharedInstance.getDashboardElements({[weak self](dashboardElements) -> () in
             
                 if let aSelf = self
@@ -428,13 +450,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
                                     aSelf.collectionDashboard!.delegate = aSelf.collectionSource
                                     aSelf.collectionDashboard.reloadData()
-                                    aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
-                                    aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
-                                    //aSelf.collectionDashboard.setCollectionViewLayout(hiddenLayout, animated: true)
+                                    //aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                    //aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
+                                    aSelf.collectionDashboard.setCollectionViewLayout(hiddenLayout, animated: true)
                                     aSelf.shouldReloadCollection = false
-                                    //aSelf.collectionDashboard.reloadData()
-                                    //aSelf.collectionDashboard.reloadSections(
-                                    //NSIndexSet(indexesInRange: NSRangeFromString("0..<2")))
+                               
                                 }
                                 else
                                 {
@@ -461,7 +481,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
                                     aSelf.collectionDashboard!.delegate = aSelf.collectionSource
                                     aSelf.collectionDashboard.reloadData()
-                                    aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                    //aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
                                     //                                }, completion: { (finished) -> Void in
                                     if aSelf.shouldReloadCollection
@@ -491,7 +511,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                                     aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
                                     aSelf.collectionDashboard!.delegate = aSelf.collectionSource
                                     
-                                    aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
+                                    //aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
                                     
                                     }, completion: { (finished) -> Void in
                                         
@@ -801,6 +821,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             self.collectionSource?.turnNightModeOn(nightModeOn)
             //self.collectionDashboard.reloadData()
         }
+        
+        configureRefreshControl()
     }
     
     func didTapOnChatMessage(notification:NSNotification?)

@@ -98,44 +98,123 @@ class ServerRequester: NSObject
     func loginWith(userName:String, password:String, completion:networkResult?)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        let requestString:String = "\(serverURL)" + "\(loginUserUrlPart)"
-        let params = ["username":userName, "password":password]
+        let requestString:String = "\(serverURL)" + "\(loginUserUrlPart)" + "?username=" + userName + "&password=" + password
+        //let params = ["username":userName, "password":password]
         
-        let loginOperation = httpManager.GET(
-            requestString,
-            parameters: params,
-            success:
-            { (operation, responseObject) -> Void in
+        if let loginURL = NSURL(string: requestString)
+        {
+            let loginRequest = NSMutableURLRequest(URL: loginURL, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: 30.0)
+            //loginRequest.HTTPMethod = "GET" defaults
+            //loginRequest.setValue(userName, forHTTPHeaderField: "username")
+            //loginRequest.setValue(password, forHTTPHeaderField: "password")
+            loginRequest.setValue("application-json", forHTTPHeaderField: "Accept")
+            loginRequest.setValue("application-json", forHTTPHeaderField: "Content-Type")
             
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                if let
-                    dictionary = responseObject as? [String:AnyObject],
-                    userDict = dictionary["LoginResult"] as? [String:AnyObject]
+            //6print("\(loginRequest.allHTTPHeaderFields)")
+            let loginTask = NSURLSession.sharedSession().dataTaskWithRequest(loginRequest)/*, completionHandler:*/ { (responseData, urlResponse, responseError) -> Void in
+                
+                if let anError = responseError
                 {
-                    let user = User(info: userDict)
-                    completion?(user, nil)
-                }
-                else
-                {
-                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:"Could not login, please try once more"])
-                    completion?(nil, lvError)
+                    completion?(nil, anError)
+                    return
                 }
                 
-        })
-            { (operation, responseError) -> Void in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                let errorMessage = operation.responseString
-//                
-//                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:errorMessage])
-//                    completion?(nil, lvError);
+                if let aData = responseData
+                {
+                    //print("\(aData.description)")
+                    
+                    do{
+                        var userToReturn:User?
+                        
+//                        if let aString = String(data: aData, encoding: NSUTF8StringEncoding)
+//                        {
+//                            if aString.characters.count > 0
+//                            {
+//                                print(aString)
+//                            }
+//                        }
+                        
+                        if let jsonDict = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableContainers) as? [String:AnyObject]
+                        {
+                            if let userDict = jsonDict["LoginResult"] as? [String:AnyObject]
+                            {
+                                userToReturn = User(info: userDict)
+                            }
+                        }
+                        
+                        if let aUser = userToReturn
+                        {
+                            completion?(aUser,nil)
+                        }
+                        else
+                        {
+                            completion?(nil, NSError(domain: "com.Origami.DataError", code: -1032, userInfo: [NSLocalizedDescriptionKey:"Could not parse logged user user."]))
+                        }
+                    }
+                    catch let jsonError as NSError{
+                        completion?(nil, jsonError)
+                    }
+                    catch{
+                        completion?(nil, NSError(domain: "com.Origami.ExceprionError", code: -1033, userInfo: [NSLocalizedDescriptionKey:"UnknownExceptionError"]))
+                    }
+                }
                 
-//                else
-//                {
-                    completion?(nil, responseError);
-//                }
+            }
+            
+            if #available (iOS 8.0, *)
+            {
+                dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { () -> Void in
+                    loginTask.resume()
+                }
+            }
+            else
+            {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                    loginTask.resume()
+                }
+            }
+            
+            return
         }
         
-        loginOperation?.start()
+        completion?(nil, NSError(domain: "com.Origami.UrlFormat.error", code: -1020, userInfo: [NSLocalizedDescriptionKey : "Could not validate url for login."]))
+        //return
+        
+//        let loginOperation = httpManager.GET(
+//            requestString,
+//            parameters: params,
+//            success:
+//            { (operation, responseObject) -> Void in
+//            
+//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//                if let
+//                    dictionary = responseObject as? [String:AnyObject],
+//                    userDict = dictionary["LoginResult"] as? [String:AnyObject]
+//                {
+//                    let user = User(info: userDict)
+//                    completion?(user, nil)
+//                }
+//                else
+//                {
+//                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:"Could not login, please try once more"])
+//                    completion?(nil, lvError)
+//                }
+//                
+//        })
+//            { (operation, responseError) -> Void in
+//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+////                let errorMessage = operation.responseString
+////                
+////                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:errorMessage])
+////                    completion?(nil, lvError);
+//                
+////                else
+////                {
+//                    completion?(nil, responseError);
+////                }
+//        }
+//        
+//        loginOperation?.start()
         
     }
     

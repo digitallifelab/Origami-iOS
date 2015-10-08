@@ -35,7 +35,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     var afterViewDidLoad = false
     
     @IBOutlet var collectionView:UICollectionView!
-    @IBOutlet var navigationBackgroundView:UIView!
     
     deinit
     {
@@ -79,8 +78,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
             })
         }
-        
-       // prepareCollectionViewDataAndLayout()
         
         afterViewDidLoad = true
     }
@@ -149,6 +146,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                 }
             })
         }
+        
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementActionButtonPressed:", name: kElementActionButtonPressedNotification, object: nil)
         
         if let navController = self.navigationController
@@ -352,6 +350,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     {
         collectionDataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
         collectionDataSource?.handledElement = currentElement
+        collectionDataSource?.handledCollectionView = self.collectionView
         collectionDataSource?.displayMode = self.displayMode
         collectionDataSource?.subordinateTapDelegate = self
         collectionDataSource?.attachTapDelegate = self
@@ -1250,13 +1249,27 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
     
     func refreshCurrentElementAfterElementChangedNotification(notif:NSNotification)
     {
-        if let elementIdInt = self.currentElement?.elementId?.integerValue, existingOurElement = DataSource.sharedInstance.getElementById(elementIdInt)
+        if let currentElement = self.currentElement,
+            elementIdInt = currentElement.elementId?.integerValue,
+            existingOurElement = DataSource.sharedInstance.getElementById(elementIdInt)
         {
+            
+            
             dispatch_async(dispatch_get_main_queue(), { [weak self]() -> Void in
                 if let weakSelf = self
                 {
                     weakSelf.currentElement = existingOurElement
-                    weakSelf.prepareCollectionViewDataAndLayout()
+                    weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                    if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
+                    {
+                        weakSelf.collectionView.setCollectionViewLayout(layout, animated: false, completion: { ( _ ) -> Void in
+                            let indexPaths = weakSelf.collectionView.indexPathsForVisibleItems()
+                            weakSelf.collectionView.reloadItemsAtIndexPaths(indexPaths)
+                        })
+                    }
+                  
+                    
+                    //weakSelf.prepareCollectionViewDataAndLayout()
                 }
             })
         }
