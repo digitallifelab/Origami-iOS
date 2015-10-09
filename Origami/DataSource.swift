@@ -118,10 +118,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     completion!()
                 })
             }
-            
-            let aFiler = FileHandler()
-            aFiler.deleteAvatars()
-            aFiler.deleteAttachedImages()
+
+            //no need to reload avatars and attaches everytime user loggs in.  May be later or deleting by user initiated process(e.g. in app settings a button to clear documents)
+//            let aFiler = FileHandler()
+//            aFiler.deleteAvatars()
+//            aFiler.deleteAttachedImages()
         })
     }
     
@@ -238,21 +239,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 }
                             })
                         }
-                        
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     
                     DataSource.sharedInstance.messagesLoader = MessagesLoader()
                     DataSource.sharedInstance.startRefreshingNewMessages()
-                    
                 }
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
-         
         }
     }
-    
-    
     
     func loadLastMessages(completion:successErrorClosure?)
     {
@@ -302,7 +298,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 }
                             })
                         }
-                        
                     }
                 }
                 
@@ -374,7 +369,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         // also check if there are any observers waiting for new messages
         if let observer =  getMessagesObserverForElementId(elementId)
         {
-           observer.newMessagesAdded(messagesToAdd)
+            observer.newMessagesAdded(messagesToAdd)
         }
         
         //return from function
@@ -1082,7 +1077,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 }
                             }
                             
-                            
                             DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                         }
                     }
@@ -1338,7 +1332,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func loadAttachesInfoForElement(elementIdInt:Int, completion:attachesArrayClosure?)
     {
-        
+        let localInt = elementIdInt
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
       
         DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(elementIdInt,
@@ -1348,16 +1342,19 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if let attachesArray = result as? [AttachFile]
             {
-                let aNumberKey = NSNumber(integer: elementIdInt)
+                let aNumberKey = NSNumber(integer: localInt)
+                DataSource.sharedInstance.attaches[aNumberKey] = nil
                 DataSource.sharedInstance.attaches[aNumberKey] = attachesArray
-                completion?(DataSource.sharedInstance.attaches[aNumberKey]!)
+                if let aReturnBlock = completion
+                {
+                    aReturnBlock(DataSource.sharedInstance.attaches[aNumberKey]!)
+                }
             }
             else
             {
                 completion?(nil)
             }
         })
-      
     }
     
     func refreshAttachesForElement(elementIdInt:Int, completion:attachesArrayClosure?)
@@ -1437,6 +1434,34 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             backgroundQueue.maxConcurrentOperationCount = 1
             if success
             {
+                //remove attachesPreview also
+                DataSource.sharedInstance.dataCache.removeObjectForKey(fileName)
+                
+                var attachesToEdit = [AttachFile]()
+                if let attachesForElement = DataSource.sharedInstance.attaches.removeValueForKey(NSNumber(integer: elementId)) // DataSource.sharedInstance.attaches[NSNumber(integer:elementId)]
+                {
+                    for anAttach in attachesForElement
+                    {
+                        if let attachName = anAttach.fileName
+                        {
+                            if attachName != fileName
+                            {
+                                attachesToEdit.append(anAttach)
+                            }
+                        }
+                    }
+                }
+                
+                if !attachesToEdit.isEmpty
+                {
+                    DataSource.sharedInstance.attaches[elementId] = attachesToEdit
+                }
+//                else
+//                {
+//                    DataSource.sharedInstance.attaches[elementId] = nil
+//                }
+                
+               
                 backgroundQueue.addOperationWithBlock({ () -> Void in
                     let fileHandler = FileHandler()
                     fileHandler.eraseFileNamed(fileName, completion: { (erased, eraseError) -> Void in

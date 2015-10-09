@@ -356,10 +356,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         collectionDataSource?.attachTapDelegate = self
         collectionDataSource?.messageTapDelegate = self
         
-        if collectionDataSource != nil
+        if let dataSource = collectionDataSource
         {
-            collectionView.dataSource = collectionDataSource!
-            collectionView.delegate = collectionDataSource!
+            collectionView.dataSource = dataSource
+            collectionView.delegate = dataSource
             
             if let layout = self.prepareCollectionLayoutForElement(self.currentElement)
             {
@@ -369,6 +369,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             {
                 print(" ! -> Some error occured while reloading collectionView with new lyout.")
             }
+            
             collectionView.performBatchUpdates({ () -> Void in
                 
             }, completion: {[weak self] (finished) -> Void in
@@ -1247,7 +1248,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
         }
     }
     
-    func refreshCurrentElementAfterElementChangedNotification(notif:NSNotification)
+    func refreshCurrentElementAfterElementChangedNotification(notif:NSNotification?)
     {
         if let currentElement = self.currentElement,
             elementIdInt = currentElement.elementId?.integerValue,
@@ -1258,18 +1259,56 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
             dispatch_async(dispatch_get_main_queue(), { [weak self]() -> Void in
                 if let weakSelf = self
                 {
+                    let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
+                    print("old count: \(oldItemsCount)")
                     weakSelf.currentElement = existingOurElement
                     weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
-                    if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
-                    {
-                        weakSelf.collectionView.setCollectionViewLayout(layout, animated: false, completion: { ( _ ) -> Void in
-                            let indexPaths = weakSelf.collectionView.indexPathsForVisibleItems()
-                            weakSelf.collectionView.reloadItemsAtIndexPaths(indexPaths)
-                        })
-                    }
-                  
                     
-                    //weakSelf.prepareCollectionViewDataAndLayout()
+                    let newItemsCount = weakSelf.collectionDataSource!.countAllItems()
+                    print("newCount: \(newItemsCount)")
+                    if oldItemsCount == newItemsCount
+                    {
+                        if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
+                        {
+                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                            let indexPaths = weakSelf.collectionView.indexPathsForVisibleItems()
+                            print("current visible items : \(indexPaths.count)")
+                            weakSelf.collectionView.performBatchUpdates({ () -> Void in
+                                 weakSelf.collectionView.reloadItemsAtIndexPaths(indexPaths)
+                                }, completion: {(finished) -> () in print("reloaded Colelction view after equal Items Count")
+                            })
+                           
+                        }
+                    }
+                    else
+                    {
+//                        if let layout = weakSelf.prepareCollectionLayoutForElement(weakSelf.currentElement)
+//                        {
+//                            layout.prepareLayout()
+//                            if let attributes = layout.layoutAttributesForElementsInRect(weakSelf.collectionView.bounds)
+//                            {
+//                                for anAttribute in attributes
+//                                {
+//                                    print("\(anAttribute.indexPath)")
+//                                }
+//                            }
+//                            weakSelf.collectionView.collectionViewLayout.invalidateLayout()
+//                            weakSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+//                            
+////                            let indexPaths = weakSelf.collectionView.indexPathsForVisibleItems()
+////                            print("current visible items : \(indexPaths.count)")
+//                            weakSelf.collectionView.performBatchUpdates({ () -> Void in
+//                               // weakSelf.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: 1, inSection: 0), toIndexPath: NSIndexPath(forItem: 2, inSection: 0))
+//                               weakSelf.collectionView.insertItemsAtIndexPaths([NSIndexPath(forItem: 1, inSection: 0)])
+//                                
+//                                }, completion: { (finished) -> Void in
+//                                    print("reloaded Colelction view after new Items Count")
+//                                    
+//                            })
+//                        }
+                        
+                        weakSelf.prepareCollectionViewDataAndLayout()
+                    }
                 }
             })
         }
@@ -1281,6 +1320,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                     aSelf.navigationController?.popViewControllerAnimated(true)
                 }
             })
+        }
+    }
+    
+    func checkoutParentAndRefreshIfPresent()
+    {
+        if let navController = self.navigationController
+        {
+            let currentVCs = navController.viewControllers
+            let countVCs = currentVCs.count
+            if countVCs > 2 //currently visible a subordinate element dashboard
+            {
+                if let parentSelf = currentVCs[(countVCs - 1)] as? SingleElementDashboardVC
+                {
+                    parentSelf.refreshCurrentElementAfterElementChangedNotification(nil)
+                }
+            }
         }
     }
     
@@ -1585,6 +1640,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                         {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                 weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                weakSelf.checkoutParentAndRefreshIfPresent()
                             })
                             if !success
                             {
@@ -1656,6 +1712,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,UIVi
                                         {
                                             weakerSelf.collectionDataSource?.handledElement?.finishState = NSNumber(integer: newState)
                                             weakerSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                            weakerSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
                                         }
                                     })
                                 }

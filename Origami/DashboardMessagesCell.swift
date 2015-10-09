@@ -58,7 +58,6 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                 if let recievedMessages = messages, _ = aSelf.currentMessages
                 {
                     aSelf.reloadChatTableWithNewMessages(recievedMessages)
-                    //let resultAddingObserver =
                     DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
                 }
                 else

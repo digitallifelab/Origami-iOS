@@ -152,7 +152,22 @@ class ServerRequester: NSObject
                         }
                     }
                     catch let jsonError as NSError{
-                        completion?(nil, jsonError)
+                        
+                        //try to handle error response string from server
+                        var shouldProceedError = false
+                        do{
+                            if let errorMessage = try NSJSONSerialization.JSONObjectWithData(aData, options: .AllowFragments) as? String
+                            {
+                                completion?(nil, NSError(domain: "com.Origami.ServerResponse", code: -1034, userInfo: [NSLocalizedDescriptionKey:errorMessage]))
+                            }
+                        }
+                        catch{
+                            shouldProceedError = true
+                        }
+                        
+                        if shouldProceedError{
+                            completion?(nil, jsonError)
+                        }
                     }
                     catch{
                         completion?(nil, NSError(domain: "com.Origami.ExceprionError", code: -1033, userInfo: [NSLocalizedDescriptionKey:"UnknownExceptionError"]))
@@ -289,7 +304,7 @@ class ServerRequester: NSObject
     //MARK: Elements
     func loadAllElements(completion:networkResult)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token// as? String
+        if let tokenString = DataSource.sharedInstance.user?.token
         {
             //let testUserId = DataSource.sharedInstance.user?.userId
             print(" -> Starting to load all elements ...")
@@ -308,6 +323,8 @@ class ServerRequester: NSObject
                         if let dictionary = responseObject as? [String:AnyObject],
                             elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
                         {
+                            
+                          //print(elementsArray)
                             var elements = Set<Element>()
                             for lvElementDict in elementsArray
                             {                          
@@ -600,7 +617,7 @@ class ServerRequester: NSObject
                 return
             }
             
-            completionClosure?(nil,NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
+            completionClosure?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
             return
             
 //            let requestIDsOperation = AFHTTPRequestOperationManager().GET(requestString, parameters: nil, success: { (operation, result) -> Void in
@@ -988,63 +1005,130 @@ class ServerRequester: NSObject
     {
         //"GetElementAttaches?elementId={elementId}&token={token}"
         //NSString *urlString = [NSString stringWithFormat:@"%@GetElementAttaches?elementId=%@&token=%@", BasicURL, elementId, _currentUser.token];
+        
+        
+        
         if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let requestString = "\(serverURL)" + getElementAttachesUrlPart + "?elementId=" + "\(elementId)" + "&token=" + userToken
-            
-            let requestOperation = httpManager.GET(requestString,
-                parameters: nil,
-                success: {  (operation, result) -> Void in
-                   
-                    let bgAttachConvertingQueue = dispatch_queue_create("com.Origami.Attach.Conerting.Queue", DISPATCH_QUEUE_SERIAL)
-                    dispatch_async(bgAttachConvertingQueue, { () -> Void in
-                        if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
-                        {
-                            if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
-                            {
-                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-                                    completion?(attaches, nil)
-                                })
-                            }
-                            else
-                            {
-                                
-                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-                                    completion?(nil,nil)
-                                })
-                            }
-                        }
-                        else
-                        {
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                let lvError = NSError(domain: "Attachment error", code: -45, userInfo: [NSLocalizedDescriptionKey:"Failed to convert recieved attaches data"])
-                                completion?(nil, lvError)
-                            })
-                         
-                        }
-                    })
-                    
-                    
-            },
-                failure: { (operation, error) -> Void in
+            if let attachURL = NSURL(string: requestString)
+            {
+                let attachesRequest = NSMutableURLRequest(URL: attachURL, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: 20.0)
+                attachesRequest.setValue("appliction-json", forHTTPHeaderField: "Accept")
                 
-                    if let responseString = operation.responseString
+                let attachLoadTask = NSURLSession.sharedSession().dataTaskWithRequest(attachesRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void in
+                    if let anError = responseError
                     {
-                        print("-> Failure while loading attachesList: \(responseString)")
+                        completion?(nil, anError)
+                        return
                     }
                     
-                    
-                    print("-> Failure while loading attachesList: \(error)")
-                    
-                    completion?(nil, error)
-            })
-            
-           
-            requestOperation?.start()
-            
-            
-           
+                    if let aData = responseData
+                    {
+                        do{
+                            if let attachInfo = try NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+                            {
+                                if !attachInfo.isEmpty
+                                {
+                                    if let arrayOfDictionaries = attachInfo["GetElementAttachesResult"] as? [[String:AnyObject]]
+                                    {
+                                        if let attaches = ObjectsConverter.converttoAttaches(arrayOfDictionaries)
+                                        {
+                                            completion?(attaches, nil)
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    completion?(nil, NSError(domain: "com.Origami.EmptyResponse", code: -1043, userInfo: [NSLocalizedDescriptionKey:"Recieved empty attaches Info for elementId:\(elementId)"]))
+                                }
+                            }
+                        }
+                        catch let jsonError as NSError {
+                            completion?(nil, jsonError)
+                        }
+                        catch{
+                            completion?(nil, NSError(domain: "com.Origami.UnknownError.", code: -1030, userInfo: [NSLocalizedDescriptionKey:"Unknown exception during parsing server response"]))
+                        }
+                    }
+                    else
+                    {
+                        completion?(nil, NSError(domain: "com.Origami.NoResponseData", code: -1044, userInfo: [NSLocalizedDescriptionKey:"an Empty Server Response."]))
+                    }
+                })
+                
+                if #available(iOS 8.0, *)
+                {
+                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), { () -> Void in
+                        attachLoadTask.resume()
+                    })
+                }
+                else
+                {
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
+                        attachLoadTask.resume()
+                    })
+                }
+                return
+            }
+       
+            completion?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
             return
+            
+            
+//            let requestOperation = httpManager.GET(requestString,
+//                parameters: nil,
+//                success: {  (operation, result) -> Void in
+//                   
+//                    let bgAttachConvertingQueue = dispatch_queue_create("com.Origami.Attach.Conerting.Queue", DISPATCH_QUEUE_SERIAL)
+//                    dispatch_async(bgAttachConvertingQueue, { () -> Void in
+//                        if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
+//                        {
+//                            if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
+//                            {
+//                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
+//                                    completion?(attaches, nil)
+//                                })
+//                            }
+//                            else
+//                            {
+//                                
+//                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
+//                                    completion?(nil,nil)
+//                                })
+//                            }
+//                        }
+//                        else
+//                        {
+//                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                let lvError = NSError(domain: "Attachment error", code: -45, userInfo: [NSLocalizedDescriptionKey:"Failed to convert recieved attaches data"])
+//                                completion?(nil, lvError)
+//                            })
+//                         
+//                        }
+//                    })
+//                    
+//                    
+//            },
+//                failure: { (operation, error) -> Void in
+//                
+//                    if let responseString = operation.responseString
+//                    {
+//                        print("-> Failure while loading attachesList: \(responseString)")
+//                    }
+//                    
+//                    
+//                    print("-> Failure while loading attachesList: \(error)")
+//                    
+//                    completion?(nil, error)
+//            })
+//            
+//           
+//            requestOperation?.start()
+            
+            
+           
+//            return
         }
         
         completion?(nil, noUserTokenError)

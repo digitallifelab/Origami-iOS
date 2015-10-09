@@ -137,6 +137,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 }
             }
         }
+        print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
     }
 
     override func didReceiveMemoryWarning() {
@@ -146,8 +147,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        
+        print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
     }
     
     override func viewDidAppear(animated: Bool)
@@ -159,6 +159,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates:", name: "UpdateTextiewCell", object: nil)
         addObserversForKeyboard()
         
+        print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -371,9 +372,17 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             cell.nameLabel?.text = nameLabelText
             
             //set proper checkbox image
-            if contactIDsToPass.contains(lvContact.contactId!.integerValue)
+            if let contactIdInt = lvContact.contactId?.integerValue
             {
-                cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                if contactIDsToPass.contains(contactIdInt)
+                {
+                    cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                    print("checkbox checked for contact id : \(contactIdInt)")
+                }
+                else
+                {
+                    cell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                }
             }
             else
             {

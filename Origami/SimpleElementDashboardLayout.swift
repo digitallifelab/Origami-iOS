@@ -134,6 +134,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         if let existingItemAttrs = cellLayoutAttributes[indexPath]
         {
+            print("existing: \(indexPath.item)")
             superForIndexPath = existingItemAttrs
         }
         
@@ -439,5 +440,22 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             self.elementStruct?.toggleDetailsHidden()
         }
     }
-    
+    //MARK: - moving, inserting, deleting items
+//    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+//        print("filalForDisappearing: item: \(itemIndexPath.item) , section: \(itemIndexPath.section)")
+//        if itemIndexPath.item == 1
+//        {
+//            if let attributes = cellLayoutAttributes[NSIndexPath(forItem: 2, inSection: 0)]
+//            {
+//                return attributes
+//            }
+//        }
+//        return nil
+//    }
+//    
+//    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+//                print("initialForAppearing: item: \(itemIndexPath.item) , section: \(itemIndexPath.section)")
+//        
+//        return self.cellLayoutAttributes[itemIndexPath]
+//    }
 }

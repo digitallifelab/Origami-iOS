@@ -96,7 +96,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
         
         self.handledElement = element!
-        
     }
     
     func getElementTitle() -> String?
@@ -302,6 +301,13 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
 
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
+        let itemsCount = countAllItems()
+        print("items count: \(itemsCount)")
+        return itemsCount
+    }
+    
+    func countAllItems() -> Int
+    {
         if let cellOptions = self.currentCellsOptions
         {
             var count = cellOptions.countOptions
@@ -341,6 +347,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func returnCellByType(type:ElementCellType, forIndexPath indexPath:NSIndexPath, collection collectionView:UICollectionView) -> UICollectionViewCell
     {
+        
         switch type
         {
         case .Title:
@@ -471,8 +478,30 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 datesCell.displayMode = self.displayMode
                 datesCell.handledElement = self.handledElement
                 
-                datesCell.setupActionButtons(elementIsOwned())
-               
+                var owned = elementIsOwned()
+                datesCell.setupActionButtons(owned)
+               if !owned
+               {
+                if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId?.integerValue, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement)
+                {
+                    for anElement in parentElements
+                    {
+                        if anElement.creatorId.integerValue == userIdInt
+                        {
+                            if !owned
+                            {
+                                owned = true
+                                datesCell.setupActionButtons(owned)
+                            }
+                            
+                            break
+                        }
+                    }
+                    
+                }
+                }
+                
+                
                 return datesCell
             }
             
@@ -489,14 +518,27 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return chatCell
             
         case .Details:
-            let detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell",
-                                                                                forIndexPath: indexPath) as! SingleElementDetailsCell
-            detailsCell.textLabel.text = getElementDetails()
-            detailsCell.displayMode = self.displayMode
+            print("currentindexpath for details: \(indexPath)")
+            if let detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell",
+                                                                                forIndexPath: indexPath) as? SingleElementDetailsCell
+            {
+                detailsCell.textLabel.text = getElementDetails()
+                detailsCell.displayMode = self.displayMode
             
             self.detailsCell = detailsCell
             
-            return detailsCell
+                return detailsCell}
+            else{
+                
+                let detailsCell = SingleElementDetailsCell()
+                detailsCell.textLabel.text = getElementDetails()
+                detailsCell.displayMode = self.displayMode
+                
+                self.detailsCell = detailsCell
+                
+                return detailsCell
+            }
+        
             
         case .Attaches:
             

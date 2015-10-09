@@ -10,7 +10,7 @@ import UIKit
 
 class ChatMessageRecievedCell: UITableViewCell {
 
-    @IBOutlet var avatar:UIImageView!
+    @IBOutlet weak var avatar:UIImageView?
     @IBOutlet var dateLabel:UILabel!
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var messageLabel:UILabel!
@@ -32,8 +32,8 @@ class ChatMessageRecievedCell: UITableViewCell {
     }
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.avatar.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        self.avatar.maskToCircle()
+        self.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        self.avatar?.maskToCircle()
         // Initialization code
         textContainerView.layer.cornerRadius = 5.0
         

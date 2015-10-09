@@ -19,11 +19,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     @IBOutlet weak var textHolderHeightConstraint: NSLayoutConstraint!
     var defaultTextInputViewHeight:CGFloat?
     var currentChatMessages = [Message]()
-//        {
-//        didSet{
-//            print("\n ->Did set currentChatMessages.\n Chat Messages Count: \(currentChatMessages.count)")
-//        }
-//    }
+    var avatarsHolder:[Int:UIImage] = [Int:UIImage]()
     
     var displayMode:DisplayMode = .Day{
         didSet{
@@ -368,15 +364,18 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        if let existingMessage = messageForIndexPath(indexPath)
+        if let
+            existingMessage = messageForIndexPath(indexPath),
+            creatorIdInt = existingMessage.creatorId?.integerValue
         {
-            if existingMessage.creatorId!.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+            if creatorIdInt == DataSource.sharedInstance.user!.userId!.integerValue
             {
                 let sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
                 sentCell.dateLabel.text = existingMessage.dateCreated?.timeDateString() as? String
                 sentCell.message = existingMessage.textBody
                 sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
                 sentCell.backgroundColor = UIColor.clearColor()
+                
                 return sentCell
             }
             else
@@ -385,8 +384,45 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 recievedCell.message = existingMessage.textBody
                 recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
                 recievedCell.dateLabel.text = existingMessage.dateCreated?.timeDateString() as? String
-                recievedCell.avatar.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
+                recievedCell.avatar?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
                 recievedCell.backgroundColor = UIColor.clearColor()
+                
+                if let anImage = avatarsHolder[creatorIdInt]
+                {
+                    recievedCell.avatar?.image = anImage
+                }
+                else
+                {
+                    let currentRow = indexPath.row
+                    var globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+                    
+                    if #available(iOS 8.0, *)
+                    {
+                        globalQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
+                    }
+                 
+                    dispatch_async(globalQueue) {[weak self] () -> Void in
+                        if let anImage = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt), aSelf = self
+                        {
+                            aSelf.avatarsHolder[creatorIdInt] = anImage
+                            print(" -> Chat Loaded avatar for contact Id. : \(creatorIdInt)")
+                            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                                if let weakSelf = self, indexPathsVisible = weakSelf.chatTable.indexPathsForVisibleRows
+                                {
+                                    for anIndexPath in indexPathsVisible
+                                    {
+                                        if anIndexPath.row == currentRow
+                                        {
+                                            weakSelf.chatTable.reloadRowsAtIndexPaths([anIndexPath], withRowAnimation: .None)
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
                 return recievedCell
             }
         }
@@ -641,12 +677,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 newElementCreator.editingStyle = .AddNew
                 
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
-                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
-                dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                    
-                })
-//                self.presentViewController(newElementCreator, animated: true, completion: { () -> Void in
-//                    newElementCreator.editingStyle = .AddNew
+//                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+//                dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+//                    
 //                })
             }
         }

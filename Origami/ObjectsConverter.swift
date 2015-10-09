@@ -95,10 +95,17 @@ class ObjectsConverter {
             return nil
         }
         var attaches = [AttachFile]()
-        //let lvDicts = dictionaries
+        var currentDict = [String:AnyObject]() //trying to fix slow init memory leak said by instruments
         for lvDict in dictionaries
         {
-            let lvAttachFile = AttachFile(info: lvDict)
+            currentDict = lvDict
+            if let aNameString = currentDict["FileName"] as? String
+            {
+                let fixedString = aNameString.stringByReplacingOccurrencesOfString("/", withString: "-")
+                currentDict["FileName"] = fixedString
+            }
+            
+            let lvAttachFile = AttachFile(info: currentDict)
             attaches.append(lvAttachFile)
         }
         return attaches

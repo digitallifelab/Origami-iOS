@@ -86,21 +86,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                         
                         if let _ = DataSource.sharedInstance.user?.userId
                         {
-//                            DataSource.sharedInstance.dataRefresher = DataRefresher()
-//                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                             if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
                             {
-//                                if let aSelf = self
-//                                {
-//                                    DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
-//                                }
-                                
                                 DataSource.sharedInstance.loadAllMessagesFromServer()
                             }
                         }
                     })
-                    
-                    
                 }
                 else
                 {
@@ -191,7 +182,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             if !DataSource.sharedInstance.loadingAllElementsInProgress
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                print("-> reload collection view from viewDidAppear")
+                print("-> reloadDashboardView() from viewDidAppear")
                 
                 //if DataSource.sharedInstance.shouldReloadAfterElementChanged
                 //{
