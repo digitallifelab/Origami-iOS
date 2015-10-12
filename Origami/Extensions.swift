@@ -485,6 +485,13 @@ extension UIViewController
         }
     }
     
+    
+    /**
+    
+        Sets night or day mode to the whole app – the tint and background color of navigation bar and toolbar items, and also the background color of viewcontroller`s view
+    
+        - nightModeOn: *false* means .Day, *true* means .Night
+    */
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
         UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar

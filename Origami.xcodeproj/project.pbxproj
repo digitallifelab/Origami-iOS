@@ -35,8 +35,6 @@
 		F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */; };
 		F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D05E21BB547FB0054B61F /* FilterAttributeButton.swift */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
-		F84D61E51B9DB164001DB163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
-		F84D61E61B9DB175001DB163 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
 		F84D791D1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */; };
 		F84D791E1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */; };
 		F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */; };
@@ -233,6 +231,8 @@
 		F8EEC75E1B98A37D003525B0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EEC7521B98A334003525B0 /* CoreGraphics.framework */; };
 		F8EEC75F1B98A384003525B0 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EEC7581B98A352003525B0 /* Security.framework */; };
 		F8EEC7601B98A38C003525B0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EEC75A1B98A35B003525B0 /* MobileCoreServices.framework */; };
+		F8EFEF041BCBD63A004953CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; settings = {ASSET_TAGS = (); }; };
+		F8EFEF051BCBD63C004953CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -518,6 +518,8 @@
 			isa = PBXGroup;
 			children = (
 				F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */,
+				F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */,
+				F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */,
 			);
 			name = AttachesCell;
 			sourceTree = "<group>";
@@ -604,6 +606,7 @@
 			children = (
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
+				F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */,
 				F87637791B56604100AFE376 /* Menu */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
@@ -762,7 +765,6 @@
 			children = (
 				F81BAD601B5F861500DB50F8 /* SingleElementDashboard */,
 				F8D2FF321B2870BC00584B8D /* TableCells */,
-				F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */,
 				F8B9B4F51B3D57E8006033DB /* Attach Files viewers  */,
 				F88563FC1B31C10F005D223E /* Chat */,
 				F88668101B42957E0021C806 /* ElementChatParticipants */,
@@ -783,8 +785,6 @@
 			isa = PBXGroup;
 			children = (
 				F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */,
-				F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */,
-				F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */,
 				F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */,
 				F8C62DC31B3AC25600324C0B /* AttachesTableHeaderView */,
 			);
@@ -957,9 +957,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EFEF041BCBD63A004953CE /* Images.xcassets in Resources */,
 				F8C93B251B861B94009D890E /* Main.storyboard in Resources */,
 				F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */,
-				F84D61E61B9DB175001DB163 /* Images.xcassets in Resources */,
 				F8C93B261B861B94009D890E /* seguisb.ttf in Resources */,
 				F8C93B271B861B94009D890E /* LaunchScreen.xib in Resources */,
 				F8C93B281B861B94009D890E /* segoeui.ttf in Resources */,
@@ -973,9 +973,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EFEF051BCBD63C004953CE /* Images.xcassets in Resources */,
 				F8D456A81B1DEFA100172667 /* Main.storyboard in Resources */,
 				F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */,
-				F84D61E51B9DB164001DB163 /* Images.xcassets in Resources */,
 				F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */,
 				F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */,
 				F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */,

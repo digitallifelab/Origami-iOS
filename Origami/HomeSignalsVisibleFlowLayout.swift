@@ -120,19 +120,23 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             {
                 return headerAttrs
             }
-            else
-            {
-                //print("returning SUPER HEADER attributes for indexPath: \(indexPath)")
-                let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
-                return superAttrs
-            }
+//            else
+//            {
+////                //print("returning SUPER HEADER attributes for indexPath: \(indexPath)")
+////                if let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath){
+////                    if !superAttrs.isEmpty {
+////                        return superAttrs
+////                    }
+////                }
+//            }
         }
         else
         {
             //print("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
-            let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
-            return superAttrs
+            if let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath){
+                return superAttrs}
         }
+        return nil
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]?

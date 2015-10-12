@@ -15,6 +15,8 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     var imageToDisplay:UIImage?
     var imageHolder:UIImageView?
     var doubleTapRecognizer:UITapGestureRecognizer?
+    var fileCreatorId:Int = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

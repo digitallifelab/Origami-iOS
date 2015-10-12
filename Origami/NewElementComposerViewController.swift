@@ -301,13 +301,21 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         cell.textView.delegate = self
         textViews[indexPath] = cell.textView
         
+        let attributedTextColor = (self.displayMode == .Day) ? kBlackColor : kWhiteColor
+        let cellColor = (self.displayMode == .Day) ? kWhiteColor : kBlackColor
+        
+        cell.backgroundColor = cellColor
+        cell.textView.textColor = attributedTextColor
+        cell.textView.tintColor = attributedTextColor
         if indexPath.section == 0
         {
             cell.isTitleCell = true
+            
             if let title = newElement?.title as? String
             {
-                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:attributedTextColor]
                 cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
+               
             }
             else
             {
@@ -318,25 +326,22 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         else
         {
             cell.isTitleCell = false
-            
+            cell.backgroundColor = cellColor
             if let description = newElement?.details as? String
             {
                 if description != ""
                 {
-                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:UIColor.blackColor()]
+                    let descriptionAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName:attributedTextColor]
                     cell.attributedText = NSAttributedString(string: description, attributes: descriptionAttributes)
                 }
                 else
                 {
-                    //let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.lightGrayColor()]
-                    cell.textView.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                    cell.textView.attributedText = nil
                 }
-                
             }
             else
             {
-                //let descriptionAttributes = [NSFontAttributeName : UIFont(name: "Segoe UI", size: 14)!, NSForegroundColorAttributeName : UIColor.blackColor()]
-                cell.textView.attributedText = nil// NSAttributedString(string: "add description", attributes: descriptionAttributes)
+                cell.textView.attributedText = nil
             }
         }
     }

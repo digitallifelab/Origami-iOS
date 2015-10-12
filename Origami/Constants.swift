@@ -53,9 +53,9 @@ let finishStateUrlPart = "SetFinishState"
 
 //Attaches
 let getAttachFileUrlPart = "GetAttachedFile"
-let unAttachFileUrlPart = "RemoveFileFromElement"
 let getElementAttachesUrlPart = "GetElementAttaches"
 let attachToElementUrlPart = "AttachFileToElement"
+let unAttachFileUrlPart = "RemoveFileFromElement"
 
 ////
 

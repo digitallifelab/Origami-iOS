@@ -1291,23 +1291,27 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
    
     }
-    
+    /** 
+    Calls `eraseFileFromDiscForAttach` on every attach found for anElementId, then assigs nil to in-memory stored attchInfo array for element by Id
+    - Parameter elementId: An integer value of element`s elementId property
+    */
     func cleanAttachesForElement(elementId:Int)
     {
-//        if let currentElement = DataSource.sharedInstance.getElementById(NSNumber(integer:elementId))
-//        {
-            if  let attaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
+        if  let attaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
+        {
+            for lvAttach in attaches
             {
-                for lvAttach in attaches
-                {
-                    DataSource.sharedInstance.eraseFileFromDiscForAttach(lvAttach) //delete files from disk
-                }
+                DataSource.sharedInstance.eraseFileFromDiscForAttach(lvAttach) //delete files from disk
             }
-            DataSource.sharedInstance.attaches[NSNumber(integer: elementId)] = nil // delete attachFile from memory
-//        }
+        }
+        DataSource.sharedInstance.attaches[NSNumber(integer: elementId)] = nil // delete attachFile from memory
     }
     
     //MARK: Attaches
+    /** 
+    Queries attach info from the RAM
+    - Returns: **nil** if no attaches info was found or if attaches info is empty
+    */
     func getAttachesForElementById(elementId:NSNumber?) -> [AttachFile]?
     {
         if elementId == nil
@@ -1357,6 +1361,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         })
     }
     
+    
+    /** 
+    Queries Attach Info from server
+    
+        - Parameters:
+            - elementIdInt: integerValue of element to request attaches for
+            - completion: block returns AttachFile array stored in memory or nil
+    */
     func refreshAttachesForElement(elementIdInt:Int, completion:attachesArrayClosure?)
     {
     
@@ -1372,7 +1384,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     let aNumber = NSNumber(integer: elementIdInt)
                     DataSource.sharedInstance.attaches[aNumber] = attachesArray
-                    completion?(DataSource.sharedInstance.attaches[aNumber]!)
+                    if let existAttaches = DataSource.sharedInstance.attaches[aNumber]
+                    {
+                        completion?(existAttaches)
+                        return
+                    }
+                    completion?(nil)
                 }
                 else
                 {
@@ -1454,6 +1471,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 if !attachesToEdit.isEmpty
                 {
+                    print("\n _> Remaining attaches count: \(attachesToEdit.count)")
                     DataSource.sharedInstance.attaches[elementId] = attachesToEdit
                 }
 //                else
@@ -1488,7 +1506,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
     }
-    
+    /**
+    Function creates an instance of FileHandler and tries to erase file by file name, stored in AttachFile
+    - Parameter attach: attach file that shoud be cleaned from user device`s disc
+    */
     func eraseFileFromDiscForAttach(attach:AttachFile)
     {
         if let fileName = attach.fileName
@@ -1496,6 +1517,76 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             let fileHandler = FileHandler()
             fileHandler.eraseFileNamed(fileName, completion: nil)
         }
+    }
+    
+    /**
+    Founds elementIDs for every attach, then looping through elementIDs searches for AttachFile arrays and in found arrays deletes supplied AttachFiles
+    - Note: it is not desirable to feed attaches from several elements to this method(function)
+    - Parameter attaches: an array of AttachFile.
+    */
+    func eraseFileInfoFromMemoryForAttaches(attaches:[AttachFile])
+    {
+        if attaches.isEmpty
+        {
+            return
+        }
+        
+        var elementIDs = Set<Int>()
+        
+        for anAttachFile in attaches
+        {
+            if let elementId = anAttachFile.elementID?.integerValue
+            {
+                elementIDs.insert(elementId)
+            }
+        }
+        
+        if elementIDs.isEmpty
+        {
+            return
+        }
+        
+        let setOfAttachesToDelete = Set(attaches)
+        var toReplaceDictValues = [NSNumber:[AttachFile]]()
+        for anElementIdInt in elementIDs
+        {
+            let aKey = NSNumber(integer: anElementIdInt)
+            if let attaches = DataSource.sharedInstance.attaches[aKey]
+            {
+                print("attach count before loop: \(attaches.count)")
+                var valueAtachesArray = [AttachFile]()
+                for anExistingAttach in attaches
+                {
+                    if setOfAttachesToDelete.contains(anExistingAttach)
+                    {
+                        continue
+                    }
+                    valueAtachesArray.append(anExistingAttach)
+                }
+                if valueAtachesArray.isEmpty
+                {
+                    continue
+                }
+                
+                ObjectsConverter.sortAttachesByAttachId(&valueAtachesArray)
+                print("new attach count after loop: \(valueAtachesArray.count)")
+                toReplaceDictValues[aKey] = valueAtachesArray
+            }
+        }
+        
+        if toReplaceDictValues.isEmpty
+        {
+            return
+        }
+        
+        for (keyNum, valueArray) in toReplaceDictValues //insert new decreased arrays of attach files
+        {
+            if let _ = DataSource.sharedInstance.attaches.removeValueForKey(keyNum)
+            {
+                DataSource.sharedInstance.attaches[keyNum] = valueArray
+            }
+        }
+        
     }
     
     func getSnapshotsArrayForAttaches(attaches:[AttachFile]) -> [[AttachFile:NSData]]?

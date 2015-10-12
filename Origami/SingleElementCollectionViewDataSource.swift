@@ -302,7 +302,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         let itemsCount = countAllItems()
-        print("items count: \(itemsCount)")
+        print("\(self)  -> \n items count: \(itemsCount)")
         return itemsCount
     }
     

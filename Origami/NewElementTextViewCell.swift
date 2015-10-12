@@ -14,6 +14,9 @@ class NewElementTextViewCell: UITableViewCell {
     @IBOutlet var titleLabel:UILabel!
     
     @IBOutlet weak var textViewToBottomConstraint: NSLayoutConstraint!
+    
+    //var displayMode:DisplayMode = .Day
+    
     var attributedText:NSAttributedString? = nil {
         didSet{
             textView.attributedText = (attributedText != nil) ? attributedText : nil//defaultAttributedText
@@ -26,7 +29,7 @@ class NewElementTextViewCell: UITableViewCell {
         didSet{
             if isTitleCell
             {
-                self.backgroundColor = UIColor.whiteColor()//kDayCellBackgroundColor
+                //self.backgroundColor = UIColor.whiteColor()//kDayCellBackgroundColor
                 titleLabel.text = "Title".localizedWithComment("")
                 defaultAttributedText = NSAttributedString(string:"add title", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.grayColor()])
                 
@@ -34,7 +37,7 @@ class NewElementTextViewCell: UITableViewCell {
             }
             else
             {
-                self.backgroundColor = UIColor.whiteColor()
+                //self.backgroundColor = UIColor.whiteColor()
                 titleLabel.text = "Description".localizedWithComment("")
                 defaultAttributedText = NSAttributedString(string:"add description", attributes: [NSFontAttributeName : UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName : UIColor.grayColor()])
                 
@@ -50,7 +53,7 @@ class NewElementTextViewCell: UITableViewCell {
         textView.layer.borderWidth = 1.0
         textView.layer.borderColor = UIColor.lightGrayColor().CGColor
         textView.tintColor = kDayCellBackgroundColor
-         titleLabel.tintColor = kDayCellBackgroundColor
+        titleLabel.tintColor = kDayCellBackgroundColor
         titleLabel.textColor = kDayCellBackgroundColor
     }
 

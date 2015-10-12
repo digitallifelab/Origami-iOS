@@ -13,10 +13,11 @@ struct AttachToDisplay {
     var type:FileType
     var data:NSData
     var name:String
+    var creatorId:Int = 0
     
-    init?(type:FileType, fileData:NSData?, fileName:String?)
+    init?(type:FileType, fileData:NSData?, fileName:String?, creator:Int?)
     {
-        if fileData == nil || fileName == nil
+        if fileData == nil || fileName == nil || creator == nil
         {
             return nil
         }
@@ -24,6 +25,7 @@ struct AttachToDisplay {
         self.type = type
         self.data = fileData!
         self.name = fileName!
+        self.creatorId = creator!
     }
 }
 

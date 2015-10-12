@@ -48,5 +48,9 @@ class RecentActivityTableCell: UITableViewCell {
         elementTitleLabel?.textColor = aTextColor
         elementDetailsTextView?.textColor = aTextColor
     }
+    
+    override func prepareForReuse() {
+        elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+    }
 
 }

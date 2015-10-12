@@ -69,7 +69,7 @@ struct ElementDetailsStruct
             }
         }
         
-        //print(" -> SimpleElementDashboardLayout  struct description:\n title: \"\(self.title)\",\n details :\" \(self.details) \",\n messagesContained: \(self.messagesPreviewCell), \n attaches: \(self.attachesCell),\n subordinates:  \(self.subordinates) <- \n")
+        print(" -> \n SimpleElementDashboardLayout  struct description:\n title: \"\(self.title)\",\n details :\" \(self.details) \",\n messagesContained: \(self.messagesPreviewCell), \n attaches: \(self.attachesCell),\n subordinates:  \(self.subordinates) <- \n")
     }
 }
 
@@ -87,11 +87,11 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
     {
         self.init()
       
-        if infoStruct == nil
+        guard let infoStructure = infoStruct else
         {
             return nil
         }
-        self.elementStruct = infoStruct!
+        self.elementStruct = infoStructure
         self.minimumInteritemSpacing = HomeCellHorizontalSpacing
         self.minimumLineSpacing = HomeCellVerticalSpacing
         
@@ -134,7 +134,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         
         if let existingItemAttrs = cellLayoutAttributes[indexPath]
         {
-            print("existing: \(indexPath.item)")
+            //print("existing: \(indexPath.item)")
             superForIndexPath = existingItemAttrs
         }
         
@@ -249,7 +249,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             }
             else // .Dates
             {
-                titleFrame.size = CGSizeMake(mainFrame.width, 140.0)
+                titleFrame.size = CGSizeMake(mainFrame.width, 150.0)
             }
         }
         

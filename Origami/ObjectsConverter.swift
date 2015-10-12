@@ -108,7 +108,19 @@ class ObjectsConverter {
             let lvAttachFile = AttachFile(info: currentDict)
             attaches.append(lvAttachFile)
         }
+        print("ObjectsConverter : Attaches: \(attaches.count)")
         return attaches
+    }
+    
+    class func sortAttachesByAttachId(inout attachesToSort:[AttachFile])
+    {
+        attachesToSort.sortInPlace { (attach1, attach2) -> Bool in
+            if let attachId1 = attach1.attachID?.integerValue, attachId2 = attach2.attachID?.integerValue
+            {
+                return attachId1 <= attachId2
+            }
+            return true
+        }
     }
     
     class func convertToContacts(array:[[String:AnyObject]]) -> [Contact]

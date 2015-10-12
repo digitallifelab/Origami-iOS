@@ -112,10 +112,6 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
             configureAttributes()
         }
     }
-//    override func shouldInvalidateLayoutForBoundsChange(newBounds: CGRect) -> Bool {
-////        self.attributes = nil
-//        return false
-//    }
     
     override func collectionViewContentSize() -> CGSize {
         return contentSize

@@ -192,7 +192,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     {
                         attachImagePickerVC.attachPickingDelegate = elementViewController
                         
-                        self.presentViewController(attachImagePickerVC, animated: true, completion: nil)
+                        self.navigationController?.pushViewController(attachImagePickerVC, animated: true)
                     }
                 }
             }

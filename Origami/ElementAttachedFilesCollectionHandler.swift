@@ -13,10 +13,6 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     lazy var attachedItems:[AttachFile] = [AttachFile]()
     lazy var attachData:[NSNumber:MediaFile] = [NSNumber:MediaFile]()
     
-    //moved to in-place switch statement
-//    lazy var attachIconSound = UIImage(named: "icon-attach-sound")//UIImage(named: "icon-attach-sound")
-//    lazy var attachIconDocument = UIImage(named: "icon-attach-document")
-//    lazy var attachIconVideo = UIImage(named: "icon-attach-video")
     var attachTapDelegate:AttachmentSelectionDelegate?
     
     override init()
@@ -187,6 +183,29 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
         print("\n ->>Reloading attaches collection cell <<- \n \n")
         self.attachedItems = arrayOfAttaches
         self.collectionView?.reloadSections(NSIndexSet(index: 0))
+    }
+    
+    func removeDeletedAttachNamed(name:String = "")
+    {
+        if name.isEmpty
+        {
+            return
+        }
+        //find target attach
+        var attachesToStay = [AttachFile]()
+        var indexItem = 0
+        for anAttach in attachedItems
+        {
+            indexItem += 1
+            if anAttach.fileName == name
+            {
+                continue
+            }
+            attachesToStay.append(anAttach)
+        }
+        
+        self.attachedItems = attachesToStay
+        
     }
     
     //MARK: Delegate

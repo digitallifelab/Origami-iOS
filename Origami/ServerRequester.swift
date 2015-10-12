@@ -1036,6 +1036,10 @@ class ServerRequester: NSObject
                                         {
                                             completion?(attaches, nil)
                                         }
+                                        else
+                                        {
+                                            completion?(nil,nil) //recieved empty attaches list
+                                        }
                                     }
                                 }
                                 else
@@ -1352,38 +1356,14 @@ class ServerRequester: NSObject
         completionClosure?(success: false,  attachId:nil, error: noUserTokenError)
     }
         //remove attached file from element attaches
-    func unAttachFile(name:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->() )?) {
-        /*
+    func unAttachFile(name:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? )
+    {
         
-        //"RemoveFileFromElement?elementId={elementId}&fileName={fileName}&token={token}"
-        NSString *removeURL = [NSString stringWithFormat:@"%@RemoveFileFromElement?elementId=%@&fileName=%@&token=%@", BasicURL, elementId, fileName, _currentUser.token];
-        
-        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-        AFHTTPRequestOperation *removeOp = [manager GET:removeURL
-        parameters:nil
-        success:^(AFHTTPRequestOperation *operation, id responseObject)
-        {
-        if (completionBlock)
-        {
-        NSDictionary *response = [(NSDictionary *)responseObject objectForKey:@"RemoveFileFromElementResult"];
-        completionBlock(response, nil);
-        }
-        }
-        failure:^(AFHTTPRequestOperation *operation, NSError *error)
-        {
-        if (completionBlock)
-        {
-        completionBlock(nil, error);
-        }
-        }];
-        
-        [removeOp start]
-        
-        */
         if let userToken = DataSource.sharedInstance.user?.token// as? String
         {
-            
+            print("\n -> unattaching from elementId: \(elementId)\n")
             let requestString = "\(serverURL)" + unAttachFileUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(name)" + "&token=" + "\(userToken)"
+            print("uAttach Request String: \(requestString)")
             let requestOperation = httpManager.GET(requestString,
                 parameters: nil,
                 success: { (operation, result) -> Void in
@@ -1391,6 +1371,7 @@ class ServerRequester: NSObject
                     {
                         print("\n --- Successfully unattached file from element: \(response)")
                     }
+                    print(result)
                    
                     completionClosure?(success: true, error: nil)
             },
@@ -1592,10 +1573,13 @@ class ServerRequester: NSObject
     }
     //MARK: Contacts
     
-    /** Queries server for contacts and  on completion or timeout returns  array of contacts or error
+    /** 
+    
+    Queries server for contacts and  on completion or timeout returns  array of contacts or error
+    
         - Precondition: No Parameters. The function detects all that it needs from DataSource
-        - Parameter completion: A caller may specify wether it wants or not to recieve data on completion - an optional var for contacts array and optional var for error handling
-        - Returns: Void
+        - parameter completion: A caller may specify wether it wants or not to recieve data on completion - an optional var for contacts array and optional var for error handling
+        - returns: Void
     */
     func downloadMyContacts(completion completionClosure:((contacts:[Contact]?, error:NSError?) -> () )? = nil )
     {
