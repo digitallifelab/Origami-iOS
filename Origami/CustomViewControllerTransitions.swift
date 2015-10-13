@@ -84,7 +84,7 @@ class MenuTransitionAnimator : NSObject, UIViewControllerAnimatedTransitioning
         var currentDeviceIdiom:UIUserInterfaceIdiom = .Phone
         
     
-        if #available (iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
+        if #available (iOS 8.0, *)
         {
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             currentDeviceIdiom  = currentTraitCollection.userInterfaceIdiom
@@ -193,7 +193,7 @@ class menuRevealAnimator : MenuTransitionAnimator
         var currentDeviceIdiom:UIUserInterfaceIdiom = .Phone
         
         
-        if #available (iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
+        if #available (iOS 8.0, *)
         {
             let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
             currentDeviceIdiom  = currentTraitCollection.userInterfaceIdiom

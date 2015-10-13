@@ -32,12 +32,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     private var mediaName:String? {
         get{
             let lvDateString = NSDate().timeDateStringForMediaName() + ".jpg"
-            
-//                lvDate = lvDate.stringByReplacingOccurrencesOfString(" ", withString: "_") + ".jpg"// as NSString
-//            lvDate = lvDate.stringByReplacingOccurrencesOfString(":", withString: "-")
-//            lvDate = lvDate.stringByReplacingOccurrencesOfString(",", withString: "")
-//            lvDate = lvDate.stringByReplacingOccurrencesOfString("/", withString: "-")
-            
+         
             return lvDateString // as String
         }
     }
@@ -129,7 +124,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         }
         
         imagePickerController.allowsEditing = false
-        if let allowEditingResult = self.attachPickingDelegate?.mediaPickerShouldAllowEditing?(self)
+        if let allowEditingResult = self.attachPickingDelegate?.mediaPickerShouldAllowEditing(self)
         {
             imagePickerController.allowsEditing = allowEditingResult
         }

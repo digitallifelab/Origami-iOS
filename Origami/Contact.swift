@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class Contact:Person
+class Contact:Person, Hashable
 {
     var birthDay:NSString?
     var phone:NSString?
@@ -21,7 +21,7 @@ class Contact:Person
 //    var userName:NSString?
     
     var lastSync:NSString?
-    var contactId:NSNumber?
+    var contactId:Int = 0
     
     //var mood:NSString?
     var state:NSNumber?
@@ -56,7 +56,7 @@ class Contact:Person
         {
             self.elementId = element
         }
-        if let lvContactId = info["ContactId"] as? NSNumber
+        if let lvContactId = info["ContactId"] as? Int
         {
             self.contactId = lvContactId
         }
@@ -197,26 +197,31 @@ class Contact:Person
 //        return nameString
 //    }
     
-    //MARK: Set , NSSet stuff
-    override func isEqual(contact:AnyObject?)->Bool
+//    //MARK: Set , NSSet stuff
+//    override func isEqual(contact:AnyObject?)->Bool
+//    {
+//        if let object = contact as? Contact
+//        {
+//            if let selfContactId = self.contactId, let objectContactId = object.contactId
+//            {
+//                if selfContactId == objectContactId
+//                {
+//                    return true
+//                }
+//            }
+//        }
+//        
+//        return false
+//    }
+    
+    /*override */var hashValue:Int
     {
-        if let object = contact as? Contact
-        {
-            if let selfContactId = self.contactId, let objectContactId = object.contactId
-            {
-                if selfContactId == objectContactId
-                {
-                    return true
-                }
-            }
-        }
-        
-        return false
+            return self.userName.hashValue ^ self.contactId.hashValue
     }
     
-    override var hash:Int
-    {
-            return self.userName!.hashValue ^ self.contactId!.hashValue
-    }
+}
+
+func == (lhs:Contact,rhs:Contact) -> Bool {
     
+    return lhs.contactId == rhs.contactId
 }

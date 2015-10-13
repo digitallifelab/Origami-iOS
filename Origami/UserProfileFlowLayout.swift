@@ -143,10 +143,10 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
         {
             //prepare start values
             var contentWidth = UIScreen.mainScreen().bounds.size.width
-            if FrameCounter.isLowerThanIOSVersion("8.0")
-            {
-                //let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-             
+            if #available (iOS 8.0, *){
+                
+            }
+            else{
                 var currentWidth = UIScreen.mainScreen().bounds.size.width
                 var currentHeight = UIScreen.mainScreen().bounds.size.height
                 
@@ -166,6 +166,7 @@ class UserProfileFlowLayout: UICollectionViewFlowLayout {
                     currentHeight = UIScreen.mainScreen().bounds.size.width
                     contentWidth = currentWidth
                 }
+
             }
             
             cellSize.width = contentWidth //- minimumInteritemSpacing * 2

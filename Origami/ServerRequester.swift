@@ -14,6 +14,8 @@ class ServerRequester: NSObject
     
     let httpManager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
     
+    let objectsConverter = ObjectsConverter()
+    
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
@@ -1005,7 +1007,7 @@ class ServerRequester: NSObject
                 let attachesRequest = NSMutableURLRequest(URL: attachURL, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: 20.0)
                 attachesRequest.setValue("appliction-json", forHTTPHeaderField: "Accept")
                 
-                let attachLoadTask = NSURLSession.sharedSession().dataTaskWithRequest(attachesRequest, completionHandler: { (responseData, urlResponse, responseError) -> Void in
+                let attachLoadTask = NSURLSession.sharedSession().dataTaskWithRequest(attachesRequest, completionHandler: {(responseData, urlResponse, responseError) -> Void in
                     if let anError = responseError
                     {
                         completion?(nil, anError)
@@ -1015,20 +1017,39 @@ class ServerRequester: NSObject
                     if let aData = responseData
                     {
                         do{
-                            if let attachInfo = try NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+                            if let attachInfo = try NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.MutableContainers) as? [String:AnyObject]
                             {
                                 if !attachInfo.isEmpty
                                 {
                                     if let arrayOfDictionaries = attachInfo["GetElementAttachesResult"] as? [[String:AnyObject]]
                                     {
-                                        let lvConverter = ObjectsConverter()
-                                        if let attaches = lvConverter.instanceConverttoAttaches(arrayOfDictionaries) //ObjectsConverter.converttoAttaches(arrayOfDictionaries)
+                                        guard !arrayOfDictionaries.isEmpty else
                                         {
-                                            completion?(attaches, nil)
+                                            completion?(nil, nil)
+                                            return
+                                        }
+                                        
+                                        var attachesArray = [AttachFile]()
+                                        for aDict in arrayOfDictionaries
+                                        {
+                                            if let anAttach = ObjectsConverter.convertSingleAttachInfoToAttach(aDict), attachNameString = anAttach.fileName
+                                            {
+                                                if attachNameString.containsString("/")
+                                                {
+                                                     anAttach.fileName = attachNameString.stringByReplacingOccurrencesOfString("/", withString:"-")
+                                                }
+                                                // stringByReplacingOccurencesOfString("/", withString:"-")
+                                                attachesArray.append(anAttach)
+                                            }
+                                        }
+                                        
+                                        if attachesArray.isEmpty
+                                        {
+                                            completion?(nil,nil)
                                         }
                                         else
                                         {
-                                            completion?(nil,nil) //recieved empty attaches list
+                                            completion?(attachesArray , nil)
                                         }
                                     }
                                 }

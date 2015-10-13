@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class AttachFile :NSObject
+class AttachFile : Hashable//NSObject
 {
     var attachID:Int = 0
     var elementID:Int = 0
@@ -16,7 +16,7 @@ class AttachFile :NSObject
     var fileName:String?
     var createDate:String?
     
-    convenience init(info:[String:AnyObject])
+    convenience init?(info:[String:AnyObject])
     {
         self.init()
         
@@ -52,20 +52,35 @@ class AttachFile :NSObject
                 self.createDate = lvDate
             }
         }
-    }
-    
-    override func isEqual(object:AnyObject?) -> Bool
-    {
-        if let attachObject  = object as? AttachFile
-        {
-            return (self.attachID == attachObject.attachID && self.fileSize == attachObject.fileSize)
+        else{
+            return nil
         }
-        
-        return false
     }
     
-    override var hash:Int {
+//    override func isEqual(object:AnyObject?) -> Bool
+//    {
+//        if let attachObject  = object as? AttachFile
+//        {
+//            return (self.attachID == attachObject.attachID && self.fileSize == attachObject.fileSize)
+//        }
+//        
+//        return false
+//    }
+    
+//    func ==(_ lhs: Self, _ rhs: Self) -> Bool
+//    {
+//    
+//    }
+    
+    
+    /*override*/ var hashValue:Int {
         
             return self.attachID.hashValue ^ self.elementID.hashValue
     }
+    
+}
+
+func == (lhs: AttachFile, rhs: AttachFile) -> Bool
+{
+    return (lhs.attachID == rhs.attachID && lhs.fileSize == rhs.fileSize)
 }

@@ -108,35 +108,32 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     {
         var viewWidth = UIScreen.mainScreen().bounds.size.width - 10.0
         
-        
-        if FrameCounter.isLowerThanIOSVersion("8.0")
+        if #available (iOS 8.0, *)
         {
-            //let currentIdiom = FrameCounter.getCurrentInterfaceIdiom()
-//            if currentIdiom == .Phone
-//            {
-                var currentWidth = UIScreen.mainScreen().bounds.size.width
-                var currentHeight = UIScreen.mainScreen().bounds.size.height
-                
-                let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
-                switch currentDeviceOrentation
-                {
-                case UIInterfaceOrientation.Unknown:
-                    break
-                case UIInterfaceOrientation.Portrait:
-                    fallthrough
-                case UIInterfaceOrientation.PortraitUpsideDown:
-                    break
-                case UIInterfaceOrientation.LandscapeLeft:
-                    fallthrough
-                case UIInterfaceOrientation.LandscapeRight:
-                    currentWidth = currentHeight
-                    currentHeight = UIScreen.mainScreen().bounds.size.width - 10
-                    viewWidth = currentWidth
-                }
-//            }
+            
         }
-
-        
+        else
+        {
+            var currentWidth = UIScreen.mainScreen().bounds.size.width
+            var currentHeight = UIScreen.mainScreen().bounds.size.height
+            
+            let currentDeviceOrentation = FrameCounter.getCurrentDeviceOrientation()
+            switch currentDeviceOrentation
+            {
+            case UIInterfaceOrientation.Unknown:
+                break
+            case UIInterfaceOrientation.Portrait:
+                fallthrough
+            case UIInterfaceOrientation.PortraitUpsideDown:
+                break
+            case UIInterfaceOrientation.LandscapeLeft:
+                fallthrough
+            case UIInterfaceOrientation.LandscapeRight:
+                currentWidth = currentHeight
+                currentHeight = UIScreen.mainScreen().bounds.size.width - 10
+                viewWidth = currentWidth
+            }
+        }
         
         
         var headerSize = self.headerReferenceSize

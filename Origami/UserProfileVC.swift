@@ -544,6 +544,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     }
     
     //MARK: AttachPickingDelegate
+
+    
     func mediaPickerDidCancel(picker: AnyObject) {
         if picker is UIViewController
         {
@@ -869,7 +871,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             
             self.presentViewController(alertController, animated: true, completion: nil)
         }
-        else //FrameCounter.isLowerThanIOSVersion("8.0")
+        else
         {
             let alertView = UIAlertView(
                 title: title,

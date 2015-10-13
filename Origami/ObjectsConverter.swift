@@ -86,54 +86,37 @@ class ObjectsConverter {
         }
         return array
     }
-    
-    func instanceConverttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]? //test to see if memory leak still will be present //Update. Instruments now don`t say there are any leaks because of AttachFiles loading...  Commenting out the class method
+        
+    class func convertToAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]? //somehow  xCode Instruments say there is a memory leak
     {
         if dictionaries.isEmpty
         {
             return nil
         }
+        
         var attaches = [AttachFile]()
-        var currentDict = [String:AnyObject]() //trying to fix slow init memory leak said by instruments
         for lvDict in dictionaries
         {
-            currentDict = lvDict
-            if let aNameString = currentDict["FileName"] as? String
+            if let lvAttachFile = AttachFile(info: lvDict)
             {
-                let fixedString = aNameString.stringByReplacingOccurrencesOfString("/", withString: "-")
-                currentDict["FileName"] = fixedString
+                attaches.append(lvAttachFile)
             }
-            
-            let lvAttachFile = AttachFile(info: currentDict)
-            attaches.append(lvAttachFile)
         }
-        print("ObjectsConverter : Attaches: \(attaches.count)")
+        //print("ObjectsConverter : Attaches: \(attaches.count)")
+        
+        if attaches.isEmpty{
+            return nil
+        }
         return attaches
     }
     
-//    class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]? //somehow  xCode Instruments say there is a memory leak
-//    {
-//        if dictionaries.isEmpty
-//        {
-//            return nil
-//        }
-//        var attaches = [AttachFile]()
-//        var currentDict = [String:AnyObject]() //trying to fix slow init memory leak said by instruments
-//        for lvDict in dictionaries
-//        {
-//            currentDict = lvDict
-//            if let aNameString = currentDict["FileName"] as? String
-//            {
-//                let fixedString = aNameString.stringByReplacingOccurrencesOfString("/", withString: "-")
-//                currentDict["FileName"] = fixedString
-//            }
-//            
-//            let lvAttachFile = AttachFile(info: currentDict)
-//            attaches.append(lvAttachFile)
-//        }
-//        print("ObjectsConverter : Attaches: \(attaches.count)")
-//        return attaches
-//    }
+    class func convertSingleAttachInfoToAttach(info:[String:AnyObject]) -> AttachFile?
+    {
+        if info.isEmpty{
+            return nil
+        }
+        return AttachFile(info: info)
+    }
     
     class func sortAttachesByAttachId(inout attachesToSort:[AttachFile])
     {

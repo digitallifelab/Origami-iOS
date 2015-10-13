@@ -644,7 +644,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "popoverItemTapped:", name: "PopupMenuItemPressed", object: leftTopMenuPopupVC)
             
-            if #available (iOS 8.0, *)//FrameCounter.isLowerThanIOSVersion("8.0")
+            if #available (iOS 8.0, *)
             {
                 
                 leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
@@ -1536,6 +1536,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    func mediaPickerShouldAllowEditing(picker: AnyObject) -> Bool {
+        return false
+    }
     //MARK: Chat stuff
     func showChatForCurrentElement()
     {
@@ -1567,7 +1570,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         }
         let cancelButtonTitle = "cancel".localizedWithComment("")
         
-        if #available(iOS 8.0, *) // FrameCounter.isLowerThanIOSVersion("8.0")
+        if #available(iOS 8.0, *)
         {
             let cancelAction = UIAlertAction(title: cancelButtonTitle, style: .Cancel, handler: { (alertAction) -> Void in
                 
@@ -1707,10 +1710,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     }
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? Contact, finishDate = contactsPickerVC.datePicker?.date, contactId = contactPicked.contactId
-        {
-           
-            sendElementTaskNewResponsiblePerson(contactId.integerValue, finishDate:finishDate)
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? Contact, finishDate = contactsPickerVC.datePicker?.date
+        {           
+            sendElementTaskNewResponsiblePerson(contactPicked.contactId, finishDate:finishDate)
         }
        
         self.navigationController?.popViewControllerAnimated(true)

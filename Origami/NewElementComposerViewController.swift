@@ -126,8 +126,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 for lvContact in contacts
                 {
                     //set avatar image
+                    let userName = lvContact.userName //as? String,
                     if let
-                        userName = lvContact.userName ,//as? String,
                         avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName),
                         avatar = UIImage(data: avatarData),
                         weakSelf = self
@@ -351,7 +351,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         if let lvContact = allContacts?[indexPath.row]
         {
             
-            if let avatarImage = contactImages[lvContact.userName! as String]
+            if let avatarImage = contactImages[lvContact.userName]
             {
                 cell.avatar?.image = avatarImage
             }
@@ -377,8 +377,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             cell.nameLabel?.text = nameLabelText
             
             //set proper checkbox image
-            if let contactIdInt = lvContact.contactId?.integerValue
-            {
+             let contactIdInt = lvContact.contactId
+            
+            if contactIdInt > 0 {
                 if contactIDsToPass.contains(contactIdInt)
                 {
                     cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
@@ -537,8 +538,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func contactTappedAtIndexPath(indexPath: NSIndexPath)
     {
-        if let lvContact = allContacts?[indexPath.row], lvContactIDInt = lvContact.contactId?.integerValue
+        if let lvContact = allContacts?[indexPath.row]
         {
+            let lvContactIDInt = lvContact.contactId
             if self.contactIDsToPass.contains(lvContactIDInt)
             {
                 self.contactIDsToPass.remove(lvContactIDInt)

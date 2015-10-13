@@ -74,20 +74,9 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         let chatCell = tableView.dequeueReusableCellWithIdentifier("PreviewCell", forIndexPath: indexPath) as! ChatPreviewCell
         chatCell.messageLabel.text = messageObjects[indexPath.row].textBody
         chatCell.backgroundColor = UIColor.clearColor()
-        // nest two filtering method calls are test stuff
-        //1st
-//        imageFilterer.filterImageBlackAndWhiteInBackGround(UIImage(named: "testImageToFilter")!, completeInMainQueue: true) { [weak chatCell](image) -> () in
-//            if let chatWeakCell = chatCell
-//            {
-//                chatWeakCell.avatarView.image = image
-//            }
-//        }
-        //2nd
-        //chatCell.avatarView.image = ImageFilter().filterImageBlackAndWhite(UIImage(named: "testImageToFilter")!)
-        
-        //chatCell.avatarView.image = UIImage(named: "testImageToFilter")
-//        chatCell.avatarView.tintColor = kDayCellBackgroundColor
+
         let message = messageObjects[indexPath.row]
+
         if let messageDate = message.dateCreated
         {
             let messageDateString = messageDate.timeDateStringShortStyle()
@@ -97,9 +86,9 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         {
             if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
             {
-                chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName /*as? String*/ ?? DataSource.sharedInstance.user?.lastName //as? String
+                chatCell.nameLabel.text = DataSource.sharedInstance.user?.initialsString()//firstName /*as? String*/ ?? DataSource.sharedInstance.user?.lastName //as? String
                 
-                if let username = DataSource.sharedInstance.user!.userName //as? String
+                if let username = DataSource.sharedInstance.user?.userName //as? String
                 {
                     if let image = self.currentAvatars[username]
                     {
@@ -115,19 +104,23 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             }
             else
             {
-                if let contact = contactForMessage(message) , contactName = contact.userName //as? String
+                if let contact = contactForMessage(message)
                 {
-                    chatCell.nameLabel.text = (contact.firstName /*as? String*/ ?? contact.lastName /* as? String*/) ?? "unknown"
+                    if !contact.userName.isEmpty
+                    {
+                        chatCell.nameLabel.text = contact.initialsString() //(contact.firstName /*as? String*/ ?? contact.lastName /* as? String*/) ?? "unknown"
+                        
+                        if let image = self.currentAvatars[contact.userName]
+                        {
+                            chatCell.avatarView.image = image
+                        }
+                        else
+                        {
+                            chatCell.avatarView.image = noAvatarImage
+                            startLoadingAvatarForUserName(contact.userName, andIndexPath:indexPath)
+                        }
+                    }
                     
-                    if let image = self.currentAvatars[contactName]
-                    {
-                        chatCell.avatarView.image = image
-                    }
-                    else
-                    {
-                        chatCell.avatarView.image = noAvatarImage
-                        startLoadingAvatarForUserName(contactName, andIndexPath:indexPath)
-                    }
                 }
                 else
                 {
@@ -147,11 +140,11 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     private func contactForMessage(message:Message) -> Contact?
     {
-        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
+        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId?.integerValue
         {
             for aContact in contacts
             {
-                if aContact.contactId!.isEqualToNumber(creatorId)
+                if aContact.contactId == creatorId
                 {
                     return aContact
                 }

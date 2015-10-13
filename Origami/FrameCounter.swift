@@ -100,18 +100,18 @@ class FrameCounter
         return UIDevice.currentDevice().userInterfaceIdiom
     }
     
-    class func isLowerThanIOSVersion(versionString:String) -> Bool
-    {
-        let comparisonResult = UIDevice.currentDevice().systemVersion.compare(versionString, options: NSStringCompareOptions.NumericSearch)
-        
-        switch comparisonResult
-        {
-            case .OrderedSame, .OrderedDescending:
-                return false
-            case .OrderedAscending:
-                return true
-        }
-    }
+//    class func isLowerThanIOSVersion(versionString:String) -> Bool
+//    {
+//        let comparisonResult = UIDevice.currentDevice().systemVersion.compare(versionString, options: NSStringCompareOptions.NumericSearch)
+//        
+//        switch comparisonResult
+//        {
+//            case .OrderedSame, .OrderedDescending:
+//                return false
+//            case .OrderedAscending:
+//                return true
+//        }
+//    }
     
     class func getCurrentDeviceOrientation() -> UIInterfaceOrientation
     {

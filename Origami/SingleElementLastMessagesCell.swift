@@ -150,37 +150,21 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             {
                 if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
                 {
-                    if let username = DataSource.sharedInstance.user!.userName// as? String
+                    if let username = DataSource.sharedInstance.user?.userName// as? String
                     {
                         if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(username)
                         {
                             chatCell.avatarView.image = UIImage(data: imageData)
                         }
-                        else
-                        {
-//                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-//                                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(username, completion: {[weak self] (_, _) -> () in
-//                                    if let weakSelf = self
-//                                    {
-//                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                            weakSelf.messagesTable.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
-//                                        })
-//                                        
-//                                    }
-//                                 
-//                                })
-//                            })
-                          
-                        }
                     }
-                    chatCell.nameLabel.text = DataSource.sharedInstance.user?.firstName/* as? String*/ ?? DataSource.sharedInstance.user?.lastName// as? String
+                    chatCell.nameLabel.text = DataSource.sharedInstance.user?.initialsString()//firstName/* as? String*/ ?? DataSource.sharedInstance.user?.lastName// as? String
                 }
                 else
                 {
-                    if let contact = contactForMessage(message) , userName = contact.userName// as? String
+                    if let contact = contactForMessage(message)
                     {
-                        chatCell.nameLabel.text = (contact.firstName /* as? String*/ ?? contact.lastName /*as? String*/) ?? "unknown"
-                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
+                        chatCell.nameLabel.text = contact.initialsString() ?? "anonymus"
+                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(contact.userName)
                         {
                             chatCell.avatarView.image = UIImage(data: imageData)
                         }
@@ -198,11 +182,11 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     private func contactForMessage(message:Message) -> Contact?
     {
-        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
+        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId?.integerValue
         {
             for aContact in contacts
             {
-                if aContact.contactId!.isEqualToNumber(creatorId)
+                if aContact.contactId == creatorId
                 {
                     return aContact
                 }

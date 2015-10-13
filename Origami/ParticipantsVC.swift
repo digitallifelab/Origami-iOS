@@ -60,7 +60,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                     let allContactsSet:Set<Contact> = Set(contacts!)
                     
                     checkedContacts = contacts!.filter({ (lvContact) -> Bool in
-                        let contains = passWhomIDsSet.contains(lvContact.contactId!)
+                        let contains = passWhomIDsSet.contains(lvContact.contactId)
                         return contains
                     })
                     //sort alphabeticaly
@@ -92,7 +92,8 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 var lvImagesDict = [Int:UIImage]()
                 for aContact in lvContacts
                 {
-                    if let integerId = aContact.contactId?.integerValue, avatarImage = DataSource.sharedInstance.getAvatarForUserId(integerId)
+                    let integerId = aContact.contactId
+                    if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(integerId)
                     {
                         lvImagesDict[integerId] = avatarImage
                     }
@@ -133,11 +134,9 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 return lastName1 > lastName2
             }
             
-            if let userName1 = contact1.userName,// as? String ,
-                userName2 = contact2.userName //as? String
-            {
-                return userName1 >= userName2
-            }
+            
+            return contact1.userName >= contact2.userName
+            
             // if nothing found
             return true
         })
@@ -251,7 +250,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
 //                nameLabelText += lastName
 //            }
             nameLabelText = currentContact.nameAndLastNameSpacedString()
-            if let contactIdInt = currentContact.contactId?.integerValue, avatarImage = self.contactAvatars[contactIdInt]
+            if let avatarImage = self.contactAvatars[currentContact.contactId]
             {
                 currentAvatar = avatarImage
             }
@@ -288,11 +287,17 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         
         if let selectedContact = contactForIndexPath(indexPath)
         {
+            let contactId = selectedContact.contactId
+            guard contactId > 0 else {
+                tableView.deselectRowAtIndexPath(indexPath, animated: false)
+                return
+            }
+            
             switch indexPath.section
             {
                 case 0:
                     //unchecked contact from participants
-                DataSource.sharedInstance.removeContact(selectedContact.contactId!.integerValue, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.removeContact(contactId, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
                     if let weakSelf = self
                     {
                         if success
@@ -303,8 +308,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                             dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
                                 weakSelf.setUpInitialArrays()
                             })
-                            
-                    
                         }
                         else
                         {
@@ -313,7 +316,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                     }
                 })
                 case 1:
-                DataSource.sharedInstance.addContact(selectedContact.contactId!.integerValue, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.addContact(contactId, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
                     if let weakSelf = self
                     {
                         if success
@@ -330,7 +333,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                         {
                             self!.showAlertWithTitle("Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
                         }
-                      
                     }
                 })
                 default: break

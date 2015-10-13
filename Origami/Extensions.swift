@@ -338,6 +338,9 @@ extension UIImage{
     func scaleToSizeKeepAspect(newSize:CGSize) -> UIImage?
     {
         UIGraphicsBeginImageContext(newSize)
+        defer {
+            UIGraphicsEndImageContext()
+        }
         var widthRatio:CGFloat = newSize.width / self.size.width
         var heightRatio:CGFloat = newSize.height / self.size.height
         
@@ -361,12 +364,12 @@ extension UIImage{
             
             let scaledImage:UIImage = UIGraphicsGetImageFromCurrentImageContext()
             
-            UIGraphicsEndImageContext()
+            //UIGraphicsEndImageContext()
         
             return scaledImage
         }
         
-        UIGraphicsEndImageContext()
+        //UIGraphicsEndImageContext()
         return nil
     }
     

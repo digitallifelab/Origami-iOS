@@ -44,7 +44,8 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                 
                 for lvContact in existContacts
                 {
-                    if let userName = lvContact.userName //as? String
+                    let userName = lvContact.userName //as? String
+                    if !userName.isEmpty
                     {
                         dispatch_group_enter(bgGroup)
                         DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
@@ -160,7 +161,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             
             cell.nameLabel?.text = (contactName.isEmpty) ? nil : contactName
             
-            if let avatarImage = contactImages[contact.userName! as String]
+            if let avatarImage = contactImages[contact.userName]
             {
                 cell.avatarImageView?.image = avatarImage
             }
@@ -192,7 +193,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func contactIsMine(contact:Contact) -> Bool
     {
-        if let _ = DataSource.sharedInstance.getContactsByIds(Set([contact.contactId!.integerValue]))
+        if let _ = DataSource.sharedInstance.getContactsByIds(Set([contact.contactId]))
         {
             return true
         }

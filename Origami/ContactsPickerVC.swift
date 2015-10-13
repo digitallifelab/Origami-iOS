@@ -38,18 +38,9 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                         let indexPath = NSIndexPath(forRow: i, inSection: 1)
                         
                         i++
-                        
-                        if let userId = aContact.contactId?.integerValue
+                        let userId = aContact.contactId
+                        if userId > 0
                         {
-                            //                        DataSource.sharedInstance.loadAvatarForLoginName(userName) {[weak self] (image) -> () in
-                            //                            if let avatar = image
-                            //                            {
-                            //                                if let weakSelf = self
-                            //                                {
-                            //                                    weakSelf.avatarsHolder[indexPath] = avatar
-                            //                                }
-                            //                            }
-                            //                        }
                             if let avatar = DataSource.sharedInstance.getAvatarForUserId(userId)
                             {
                                 weakSelf.avatarsHolder[indexPath] = avatar

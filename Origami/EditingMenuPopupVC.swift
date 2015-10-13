@@ -22,10 +22,16 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
         // Do any additional setup after loading the view.
         //table.layer.borderWidth = 1.0
         
-        if FrameCounter.getCurrentInterfaceIdiom() == .Phone && FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-            addTapToDismissGesture()
+    
+        if #available (iOS 8.0, *) {
+            
         }
+        else {
+            if FrameCounter.getCurrentInterfaceIdiom() == .Phone{
+                addTapToDismissGesture()
+            }
+        }
+        
     }
     
     override func didReceiveMemoryWarning() {

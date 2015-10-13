@@ -44,28 +44,3 @@ class Country
         return ["Id":countryId, "Name":countryName]
     }
 }
-
-
-/*
-if FrameCounter.isLowerThanIOSVersion("8.0")
-{
-leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
-if FrameCounter.getCurrentInterfaceIdiom() == .Pad
-{
-var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
-aPopover.popoverContentSize = CGSizeMake(200, 150.0)
-aPopover.delegate = self
-aPopover.presentPopoverFromBarButtonItem(self.navigationItem.rightBarButtonItem!, permittedArrowDirections: .Any, animated: true)
-}
-else
-{
-leftTopMenuPopupVC.view.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.6)
-self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
-
-})
-}
-}
-else
-{
-
-*/

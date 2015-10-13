@@ -1945,13 +1945,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         if !DataSource.sharedInstance.contacts.isEmpty
         {
             let foundContacts = DataSource.sharedInstance.contacts.filter({ (contact) -> Bool in
-                if let contactId = contact.contactId
+                
+                if contactIDs.contains(contact.contactId)
                 {
-                    if contactIDs.contains(contactId.integerValue)
-                    {
-                        return true
-                    }
+                    return true
                 }
+                
                 return false
             })
             
@@ -1979,11 +1978,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         var lvContacts = DataSource.sharedInstance.contacts.filter {lvContact -> Bool in
                             
-                            if let lvId = lvContact.contactId
-                            {
-                                return (lvId == lvContactId)
-                            }
-                            return false
+                            return (lvContact.contactId == lvContactId)
                         }
                         
                         if lvContacts.count > 0
@@ -2184,7 +2179,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func deleteMyContact(contact:Contact, completion:((success:Bool, error:NSError?)->())?)
     {
-        DataSource.sharedInstance.serverRequester.removeMyContact(contact.contactId!.integerValue, completion: { (success, error) -> () in
+        guard contact.contactId > 0 else
+        {
+            completion?(success:false, error:NSError(domain: "com.Origami.InvalidContactIdError", code: -3030, userInfo: [NSLocalizedDescriptionKey:"Requested deletion of contact with id == 0(zero)"]))
+            return
+        }
+        
+        DataSource.sharedInstance.serverRequester.removeMyContact(contact.contactId, completion: { (success, error) -> () in
             if success
             {
                 var currentContacts = Set(DataSource.sharedInstance.contacts)
@@ -2220,7 +2221,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func addNewContactToMyContacts(contact:Contact, completion:((success:Bool, error:NSError?)->())?)
     {
-        DataSource.sharedInstance.serverRequester.addToMyContacts(contact.contactId!.integerValue, completion: { (success, error) -> () in
+        guard contact.contactId > 0 else
+        {
+            completion?(success:false, error:NSError(domain: "com.Origami.InvalidContactIdError", code: -3031, userInfo: [NSLocalizedDescriptionKey:"Requested adding of contact with id == 0(zero)"]))
+            return
+        }
+        
+        DataSource.sharedInstance.serverRequester.addToMyContacts(contact.contactId, completion: { (success, error) -> () in
             if success
             {
                 var currentContacts = Set(DataSource.sharedInstance.contacts)
@@ -2283,6 +2290,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         if let lvName = userName
         {
+            guard !lvName.characters.isEmpty else
+            {
+                return nil
+            }
+            
             if let existingBytes = DataSource.sharedInstance.avatarsHolder[lvName]
             {
                 return existingBytes
@@ -2329,7 +2341,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     return UIImage(data: data)
                 }
             }
-            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])), firstContact = contacts.first, contactUserName = firstContact.userName /*as? String*/, cData = DataSource.sharedInstance.getAvatarDataForContactUserName(contactUserName)
+            else if let
+                contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])),
+                firstContact = contacts.first,
+                cData = DataSource.sharedInstance.getAvatarDataForContactUserName(firstContact.userName)
             {
                 let image = UIImage(data: cData)
                 return image

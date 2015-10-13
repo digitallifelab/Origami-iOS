@@ -534,10 +534,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 if let contacts = DataSource.sharedInstance.getContactsByIds(aSet)
                 {
                     let contact = contacts.first!
-                    if let userName = contact.userName // as? String
-                    {
-                        currentUserName = userName
-                    }
+                    
+                    currentUserName = contact.userName
                 }
             }
             
@@ -615,21 +613,21 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         if let aContact = item as? Contact
         {
-            if let aNumber = aContact.contactId
+             let aNumber = aContact.contactId
+            
+            if self.selectedUserId.integerValue != aNumber
             {
-                if self.selectedUserId.integerValue != aNumber.integerValue
-                {
-                    self.selectedUserId = NSNumber(integer: aNumber.integerValue)
-                    self.configureCurrentRightButtonImage()
-                    
-                    sortCurrentElementsForNewUserId()
-                    self.reloadTableView()
-                }
-                else
-                {
-                    self.isReloadingTable = false
-                }
+                self.selectedUserId = NSNumber(integer: aNumber)
+                self.configureCurrentRightButtonImage()
+                
+                sortCurrentElementsForNewUserId()
+                self.reloadTableView()
             }
+            else
+            {
+                self.isReloadingTable = false
+            }
+            
         }
         
         self.navigationController?.popViewControllerAnimated(true)

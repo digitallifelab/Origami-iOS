@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class MediaFile:NSObject {
+class MediaFile {
     var data:NSData = NSData()
     var name = ""
     var type:FileType?

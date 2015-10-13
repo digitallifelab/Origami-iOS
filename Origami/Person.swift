@@ -7,11 +7,11 @@
 //
 
 import Foundation
-class Person : NSObject
+class Person //: NSObject
 {
     var firstName:String?
     var lastName:String?
-    var userName:String?
+    var userName:String = ""
     var mood:String?
     
     func nameAndLastNameSpacedString() -> String?

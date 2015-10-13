@@ -48,20 +48,18 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     for lvContact in allContacts
                     {
                         //set avatar image
-                        if let userName = lvContact.userName// as? String
+                        let userName = lvContact.userName
+                        if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
                         {
-            
-                            if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
+                            if let weakSelf = self
                             {
-                                if let weakSelf = self
+                                if let avatar = UIImage(data: contactAvatarData)
                                 {
-                                    if let avatar = UIImage(data: contactAvatarData)
-                                    {
-                                        weakSelf.contactImages[userName] = avatar
-                                    }
+                                    weakSelf.contactImages[userName] = avatar
                                 }
                             }
                         }
+                        
                     }
                     if !weakSelf.contactImages.isEmpty
                     {
@@ -92,21 +90,20 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 for lvContact in existContacts
                 {
                     //set avatar image
-                    if let userName = lvContact.userName// as? String
+                    let userName = lvContact.userName// as? String
+                                            //set avatar image
+                    if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
                     {
-                        //set avatar image
-                        if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
+                        if let weakSelf = self
                         {
-                            if let weakSelf = self
+                            if let avatar = UIImage(data: contactAvatarData)
                             {
-                                if let avatar = UIImage(data: contactAvatarData)
-                                {
-                                    weakSelf.contactImages[userName] = avatar
-                                }
+                                weakSelf.contactImages[userName] = avatar
                             }
                         }
-                        
                     }
+                        
+                    
                 }
                 
                 if let weakSelf = self
@@ -362,7 +359,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             //avatar
             cell.avatar.tintColor = kDayCellBackgroundColor
            
-            if let avatarImage = contactImages[contact.userName! as String]
+            if let avatarImage = contactImages[contact.userName]
             {
                 cell.avatar?.image = avatarImage
             }
@@ -472,9 +469,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     {
         if let
             userIndex = notification?.userInfo?["index"] as? Int,
-            contact = self.contactForIndexPath(NSIndexPath(forRow: userIndex, inSection: 0)),
-            contactIdInt = contact.contactId?.integerValue
+            contact = self.contactForIndexPath(NSIndexPath(forRow: userIndex, inSection: 0))
         {
+            let contactIdInt = contact.contactId
+            guard contactIdInt > 0 else
+            {
+                print("\n WIll not try to update \"Favourite\" contact - 0(zero) contact id passed.\n")
+                return
+            }
+            
             DataSource.sharedInstance.updateContactIsFavourite(contactIdInt, completion: {[weak self] (success, error) -> () in
                 if success
                 {

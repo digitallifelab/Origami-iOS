@@ -196,10 +196,10 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         //let currentScreenInfo = FrameCounter.getCurrentTraitCollection()
         var currentScreenWidth = UIScreen.mainScreen().bounds.size.width
         //var itemMargin = self.minimumInteritemSpacing
-        
-        if FrameCounter.isLowerThanIOSVersion("8.0")
-        {
-
+        if #available(iOS 8.0, *){
+            
+        }
+        else{
             var currentWidth = UIScreen.mainScreen().bounds.size.width
             var currentHeight = UIScreen.mainScreen().bounds.size.height
             

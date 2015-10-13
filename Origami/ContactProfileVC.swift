@@ -153,10 +153,9 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     }
                 case 3:
                     toReturnInfo[titleInfoKey] = "email".localizedWithComment("")
-                    if let email = contact.userName// as? String
-                    {
-                        toReturnInfo[detailsInfoKey] = email
-                    }
+                    
+                    toReturnInfo[detailsInfoKey] = (contact.userName.isEmpty) ? nil : contact.userName
+                
                 case 4:
                     toReturnInfo[titleInfoKey] = "phone".localizedWithComment("")
                     if let userPhone = contact.phone as? String
