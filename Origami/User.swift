@@ -15,20 +15,19 @@ class User:Person
     var countryId:NSNumber? //
     var language:NSString? //
     var languageId:NSNumber? //
-    
-    //var firstName:NSString? //
-    //var lastName:NSString? //
-    //var userName:NSString? //
+    var state:NSNumber? //
+    var sex:NSNumber? //
+    var regDate:NSString? //
+    var photo:NSData? //
     var password:NSString? //
     var lastSync:NSString? //
     var token:String? //
     var userId:NSNumber? //
     
+    //var firstName:NSString? //
+    //var lastName:NSString? //
+    //var userName:NSString? //
     //var mood:NSString? //
-    var state:NSNumber? //
-    var sex:NSNumber? //
-    var regDate:NSString? //
-    var photo:NSData? //
     
     convenience init(info:[String:AnyObject])
     {

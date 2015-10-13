@@ -112,6 +112,8 @@ class ServerRequester: NSObject
             
             //6print("\(loginRequest.allHTTPHeaderFields)")
             let loginTask = NSURLSession.sharedSession().dataTaskWithRequest(loginRequest)/*, completionHandler:*/ { (responseData, urlResponse, responseError) -> Void in
+              
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
                 if let anError = responseError
                 {
@@ -126,15 +128,7 @@ class ServerRequester: NSObject
                     do{
                         var userToReturn:User?
                         
-//                        if let aString = String(data: aData, encoding: NSUTF8StringEncoding)
-//                        {
-//                            if aString.characters.count > 0
-//                            {
-//                                print(aString)
-//                            }
-//                        }
-                        
-                        if let jsonDict = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableContainers) as? [String:AnyObject]
+                        if let jsonDict = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableLeaves) as? [String:AnyObject]
                         {
                             if let userDict = jsonDict["LoginResult"] as? [String:AnyObject]
                             {
@@ -1003,12 +997,7 @@ class ServerRequester: NSObject
     //MARK: Attaches
     func loadAttachesListForElementId(elementId:Int, completion:networkResult?)
     {
-        //"GetElementAttaches?elementId={elementId}&token={token}"
-        //NSString *urlString = [NSString stringWithFormat:@"%@GetElementAttaches?elementId=%@&token=%@", BasicURL, elementId, _currentUser.token];
-        
-        
-        
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
+        if let userToken = DataSource.sharedInstance.user?.token
         {
             let requestString = "\(serverURL)" + getElementAttachesUrlPart + "?elementId=" + "\(elementId)" + "&token=" + userToken
             if let attachURL = NSURL(string: requestString)
@@ -1032,7 +1021,8 @@ class ServerRequester: NSObject
                                 {
                                     if let arrayOfDictionaries = attachInfo["GetElementAttachesResult"] as? [[String:AnyObject]]
                                     {
-                                        if let attaches = ObjectsConverter.converttoAttaches(arrayOfDictionaries)
+                                        let lvConverter = ObjectsConverter()
+                                        if let attaches = lvConverter.instanceConverttoAttaches(arrayOfDictionaries) //ObjectsConverter.converttoAttaches(arrayOfDictionaries)
                                         {
                                             completion?(attaches, nil)
                                         }
@@ -1052,7 +1042,7 @@ class ServerRequester: NSObject
                             completion?(nil, jsonError)
                         }
                         catch{
-                            completion?(nil, NSError(domain: "com.Origami.UnknownError.", code: -1030, userInfo: [NSLocalizedDescriptionKey:"Unknown exception during parsing server response"]))
+                            completion?(nil, unKnownExceptionError)
                         }
                     }
                     else
@@ -1079,67 +1069,13 @@ class ServerRequester: NSObject
             completion?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
             return
             
-            
-//            let requestOperation = httpManager.GET(requestString,
-//                parameters: nil,
-//                success: {  (operation, result) -> Void in
-//                   
-//                    let bgAttachConvertingQueue = dispatch_queue_create("com.Origami.Attach.Conerting.Queue", DISPATCH_QUEUE_SERIAL)
-//                    dispatch_async(bgAttachConvertingQueue, { () -> Void in
-//                        if let attachesArray = result["GetElementAttachesResult"] as? [[String:AnyObject]] //array of dictionaries
-//                        {
-//                            if let attaches = ObjectsConverter.converttoAttaches(attachesArray)
-//                            {
-//                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-//                                    completion?(attaches, nil)
-//                                })
-//                            }
-//                            else
-//                            {
-//                                
-//                                dispatch_async(dispatch_get_main_queue(),{ () -> Void in
-//                                    completion?(nil,nil)
-//                                })
-//                            }
-//                        }
-//                        else
-//                        {
-//                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                let lvError = NSError(domain: "Attachment error", code: -45, userInfo: [NSLocalizedDescriptionKey:"Failed to convert recieved attaches data"])
-//                                completion?(nil, lvError)
-//                            })
-//                         
-//                        }
-//                    })
-//                    
-//                    
-//            },
-//                failure: { (operation, error) -> Void in
-//                
-//                    if let responseString = operation.responseString
-//                    {
-//                        print("-> Failure while loading attachesList: \(responseString)")
-//                    }
-//                    
-//                    
-//                    print("-> Failure while loading attachesList: \(error)")
-//                    
-//                    completion?(nil, error)
-//            })
-//            
-//           
-//            requestOperation?.start()
-            
-            
-           
-//            return
         }
         
         completion?(nil, noUserTokenError)
 
     }
     
-    func loadDataForAttach(attachId:NSNumber, completion completionClosure:((attachFileData:NSData?, error:NSError?)->())? )
+    func loadDataForAttach(attachId:NSNumber, completion:((attachFileData:NSData?, error:NSError?)->())? )
     {
         if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
@@ -1148,62 +1084,6 @@ class ServerRequester: NSObject
             {
                 let fileDataRequest = NSMutableURLRequest(URL: requestURL)
                 fileDataRequest.HTTPMethod = "GET"
-
-//                var synchronousError:NSError?
-//                var synchroResponse:NSURLResponse?
-//                var synchroData:NSData? = NSURLConnection.sendSynchronousRequest(fileDataRequest, returningResponse: &synchroResponse , error: &synchronousError)
-//                if synchronousError != nil
-//                {
-//                    completionClosure(attachFileData: nil, error: synchronousError)
-//                }
-//                else if synchroData != nil
-//                {
-//                    var jsonReadingError:NSError? = nil
-//                    if let responseDict = NSJSONSerialization.JSONObjectWithData(synchroData!, options: NSJSONReadingOptions.AllowFragments , error: &jsonReadingError) as? [NSObject:AnyObject]
-//                    {
-//                        if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
-//                        {
-//                            if arrayOfIntegers.isEmpty
-//                            {
-//                                print("Empty response for Attach File id = \(attachId)")
-//                                completionClosure(attachFileData: NSData(), error: nil)
-//                            }
-//                            else
-//                            {
-//                                if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
-//                                {
-//                                    completionClosure(attachFileData: lvData, error: nil)
-//                                }
-//                                else
-//                                {
-//                                    //error
-//                                    print("ERROR: Could not convert response to NSData object")
-//                                    let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
-//                                    completionClosure(attachFileData: nil, error: convertingError)
-//                                }
-//                            }
-//                        }
-//                        else
-//                        {
-//                            //error
-//                            print("ERROR: Could not convert to array of integers object.")
-//                            let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
-//                            completionClosure(attachFileData: nil, error: arrayConvertingError)
-//                        }
-//                    }
-//                    else
-//                    {
-//                        print(" ERROR: \(jsonReadingError)")
-//                        let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
-//                        completionClosure(attachFileData: nil, error: convertingError)
-//                    }
-//
-//                }
-//                else
-//                {
-//                    print("No response data..")
-//                    completionClosure(attachFileData: NSData(), error: nil)
-//                }
                 
                 let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
                     
@@ -1211,7 +1091,7 @@ class ServerRequester: NSObject
                     
                     if let anError = responseError
                     {
-                        completionClosure?(attachFileData: nil, error: anError)
+                        completion?(attachFileData: nil, error: anError)
                     }
                     else if let synchroData = responseData
                     {
@@ -1225,20 +1105,20 @@ class ServerRequester: NSObject
                                         if arrayOfIntegers.isEmpty
                                         {
                                             print("Empty response for Attach File id = \(attachId)")
-                                            completionClosure?(attachFileData: NSData(), error: nil)
+                                            completion?(attachFileData: NSData(), error: nil)
                                         }
                                         else
                                         {
                                             if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
                                             {
-                                                completionClosure?(attachFileData: lvData, error: nil)
+                                                completion?(attachFileData: lvData, error: nil)
                                             }
                                             else
                                             {
                                                 //error
                                                 print("ERROR: Could not convert response to NSData object")
                                                 let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
-                                                completionClosure?(attachFileData: nil, error: convertingError)
+                                                completion?(attachFileData: nil, error: convertingError)
                                             }
                                         }
                                     }
@@ -1247,19 +1127,21 @@ class ServerRequester: NSObject
                                         //error
                                         print("ERROR: Could not convert to array of integers object.")
                                         let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
-                                        completionClosure?(attachFileData: nil, error: arrayConvertingError)
+                                        completion?(attachFileData: nil, error: arrayConvertingError)
                                     }
                                 }
-//                                else
-//                                {
-//                                    print(" ERROR: \(jsonReadingError)")
-//                                    let convertingError = NSError (domain: "File loading failure", code: -1002, userInfo: [NSLocalizedDescriptionKey: "Could not process response."])
-//                                    completionClosure?(attachFileData: nil, error: convertingError)
-//                                }
-
-                                
+                            }
+                            catch let jsonError as NSError{
+                                if let complete = completion
+                                {
+                                    complete(attachFileData: nil, error: jsonError)
+                                }
                             }
                             catch{
+                                if let complete = completion
+                                {
+                                    complete(attachFileData: nil, error: unKnownExceptionError)
+                                }
                                 
                             }
                             
@@ -1269,7 +1151,7 @@ class ServerRequester: NSObject
                     else
                     {
                         print("No response data..")
-                        completionClosure?(attachFileData: NSData(), error: nil)
+                        completion?(attachFileData: NSData(), error: nil)
                     }
 
                 })
@@ -1280,7 +1162,7 @@ class ServerRequester: NSObject
         }
         else
         {
-            completionClosure?(attachFileData: nil, error: noUserTokenError)
+            completion?(attachFileData: nil, error: noUserTokenError)
         }
     }
         //attach file to element
@@ -1340,7 +1222,7 @@ class ServerRequester: NSObject
                      UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 }
                 catch{
-                    completionClosure?(success: false, attachId:nil ,error: nil)
+                    completionClosure?(success: false, attachId:nil ,error: unKnownExceptionError)
                      UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 }
                 
@@ -1455,7 +1337,7 @@ class ServerRequester: NSObject
                         completion?(avatarData: nil, error: error)
                     }
                     catch{
-                       completion?(avatarData: nil, error: nil)
+                       completion?(avatarData: nil, error: unKnownExceptionError)
                     }
                 }
                 
@@ -1552,7 +1434,7 @@ class ServerRequester: NSObject
                         }catch let error as NSError{
                             completionBlock?(response: nil, error: error)
                         } catch{
-                            completionBlock?(response: nil, error: nil)
+                            completionBlock?(response: nil, error: unKnownExceptionError)
                         }
                        
                     }
@@ -1789,9 +1671,7 @@ class ServerRequester: NSObject
                         
                         if let lvContactsArray = result["GetAllContactsResult"] as? [[String:AnyObject]]
                         {
-                            let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)
-                            
-                            
+                            let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)                            
                             completion?(contacts:convertedContacts, error: nil)
                         }
                         else

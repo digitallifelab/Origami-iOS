@@ -133,7 +133,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return existingHandler
         }
         
-        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
+        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId?.integerValue)
         {
             return ElementAttachedFilesCollectionHandler(items: attaches)
         }

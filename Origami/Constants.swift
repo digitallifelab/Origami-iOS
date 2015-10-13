@@ -59,7 +59,8 @@ let unAttachFileUrlPart = "RemoveFileFromElement"
 
 ////
 
-let noUserTokenError = NSError(domain: "User Token", code: -55, userInfo: [NSLocalizedDescriptionKey:"NoUserToken".localizedWithComment("")])
+let noUserTokenError = NSError(domain: "com.Origami.User Token", code: -55, userInfo: [NSLocalizedDescriptionKey:"NoUserToken".localizedWithComment("")])
+let unKnownExceptionError = NSError(domain: "com.Origami.UnknownExceptionError", code: -56, userInfo: [NSLocalizedDescriptionKey:"UnknownException".localizedWithComment("")])
 //MARK:App-Wide colors
 let kDaySignalColor = UIColor(red: 233.0/255.0, green: 30.0/255.0, blue: 83.0 / 255.0, alpha: 1.0) //UIColor(red: 213.0/255.0, green: 47.0/255.0, blue: 47.0/255.0, alpha: 1.0)
 let kNightSignalColor = UIColor(red: 244.0/255.0, green: 71.0/255.0, blue: 71.0/255.0, alpha: 1.0)

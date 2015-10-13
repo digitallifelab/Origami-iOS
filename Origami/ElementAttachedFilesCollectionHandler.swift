@@ -11,7 +11,7 @@ import UIKit
 class ElementAttachedFilesCollectionHandler: CollectionHandler
 {
     lazy var attachedItems:[AttachFile] = [AttachFile]()
-    lazy var attachData:[NSNumber:MediaFile] = [NSNumber:MediaFile]()
+    lazy var attachData:[Int:MediaFile] = [Int:MediaFile]()
     
     var attachTapDelegate:AttachmentSelectionDelegate?
     
@@ -37,7 +37,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
         if attachCount == 1 //check for
         {
             let attachFile = attachedItems[0]
-            if attachFile.attachID == nil
+            if attachFile.attachID == 0
             {
                 return 0
             }
@@ -60,7 +60,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
         {
             let attachFile = attachedItems[indexPath.item]
             
-            if attachFile.attachID == nil
+            if attachFile.attachID == 0
             {
                 cell.attachIcon.image = UIImage(named: "icon-addAttachment")
                 return
@@ -71,7 +71,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             
             createMediaFileForAttachIfNotExist(attachFile)
             
-            if let mediaFile = attachData[attachFile.attachID!]
+            if let mediaFile = attachData[attachFile.attachID]
             {
                 switch mediaFile.type!
                 {
@@ -93,7 +93,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     
     func createMediaFileForAttachIfNotExist(attachFile:AttachFile) -> Bool
     {
-        if let _ = attachData[attachFile.attachID!]
+        if let _ = attachData[attachFile.attachID]
         {
             return true
         }
@@ -105,7 +105,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
             lvMediaFile.name = attachFile.fileName!
             lvMediaFile.type = .Image
             
-            attachData[attachFile.attachID!] = lvMediaFile
+            attachData[attachFile.attachID] = lvMediaFile
             
             return true
         }
@@ -163,7 +163,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
         var setOfAttaches = Set(self.attachedItems)
         for (lvAttachFile,lvMediaFile) in newData //assign data locally
         {
-            attachData[lvAttachFile.attachID!] = lvMediaFile
+            attachData[lvAttachFile.attachID] = lvMediaFile
             setOfAttaches.insert(lvAttachFile)
         }
         var arrayOfAttaches = Array(setOfAttaches)

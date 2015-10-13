@@ -420,6 +420,7 @@
 		F8016FF21B304619002A1620 /* tools */ = {
 			isa = PBXGroup;
 			children = (
+				F84BC09F1BC57DCC0065D5CC /* Person.swift */,
 				F8016FF01B304614002A1620 /* FrameCounter.swift */,
 				F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */,
 				F864AB191B7252F600686EB1 /* ImageFilter.swift */,
@@ -429,7 +430,6 @@
 				F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */,
 				F86F237A1B208AEE00234EFD /* Constants.swift */,
 				F86F23801B20A29600234EFD /* Protocols.swift */,
-				F84BC09F1BC57DCC0065D5CC /* Person.swift */,
 				F880D17A1B2583CE00E702D3 /* Extensions.swift */,
 				F8D2FF2B1B283DE900584B8D /* Enumerations.swift */,
 				F8DEE7EF1B68FCC60004F0CB /* Structs.swift */,
@@ -1255,7 +1255,7 @@
 				PRODUCT_NAME = "Shevchenko network";
 				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -1324,7 +1324,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1362,6 +1362,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1375,6 +1376,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1386,7 +1391,7 @@
 				PRODUCT_NAME = "Origami task manager";
 				PROVISIONING_PROFILE = "5f41f7ec-b1df-49be-bc89-b137270139a1";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};

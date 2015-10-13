@@ -1184,7 +1184,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func refreshAttachesAndProceedLayoutChangesIdfNeeded()
     {
-        let currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId)
+        let currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId?.integerValue)
         //print("\n Refreshing attaches in viewWillAppear...")
         if let elementIdInt = self.currentElement?.elementId?.integerValue
         {
@@ -1265,7 +1265,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                 
                             }
                         }
-                        else
+                        else //local attaches info do not exist
                         {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                 do{
@@ -1342,7 +1342,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     //MARK: AttachmentSelectionDelegate
     func attachedFileTapped(attachFile:AttachFile)
     {
-        if let _ = attachFile.attachID?.integerValue
+        if attachFile.attachID > 0
         {
             showAttachentDetailsVC(attachFile)
         }
@@ -1350,52 +1350,70 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func showAttachentDetailsVC(file:AttachFile)
     {
+        self.collectionView.userInteractionEnabled = false
         //if it is image - get full image from disc and display in new view controller
-        NSOperationQueue().addOperationWithBlock { () -> Void in
-            let lvFileHandler = FileHandler()
-            if let name = file.fileName, _ = file.attachID?.integerValue, attachCreatorId = file.creatorID?.integerValue
-            {
-                lvFileHandler.loadFileNamed(name, completion: {[weak self] (fileData, loadingError) -> Void in
-                    if let imageData = fileData, _ = UIImage(data: imageData)
+        
+        let lvFileHandler = FileHandler()
+        if let name = file.fileName
+        {
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            
+            NSOperationQueue().addOperationWithBlock
+                { () -> Void in
+            
+                lvFileHandler.loadFileNamed(name) /* completion:*/ {[weak self] (fileData, loadingError) -> Void in
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                if let weakSelf = self
+                {
+                    weakSelf.collectionView.userInteractionEnabled = true
+                }
+                
+                if let imageData = fileData, _ = UIImage(data: imageData)
+                {
+                    if let _ = self
                     {
-                        if let _ = self
+                        if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName, creator: file.creatorID)
                         {
-                            if let fileToDisplay = AttachToDisplay(type: .Image, fileData: fileData, fileName:file.fileName, creator: attachCreatorId)
-                            {
-                                dispatch_async(dispatch_get_main_queue(),
-                                { [weak self]() -> Void in
-                                    if let weakSelf = self
+                            dispatch_async(dispatch_get_main_queue(),
+                            { [weak self]() -> Void in
+                                if let weakSelf = self
+                                {
+                                    switch fileToDisplay.type
                                     {
-                                        switch fileToDisplay.type
+                                    case .Image:
+                                        if let destinationVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
                                         {
-                                        case .Image:
-                                            if let destinationVC = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("AttachImageViewer") as? AttachImageViewerVC
-                                            {
-                                                destinationVC.delegate = weakSelf
-                                                weakSelf.currentShowingAttachName = fileToDisplay.name
-                                                destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
-                                                destinationVC.title = fileToDisplay.name
-                                                destinationVC.fileCreatorId = fileToDisplay.creatorId
-                                                weakSelf.navigationController?.pushViewController(destinationVC, animated: true)
-                                            }
-                                        case .Document:
-                                            fallthrough //TODO: Display some external pdf or text viewer or display inside app
-                                        case .Sound:
-                                            fallthrough //TODO: display VC with music player
-                                        case .Video:
-                                            fallthrough //TODO: display VC with Video player
-                                        default: break
+                                            destinationVC.delegate = weakSelf
+                                            weakSelf.currentShowingAttachName = fileToDisplay.name
+                                            destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
+                                            destinationVC.title = fileToDisplay.name
+                                            destinationVC.fileCreatorId = fileToDisplay.creatorId
+                                            weakSelf.navigationController?.pushViewController(destinationVC, animated: true)
                                         }
+                                    case .Document:
+                                        fallthrough //TODO: Display some external pdf or text viewer or display inside app
+                                    case .Sound:
+                                        fallthrough //TODO: display VC with music player
+                                    case .Video:
+                                        fallthrough //TODO: display VC with Video player
+                                    default: break
                                     }
-                                })
-                            }
+                                }
+                            })
                         }
                     }
-                    })
-                
-
+                }
+                else
+                {
+                    if let weakSelf = self
+                    {
+                        weakSelf.startLoadingDataForMissingAttaches([file])
+                    }
+                }
+            }
             }
         }
+        
     }
     
     //MARK: - AttachViewerDelegate
@@ -1427,7 +1445,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 let attachName = self.currentShowingAttachName
                 DataSource.sharedInstance.deleteAttachedFileNamed(attachName, fromElement: elementIdInt, completion: { [weak self](success, error) -> () in
-                    if let _ = DataSource.sharedInstance.getAttachesForElementById(NSNumber(integer: elementIdInt)) /*still have attaches*/ , weakSelf = self
+                    if let _ = DataSource.sharedInstance.getAttachesForElementById(elementIdInt) /*still have attaches*/ , weakSelf = self
                     {
                             if success
                             {
@@ -1467,7 +1485,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                 })
                             }
                         })
-                        
                     }
                 })
             }

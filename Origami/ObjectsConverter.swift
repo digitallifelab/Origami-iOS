@@ -87,8 +87,7 @@ class ObjectsConverter {
         return array
     }
     
-    
-    class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]?
+    func instanceConverttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]? //test to see if memory leak still will be present //Update. Instruments now don`t say there are any leaks because of AttachFiles loading...  Commenting out the class method
     {
         if dictionaries.isEmpty
         {
@@ -112,14 +111,35 @@ class ObjectsConverter {
         return attaches
     }
     
+//    class func converttoAttaches(dictionaries:[[String:AnyObject]]) -> [AttachFile]? //somehow  xCode Instruments say there is a memory leak
+//    {
+//        if dictionaries.isEmpty
+//        {
+//            return nil
+//        }
+//        var attaches = [AttachFile]()
+//        var currentDict = [String:AnyObject]() //trying to fix slow init memory leak said by instruments
+//        for lvDict in dictionaries
+//        {
+//            currentDict = lvDict
+//            if let aNameString = currentDict["FileName"] as? String
+//            {
+//                let fixedString = aNameString.stringByReplacingOccurrencesOfString("/", withString: "-")
+//                currentDict["FileName"] = fixedString
+//            }
+//            
+//            let lvAttachFile = AttachFile(info: currentDict)
+//            attaches.append(lvAttachFile)
+//        }
+//        print("ObjectsConverter : Attaches: \(attaches.count)")
+//        return attaches
+//    }
+    
     class func sortAttachesByAttachId(inout attachesToSort:[AttachFile])
     {
         attachesToSort.sortInPlace { (attach1, attach2) -> Bool in
-            if let attachId1 = attach1.attachID?.integerValue, attachId2 = attach2.attachID?.integerValue
-            {
-                return attachId1 <= attachId2
-            }
-            return true
+            
+            return attach1.attachID < attach2.attachID
         }
     }
     

@@ -9,10 +9,10 @@
 import Foundation
 class AttachFile :NSObject
 {
-    var attachID:NSNumber?
-    var elementID:NSNumber?
-    var creatorID:NSNumber?
-    var fileSize:NSNumber?
+    var attachID:Int = 0
+    var elementID:Int = 0
+    var creatorID:Int = 0
+    var fileSize:Int = 0
     var fileName:String?
     var createDate:String?
     
@@ -22,22 +22,22 @@ class AttachFile :NSObject
         
         if info.count > 0
         {
-            if let lvCreator = info["CreatorId"] as? NSNumber
+            if let lvCreator = info["CreatorId"] as? Int
             {
                 self.creatorID = lvCreator
             }
             
-            if let lvID = info["Id"] as? NSNumber
+            if let lvID = info["Id"] as? Int
             {
                 self.attachID = lvID
             }
             
-            if let lvElementId = info["ElementId"] as? NSNumber
+            if let lvElementId = info["ElementId"] as? Int
             {
                 self.elementID = lvElementId
             }
             
-            if let lvFileSize = info["Size"] as? NSNumber
+            if let lvFileSize = info["Size"] as? Int
             {
                 self.fileSize = lvFileSize
             }
@@ -58,16 +58,14 @@ class AttachFile :NSObject
     {
         if let attachObject  = object as? AttachFile
         {
-            return (self.attachID?.integerValue == attachObject.attachID?.integerValue && self.elementID?.integerValue == attachObject.elementID?.integerValue && self.fileSize?.integerValue == attachObject.fileSize?.integerValue)
+            return (self.attachID == attachObject.attachID && self.fileSize == attachObject.fileSize)
         }
-        else
-        {
-            return false
-        }
+        
+        return false
     }
     
-    override var hash:Int
-        {
-            return self.attachID!.hashValue ^ self.elementID!.hashValue
+    override var hash:Int {
+        
+            return self.attachID.hashValue ^ self.elementID.hashValue
     }
 }
