@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class Element:NSObject
+class Element:NSObject, CreateDateComparable
 {
     var elementId:NSNumber?
     var rootElementId:NSNumber = NSNumber(integer: 0)
@@ -24,7 +24,7 @@ class Element:NSObject
     var finishDate:NSDate?
     var remindDate:NSDate?
     var creatorId:NSNumber = NSNumber(integer: 0)
-    var createDate:NSString?
+    var createDate:NSString = NSDate.dummyDate()
     var changerId:NSNumber?
     var changeDate:NSString?
     var archiveDate:NSString? {
@@ -35,6 +35,19 @@ class Element:NSObject
             }
         }
     }
+    //MARK: - CreateDateComparable conformance
+    var dateCreated:NSDate? {
+        get{
+            return self.createDate.dateFromServerDateString()
+        }
+        set(newDate){
+            if let newStringDate = newDate?.dateForServer()
+            {
+                self.createDate = newStringDate
+            }
+        }
+    }
+    //MARK: -
     
     convenience init(info:[String:AnyObject])
     {
@@ -236,7 +249,7 @@ class Element:NSObject
     
     func creationDateReadableString(shouldEvaluateCurrentDay shouldEvaluateCurrentDay:Bool = true) -> String?
     {
-        if let created = self.createDate as? String,  date = created.dateFromServerDateString()//, readable = date.timeDateStringShortStyle() as? String
+        if let date = self.createDate.dateFromServerDateString()
         {
             let readable:String = date.timeDateStringShortStyle() as String
             if shouldEvaluateCurrentDay

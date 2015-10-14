@@ -136,9 +136,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
             
             
             return contact1.userName >= contact2.userName
-            
-            // if nothing found
-            return true
         })
     }
 

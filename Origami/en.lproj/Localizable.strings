@@ -67,4 +67,7 @@
 "Display Mode" = "Display Mode";
 
 "Me" = "Me";
-"creator" = "creator";
+"creator" = "Creator";
+
+//Login attempt failures:
+"YouAreBlocked" = "You are blocked, please contact service administrator.";

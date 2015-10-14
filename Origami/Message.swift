@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class Message:NSObject
+class Message:Hashable, CreateDateComparable
 {
     /*
     0 - chat message (user`s answer),
@@ -21,25 +21,39 @@ class Message:NSObject
     12 - changed user info,
     13 - changed user photo,
     14 - definition QUESTION
+    65535 - user was blocked
+    65534 - user was unBlocked
     */
-    var typeId:Int = 0
+    var type:MessageType = .Undefined
     var messageId:Int = 0
     var elementId:NSNumber?
     var creatorId:NSNumber?
     var isNew:NSNumber?
-    var dateCreated:NSDate?
+    
     var textBody:String?
     var firstName:String?
     
+    private var pDateCreated:NSDate?
+    
+    //MARK: - CreateDateComparable conformance
+    var dateCreated:NSDate?{
+        get{
+            return self.pDateCreated
+        }
+        set(newDate){
+            self.pDateCreated = newDate
+        }
+    }
+    //MARK: -
     convenience init(info:[String : AnyObject])
     {
         self.init()
         
         if info.count > 0
         {
-            if let lvTypeId = info["TypeId"] as? Int
+            if let lvTypeId = info["TypeId"] as? Int, mesageType = MessageType(rawValue: lvTypeId)
             {
-                self.typeId = lvTypeId
+                self.type = mesageType
             }
             if let lvMessageId = info["MessageId"] as? Int
             {
@@ -96,7 +110,7 @@ class Message:NSObject
             toReturn["IsNew"] = isNew
         }
         
-        toReturn["TypeId"] = typeId
+        toReturn["TypeId"] = type.rawValue
         
         if firstName != nil
         {
@@ -110,31 +124,7 @@ class Message:NSObject
         return toReturn
     }
     
-    override func isEqual(object:AnyObject?)->Bool
-    {
-        if let message = object as? Message
-        {
-            return (self.messageId == message.messageId &&
-                self.creatorId?.integerValue == message.creatorId?.integerValue &&
-                self.typeId == message.typeId)
-        }
-        else
-        {
-            return false
-        }
-    }
-    
-    override var hash:Int
-        {
-            if self.messageId > 0
-            {
-                return self.messageId.hashValue ^ self.textBody!.hashValue
-            }
-            else
-            {
-                return self.textBody!.hashValue
-            }
-    }
+
     
     func compareToAnotherMessage(another:Message) -> NSComparisonResult
     {
@@ -156,4 +146,23 @@ class Message:NSObject
             return .OrderedSame
         }
     }
+    
+    
+    var hashValue:Int {
+        
+        return self.messageId.hashValue
+    }
+    
 }
+
+func == (lhs:Message, rhs:Message) -> Bool
+{
+    return (
+        lhs.messageId == rhs.messageId &&  lhs.type == rhs.type &&
+        lhs.creatorId?.integerValue == rhs.creatorId?.integerValue
+       
+    )
+}
+
+
+

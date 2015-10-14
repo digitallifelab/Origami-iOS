@@ -15,7 +15,7 @@ class User:Person
     var countryId:NSNumber? //
     var language:NSString? //
     var languageId:NSNumber? //
-    var state:NSNumber? //
+ 
     var sex:NSNumber? //
     var regDate:NSString? //
     var photo:NSData? //
@@ -67,9 +67,9 @@ class User:Person
             {
                 self.sex = lvSex
             }
-            if let state = info["State"] as? NSNumber
+            if let state = info["State"] as? Int, userState = PersonAuthorisationState(rawValue: state)
             {
-                self.state = state
+                self.state = userState
             }
             if let lvPhoto = info["Photo"] as? NSData
             {
@@ -144,10 +144,10 @@ class User:Person
         {
             toReturn["Mood"]  = mood //?? NSNull()
         }
-        if let state = self.state
-        {
-            toReturn["State"] = state //?? NSNull()
-        }
+        //if let state = self.state
+        //{
+            toReturn["State"] = self.state.rawValue// state //?? NSNull()
+        //}
         
         if let sex = self.sex
         {

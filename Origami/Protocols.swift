@@ -90,3 +90,7 @@ protocol AllContactsDelegate
     func reloadUserContactsSender(sender:UIViewController?)
 }
 
+protocol CreateDateComparable {
+    var dateCreated:NSDate?{ get set }
+}
+

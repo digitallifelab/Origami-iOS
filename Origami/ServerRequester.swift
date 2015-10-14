@@ -8,9 +8,11 @@
 
 import UIKit
 
+
 class ServerRequester: NSObject
 {
     typealias networkResult = (AnyObject?,NSError?) -> ()
+    typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
     
     let httpManager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
     
@@ -103,130 +105,84 @@ class ServerRequester: NSObject
         let requestString:String = "\(serverURL)" + "\(loginUserUrlPart)" + "?username=" + userName + "&password=" + password
         //let params = ["username":userName, "password":password]
         
-        if let loginURL = NSURL(string: requestString)
-        {
-            let loginRequest = NSMutableURLRequest(URL: loginURL, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: 30.0)
-            //loginRequest.HTTPMethod = "GET" defaults
-            //loginRequest.setValue(userName, forHTTPHeaderField: "username")
-            //loginRequest.setValue(password, forHTTPHeaderField: "password")
-            loginRequest.setValue("application-json", forHTTPHeaderField: "Accept")
-            loginRequest.setValue("application-json", forHTTPHeaderField: "Content-Type")
-            
-            //6print("\(loginRequest.allHTTPHeaderFields)")
-            let loginTask = NSURLSession.sharedSession().dataTaskWithRequest(loginRequest)/*, completionHandler:*/ { (responseData, urlResponse, responseError) -> Void in
-              
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                
-                if let anError = responseError
-                {
-                    completion?(nil, anError)
-                    return
-                }
-                
-                if let aData = responseData
-                {
-                    //print("\(aData.description)")
-                    
-                    do{
-                        var userToReturn:User?
-                        
-                        if let jsonDict = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableLeaves) as? [String:AnyObject]
-                        {
-                            if let userDict = jsonDict["LoginResult"] as? [String:AnyObject]
-                            {
-                                userToReturn = User(info: userDict)
-                            }
-                        }
-                        
-                        if let aUser = userToReturn
-                        {
-                            completion?(aUser,nil)
-                        }
-                        else
-                        {
-                            completion?(nil, NSError(domain: "com.Origami.DataError", code: -1032, userInfo: [NSLocalizedDescriptionKey:"Could not parse logged user user."]))
-                        }
-                    }
-                    catch let jsonError as NSError{
-                        
-                        //try to handle error response string from server
-                        var shouldProceedError = false
-                        do{
-                            if let errorMessage = try NSJSONSerialization.JSONObjectWithData(aData, options: .AllowFragments) as? String
-                            {
-                                completion?(nil, NSError(domain: "com.Origami.ServerResponse", code: -1034, userInfo: [NSLocalizedDescriptionKey:errorMessage]))
-                            }
-                        }
-                        catch{
-                            shouldProceedError = true
-                        }
-                        
-                        if shouldProceedError{
-                            completion?(nil, jsonError)
-                        }
-                    }
-                    catch{
-                        completion?(nil, NSError(domain: "com.Origami.ExceprionError", code: -1033, userInfo: [NSLocalizedDescriptionKey:"UnknownExceptionError"]))
-                    }
-                }
-                
-            }
-            
-            if #available (iOS 8.0, *)
-            {
-                dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)) { () -> Void in
-                    loginTask.resume()
-                }
-            }
-            else
-            {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
-                    loginTask.resume()
-                }
-            }
-            
+        guard let loginURL = NSURL(string: requestString) else {
+            completion?(nil, NSError(domain: "com.Origami.UrlFormat.error", code: -1020, userInfo: [NSLocalizedDescriptionKey : "Could not validate url for login."]))
             return
         }
         
-        completion?(nil, NSError(domain: "com.Origami.UrlFormat.error", code: -1020, userInfo: [NSLocalizedDescriptionKey : "Could not validate url for login."]))
-        //return
+        let loginRequest = NSMutableURLRequest(URL: loginURL, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: 30.0)
+        loginRequest.setValue("application-json", forHTTPHeaderField: "Accept")
+        loginRequest.setValue("application-json", forHTTPHeaderField: "Content-Type")
         
-//        let loginOperation = httpManager.GET(
-//            requestString,
-//            parameters: params,
-//            success:
-//            { (operation, responseObject) -> Void in
-//            
-//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                if let
-//                    dictionary = responseObject as? [String:AnyObject],
-//                    userDict = dictionary["LoginResult"] as? [String:AnyObject]
-//                {
-//                    let user = User(info: userDict)
-//                    completion?(user, nil)
-//                }
-//                else
-//                {
-//                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:"Could not login, please try once more"])
-//                    completion?(nil, lvError)
-//                }
-//                
-//        })
-//            { (operation, responseError) -> Void in
-//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-////                let errorMessage = operation.responseString
-////                
-////                    let lvError = NSError(domain: "Login Error", code: 701, userInfo: [NSLocalizedDescriptionKey:errorMessage])
-////                    completion?(nil, lvError);
-//                
-////                else
-////                {
-//                    completion?(nil, responseError);
-////                }
-//        }
-//        
-//        loginOperation?.start()
+        let completionClosure :sessionRequestCompletion =  { (responseData, urlResponse, responseError) -> Void in
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            
+            if let anError = responseError
+            {
+                completion?(nil, anError)
+                return
+            }
+            
+            if let aData = responseData
+            {
+                //print("\(aData.description)")
+                
+                do{
+                    var userToReturn:User?
+                    
+                    if let jsonDict = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableLeaves) as? [String:AnyObject]
+                    {
+                        if let userDict = jsonDict["LoginResult"] as? [String:AnyObject]
+                        {
+                            userToReturn = User(info: userDict)
+                        }
+                    }
+                    
+                    if let aUser = userToReturn
+                    {
+                        completion?(aUser,nil)
+                    }
+                    else
+                    {
+                        completion?(nil, NSError(domain: "com.Origami.DataError", code: -1032, userInfo: [NSLocalizedDescriptionKey:"Could not parse logged user user."]))
+                    }
+                }
+                catch let jsonError as NSError{
+                    
+                    //try to handle error response string from server
+                    var shouldProceedError = false
+                    
+                    if let errorResponseString = String(data: aData, encoding: NSUTF8StringEncoding)
+                    {
+                        completion?(nil, NSError(domain: "com.Origami.ServerResponse", code: -1037, userInfo: [NSLocalizedDescriptionKey:errorResponseString]))
+                        return
+                    }
+                    
+                    do{
+                        if let errorMessage = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableLeaves) as? String
+                        {
+                            completion?(nil, NSError(domain: "com.Origami.ServerResponse", code: -1034, userInfo: [NSLocalizedDescriptionKey:errorMessage]))
+                        }
+                    }
+                    catch let jsonToStringError as NSError{
+                        completion?(nil, jsonToStringError)
+                    }
+                    catch{
+                        shouldProceedError = true
+                    }
+                    
+                    if shouldProceedError{
+                        completion?(nil, jsonError)
+                    }
+                }
+                catch{
+                    completion?(nil, NSError(domain: "com.Origami.ExceprionError", code: -1033, userInfo: [NSLocalizedDescriptionKey:"UnknownExceptionError"]))
+                }
+            }
+        }
         
+        self.performGETqueryWithURL(loginURL, onQueue:nil, completion: completionClosure)
     }
     
     //MARK: Languages & Countries
@@ -1311,12 +1267,17 @@ class ServerRequester: NSObject
         let userAvatarRequestURLString = serverURL + "GetPhoto?username=" + loginName
         if let requestURL = NSURL(string: userAvatarRequestURLString)
         {
-            let mutableRequest = NSMutableURLRequest(URL: requestURL)
-            mutableRequest.timeoutInterval = 30.0
-            mutableRequest.HTTPMethod = "GET"
+            var bgQueue:dispatch_queue_t?
+            if #available (iOS 8.0,*)
+            {
+                bgQueue = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
+            }
+            else
+            {
+                bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+            }
             
-            let sessionTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData, response, responseError) -> Void in
-                
+            let completionClosure:sessionRequestCompletion = { (responseData, urlResponse, responseError) -> () in
                 if let anError = responseError
                 {
                     print("\(anError)")
@@ -1327,17 +1288,12 @@ class ServerRequester: NSObject
                 
                 if let responseBytes = responseData
                 {
-
+                    
                     do{
                         if let jsonObject = try NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers) as? [String:AnyObject]
                         {
                             if let response = jsonObject["GetPhotoResult"] as? [Int]
                             {
-//                                var ints = [Int]()
-//                                for aNumber in response
-//                                {
-//                                    ints.append(aNumber.integerValue)
-//                                }
                                 if let aData = NSData.dataFromIntegersArray(response)
                                 {
                                     completion?(avatarData: aData, error: nil)
@@ -1347,72 +1303,28 @@ class ServerRequester: NSObject
                                     completion?(avatarData: nil, error: nil)
                                 }
                             }
-                            
                         }
                         else
                         {
                             completion?(avatarData: nil, error: nil)
                         }
-
+                        
                     }catch let error as NSError{
                         completion?(avatarData: nil, error: error)
                     }
                     catch{
-                       completion?(avatarData: nil, error: unKnownExceptionError)
+                        completion?(avatarData: nil, error: unKnownExceptionError)
                     }
                 }
-                
-                
-            })
+            }
             
-            sessionTask.resume()
+            self.performGETqueryWithURL(requestURL, onQueue: bgQueue, completion: completionClosure)
         }
         
     }
     
     func uploadUserAvatarBytes(data:NSData, completion completionBlock:((response:[NSObject:AnyObject]?, error:NSError?)->())? )
     {
-        /*
-        NSData *imageData = UIImagePNGRepresentation(photo);
-        NSInteger postLength = imageData.length;
-        NSLog(@"uploadNewAvatar: Sending %ld bytes", (long)postLength);
-        NSString *photoUploadURL = [NSString stringWithFormat:@"%@SetPhoto?token=%@", BasicURL, _currentUser.token];
-        
-        NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:photoUploadURL]];
-        [mutableRequest setHTTPMethod:@"POST"];
-        
-        [mutableRequest setHTTPBody:imageData];
-        
-        [NSURLConnection sendAsynchronousRequest:mutableRequest
-        queue:[NSOperationQueue currentQueue]
-        completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError)
-        {
-        if (completionBlock)
-        {
-        if (data)
-        {
-        
-        NSDictionary *responseDict = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-        if (responseDict)
-        {
-        completionBlock(responseDict, nil);
-        }
-        else
-        {
-        NSError *lvError = [NSError errorWithDomain:@"ImageUploading failure" code:NSKeyValueValidationError userInfo:@{NSLocalizedDescriptionKey:@"Wrong request format"} ];
-        completionBlock(nil, lvError);
-        }
-        }
-        else if (connectionError)
-        {
-        NSLog(@"Eror sending photo: %@", connectionError);
-        completionBlock(nil, connectionError);
-        }
-        }
-        }];
-        
-        */
-        
         if data.length == 0
         {
             let error = NSError(domain: "Origami.emptyData.Error", code: -605, userInfo: [NSLocalizedDescriptionKey : "Recieved empty data to upload."])
@@ -1803,6 +1715,12 @@ class ServerRequester: NSObject
         if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let addUrlString = serverURL + "AddContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
+//            if let addToContactsURL = NSURL(string: addUrlString)
+//            {
+//                self.performGETqueryWithURL(addToContactsURL, completion: { (<#NSData?#>, <#NSURLResponse?#>, <#NSError?#>) -> () in
+//                    <#code#>
+//                })
+//            }
             let addContactOperation = httpManager.GET(addUrlString, parameters: nil, success: { (operation, response) -> Void in
                 if let _ = response as? [String:AnyObject]
                 {
@@ -1829,4 +1747,116 @@ class ServerRequester: NSObject
             completionBlock(success: false, error: noUserTokenError)
         }
     }
+    
+    //MARK: - NSURLSession
+    func performGETqueryWithURL(url:NSURL, onQueue:dispatch_queue_t?, priority:Float = 0.5, completion:sessionRequestCompletion)
+    {
+        let request = NSMutableURLRequest(URL: url)
+        request.setValue("application-json", forHTTPHeaderField: "Accept")
+        request.HTTPMethod = "GET"
+ 
+        let postTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: completion)
+        
+        if priority >= 0 && priority <= 1.0
+        {
+            if #available(iOS 8.0, *) {
+                postTask.priority = priority
+            }
+        }
+        
+        if let targetRequestQueue = onQueue
+        {
+            dispatch_async(targetRequestQueue, { _ in
+                 postTask.resume()
+            })
+            return
+        }
+        postTask.resume()
+    }
+    
+    /**
+    Single function to call which performs POST requests to network, optionaly can send data
+        - e.g. images, other file types data
+    - Parameter url: a NSURL object with url, containing additional parameters
+    - Parameter bodyData: optional if you want to send any data to server
+    - Parameter priority: target priority for datatask request . Default value is 0.5 (as Apple`s documentation says)
+    - NOTE: priority value should be between 0.0 and 1.0, otherwise the default priority is used
+    - Parameter onQueue: optional dispatch_queue_t object , on which the dataTask will be called to execute
+    - Parameter completion: an optional closure to set the dataTask`s completionHandler
+    
+    */
+    func performPOSTqueryWithURL(url:NSURL, bodyData:NSData?, onQueue:dispatch_queue_t?, priority:Float = 0.5, completion:sessionRequestCompletion?)
+    {
+        let request = NSMutableURLRequest(URL: url)
+        request.setValue("application-json", forHTTPHeaderField: "Accept")
+        request.HTTPMethod = "POST"
+        
+        if let dataToSend = bodyData
+        {
+            request.HTTPBody = dataToSend
+        }
+        
+        if let completionBlock = completion
+        {
+            let postTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: completionBlock)
+            if #available(iOS 8.0, *)
+            {
+                if priority >= 0 && priority <= 1.0
+                {
+                    postTask.priority = priority
+                }
+            }
+            if let targetRequestQueue = onQueue
+            {
+                dispatch_async(targetRequestQueue) { _ in
+                     postTask.resume()
+                }
+                return
+            }
+            postTask.resume()
+        }
+        else
+        {
+            let postTask = NSURLSession.sharedSession().dataTaskWithRequest(request)
+            if #available(iOS 8.0, *)
+            {
+                if priority >= 0 && priority <= 1.0
+                {
+                    postTask.priority = priority
+                }
+            }
+            
+            if let targetRequestQueue = onQueue
+            {
+                dispatch_async(targetRequestQueue) { _ in
+                    postTask.resume()
+                }
+                return
+            }
+            
+            postTask.resume()
+        }
+    }
+    
 }
+
+
+//JSON Parsing
+//func parseJSON<T where T:CustomDebugStringConvertible>(jsonObjectData:NSData, asObject: T, jsonReadingOptions:NSJSONReadingOptions, completion:(([String:AnyObject]?, NSError?) ->()))
+//{
+//    do{
+//        var targetType = asObject.dynamicType
+//       
+//        
+//        if let result = try NSJSONSerialization.JSONObjectWithData(jsonObjectData, options: jsonReadingOptions) as? targetType
+//        {
+//            completion(result, nil)
+//        }
+//    }
+//    catch let jsonParsingError as NSError {
+//        completion(nil, jsonParsingError)
+//    }
+//    catch{
+//        completion(nil, unKnownExceptionError)
+//    }
+//}

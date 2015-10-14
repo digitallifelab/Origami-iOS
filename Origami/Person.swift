@@ -13,6 +13,7 @@ class Person //: NSObject
     var lastName:String?
     var userName:String = ""
     var mood:String?
+    var state:PersonAuthorisationState = .Undefined
     
     func nameAndLastNameSpacedString() -> String?
     {

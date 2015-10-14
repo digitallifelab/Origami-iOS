@@ -112,7 +112,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var countRows = 0
-        if let _ = handledElement?.createDate?.timeDateStringFromServerDateString() as? String
+        if let _ = handledElement?.createDate.timeDateStringFromServerDateString() as? String
         {
             countRows += 1
         }
@@ -155,7 +155,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         {
         case 0:
             cell.titleLabel.text = "Created".localizedWithComment("")
-            cell.dateLael.text = handledElement?.createDate?.dateFromServerDateString()?.timeDateString() as String? ?? nil
+            cell.dateLael.text = handledElement?.createDate.dateFromServerDateString()?.timeDateString() as String? ?? nil
         case 1:
             cell.titleLabel.text = "Changed".localizedWithComment("")
             cell.dateLael.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateString() as String? ?? nil

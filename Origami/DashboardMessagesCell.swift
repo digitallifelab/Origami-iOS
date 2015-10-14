@@ -78,7 +78,7 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
             let filteredSetOfMessages = currentMessagesSet.exclusiveOr(newMessages)
             var messagesArray = Array(filteredSetOfMessages)
             
-            ObjectsConverter.sortMessagesByDate(&messagesArray)
+            ObjectsConverter.sortMessagesByDate(&messagesArray, >)
             
             let count = messagesArray.count
             if count > MaximumLastMessagesCount

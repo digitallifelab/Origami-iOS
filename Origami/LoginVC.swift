@@ -65,7 +65,17 @@ class LoginVC: UIViewController , UITextFieldDelegate
             {
                 if let aUser = user
                 {
-                    weakSelf.userDidLogin(aUser)
+                    switch aUser.state{
+                    case .Normal:
+                         weakSelf.userDidLogin(aUser)
+                    case .NeedToConfirm:
+                        print("\n ! A User is not activated yet.-> MUST change passford.\n")
+                    case .Blocked: 
+                         weakSelf.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:"YouAreBlocked".localizedWithComment(""), cancelButtonTitle:"Close".localizedWithComment(""))
+                    default:
+                        weakSelf.showAlertWithTitle("FailedToLogin", message: "Unknown User Type", cancelButtonTitle: "Close".localizedWithComment(""))
+                    }
+                   
                 }
                 else if let anError = error
                 {

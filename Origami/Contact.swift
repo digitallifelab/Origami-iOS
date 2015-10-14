@@ -15,16 +15,10 @@ class Contact:Person, Hashable
     var countryId:NSNumber?
     var language:NSString?
     var languageId:NSNumber?
-    
-//    var firstName:NSString?
-//    var lastName:NSString?
-//    var userName:NSString?
-    
+
     var lastSync:NSString?
     var contactId:Int = 0
-    
-    //var mood:NSString?
-    var state:NSNumber?
+
     var sex:NSNumber?
     var regDate:NSString?
     var photo:NSData?
@@ -65,9 +59,9 @@ class Contact:Person, Hashable
             self.isFavourite = fav
         }
         
-        if let lvState = info["State"] as? NSNumber
+        if let lvState = info["State"] as? Int, contactState = PersonAuthorisationState(rawValue: lvState)
         {
-            self.state = lvState
+            self.state = contactState
         }
         if let reg = info["RegDate"] as? NSString
         {
@@ -126,7 +120,7 @@ class Contact:Person, Hashable
         toReturn["ContactId"]   = self.contactId
         
         toReturn["Mood"]        = self.mood //?? NSNull()
-        toReturn["State"]       = self.state //?? NSNull()
+        toReturn["State"]       = self.state.rawValue //?? NSNull()
         toReturn["Sex"]         = self.sex  //?? NSNull()
         if let phoneNumber = self.phone as? String
         {
@@ -170,53 +164,10 @@ class Contact:Person, Hashable
         }
         return nil
     }
-//    
-//    func nameAndLastNameSpacedString() -> String?
-//    {
-//        var nameString = ""
-//        if let firstName = self.firstName as? String
-//        {
-//            nameString += firstName
-//        }
-//        if let lastName = self.lastName as? String
-//        {
-//            if nameString.isEmpty
-//            {
-//                nameString = lastName
-//            }
-//            else
-//            {
-//                nameString += (" " + lastName)
-//            }
-//        }
-//        
-//        if nameString.isEmpty
-//        {
-//            return nil
-//        }
-//        return nameString
-//    }
-    
-//    //MARK: Set , NSSet stuff
-//    override func isEqual(contact:AnyObject?)->Bool
-//    {
-//        if let object = contact as? Contact
-//        {
-//            if let selfContactId = self.contactId, let objectContactId = object.contactId
-//            {
-//                if selfContactId == objectContactId
-//                {
-//                    return true
-//                }
-//            }
-//        }
-//        
-//        return false
-//    }
-    
-    /*override */var hashValue:Int
+
+    var hashValue:Int
     {
-            return self.userName.hashValue ^ self.contactId.hashValue
+        return self.userName.hashValue ^ self.contactId.hashValue
     }
     
 }

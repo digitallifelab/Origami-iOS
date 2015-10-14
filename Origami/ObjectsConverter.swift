@@ -169,22 +169,39 @@ class ObjectsConverter {
             /*
             12 - changed user info,
             13 - changed user photo
+            TypeId = 65535 - user was blocked
+            TypeId = 65534 - user was unBlocked
             */
+            //var shouldStoreMessage = true
             
-            switch lvNewMessage.typeId
+            switch lvNewMessage.type
             {
-            case 0:
-                break//print(" - Chat message: \" \(lvNewMessage.textBody) \"")
-            case 1:
-                print(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
-            case 12:
-                print(" - service message - changed user info. \" \(lvNewMessage.textBody) \"")
-            case 13:
-                print(" - Sevrice Message - changed user photo. \" \(lvNewMessage.textBody) \".")
-            default:
-                break
+                case .Undefined:
+                    print("")
+                    assert(false, "Undefined message detected. Please debug client-server communication")
+                case .ChatMessage:
+                    break//print(" - Chat message: \" \(lvNewMessage.textBody) \"")
+                case .Invitation:
+                    print(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
+                case .UserInfoUpdated:
+                    print(" - service message - changed user info. \" \(lvNewMessage.textBody) \"")
+                    //shouldStoreMessage = false
+                case .UserPhotoUpdated:
+                    print(" - Sevrice Message - changed user photo. \" \(lvNewMessage.textBody) \".")
+                   // shouldStoreMessage = false
+                case .UserBlocked:
+                    print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
+                    //shouldStoreMessage = false
+                case .UserUnblocked:
+                    print("\n-> User Was UnBlosked: userID = \(lvNewMessage.textBody!) \n")
+                    //shouldStoreMessage = false
+    //            default:
+    //                break
             }
-            toReturn.append(lvNewMessage)
+            
+            //if shouldStoreMessage{
+                toReturn.append(lvNewMessage)
+            //}
         }
         
         toReturn.sortInPlace { (message1, message2) -> Bool in
@@ -215,22 +232,18 @@ class ObjectsConverter {
                         
                     }
                 }
-                else if let created1 = element1.createDate, created2 = element2.createDate
+                else if let
+                    date1 = element1.createDate.dateFromServerDateString(),
+                    date2 = element2.createDate.dateFromServerDateString()
                 {
-                    let  date1 = created1.dateFromServerDateString()
-                    let  date2 = created2.dateFromServerDateString()
-                    if date1 != nil && date2 != nil
+                    let result = date1.compare(date2)
+                    if result == NSComparisonResult.OrderedDescending
                     {
-                        let result = date1!.compare(date2!)
-                        if result == NSComparisonResult.OrderedDescending
-                        {
-                            //print("\n date1: \(date1) is older than date2: \(date2) ")
-                            return true
-                        }
-                        //print("date1: \(date1) is earlier than date2: \(date2) ")
-                        return false
-                        
+                        //print("\n date1: \(date1) is older than date2: \(date2) ")
+                        return true
                     }
+                    //print("date1: \(date1) is earlier than date2: \(date2) ")
+                    return false
                 }
                 
                 return false
@@ -278,19 +291,12 @@ class ObjectsConverter {
         return newElements
     }
     
-    class func sortMessagesByDate(inout messages:[Message])
+    class func sortMessagesByDate(inout messages:[Message],  _ sortingFunction:((Message, Message)->Bool))
     {
         if messages.count > 1
         {
-            messages.sortInPlace { (message1, message2) -> Bool in
-                
-                return (message1.compareToAnotherMessage(message2) == .OrderedAscending)
-            }
+            messages.sortInPlace { (message1, message2) -> Bool in  return sortingFunction(message1, message2) }
             print("\n -> sorting  Messages by date finished: ---->")
-//            for aMessage in messages
-//            {
-//                print(aMessage.elementId, aMessage.messageId, aMessage.dateCreated)
-//            }
         }
     }
     

@@ -208,14 +208,33 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var lvMessagesHolder = [NSNumber:[Message]]()
                     for lvMessage in messagesArray
                     {
-                        if lvMessagesHolder[lvMessage.elementId!] != nil
-                        {
-                            lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
+                        switch lvMessage.type{
+                        case .ChatMessage:
+                            if lvMessagesHolder[lvMessage.elementId!] != nil
+                            {
+                                lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
+                            }
+                            else
+                            {
+                                lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
+                            }
+                        case .Undefined:
+                            print(" will not store UNDEFINED message")
+                            
+                            //service messages
+                        case .Invitation:
+                            print(".Invitation Need to handle invitation from user")
+                            
+                        case .UserInfoUpdated:
+                            print(".UserInfoUpdated")
+                        case .UserPhotoUpdated:
+                            print(".UserPhotoUpdated")
+                        case .UserBlocked:
+                            print(".UserBlocked")
+                        case .UserUnblocked:
+                            print(".UserUnblocked")
                         }
-                        else
-                        {
-                            lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
-                        }
+                            
                     }
                     
                     if !lvMessagesHolder.isEmpty
@@ -513,33 +532,29 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
             var sortedArray = Array(allMessagesSet)
             
-            ObjectsConverter.sortMessagesByDate(&sortedArray)
+            ObjectsConverter.sortMessagesByDate(&sortedArray, > )
+            var lastThreeItems = [Message]()
+            var index = 0
             
-
-                var lastThreeItems = [Message]()
-                let reversed = Array(sortedArray.reverse())
-                var index = 0
-            
-            var elementIDsToDeleteMessageSet = Set<NSNumber>()
-            for _ in reversed
+            var elementIDsToDeleteMessageSet = Set<Int>()
+            for aMessage in sortedArray
             {
                 if lastThreeItems.count > 2
                 {
                     break
                 }
                 
-                let lastMessage = reversed[index]
                 index += 1
                 
-                if let elementId = lastMessage.elementId
+                if let elementIdInt = aMessage.elementId?.integerValue
                 {
-                    if let _ = DataSource.sharedInstance.getElementById(elementId.integerValue)
+                    if let _ = DataSource.sharedInstance.getElementById(elementIdInt)
                     {
-                        lastThreeItems.insert(lastMessage, atIndex: 0)
+                        lastThreeItems.insert(aMessage, atIndex: 0)
                     }
                     else
                     {
-                        elementIDsToDeleteMessageSet.insert(elementId)
+                        elementIDsToDeleteMessageSet.insert(elementIdInt)
                     }
                 }
                 
@@ -553,6 +568,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 if let completionBlock = completionClosure
                 {
+                    
                     completionBlock(messages: lastThreeItems) //return result
                 }
             })
@@ -592,7 +608,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
     }
     
-    func removeMessagesForDeletedElements(elementIDs:Set<NSNumber>)
+    func removeMessagesForDeletedElements(elementIDs:Set<Int>)
     {
         if DataSource.sharedInstance.isRemovingObsoleteMessages
         {
@@ -608,7 +624,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             if !DataSource.sharedInstance.messages.isEmpty
             {
-                if DataSource.sharedInstance.messages.removeValueForKey(anId) != nil
+                if DataSource.sharedInstance.messages.removeValueForKey(NSNumber(integer:anId)) != nil
                 {
                     print(" -> Deleted messages array.")
                 }
@@ -2644,6 +2660,4 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }) //end of dispatch queue block
     }
-
-
 }

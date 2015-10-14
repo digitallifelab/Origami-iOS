@@ -186,3 +186,24 @@ enum NewElementCreationType
     case Decision
     case None
 }
+
+enum PersonAuthorisationState:Int {
+    case Undefined = -1
+    case Normal = 0
+    case NeedToConfirm = 1
+    case Blocked = 0xFFFF
+    
+    mutating func updateTo(newState:PersonAuthorisationState) {
+        self = newState
+    }
+}
+
+enum MessageType:Int {
+    case Undefined = -1
+    case ChatMessage = 0
+    case Invitation = 1
+    case UserInfoUpdated = 12
+    case UserPhotoUpdated = 13
+    case UserUnblocked = 65534
+    case UserBlocked = 65535
+}
