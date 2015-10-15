@@ -55,25 +55,34 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
     private var privScrolDirection:UICollectionViewScrollDirection = .Horizontal
     private var privInterItemSize = CGSizeMake(5.0, 5.0)
     private var privItemSize = CGSizeMake(90.0, 70.0)
+    
     private var attributes:[UICollectionViewLayoutAttributes]?
+    
     private var contentSize:CGSize = CGSizeMake(310.0, 80.0)
     private var privMinimumHorizontalSpacing:CGFloat = 5.0
     
     convenience init(filesCount:Int)
     {
+        print("AttachesCollectionViewLayout initializing with fileCount: \(filesCount)")
         self.init()
         self.attachesCount = filesCount
-        self.configureAttributes()
+        //self.configureAttributes()
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         
-        if let superAttributes = super.layoutAttributesForElementsInRect(rect) {
-            
-            
-            if self.attributes != nil
+        if let superAttributes = super.layoutAttributesForElementsInRect(rect)
+        {
+            if let existingAttrs = self.attributes
             {
-                return attributes
+                if !existingAttrs.isEmpty
+                {
+                    print("")
+                    return existingAttrs
+                }
+                
+                return nil
+                
             }
             else
             {
@@ -104,9 +113,16 @@ class AttachesCollectionViewLayout: UICollectionViewFlowLayout {
         }
     }
     
+    override func invalidateLayout() {
+        super.invalidateLayout()
+        self.attributes?.removeAll(keepCapacity: true)
+        self.attributes = nil
+    }
+    
     override func prepareLayout() {
         
         super.prepareLayout()
+        
         if self.attributes == nil
         {
             configureAttributes()

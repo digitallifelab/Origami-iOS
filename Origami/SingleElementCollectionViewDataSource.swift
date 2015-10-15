@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate
+class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate, AttachmentCellDelegate
 {
     var displayMode:DisplayMode = .Day
     var titleCellMode:ElementDashboardTitleCellMode = .Title
@@ -21,10 +21,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     var detailsCell:SingleElementDetailsCell?
     var currentCellsOptions:ElementCellsOptions?
     
-    var attachesHandler:ElementAttachedFilesCollectionHandler?
+    //var attachesHandler:ElementAttachedFilesCollectionHandler?
     var subordinatesByIndexPath:[NSIndexPath : Element]?
     var taskUserAvatar:UIImage?
-    
+    var currentAttaches:[AttachFile]?
     weak var handledCollectionView:UICollectionView?
     
     weak var handledElement:Element? {
@@ -50,10 +50,13 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
                 
             }
-            if let attachesCollectionHandler = getElementAttachesHandler()
+            
+            //self.attachesHandler = nil
+            
+            if let attachesForElement = getElementAttaches()//let attachesCollectionHandler = getElementAttachesHandler()
             {
-                //print("\n appended ATTACHES")
-                self.attachesHandler = attachesCollectionHandler
+                print("\n -> Current Attaches : \(attachesForElement.count)")
+                self.currentAttaches = attachesForElement
                 options.append(.Attaches)
             }           
             
@@ -95,7 +98,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return nil
         }
         
-        self.handledElement = element!
+        //self.handledElement = element!
     }
     
     func getElementTitle() -> String?
@@ -126,19 +129,13 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         return nil
     }
     
-    func getElementAttachesHandler() -> ElementAttachedFilesCollectionHandler?
+    func getElementAttaches() -> [AttachFile]?
     {
-        if let existingHandler = attachesHandler
-        {
-            return existingHandler
-        }
-        
         if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId?.integerValue)
         {
-            return ElementAttachedFilesCollectionHandler(items: attaches)
+            return  attaches
         }
         return nil
-        
     }
     
     func getElementSubordinates() -> [Element]?
@@ -302,7 +299,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int
     {
         let itemsCount = countAllItems()
-        print("\(self)  -> \n items count: \(itemsCount)")
+        //print("SingleElementCOllectionDataSource  -> \n items count: \(itemsCount)\n")
         return itemsCount
     }
     
@@ -543,37 +540,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         case .Attaches:
             
             let aCell:AnyObject = collectionView.dequeueReusableCellWithReuseIdentifier("AttachesHolderCell", forIndexPath: indexPath)
-            if let attachesHolderCell = aCell as? SingleElementAttachesCollectionHolderCell
+            if let attachesHolderCell = aCell as? SingleElementAttachesCollectionHolderCell,  _ = self.currentAttaches
             {
-                if let attachHandler = self.attachesHandler
-                {
-                    attachHandler.attachTapDelegate = self.attachTapDelegate
-                    attachesHolderCell.attachesCollectionView.delegate = attachHandler
-                    attachesHolderCell.attachesCollectionView.dataSource = attachHandler
-                    attachesHandler?.collectionView = attachesHolderCell.attachesCollectionView
-                    let aLayout = AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count)
-                    attachesHolderCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
-                    
-                }
-                //print("\n-----------returning attach file collection holder cell-----------\n")
+                attachesHolderCell.attachesCollectionView?.delegate = attachesHolderCell
+                attachesHolderCell.delegate = self
+                attachesHolderCell.attachesCollectionView?.dataSource = attachesHolderCell
+                attachesHolderCell.attachesCollectionView?.reloadData()
                 return attachesHolderCell
             }
             else
             {
-                print("\n - ! ERROR: \n SingleElementCollectionViewDataSource Could not dequeue attachesHolder cell.\n Returning default collectionViewCell")
-                
-                let defaultCell = SingleElementAttachesCollectionHolderCell()
-                if let attachHandler = self.attachesHandler
-                {
-                    attachHandler.attachTapDelegate = self.attachTapDelegate
-                    defaultCell.attachesCollectionView.delegate = attachHandler
-                    defaultCell.attachesCollectionView.dataSource = attachHandler
-                    attachesHandler?.collectionView = defaultCell.attachesCollectionView
-                    let aLayout = AttachesCollectionViewLayout(filesCount: self.attachesHandler!.attachedItems.count)
-                    defaultCell.attachesCollectionView.setCollectionViewLayout(aLayout, animated: false) //collectionViewLayout = aLayout//
-                    
-                }
-                return defaultCell
+                assert(false, "")
             }
             
         case .Subordinates:
@@ -649,7 +626,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     //MARK: UICollectionViewDelegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
     {
-        
         if let
             subordinatesStore = self.subordinatesByIndexPath,
             lvElement = subordinatesStore[indexPath]
@@ -711,5 +687,98 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
         }
         return nil
+    }
+    
+    //MARK: - AttachCellDelegate
+    func attachTappedAtIndexPath(indexPath:NSIndexPath)
+    {
+        if let foundAttach = attachAtIndexPath(indexPath)
+        {
+            self.attachTapDelegate?.attachedFileTapped(foundAttach)
+        }
+        else
+        {
+            print("\n ERROR! Tryed to tap on non existing attach file....\n")
+        }
+    }
+    func attachesCount() -> Int
+    {
+        guard let lvAttaches = self.currentAttaches else
+        {
+            return 0
+        }
+        return lvAttaches.count
+    }
+    func titleForAttachmentAtIndexPath(indexPath:NSIndexPath) -> String?
+    {
+        guard let _ = self.currentAttaches else
+        {
+            return nil
+        }
+        
+        guard let foundAttach = attachAtIndexPath(indexPath) else{
+            return nil
+        }
+        
+        return foundAttach.fileName
+    }
+    
+    func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> UIImage?
+    {
+        guard let foundAttach = attachAtIndexPath(indexPath) else {
+            return nil
+        }
+        
+        if let previewImageDataDict = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(foundAttach), imageData =  previewImageDataDict[foundAttach]
+        {
+            return UIImage(data:imageData)
+        }
+        return UIImage(named: "icon-No-Image")
+    }
+    
+    private func attachAtIndexPath(indexPath:NSIndexPath) -> AttachFile?
+    {
+        if let foundAttach = self.currentAttaches?[indexPath.row]
+        {
+            return foundAttach
+        }
+        return nil
+    }
+    
+    //external
+    func deleteAttachNamed(name:String)
+    {
+        guard let attaches = self.currentAttaches else
+        {
+            return
+        }
+        
+        var lvIndexPath:NSIndexPath?
+        var currentItem = 0
+        for anAttach in attaches
+        {
+            guard let fileName = anAttach.fileName else
+            {
+                currentItem += 1
+                continue
+            }
+            if fileName == name
+            {
+                lvIndexPath = NSIndexPath(forItem: currentItem, inSection: 0)
+                break
+            }
+            currentItem += 1
+        }
+        
+        if let pathToRemove = lvIndexPath
+        {
+            self.currentAttaches?.removeAtIndex(pathToRemove.item)
+            if let collectionView = self.handledCollectionView
+            {
+                collectionView.reloadSections(NSIndexSet(index:0))
+                return
+            }
+            print(" ---- -- - - - - - -\n -_ --_ -")
+        }
     }
 }

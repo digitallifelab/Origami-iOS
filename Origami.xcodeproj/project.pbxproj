@@ -60,7 +60,6 @@
 		F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
 		F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */; };
 		F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
-		F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */; };
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
 		F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
@@ -76,7 +75,7 @@
 		F88564041B31CBE3005D223E /* ChatMessageSentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88564031B31CBE3005D223E /* ChatMessageSentCell.swift */; };
 		F88668121B4295C40021C806 /* ParticipantsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668111B4295C40021C806 /* ParticipantsVC.swift */; };
 		F88668141B429FC30021C806 /* ContactCheckerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668131B429FC30021C806 /* ContactCheckerCell.swift */; };
-		F8885A911B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */; };
+		F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
 		F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */; };
 		F891BBE61B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */; };
 		F891BBE81B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F891BBE71B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift */; };
@@ -97,7 +96,6 @@
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
-		F8C62DC51B3AC2A500324C0B /* AttachesCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */; };
 		F8C65F371B98AA5A001EDEA6 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C65F231B98AA5A001EDEA6 /* AFHTTPRequestOperation.m */; };
 		F8C65F381B98AA5A001EDEA6 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C65F231B98AA5A001EDEA6 /* AFHTTPRequestOperation.m */; };
 		F8C65F391B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C65F251B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.m */; };
@@ -152,10 +150,9 @@
 		F8C93AE61B861B94009D890E /* MediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BAC21B399880006B507D /* MediaFile.swift */; };
 		F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88563FD1B31C48B005D223E /* ChatTextInputView.swift */; };
 		F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */; };
-		F8C93AEA1B861B94009D890E /* ElementAttachedFilesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */; };
 		F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */; };
 		F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */; };
-		F8C93AED1B861B94009D890E /* ElementDashboardAttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */; };
+		F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
 		F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
 		F8C93AEF1B861B94009D890E /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1DFD21B7B74BE00A66692 /* Language.swift */; };
 		F8C93AF01B861B94009D890E /* SingleElementCollectionViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6B1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift */; };
@@ -166,7 +163,6 @@
 		F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */; };
 		F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
 		F8C93AFB1B861B94009D890E /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */; };
-		F8C93AFC1B861B94009D890E /* AttachesCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */; };
 		F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74281B56838B00E48E13 /* MyContactsListVC.swift */; };
 		F8C93AFE1B861B94009D890E /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5D1B21C81600156CEC /* LoginVC.swift */; };
 		F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
@@ -290,7 +286,6 @@
 		F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
 		F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPreviewCell.swift; sourceTree = "<group>"; };
 		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
-		F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementAttachedFilesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
 		F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableItemPickerVC.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
@@ -305,7 +300,7 @@
 		F88564031B31CBE3005D223E /* ChatMessageSentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageSentCell.swift; sourceTree = "<group>"; };
 		F88668111B4295C40021C806 /* ParticipantsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipantsVC.swift; sourceTree = "<group>"; };
 		F88668131B429FC30021C806 /* ContactCheckerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCheckerCell.swift; sourceTree = "<group>"; };
-		F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardAttachedFileCell.swift; sourceTree = "<group>"; };
+		F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachedFileCell.swift; sourceTree = "<group>"; };
 		F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationController.swift; sourceTree = "<group>"; };
 		F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSignalsHiddenFlowLayout.swift; sourceTree = "<group>"; };
 		F891BBE71B4ECD2300A1AB16 /* ElementSubordinatesSimpleLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesSimpleLayout.swift; sourceTree = "<group>"; };
@@ -325,7 +320,6 @@
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
-		F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachesCollectionViewLayout.swift; sourceTree = "<group>"; };
 		F8C65F221B98AA5A001EDEA6 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		F8C65F231B98AA5A001EDEA6 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		F8C65F241B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -522,8 +516,6 @@
 			isa = PBXGroup;
 			children = (
 				F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */,
-				F874D91E1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift */,
-				F8C62DC41B3AC2A500324C0B /* AttachesCollectionViewLayout.swift */,
 			);
 			name = AttachesCell;
 			sourceTree = "<group>";
@@ -789,7 +781,7 @@
 			isa = PBXGroup;
 			children = (
 				F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */,
-				F8885A901B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift */,
+				F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */,
 				F8C62DC31B3AC25600324C0B /* AttachesTableHeaderView */,
 			);
 			name = CollectionViewCell;
@@ -1041,10 +1033,9 @@
 				F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */,
 				F84D791E1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */,
 				F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
-				F8C93AEA1B861B94009D890E /* ElementAttachedFilesCollectionHandler.swift in Sources */,
 				F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */,
 				F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */,
-				F8C93AED1B861B94009D890E /* ElementDashboardAttachedFileCell.swift in Sources */,
+				F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */,
 				F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */,
 				F8C93AEF1B861B94009D890E /* Language.swift in Sources */,
 				F8C93AF01B861B94009D890E /* SingleElementCollectionViewDataSource.swift in Sources */,
@@ -1056,7 +1047,6 @@
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F8C65F421B98AA5A001EDEA6 /* AFSecurityPolicy.m in Sources */,
 				F8C93AFB1B861B94009D890E /* HomeNavigationController.swift in Sources */,
-				F8C93AFC1B861B94009D890E /* AttachesCollectionViewLayout.swift in Sources */,
 				F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */,
 				F8C93AFE1B861B94009D890E /* LoginVC.swift in Sources */,
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
@@ -1148,11 +1138,10 @@
 				F8D9BAC31B399880006B507D /* MediaFile.swift in Sources */,
 				F88563FE1B31C48B005D223E /* ChatTextInputView.swift in Sources */,
 				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,
-				F874D91F1B270CBC00B867BF /* ElementAttachedFilesCollectionHandler.swift in Sources */,
 				F8C65F491B98AA5A001EDEA6 /* AFURLSessionManager.m in Sources */,
 				F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */,
 				F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */,
-				F8885A911B54FAE4000053C9 /* ElementDashboardAttachedFileCell.swift in Sources */,
+				F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */,
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
 				F8A1DFD31B7B74BE00A66692 /* Language.swift in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
@@ -1164,7 +1153,6 @@
 				F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */,
 				F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */,
 				F80656CB1B99AFCB008258F8 /* DataRefresher.swift in Sources */,
-				F8C62DC51B3AC2A500324C0B /* AttachesCollectionViewLayout.swift in Sources */,
 				F8C65F411B98AA5A001EDEA6 /* AFSecurityPolicy.m in Sources */,
 				F86F74291B56838B00E48E13 /* MyContactsListVC.swift in Sources */,
 				F8C65F3F1B98AA5A001EDEA6 /* AFNetworkReachabilityManager.m in Sources */,

@@ -124,8 +124,6 @@ class Message:Hashable, CreateDateComparable
         return toReturn
     }
     
-
-    
     func compareToAnotherMessage(another:Message) -> NSComparisonResult
     {
         if self.dateCreated != nil  && another.dateCreated != nil
@@ -146,8 +144,7 @@ class Message:Hashable, CreateDateComparable
             return .OrderedSame
         }
     }
-    
-    
+    //MARK: - Hashable conformance
     var hashValue:Int {
         
         return self.messageId.hashValue
@@ -155,6 +152,7 @@ class Message:Hashable, CreateDateComparable
     
 }
 
+//MARK: - Comparable conformance
 func == (lhs:Message, rhs:Message) -> Bool
 {
     return (

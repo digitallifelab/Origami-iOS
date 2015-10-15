@@ -1337,11 +1337,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         if let foundAttaches = DataSource.sharedInstance.attaches[lvElementId]
         {
-            if foundAttaches.isEmpty
+            if !foundAttaches.isEmpty
             {
-                return nil
+                return foundAttaches
             }
-            return foundAttaches
         }
         
         return nil
@@ -1643,6 +1642,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return nil
         }
     }
+    
     /**
     Tries to read file by name from disc
     If file data was found, the previewImage is stored in cache
@@ -1665,7 +1665,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             //print("\n--- Inserting imagePreview data \(imagePreviewData.length) bytes to cache...")
                             DataSource.sharedInstance.dataCache.setObject(imagePreviewData, forKey: attachFile.fileName!)
                             outerFileData = imagePreviewData
-                
                     }
                     else
                     {
@@ -1676,11 +1675,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     print(" ->FileReadingError: \n\(error.localizedDescription)")
                 }
-                
             })
         
         return outerFileData
     }
+    
     /**
     Reads attach previewData from local cache by file name
     - Parameter fileName: fileName of AttachFile

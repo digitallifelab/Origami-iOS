@@ -154,9 +154,14 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
         }
         if !attributesToReturn.isEmpty
         {
+//            print("ElementsInRect:")
+//            for anAttribute in attributesToReturn
+//            {
+//                print("\(anAttribute.indexPath), \(anAttribute.frame)")
+//            }
             return attributesToReturn
         }
-        
+        print("\n \(self) -> \n ElementsInRect:  NULL! \n")
         return nil
     }
     

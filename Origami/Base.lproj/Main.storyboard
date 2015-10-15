@@ -1170,7 +1170,7 @@
                                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                                     </collectionViewFlowLayout>
                                                     <cells>
-                                                        <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="AttachedFileCell" id="FF7-1U-MAP" userLabel="attachCell" customClass="ElementDashboardAttachedFileCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                                        <collectionViewCell clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="AttachedFileCell" id="FF7-1U-MAP" userLabel="attachCell" customClass="AttachedFileCell" customModule="Origami_task_manager" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="15" width="90" height="70"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
@@ -1222,8 +1222,8 @@
                                                                 </mask>
                                                             </variation>
                                                             <connections>
-                                                                <outlet property="attachIcon" destination="gfS-kd-YKf" id="8cs-JJ-O0u"/>
-                                                                <outlet property="titleLabel" destination="FS5-ud-JMl" id="TC9-a0-qJD"/>
+                                                                <outlet property="attachIcon" destination="gfS-kd-YKf" id="tSP-3e-ZDs"/>
+                                                                <outlet property="titleLabel" destination="FS5-ud-JMl" id="zHH-y9-EIO"/>
                                                             </connections>
                                                         </collectionViewCell>
                                                     </cells>

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ElementDashboardAttachedFileCell: UICollectionViewCell
+class AttachedFileCell: UICollectionViewCell
 {
     @IBOutlet var titleLabel:UILabel!
     @IBOutlet var attachIcon:UIImageView!

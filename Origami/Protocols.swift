@@ -24,6 +24,14 @@ protocol AttachmentSelectionDelegate
     func attachedFileTapped(attachFile:AttachFile)
 }
 
+protocol AttachmentCellDelegate
+{
+    func attachTappedAtIndexPath(indexPath:NSIndexPath)
+    func attachesCount() -> Int
+    func titleForAttachmentAtIndexPath(indexPath:NSIndexPath) -> String?
+    func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> UIImage?
+}
+
 protocol AttachViewerDelegate
 {
     func attachViewerDeleteAttachButtonTapped(viewer:UIViewController)

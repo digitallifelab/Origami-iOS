@@ -22,6 +22,7 @@ class ElementAttachedFilesCollectionHandler: CollectionHandler
     
     convenience init?(items:[AttachFile]) // failable initializer - we don`t need to show attach files collection view in element`s dashboard, if there are no attached files
     {
+        print("AttachesHandler initializing with items: \(items.count)")
         self.init()
         if items.isEmpty
         {
