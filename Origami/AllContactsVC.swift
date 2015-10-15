@@ -136,7 +136,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         if let contact = contactForIndexPath(indexPath)
         {
             let mine = contactIsMine(contact)
-            print(mine)
+            
             cell.contactIsMine = mine
 
           

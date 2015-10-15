@@ -13,7 +13,8 @@ class ServerRequester: NSObject
 {
     typealias networkResult = (AnyObject?,NSError?) -> ()
     typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
-    
+    typealias messagesTuple = (chat:[Message], service:[Message])
+    typealias messagesCompletionBlock = (messages:messagesTuple?, error:NSError?) -> ()
     let httpManager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
     
     let objectsConverter = ObjectsConverter()
@@ -803,7 +804,7 @@ class ServerRequester: NSObject
                             messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
                             messagesArray = ObjectsConverter.convertToMessages(messageDictsArray)
                         {
-                            completion(messagesArray, nil)
+                            completion(messagesArray.chat, nil)
                         }
                     })
                    
@@ -893,7 +894,7 @@ class ServerRequester: NSObject
     }
     
     
-    func loadNewMessages(completion:((messages:[Message]?, error:NSError?)->())?)
+    func loadNewMessages(completion:messagesCompletionBlock?)
     {
         if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
@@ -908,11 +909,11 @@ class ServerRequester: NSObject
                         {
                             if let completionBlock = completion
                             {
-                                if let messagesArray = ObjectsConverter.convertToMessages(newMessageInfos)
+                                if let messagesArrayTuple = ObjectsConverter.convertToMessages(newMessageInfos)
                                 {
                                     print("loaded new Messages")
                                     
-                                    completionBlock(messages: messagesArray, error: nil)
+                                    completionBlock(messages: messagesArrayTuple, error: nil)
                                 }
                                 else
                                 {

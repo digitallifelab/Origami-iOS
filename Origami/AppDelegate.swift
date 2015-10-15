@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
          let string = deviceToken.description
         
-        print(" -> recieved device token for PUSHes: \(string)")
+        print(" -> recieved device token for PUSHes:\n \(string)")
         
         
         

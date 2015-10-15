@@ -202,6 +202,7 @@ enum MessageType:Int {
     case Undefined = -1
     case ChatMessage = 0
     case Invitation = 1
+    case OnlineStatusChanged = 4
     case UserInfoUpdated = 12
     case UserPhotoUpdated = 13
     case UserUnblocked = 65534

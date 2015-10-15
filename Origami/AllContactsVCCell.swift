@@ -17,7 +17,7 @@ class AllContactsVCCell: UITableViewCell {
     
     var contactIsMine:Bool = false {
         didSet{
-            print("current mine = \(self.contactIsMine)")
+            
             if contactIsMine{
                 selectionIndicator?.image = UIImage(named:"icon-checked")?.imageWithRenderingMode(.AlwaysTemplate)
             }

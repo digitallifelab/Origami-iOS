@@ -150,6 +150,15 @@ class Message:Hashable, CreateDateComparable
         return self.messageId.hashValue
     }
     
+    func getTargetUserIdFromMessageBody() -> Int?
+    {
+        guard let text = self.textBody, intId = Int(text) else {
+            return nil
+        }
+        
+        return intId
+    }
+    
 }
 
 //MARK: - Comparable conformance

@@ -18,6 +18,10 @@ class AttachFile : Hashable//NSObject
     
     convenience init?(info:[String:AnyObject])
     {
+        if info.isEmpty {
+            return nil
+        }
+        
         self.init()
         
         if info.count > 0
@@ -52,11 +56,46 @@ class AttachFile : Hashable//NSObject
                 self.createDate = lvDate
             }
         }
-        else{
-            return nil
-        }
+
     }
     
+    func setInfo(info:[String:AnyObject]) throws
+    {
+        if info.isEmpty{
+            throw NSError(domain: "", code: -2021, userInfo: [NSLocalizedDescriptionKey:"Tryed to set an empty info to AttachFile"])
+        }
+        
+        if let lvCreator = info["CreatorId"] as? Int
+        {
+            self.creatorID = lvCreator
+        }
+        
+        if let lvID = info["Id"] as? Int
+        {
+            self.attachID = lvID
+        }
+        
+        if let lvElementId = info["ElementId"] as? Int
+        {
+            self.elementID = lvElementId
+        }
+        
+        if let lvFileSize = info["Size"] as? Int
+        {
+            self.fileSize = lvFileSize
+        }
+        
+        if let lvName = info["FileName"] as? String
+        {
+            self.fileName = lvName
+        }
+        
+        if let lvDate = info["CreateDate"] as? String
+        {
+            self.createDate = lvDate
+        }
+        
+    }
 //    override func isEqual(object:AnyObject?) -> Bool
 //    {
 //        if let attachObject  = object as? AttachFile

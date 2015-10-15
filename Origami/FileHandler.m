@@ -445,28 +445,65 @@
     }
 }
 
--(void)deleteAvatars
+-(void)eraseAvatarForUserName:(nonnull NSString *)avatarImageName completion:(nullable void (^)(BOOL, NSError * __nullable))completionBlock
 {
-    //NSLog(@"\n Starting to remove User Avatar....");
-    NSString *pathToUserAvatar = [self pathToAvatarFolder];
+    NSString *pathToUsersAvatarFolder = [self pathToAvatarFolder];
+    if(!pathToUsersAvatarFolder) {
+        if (completionBlock != nil )
+        {
+            completionBlock(NO, [NSError errorWithDomain:@"" code:-100 userInfo:@{NSLocalizedDescriptionKey : @"Avatars Folder was not found"}]);
+        }
+        
+        return;
+    }
+    NSString *avatarNameWithExtention = [avatarImageName stringByAppendingString:@".jpg"];
+    NSString *pathToSingleAvatar = [pathToUsersAvatarFolder stringByAppendingString:avatarNameWithExtention];
     NSError *avatarEraseError;
-    if ([[NSFileManager defaultManager] fileExistsAtPath:pathToUserAvatar])
+    if ([[NSFileManager defaultManager] fileExistsAtPath:pathToSingleAvatar])
     {
-        [[NSFileManager defaultManager] removeItemAtPath:pathToUserAvatar error:&avatarEraseError];
-        if( avatarEraseError)
+        [[NSFileManager defaultManager] removeItemAtPath:pathToSingleAvatar error:&avatarEraseError];
+        if(avatarEraseError)
         {
             NSLog(@"\n Could not erase user avatar. Reason: %@", avatarEraseError.description);
+            if (completionBlock != nil)
+            {
+                completionBlock(NO, avatarEraseError);
+            }
+            return;
         }
-        else
+        
+        if (completionBlock != nil)
         {
-            //NSLog(@"\n Erased user avatars from disc.");
+            completionBlock(YES, nil);
         }
     }
     else
     {
         NSLog(@"\n Could not erase user avatar. Reason: No user avatar found...");
     }
-    //NSLog(@"\n ... Finished removing User Avatar.");
+}
+
+-(void)deleteAvatars
+{
+    //NSLog(@"\n Starting to remove User Avatar....");
+    NSString *pathToUsersAvatarFolder = [self pathToAvatarFolder];
+    NSError *avatarEraseError;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:pathToUsersAvatarFolder])
+    {
+        [[NSFileManager defaultManager] removeItemAtPath:pathToUsersAvatarFolder error:&avatarEraseError];
+        if( avatarEraseError)
+        {
+            NSLog(@"\n Could not erase user avatars. Reason: %@", avatarEraseError.description);
+        }
+//        else
+//        {
+//            //NSLog(@"\n Erased user avatars from disc.");
+//        }
+    }
+    else
+    {
+        NSLog(@"\n Could not erase user avatar. Reason: No users avatar folder found...");
+    }
 }
 
 -(void)deleteAttachedImages

@@ -115,7 +115,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 //return into main queue
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completion!()
+                    completion?()
                 })
             }
 
@@ -224,7 +224,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             //service messages
                         case .Invitation:
                             print(".Invitation Need to handle invitation from user")
-                            
+                        case .OnlineStatusChanged:
+                            print(" -- -- - Online Status did change..")
                         case .UserInfoUpdated:
                             print(".UserInfoUpdated")
                         case .UserPhotoUpdated:
@@ -284,7 +285,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 if let messagesArray = messages
                 {
                     var lvMessagesHolder = [NSNumber:[Message]]()
-                    for lvMessage in messagesArray
+                    for lvMessage in messagesArray.chat
                     {
                         print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
                         if lvMessagesHolder[lvMessage.elementId!] != nil
@@ -317,6 +318,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 }
                             })
                         }
+                    }
+
+                    let serviceMessages = messagesArray.service
+                    if !serviceMessages.isEmpty
+                    {
+                        let serviceHandler = ServiceMessagesHandler()
+                        serviceHandler.startProcessingServiceMessages(serviceMessages)
                     }
                 }
                 
@@ -1350,7 +1358,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         let localInt = elementIdInt
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-      
+  
         DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(localInt,
         completion:
         { (result, error) -> ()
@@ -1802,7 +1810,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     let attachFileName = lvAttach.fileName
                     let attachId = lvAttach.attachID
-                    print("\n -> DataSource Will  load  attach file . Attach File: \(lvAttach.fileName!)\n")
+                    print("\n -> Starting to load AttachFile Data from server... . Attach File: \(lvAttach.fileName!)\n")
                     DataSource.sharedInstance.serverRequester.loadDataForAttach(attachId, completion: { (attachFileData, error) -> () in
                         if let attachData = attachFileData, aFileName = attachFileName
                         {
@@ -2322,14 +2330,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     let attributes = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_BACKGROUND, 0)
                     lowQueue = dispatch_queue_create("com.Origami.BackgroundImage.Queue", attributes)
-                    
-                    /*
-                    dispatch_queue_t queue;
-                    *	dispatch_queue_attr_t attr;
-                    *	attr = dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL,
-                    *			QOS_CLASS_UTILITY, 0);
-                    *	queue = dispatch_queue_create("com.example.myqueue", attr);
-                    */
                 }
                 else
                 {
@@ -2549,6 +2549,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 completionBlock?(success: false, error: nil)
             }
         })
+    }
+    
+    func cleanAvatarDataForUserName(name:String)
+    {
+        let aFileHandler = FileHandler()
+        aFileHandler.eraseAvatarForUserName(name, completion: nil)
+        DataSource.sharedInstance.avatarsHolder[name] = nil
     }
     
     //MARK: Languages & Countries

@@ -15,12 +15,12 @@ class MessagesLoader:NSObject
     
     override init() {
         super.init()
-        print("... MessagesLoader initialized ...")
+        print("\n... MessagesLoader initialized ...")
     }
     
     deinit
     {
-        //print("... MessagesLoader deinit ...")
+        print("\n... MessagesLoader deinit ...")
     }
     
     func startRefreshingLastMessages()

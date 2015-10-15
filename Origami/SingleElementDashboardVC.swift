@@ -225,7 +225,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             self.collectionDataSource = dataSource
           
             collectionDataSource!.handledElement = currentElement
-            print("old attaches count in ElementDataSource: \(self.collectionDataSource?.attachesCount())")
             collectionDataSource!.handledCollectionView = self.collectionView
             collectionDataSource!.displayMode = self.displayMode
             collectionDataSource!.subordinateTapDelegate = self

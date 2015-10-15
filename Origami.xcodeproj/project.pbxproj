@@ -96,6 +96,8 @@
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
+		F8C2BE981BCFC4C000A03FC9 /* ServiceMessagesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C2BE971BCFC4C000A03FC9 /* ServiceMessagesHandler.swift */; settings = {ASSET_TAGS = (); }; };
+		F8C2BE991BCFC4C000A03FC9 /* ServiceMessagesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C2BE971BCFC4C000A03FC9 /* ServiceMessagesHandler.swift */; settings = {ASSET_TAGS = (); }; };
 		F8C65F371B98AA5A001EDEA6 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C65F231B98AA5A001EDEA6 /* AFHTTPRequestOperation.m */; };
 		F8C65F381B98AA5A001EDEA6 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C65F231B98AA5A001EDEA6 /* AFHTTPRequestOperation.m */; };
 		F8C65F391B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8C65F251B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.m */; };
@@ -320,6 +322,7 @@
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
+		F8C2BE971BCFC4C000A03FC9 /* ServiceMessagesHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceMessagesHandler.swift; sourceTree = "<group>"; };
 		F8C65F221B98AA5A001EDEA6 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
 		F8C65F231B98AA5A001EDEA6 /* AFHTTPRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPRequestOperation.m; sourceTree = "<group>"; };
 		F8C65F241B98AA5A001EDEA6 /* AFHTTPRequestOperationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperationManager.h; sourceTree = "<group>"; };
@@ -632,6 +635,7 @@
 				F880D1801B25B22900E702D3 /* ServerRequester.swift */,
 				F85CF1031B833D940048B3DE /* MessagesLoader.swift */,
 				F80656CA1B99AFCB008258F8 /* DataRefresher.swift */,
+				F8C2BE971BCFC4C000A03FC9 /* ServiceMessagesHandler.swift */,
 				F826A8D21BA9A5FB00C52B2C /* InMemoryObjects */,
 				F855BB9D1B74A7AF00EC114C /* CoreData */,
 			);
@@ -1038,6 +1042,7 @@
 				F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */,
 				F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */,
 				F8C93AEF1B861B94009D890E /* Language.swift in Sources */,
+				F8C2BE991BCFC4C000A03FC9 /* ServiceMessagesHandler.swift in Sources */,
 				F8C93AF01B861B94009D890E /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */,
 				F8C93AF31B861B94009D890E /* ImagePickingViewController.swift in Sources */,
@@ -1143,6 +1148,7 @@
 				F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */,
 				F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */,
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
+				F8C2BE981BCFC4C000A03FC9 /* ServiceMessagesHandler.swift in Sources */,
 				F8A1DFD31B7B74BE00A66692 /* Language.swift in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,

@@ -97,10 +97,16 @@ class ObjectsConverter {
         var attaches = [AttachFile]()
         for lvDict in dictionaries
         {
-            if let lvAttachFile = AttachFile(info: lvDict)
-            {
-                attaches.append(lvAttachFile)
+            let attach = AttachFile()
+            do{
+                try attach.setInfo(lvDict)
             }
+            catch{
+                continue
+            }
+            
+            attaches.append(attach)
+            
         }
         //print("ObjectsConverter : Attaches: \(attaches.count)")
         
@@ -115,7 +121,14 @@ class ObjectsConverter {
         if info.isEmpty{
             return nil
         }
-        return AttachFile(info: info)
+        let file = AttachFile()
+        do{
+            try file.setInfo(info)
+        }
+        catch{
+            return nil
+        }
+        return file
     }
     
     class func sortAttachesByAttachId(inout attachesToSort:[AttachFile])
@@ -150,13 +163,15 @@ class ObjectsConverter {
         return contacts
     }
     
-    class func convertToMessages(dictionaries:[[String:AnyObject]]) -> [Message]?
+    class func convertToMessages(dictionaries:[[String:AnyObject]]) -> (chat:[Message], service:[Message])?
     {
         if dictionaries.isEmpty{
             return nil
         }
         
-        var toReturn = [Message]()
+        var chatMessages = [Message]()
+        var serviceMessages = [Message]()
+        
         for lvDictionary in dictionaries
         {
             let lvNewMessage = Message(info: lvDictionary)
@@ -180,34 +195,37 @@ class ObjectsConverter {
                     print("")
                     assert(false, "Undefined message detected. Please debug client-server communication")
                 case .ChatMessage:
-                    break//print(" - Chat message: \" \(lvNewMessage.textBody) \"")
+                    chatMessages.append(lvNewMessage)
                 case .Invitation:
                     print(" - Service Message - invitation: \" \(lvNewMessage.textBody) \"")
+                //TODO: Deal with invitation messages
+                case .OnlineStatusChanged:
+                    serviceMessages.append(lvNewMessage)
                 case .UserInfoUpdated:
-                    print(" - service message - changed user info. \" \(lvNewMessage.textBody) \"")
-                    //shouldStoreMessage = false
+                    //print("\n changed user info. \" \(lvNewMessage.textBody) \"")
+                    serviceMessages.append(lvNewMessage)
                 case .UserPhotoUpdated:
-                    print(" - Sevrice Message - changed user photo. \" \(lvNewMessage.textBody) \".")
-                   // shouldStoreMessage = false
+                    print(" \n changed user photo. \" \(lvNewMessage.textBody) \".")
+                    serviceMessages.append(lvNewMessage)
                 case .UserBlocked:
-                    print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
-                    //shouldStoreMessage = false
+                    //print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
+                    serviceMessages.append(lvNewMessage)
                 case .UserUnblocked:
-                    print("\n-> User Was UnBlosked: userID = \(lvNewMessage.textBody!) \n")
-                    //shouldStoreMessage = false
-    //            default:
-    //                break
+                    //print("\n-> User Was UnBlosked: userID = \(lvNewMessage.textBody!) \n")
+                    serviceMessages.append(lvNewMessage)
+
             }
-            
-            //if shouldStoreMessage{
-                toReturn.append(lvNewMessage)
-            //}
         }
         
-        toReturn.sortInPlace { (message1, message2) -> Bool in
+        chatMessages.sortInPlace { (message1, message2) -> Bool in
             return message1.elementId!.integerValue < message2.elementId!.integerValue
         }
-        return toReturn
+        
+        serviceMessages.sortInPlace { (messageLeft, messageRight) -> Bool in
+            return messageLeft < messageRight
+        }
+        
+        return (chatMessages,serviceMessages)
     }
     
     class func sortElementsByDate(inout elements:[Element])

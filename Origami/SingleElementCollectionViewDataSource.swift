@@ -515,17 +515,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return chatCell
             
         case .Details:
-            print("currentindexpath for details: \(indexPath)")
             if let detailsCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementDetailsCell",
                                                                                 forIndexPath: indexPath) as? SingleElementDetailsCell
             {
                 detailsCell.textLabel.text = getElementDetails()
                 detailsCell.displayMode = self.displayMode
+                self.detailsCell = detailsCell
             
-            self.detailsCell = detailsCell
-            
-                return detailsCell}
-            else{
+                return detailsCell
+            }
+            else
+            {
                 
                 let detailsCell = SingleElementDetailsCell()
                 detailsCell.textLabel.text = getElementDetails()

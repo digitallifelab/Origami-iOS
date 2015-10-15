@@ -45,9 +45,9 @@
 ///  AVATARS
 -(void) saveAvatar:(nonnull NSData *)imageData forLoginName:(nonnull NSString *)loginName completion:(nullable void(^)(NSError * __nullable saveError)) completionBlock;
 -(void) loadAvatarDataForLoginName:(nonnull NSString *)loginName completion:(nullable void(^)(NSData * __nullable avatarData, NSError * __nullable saveError)) completionBlock;
+-(void) eraseAvatarForUserName:(nonnull NSString *)avatarImageName completion:(nullable void (^)(BOOL, NSError * __nullable))completionBlock;
+-(void) deleteAvatars;
+-(void) deleteAttachedImages;
 
--(void)deleteAvatars;
--(void)deleteAttachedImages;
-
--(nullable NSDictionary *)getAllExistingAvatarsPreviews;
+-(nullable NSDictionary *) getAllExistingAvatarsPreviews;
 @end

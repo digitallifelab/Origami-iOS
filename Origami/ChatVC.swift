@@ -770,7 +770,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                             }
                         })
                     }
-                    
                 }
             }
             else
