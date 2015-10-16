@@ -78,6 +78,18 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             //set one day ahead
             
             datePicker.date = NSDate(timeInterval: 1.days, sinceDate: NSDate())
+            
+            let currentCalendar = NSCalendar.currentCalendar()
+            let calendarConponentsFlags:NSCalendarUnit = [NSCalendarUnit.Year, .Month, .Day, .Hour, .Minute]
+            let components = currentCalendar.components(calendarConponentsFlags, fromDate: datePicker.date)
+            components.hour = 9
+            components.minute = 0
+            
+            if let fixedDate = currentCalendar.dateFromComponents(components)
+            {
+                datePicker.setDate(fixedDate, animated: true)// date = fixedDate
+            }
+            
             datePicker.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.8)
             self.view.addSubview(datePicker)
             self.datePicker = datePicker
