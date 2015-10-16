@@ -24,10 +24,6 @@ class User:Person
     var token:String? //
     var userId:NSNumber? //
     
-    //var firstName:NSString? //
-    //var lastName:NSString? //
-    //var userName:NSString? //
-    //var mood:NSString? //
     
     convenience init(info:[String:AnyObject])
     {
@@ -108,6 +104,87 @@ class User:Person
                 self.languageId = lvLangId
             }
         }
+    }
+    
+    func setInfo(info:[String:AnyObject]) throws
+    {
+        if info.isEmpty{
+            throw InternalDiagnosticError.EmptyValuePassed(value: info)
+        }
+        
+        if let userName = info["LoginName"] as? String
+        {
+            self.userName = userName
+        }
+        if let lastName = info["LastName"] as? String
+        {
+            self.lastName = lastName
+        }
+        if let firstName = info["FirstName"] as? String
+        {
+            self.firstName = firstName
+        }
+        if let token = info["Token"] as? String
+        {
+            self.token = token
+        }
+        if let password = info["Password"] as? NSString
+        {
+            self.password = password
+        }
+        if let userId = info["UserId"] as? NSNumber
+        {
+            self.userId = userId
+        }
+        if let mood = info["Mood"] as? String
+        {
+            self.mood = mood
+        }
+        if let lvSex = info["Sex"] as? NSNumber
+        {
+            self.sex = lvSex
+        }
+        if let state = info["State"] as? Int, userState = PersonAuthorisationState(rawValue: state)
+        {
+            self.state = userState
+        }
+        if let lvPhoto = info["Photo"] as? NSData
+        {
+            self.photo = lvPhoto
+        }
+        if let lvRegDate = info["RegDate"] as? NSString
+        {
+            self.regDate = lvRegDate
+        }
+        if let lvSync = info["LastSync"] as? NSString
+        {
+            self.lastSync = lvSync
+        }
+        if let lvBirthDay = info["BirthDay"] as? NSString
+        {
+            self.birthDay = lvBirthDay
+        }
+        if let lvTel = info["PhoneNumber"] as? NSString
+        {
+            self.phone = lvTel
+        }
+        if let lvCountry = info["Country"] as? NSString
+        {
+            self.country = lvCountry
+        }
+        if let lvCountryId = info["CountryId"] as? NSNumber
+        {
+            self.countryId = lvCountryId
+        }
+        if let lvLanguage = info["Language"] as? NSString
+        {
+            self.language = lvLanguage
+        }
+        if let lvLangId = info["LanguageId"] as? NSNumber
+        {
+            self.languageId = lvLangId
+        }
+        
     }
     
     func toDictionary() -> [String:AnyObject]

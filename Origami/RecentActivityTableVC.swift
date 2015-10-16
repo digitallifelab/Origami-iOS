@@ -69,7 +69,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                             //1 insert creatorIDs
                             for anElement in elementsForBgQueue
                             {
-                                let idInt = anElement.creatorId.integerValue
+                                let idInt = anElement.creatorId
                                 if idInt > 0
                                 {
                                     creatorIDsSet.insert(idInt)
@@ -278,8 +278,8 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     activityCell.dateLabel?.text = nil
                 }
                 
-                activityCell.elementTitleLabel?.text = element.title as? String
-                activityCell.elementDetailsTextView?.text = element.details as? String
+                activityCell.elementTitleLabel?.text = element.title // as? String
+                activityCell.elementDetailsTextView?.text = element.details //as? String
                 activityCell.displayMode = self.displayMode
                 if element.isArchived()
                 {
@@ -287,7 +287,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup decision Icon Image
-                if self.optionsConverter.isOptionEnabled(.Decision, forCurrentOptions: element.typeId.integerValue)
+                if self.optionsConverter.isOptionEnabled(.Decision, forCurrentOptions: element.typeId)
                 {
                     activityCell.decisionIcon?.image = UIImage(named: "tile-decision")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
@@ -297,7 +297,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup idea icon image
-                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.typeId.integerValue)
+                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.typeId)
                 {
                     activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
@@ -307,9 +307,9 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup avatar, name and task Icon image depending on Task property of element
-                if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.typeId.integerValue)
+                if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.typeId)
                 {
-                    if let finishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                    if let finishState = ElementFinishState(rawValue: element.finishState)
                     {
                         switch finishState
                         {
@@ -339,7 +339,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     }
                     else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
                     {
-                        if userIdInt == element.creatorId.integerValue
+                        if userIdInt == element.creatorId
                         {
                             activityCell.nameLabel?.text = user.initialsString()
                         }
@@ -348,7 +348,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 else //no task
                 {
                     activityCell.taskIcon?.image = nil
-                    if let avatar = avatarForElementHolder[element.creatorId.integerValue]
+                    if let avatar = avatarForElementHolder[element.creatorId]
                     {
                         activityCell.elementCreatorAvatar?.image = avatar
                     }
@@ -356,7 +356,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     {
                         activityCell.elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
                         //and try to query avatar from ram again
-                        let creatorIdInt = element.creatorId.integerValue
+                        let creatorIdInt = element.creatorId
                         if creatorIdInt > 0
                         {
                             let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
@@ -375,13 +375,13 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                         }
                     }
                     
-                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.creatorId.integerValue])), currentContact = contacts.first
+                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.creatorId])), currentContact = contacts.first
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
                     else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
                     {
-                        if userIdInt == element.creatorId.integerValue
+                        if userIdInt == element.creatorId
                         {
                             activityCell.nameLabel?.text = user.initialsString()
                         }

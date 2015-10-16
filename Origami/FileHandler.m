@@ -425,15 +425,16 @@
         }
         return;
     }
+    
     NSFileManager *fManager = [NSFileManager defaultManager];
     NSError *removingError;
+    
     BOOL removed = [fManager removeItemAtPath:pathToTargetFile error:&removingError];
     if (removed)
     {
         if (completionBlock) {
             completionBlock(YES, nil);
         }
-        
     }
     else if (removingError)
     {
@@ -441,7 +442,6 @@
         if (completionBlock) {
             completionBlock(NO, removingError);
         }
-        
     }
 }
 
@@ -456,9 +456,11 @@
         
         return;
     }
+    
     NSString *avatarNameWithExtention = [avatarImageName stringByAppendingString:@".jpg"];
     NSString *pathToSingleAvatar = [pathToUsersAvatarFolder stringByAppendingString:avatarNameWithExtention];
     NSError *avatarEraseError;
+    
     if ([[NSFileManager defaultManager] fileExistsAtPath:pathToSingleAvatar])
     {
         [[NSFileManager defaultManager] removeItemAtPath:pathToSingleAvatar error:&avatarEraseError];
@@ -495,10 +497,6 @@
         {
             NSLog(@"\n Could not erase user avatars. Reason: %@", avatarEraseError.description);
         }
-//        else
-//        {
-//            //NSLog(@"\n Erased user avatars from disc.");
-//        }
     }
     else
     {
@@ -518,16 +516,11 @@
         {
             NSLog(@"\n Could not erase attached files. Reason: %@", eraseError.description);
         }
-        else
-        {
-            //NSLog(@"\n Erased user attached files from disc.");
-        }
     }
     else
     {
         NSLog(@"\n Could not erase attached files. Reason: No attached filesfound...");
     }
-    //NSLog(@"\n ... Finished removing attached files.");
 }
 
 -(nullable NSDictionary *)getAllExistingAvatarsPreviews

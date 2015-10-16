@@ -21,7 +21,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     var currentSelectedUserAvatar:UIImage? = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
     var elementsCreatedByUser:[Element]?
     var elementsUserParticipatesIn:[Element]?
-    var selectedUserId:NSNumber = NSNumber(integer: 0)
+    var selectedUserId:Int = 0
     
     override var displayMode:DisplayMode{
         
@@ -70,9 +70,9 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: { [weak self] (image) -> () in
                 if let weakSelf = self
                 {
-                    if let anImage = image
+                    if let anImage = image, userId = DataSource.sharedInstance.user?.userId?.integerValue
                     {
-                        if weakSelf.selectedUserId.isEqualToNumber(DataSource.sharedInstance.user!.userId!)
+                        if weakSelf.selectedUserId == userId
                         {
                             weakSelf.currentSelectedUserAvatar = anImage
                             weakSelf.configureCurrentRightButtonImage()
@@ -138,16 +138,14 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                         var allCurrentElements = [Element]()
                         if archVisibleLocal
                         {
-                            let archived = ObjectsConverter.filterArchiveElements(true, elements: elementsPresent)
-                            if !archived.isEmpty
+                            if let archived = ObjectsConverter.filterArchiveElements(true, elements: elementsPresent)
                             {
                                 allCurrentElements += archived
                             }
                         }
                         else
                         {
-                            let allWithoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsPresent)
-                            if !allWithoutArchived.isEmpty
+                            if let allWithoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsPresent)
                             {
                                 allCurrentElements += allWithoutArchived
                             }
@@ -156,7 +154,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                         if let weakerSelf = self
                         {
                             weakerSelf.elements = allCurrentElements
-                            if weakerSelf.selectedUserId.integerValue > 0  //sort elements by currently selected user
+                            if weakerSelf.selectedUserId > 0  //sort elements by currently selected user
                             {
                                 print(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
                                 weakSelf.sortCurrentElementsForNewUserId()
@@ -195,7 +193,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         if let allElements = self.elements
         {
-            let userIDFromDataSource = DataSource.sharedInstance.user?.userId
+            let userIDFromDataSource = DataSource.sharedInstance.user?.userId?.integerValue
             
             var toSortMyElements = Set<Element>()
             var toSortParticipatingElements = Set<Element>()
@@ -204,7 +202,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             {
                 //print("Element`s pass whom IDs: \(anElement.passWhomIDs)")
                 
-                if anElement.creatorId.isEqualToNumber(currentSelecnedUserId)
+                if anElement.creatorId == currentSelecnedUserId
                 {
                     toSortMyElements.insert(anElement)
                 }
@@ -212,7 +210,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 {
                     if userIDFromDataSource != nil
                     {
-                        if userIDFromDataSource!.isEqualToNumber(currentSelecnedUserId)
+                        if userIDFromDataSource == currentSelecnedUserId
                         {
                             toSortParticipatingElements.insert(anElement)
                         }
@@ -514,23 +512,24 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func configureCurrentRightButtonImage()
     {
-        if selectedUserId.integerValue == 0
+        guard let userIdExists = DataSource.sharedInstance.user?.userId?.integerValue else {
+            return
+        }
+        
+        if selectedUserId == 0
         {
-            if let userId = DataSource.sharedInstance.user?.userId
-            {
-                selectedUserId = NSNumber(integer: userId.integerValue)
-            }
+            selectedUserId = userIdExists
         }
         else
         {
             var currentUserName:String?
-            if selectedUserId.isEqualToNumber(DataSource.sharedInstance.user!.userId!)
+            if selectedUserId == userIdExists
             {
                 currentUserName = DataSource.sharedInstance.user?.userName //as? String
             }
             else
             {
-                let aSet = Set([selectedUserId.integerValue])
+                let aSet = Set([selectedUserId])
                 if let contacts = DataSource.sharedInstance.getContactsByIds(aSet)
                 {
                     let contact = contacts.first!
@@ -585,11 +584,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     func itemPickerDidCancel(itemPicker: AnyObject)
     {
        
-        if let aNumber = DataSource.sharedInstance.user?.userId
+        if let aUserID = DataSource.sharedInstance.user?.userId?.integerValue
         {
-            if self.selectedUserId.integerValue != aNumber.integerValue
+            if self.selectedUserId != aUserID
             {
-                self.selectedUserId = NSNumber(integer: aNumber.integerValue)
+                self.selectedUserId = aUserID// NSNumber(integer: aNumber.integerValue)
                 self.configureCurrentRightButtonImage()
                 
                 sortCurrentElementsForNewUserId()
@@ -613,11 +612,11 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         if let aContact = item as? Contact
         {
-             let aNumber = aContact.contactId
+             let contactId = aContact.contactId
             
-            if self.selectedUserId.integerValue != aNumber
+            if self.selectedUserId != contactId
             {
-                self.selectedUserId = NSNumber(integer: aNumber)
+                self.selectedUserId = contactId
                 self.configureCurrentRightButtonImage()
                 
                 sortCurrentElementsForNewUserId()
@@ -760,7 +759,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         {
             let optionsConverter = ElementOptionsConverter()
             let newOwned = owned.filter { element in
-                return optionsConverter.isOptionEnabled(options, forCurrentOptions: element.typeId.integerValue)
+                return optionsConverter.isOptionEnabled(options, forCurrentOptions: element.typeId)
             }
             
             if !newOwned.isEmpty
@@ -777,7 +776,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         {
             let optionsConverter = ElementOptionsConverter()
             let newParticipating = participating.filter { element in
-                return optionsConverter.isOptionEnabled(options, forCurrentOptions: element.typeId.integerValue)
+                return optionsConverter.isOptionEnabled(options, forCurrentOptions: element.typeId)
             }
             if !newParticipating.isEmpty
             {

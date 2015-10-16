@@ -821,31 +821,27 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         // 1 - instantiate SinglElementDashboardVC
         // 2 - instantiate ChatVC
         // 3 - set viewControllers for self.navigationController
-        if let tappedMessage = notification?.object as? Message
+        if let tappedMessage = notification?.object as? Message, messageElementId = tappedMessage.elementId, targetElement = DataSource.sharedInstance.getElementById(messageElementId)
         {
-            if let targetElement = DataSource.sharedInstance.getElementById(tappedMessage.elementId!.integerValue)
+            if let
+                singleElementVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC,
+                chatVC = self.storyboard?.instantiateViewControllerWithIdentifier("ChatVC") as? ChatVC
             {
-                if let
-                    singleElementVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC,
-                    chatVC = self.storyboard?.instantiateViewControllerWithIdentifier("ChatVC") as? ChatVC
+                singleElementVC.currentElement = targetElement
+                chatVC.currentElement = targetElement
+                
+                var toShowVCs = [UIViewController]()
+                if let viewControllers = self.navigationController?.viewControllers //as? [UIViewController]
                 {
-                    singleElementVC.currentElement = targetElement
-                    chatVC.currentElement = targetElement
-                    
-                    var toShowVCs = [UIViewController]()
-                    if let viewControllers = self.navigationController?.viewControllers //as? [UIViewController]
-                    {
-                        toShowVCs += viewControllers
-                    }
-                    
-                    toShowVCs.append(singleElementVC)
-                    toShowVCs.append(chatVC)
-                    
-                    self.navigationController?.setViewControllers(toShowVCs, animated: true)
+                    toShowVCs += viewControllers
                 }
+                
+                toShowVCs.append(singleElementVC)
+                toShowVCs.append(chatVC)
+                
+                self.navigationController?.setViewControllers(toShowVCs, animated: true)
             }
         }
-        
     }
     
     func showRecentActivity(sender:AnyObject?)

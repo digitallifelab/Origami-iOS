@@ -13,12 +13,12 @@ import UIKit
 
 extension NSDate
 {
-    class func dummyDate() -> NSString
+    class func dummyDate() -> String //NSString
     {
-        return "/Date(0)/"
+        return kWrongEmptyDate // "/Date(0)/"
     }
     
-    func dateForServer() -> NSString?
+    func dateForServer() -> String? //NSString?
     {
         let utcTimeZone = NSTimeZone(abbreviation: "UTC")
         
@@ -49,7 +49,7 @@ extension NSDate
             offsetString = NSString(format: "-%ld", Double(gmtOffset!))
         }
         
-        let lvString = "/Date(\(Int(floor(Double(interval))))000\(offsetString)00)/" as NSString
+        let lvString = "/Date(\(Int(floor(Double(interval))))000\(offsetString)00)/" //as NSString
         //let toReturn = NSString(format: "/Date(%ld000%@00)/", floor( Double(interval)), offsetString)
         
         return lvString

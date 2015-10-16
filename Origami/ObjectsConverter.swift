@@ -218,7 +218,7 @@ class ObjectsConverter {
         }
         
         chatMessages.sortInPlace { (message1, message2) -> Bool in
-            return message1.elementId!.integerValue < message2.elementId!.integerValue
+            return message1.elementId! < message2.elementId!
         }
         
         serviceMessages.sortInPlace { (messageLeft, messageRight) -> Bool in
@@ -274,7 +274,7 @@ class ObjectsConverter {
         if elements.count > 1
         {
             elements.sortInPlace({ (element1, element2) -> Bool in
-                if let elementIdInt1 = element1.elementId?.integerValue, elementIdInt2 = element2.elementId?.integerValue
+                if let elementIdInt1 = element1.elementId, elementIdInt2 = element2.elementId
                 {
                     return elementIdInt1 <= elementIdInt2
                 }
@@ -283,7 +283,7 @@ class ObjectsConverter {
         }
     }
     
-    class func filterArchiveElements(archive:Bool, elements:[Element]) -> [Element]
+    class func filterArchiveElements(archive:Bool, elements:[Element]) -> [Element]?
     {
         var newElements = [Element]()
         for anElement in elements
@@ -304,6 +304,10 @@ class ObjectsConverter {
                 }
                 newElements.append(anElement)
             }
+        }
+        
+        if newElements.isEmpty {
+            return nil
         }
         
         return newElements

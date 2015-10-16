@@ -108,7 +108,10 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         {
             for aMessage in messages
             {
-                contactIDs.insert(aMessage.creatorId!.integerValue)
+                if let anInt = aMessage.creatorId
+                {
+                    contactIDs.insert(anInt)
+                }
             }
         }
         
@@ -146,9 +149,9 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                 chatCell.dateLabel.text = messageDateString as String
             }
             
-            if let creatorId = message.creatorId
+            if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId?.integerValue
             {
-                if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+                if creatorId == userID
                 {
                     if let username = DataSource.sharedInstance.user?.userName// as? String
                     {
@@ -182,7 +185,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     
     private func contactForMessage(message:Message) -> Contact?
     {
-        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId?.integerValue
+        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
         {
             for aContact in contacts
             {

@@ -8,7 +8,7 @@
 
 import Foundation
 
-let kWrongEmptyDate = "/Date(0+0000)/"
+let kWrongEmptyDate = "/Date(0)/"
 
 let currentLogin = "CurrentUser"
 let currentPassword = "CurrentPassword"
@@ -18,7 +18,9 @@ let firstNameKey = "FirstName"
 let lastNameKey = "LastName"
 let loginNameKey = "LoginName"
 let passwordKey = "Password"
-let NightModeKey = "NightModeOn"
+let NightModeKey = "NightModeOn" //NSUserDefaults  key
+let kLastSyncDate = "com.Origami.LocalLastSyncDate"
+let kLastSyncUSerName = "LoginName"
 
 //Users
 let registerUserUrlPart = "RegisterUser"
@@ -33,10 +35,12 @@ let getCountriesUrlPart = "GetCountries"
 let myContactsURLPart = "GetContacts"
 let allContactsURLPart = "GetAllContacts"
 let favContactURLPart = "SetFavoriteContact"
+
 //Messages
 let getAllMessagesPart = "GetMessages"
 let sendMessageUrlPart = "SendElementMessage"
 let getNewMessagesUrlPart = "GetNewMessages"
+
 //Elements
 let elementIdKey = "elementId"
 let elementKey = "element"
@@ -61,7 +65,8 @@ let unAttachFileUrlPart = "RemoveFileFromElement"
 
 let noUserTokenError = NSError(domain: "com.Origami.User Token", code: -55, userInfo: [NSLocalizedDescriptionKey:"NoUserToken".localizedWithComment("")])
 let unKnownExceptionError = NSError(domain: "com.Origami.UnknownExceptionError", code: -56, userInfo: [NSLocalizedDescriptionKey:"UnknownException".localizedWithComment("")])
-//MARK:App-Wide colors
+
+//MARK:App-Wide stuff
 let kDaySignalColor = UIColor(red: 233.0/255.0, green: 30.0/255.0, blue: 83.0 / 255.0, alpha: 1.0) //UIColor(red: 213.0/255.0, green: 47.0/255.0, blue: 47.0/255.0, alpha: 1.0)
 let kNightSignalColor = UIColor(red: 244.0/255.0, green: 71.0/255.0, blue: 71.0/255.0, alpha: 1.0)
 //let kDayViewBackgroundColor = UIColor.whiteColor()//UIColor(red: 227.0/255.0, green: 242.0/255.0, blue: 253.0/255.0, alpha: 1.0)
@@ -83,11 +88,12 @@ let kHomeButtonImageName = "icon-home"
 let kWhiteColor = UIColor.whiteColor()
 let kBlackColor = UIColor.blackColor()
 
-//MARK:App-Wide colors end
-let checkedCheckboxImage = UIImage(named: "icon-checked")//?.imageWithRenderingMode(.AlwaysTemplate)
-let unCheckedCheckboxImage = UIImage(named: "icon-unchecked")//?.imageWithRenderingMode(.AlwaysTemplate)
+//MARK:App-Wide stuff end
 
-let noImageIcon = UIImage(named: "icon-No-Image")
+let checkedCheckboxImage = UIImage(named: "icon-checked")
+let unCheckedCheckboxImage = UIImage(named: "icon-unchecked")
+
+let kNoImageIcon = UIImage(named: "icon-No-Image")
 
 let HomeCellNormalDimension:CGFloat = 120.0
 let HomeCellWideDimension:CGFloat = 250.0
@@ -122,3 +128,5 @@ let kNewElementsAddedNotification = "NewElementsAdded"
 let kElementWasChangedNotification = "ElementWasChanged"
 let kAttachDataDidFinishLoadingNotification = "DidLoadAttachFileData"
 let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"
+
+

@@ -60,50 +60,19 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
             
             if creatorId == DataSource.sharedInstance.user?.userId
             {
-//                if let name = DataSource.sharedInstance.user?.firstName //as? String
-//                {
-//                    ownerNameToDisplay += name
-//                }
-//                if let lastName = DataSource.sharedInstance.user?.lastName //as? String
-//                {
-//                    if ownerNameToDisplay.isEmpty
-//                    {
-//                        ownerNameToDisplay += lastName
-//                    }
-//                    else
-//                    {
-//                        ownerNameToDisplay += (" " + lastName)
-//                    }
-//                }
                 ownerNameToDisplay = DataSource.sharedInstance.user?.nameAndLastNameSpacedString()
             }
-            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId.integerValue]))
+            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId]))
             {
                 if let owner = contacts.first
                 {
                     ownerNameToDisplay = owner.nameAndLastNameSpacedString()
                 }
-//                if let name = owner?.firstName //as? String
-//                {
-//                    ownerNameToDisplay += name
-//                }
-//                if let lastName = owner?.lastName //as? String
-//                {
-//                    if ownerNameToDisplay.isEmpty
-//                    {
-//                        ownerNameToDisplay += lastName
-//                    }
-//                    else
-//                    {
-//                        ownerNameToDisplay += (" " + lastName)
-//                    }
-//                }
+
             }
             
-//            if !ownerNameToDisplay.isEmpty
-//            {
-                ownerNameLabel?.text = ownerNameToDisplay
-//            }
+            ownerNameLabel?.text = ownerNameToDisplay
+
             ownerLocalizedLabel?.text = "creator".localizedWithComment("")
         }
     }
@@ -112,11 +81,11 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var countRows = 0
-        if let _ = handledElement?.createDate.timeDateStringFromServerDateString() as? String
+        if let _ = handledElement?.createDate.timeDateStringFromServerDateString() //as? String
         {
             countRows += 1
         }
-        if let _ = handledElement?.changeDate?.timeDateStringFromServerDateString() as? String
+        if let _ = handledElement?.changeDate?.timeDateStringFromServerDateString() //as? String
         {
             countRows += 1
         }

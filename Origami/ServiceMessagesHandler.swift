@@ -65,7 +65,7 @@ class ServiceMessagesHandler {
                     contactAvatarChangeIDs.insert(userIdInt)
                 }
             case .OnlineStatusChanged:
-                print("Recieved Service Message  User did change OnlineStatus: element:\(aMessage.elementId!.integerValue), status = \(aMessage.textBody!)")
+                print("Recieved Service Message  User did change OnlineStatus: element:\(aMessage.elementId!), status = \(aMessage.textBody!)")
             default:
                 break
             }

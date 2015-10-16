@@ -109,20 +109,20 @@ import UIKit
                 if let existingElement = elementForIndexPath(indexPath)
                 {
                     
-                    if let title = existingElement.title as? String
+                    if let title = existingElement.title //as? String
                     {
                         dashCell.titleLabel?.text = title.uppercaseString
                     }
-                    if let lvDescription = existingElement.details as? String
+                    if let lvDescription = existingElement.details // as? String
                     {
                         dashCell.descriptionLabel?.text = lvDescription
                     }
                 
                     dashCell.signalDetectorView?.hidden = !existingElement.isSignal.boolValue
                     
-                    dashCell.currentElementType = existingElement.typeId.integerValue // will set visibility for icons
+                    dashCell.currentElementType = existingElement.typeId//.integerValue // will set visibility for icons
 
-                    if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState.integerValue)
+                    if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState)//.integerValue)
                     {
                         switch finishStateEnumValue
                         {
@@ -230,7 +230,7 @@ import UIKit
             {
                 let element = sig[i]
                 
-                if element.elementId!.integerValue == elementId
+                if element.elementId! == elementId
                 {
                     item = i + 2
                     if shouldDelete
@@ -254,7 +254,7 @@ import UIKit
             {
                 let element = fav[i]
                 
-                if element.elementId!.integerValue == elementId
+                if element.elementId! == elementId
                 {
                     item = i
                     if shouldDelete
@@ -285,7 +285,7 @@ import UIKit
             {
                 let element = other[i]
                 
-                if element.elementId!.integerValue == elementId
+                if element.elementId! == elementId
                 {
                     item = i
                     if shouldDelete

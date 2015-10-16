@@ -9,32 +9,28 @@
 import Foundation
 class Element:NSObject, CreateDateComparable
 {
-    var elementId:NSNumber?
-    var rootElementId:NSNumber = NSNumber(integer: 0)
-    var typeId:NSNumber = NSNumber(integer: 0)
-    var title:NSString?
-    var details:NSString?
+    var elementId:Int?
+    var rootElementId:Int = 0
+    var typeId:Int = 0
+    var title:String?
+    var details:String?
     var attachIDs:[NSNumber] = [NSNumber]()
     var responsible:NSNumber = NSNumber(integer: 0)
     var passWhomIDs:[NSNumber] = [NSNumber]()
-    var isSignal:NSNumber = NSNumber(integer: 0)
-    var isFavourite:NSNumber = NSNumber(integer: 0)
-    var hasAttaches:NSNumber = NSNumber(integer: 0)
-    var finishState:NSNumber = NSNumber(integer: 10)
+    var isSignal:Bool = false
+    var isFavourite:Bool = false
+    var hasAttaches:Bool = false
+    var finishState:Int = 10
     var finishDate:NSDate?
     var remindDate:NSDate?
-    var creatorId:NSNumber = NSNumber(integer: 0)
-    var createDate:NSString = NSDate.dummyDate()
-    var changerId:NSNumber?
-    var changeDate:NSString?
-    var archiveDate:NSString? {
-        didSet{
-            if archiveDate as! String == kWrongEmptyDate
-            {
-                
-            }
-        }
-    }
+    var creatorId:Int = 0
+    var createDate:String = kWrongEmptyDate
+    var changerId:Int?
+    var changeDate:String?
+    
+    var archiveDate:String?
+     
+    
     //MARK: - CreateDateComparable conformance
     var dateCreated:NSDate? {
         get{
@@ -59,7 +55,7 @@ class Element:NSObject, CreateDateComparable
         }
         if let presentAttaches = info["HasAttaches"] as? NSNumber
         {
-            self.hasAttaches = presentAttaches
+            self.hasAttaches = presentAttaches.boolValue
         }
         if let fav = info["IsFavorite"] as? NSNumber
         {
@@ -69,27 +65,27 @@ class Element:NSObject, CreateDateComparable
         {
             self.isSignal = signal.boolValue
         }
-        if let lvTitle = info["Title"] as? NSString
+        if let lvTitle = info["Title"] as? String
         {
             self.title = lvTitle
         }
-        if let lvDescription = info["Description"] as? NSString
+        if let lvDescription = info["Description"] as? String
         {
             self.details = lvDescription
         }
-        if let lvId = info["ElementId"] as? NSNumber
+        if let lvId = info["ElementId"] as? Int
         {
             self.elementId = lvId
         }
-        if let rootId = info["RootElementId"] as? NSNumber
+        if let rootId = info["RootElementId"] as? Int
         {
             self.rootElementId = rootId
         }
-        if let type = info["TypeId"] as? NSNumber
+        if let type = info["TypeId"] as? Int
         {
             self.typeId = type
         }
-        if let finish = info["FinishState"] as? NSNumber
+        if let finish = info["FinishState"] as? Int
         {
             self.finishState = finish
         }
@@ -100,11 +96,12 @@ class Element:NSObject, CreateDateComparable
                 self.finishDate = date
             }
         }
+        
         if let remind = info["RemindDate"] as? NSString
         {
             self.remindDate = remind.dateFromServerDateString()
         }
-        if let creator = info["CreatorId"] as? NSNumber
+        if let creator = info["CreatorId"] as? Int
         {
             self.creatorId = creator
         }
@@ -112,29 +109,31 @@ class Element:NSObject, CreateDateComparable
         {
             self.responsible = responsibleD
         }
-        if let creationDate = info["CreateDate"] as? NSString
+        if let creationDate = info["CreateDate"] as? String
         {
             self.createDate = creationDate
         }
-        if let changer = info["ChangerId"] as? NSNumber
+        if let changer = info["ChangerId"] as? Int
         {
             self.changerId = changer
         }
-        if let lvChangeDate = info["ChangeDate"] as? NSString
+        if let lvChangeDate = info["ChangeDate"] as? String
         {
             self.changeDate = lvChangeDate
         }
         if let archDate = info["ArchDate"] as? String
         {
-            if archDate == kWrongEmptyDate
-            {
-                NSLog(" \n Element archive date recieved : \"\(archDate)\" \n")
-                self.archiveDate = "/Date(0)/"
-            }
-            else
-            {
-                self.archiveDate = archDate
-            }
+//            if archDate == kWrongEmptyDate
+//            {
+//                NSLog(" \n Element archive date recieved : \"\(archDate)\" \n")
+//                self.archiveDate = "/Date(0)/"
+//            }
+//            else
+//            {
+//                self.archiveDate = archDate
+//            }
+            
+            self.archiveDate = archDate
            
         }
         if info["PassWhomIds"] !== NSNull()
@@ -158,12 +157,12 @@ class Element:NSObject, CreateDateComparable
         toReturn["Attaches"] = self.attachIDs
         toReturn["HasAttaches"] = self.hasAttaches
         toReturn["PassWhomIds"] = self.passWhomIDs
-        toReturn["IsSignal"] = self.isSignal
-        toReturn["IsFavorite"] = self.isFavourite
+        toReturn["IsSignal"] = NSNumber(bool:self.isSignal)
+        toReturn["IsFavorite"] = NSNumber(bool:self.isFavourite)
         toReturn["FinishState"] = self.finishState 
         toReturn["FinishDate"] = self.finishDate?.dateForServer() ?? NSDate.dummyDate() //extension on NSDate
         toReturn["RemindDate"] = self.remindDate?.dateForServer() ?? NSDate.dummyDate()
-        if let archDateString = self.archiveDate as? String
+        if let archDateString = self.archiveDate// as? String
         {
             if archDateString == kWrongEmptyDate
             {
@@ -188,7 +187,7 @@ class Element:NSObject, CreateDateComparable
     
     func isArchived() -> Bool
     {
-        if let archiveDateString = self.archiveDate as? String, let _ = archiveDateString.dateFromServerDateString()
+        if let archiveDateString = self.archiveDate, let _ = archiveDateString.dateFromServerDateString()
         {
             return true
         }
@@ -199,7 +198,7 @@ class Element:NSObject, CreateDateComparable
     {
         if let user = DataSource.sharedInstance.user, userIdInt = user.userId?.integerValue
         {
-            if userIdInt == self.creatorId.integerValue
+            if userIdInt == self.creatorId
             {
                 return true
             }
@@ -233,7 +232,7 @@ class Element:NSObject, CreateDateComparable
         //let todayDate = NSDate()
         //let yesterday = todayDate.dateByAddingTimeInterval(-1.days)
         
-        if let changeDate = self.changeDate as? String,  date = changeDate.dateFromServerDateString()
+        if let changeDate = self.changeDate,  date = changeDate.dateFromServerDateString()
         {
             if date.lessThanDayAgo()
             {
@@ -281,13 +280,13 @@ class Element:NSObject, CreateDateComparable
             
             if self.elementId != nil && lvElement.elementId != nil
             {
-                if self.elementId!.isEqualToNumber( lvElement.elementId!)
+                if self.elementId! ==  lvElement.elementId!
                 {
                      elementIdIsEqual = true
                 }
             }
             
-            if let aTitle = self.title as? String, objTitle = lvElement.title as? String
+            if let aTitle = self.title, objTitle = lvElement.title
             {
                 if aTitle == objTitle
                 {
@@ -295,7 +294,7 @@ class Element:NSObject, CreateDateComparable
                 }
             }
             
-            if let aDescription = self.details as? String , objDescription = lvElement.details as? String
+            if let aDescription = self.details, objDescription = lvElement.details
             {
                 if aDescription == objDescription
                 {
@@ -308,17 +307,17 @@ class Element:NSObject, CreateDateComparable
                 descriptionsEqual = true
             }
             
-            if self.typeId.isEqualToNumber(lvElement.typeId)
+            if self.typeId == lvElement.typeId
             {
                 typeIdsEqual = true
             }
             
-            if self.isSignal.isEqualToNumber(lvElement.isSignal)
+            if self.isSignal == lvElement.isSignal
             {
                 isSignalEqual = true
             }
             
-            if self.finishState.isEqualToNumber(lvElement.finishState)
+            if self.finishState == lvElement.finishState
             {
                 finishStateIsEqual = true
             }
@@ -333,10 +332,10 @@ class Element:NSObject, CreateDateComparable
             //debug
             if !equal
             {
-                if self.elementId!.integerValue == lvElement.elementId!.integerValue
+                if self.elementId! == lvElement.elementId!
                 {
                     print("\n -> Elements Not Equal: ")
-                    print("title: \(titlesEqual), \ndescription: \(descriptionsEqual), \n elementId self:\(self.elementId), elementId object: \(lvElement.elementId), \n typeIDs:\(self.typeId.integerValue) - \(lvElement.typeId.integerValue), \n signals: \(self.isSignal.boolValue) - \(lvElement.isSignal.boolValue),\n finishState: \(self.finishState.integerValue) - \(lvElement.finishState.integerValue) -> \n")
+                    print("title: \(titlesEqual), \ndescription: \(descriptionsEqual), \n elementId self:\(self.elementId), elementId object: \(lvElement.elementId), \n typeIDs:\(self.typeId) - \(lvElement.typeId), \n signals: \(self.isSignal) - \(lvElement.isSignal),\n finishState: \(self.finishState) - \(lvElement.finishState) -> \n")
                 }
             }
             

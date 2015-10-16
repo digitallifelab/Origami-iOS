@@ -136,7 +136,19 @@ class ServerRequester: NSObject
                     {
                         if let userDict = jsonDict["LoginResult"] as? [String:AnyObject]
                         {
-                            userToReturn = User(info: userDict)
+                            userToReturn = User()
+                            if let _ = userToReturn
+                            {
+                                do {
+                                    try userToReturn!.setInfo(userDict)
+                                }
+                                catch let error as InternalDiagnosticError {
+                                    print("Error while setting User Info: \(error)")
+                                    
+                                    completion?(nil, NSError(domain: "com.Origami.DataError", code: -1032, userInfo: [NSLocalizedDescriptionKey:"Could not setup logged user info."]))
+                                    return
+                                }
+                            }
                         }
                     }
                     
@@ -506,107 +518,70 @@ class ServerRequester: NSObject
     
     func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:((Set<NSNumber>?, NSError?)->())? )
     {
-        if let userToken = DataSource.sharedInstance.user?.token// as? String
-        {
+        guard let userToken = DataSource.sharedInstance.user?.token else {
+            completionClosure?(nil, NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
+            return
+        }
+        
+        let requestString = "\(serverURL)" + "\(passWhomelementUrlPart)" + "?elementId=" + "\(elementId)" + "&token=" + "\(userToken)"
+        
+        guard let urlForRequest = NSURL(string: requestString) else {
+            completionClosure?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
+            return
+        }
+    
+        let request = NSMutableURLRequest(URL: urlForRequest)
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+        request.setValue("application-json", forHTTPHeaderField: "Accept")
+        
+        let requestTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (responseData, urlResponse, responseError) -> Void in
             
-            let requestString = "\(serverURL)" + "\(passWhomelementUrlPart)" + "?elementId=" + "\(elementId)" + "&token=" + "\(userToken)"
-            if let urlForRequest = NSURL(string: requestString)
+            if let error = responseError
             {
-                let request = NSMutableURLRequest(URL: urlForRequest)
-                request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
-                request.setValue("application-json", forHTTPHeaderField: "Accept")
-                
-                let requestTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (responseData, urlResponse, responseError) -> Void in
-                    
-                    if let error = responseError
-                    {
-                        completionClosure?(nil, error)
-                        return
-                    }
-                    
-                    if let aData = responseData
-                    {
-                        do{
-                            if let responseValue = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableContainers) as? [String:AnyObject]
-                            {
-                                if let arrayOfIDs = responseValue["GetPassWhomIdsResult"] as? [NSNumber]
-                                {
-                                    let aSet = Set(arrayOfIDs)
-                                    print(aSet)
-                                    if let comp = completionClosure
-                                    {
-                                        comp(aSet, nil)
-                                    }
-                                }
-                            }
-                        }
-                        catch let jsonError as NSError {
-                            completionClosure?(nil, jsonError)
-                        }
-                        catch{
-                            completionClosure?(nil, NSError(domain: "com.Origami.UnknownError.", code: -1030, userInfo: [NSLocalizedDescriptionKey:"Unknown exception during parsing server response"]))
-                        }
-                        
-                    }
-                    
-                })
-                
-                let bgLowQueue:dispatch_queue_t?
-                if #available (iOS 8.0, *)
-                {
-                    bgLowQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
-                }
-                else
-                {
-                    bgLowQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-                }
-                if let ourQueue = bgLowQueue
-                {
-                    dispatch_async(ourQueue, { () -> Void in
-                        requestTask.resume()
-                    })
-                }
-               
+                completionClosure?(nil, error)
                 return
             }
             
-            completionClosure?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
-            return
-            
-//            let requestIDsOperation = AFHTTPRequestOperationManager().GET(requestString, parameters: nil, success: { (operation, result) -> Void in
-//                let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-//                dispatch_async(globalQueue, { () -> Void in
-//                    if let resultArray = result["GetPassWhomIdsResult"] as? [NSNumber]
-//                    {
-//                        let idsSet = Set(resultArray)
-//                        completionClosure?(idsSet, nil)
-//                    }
-//                    else
-//                    {
-//                        completionClosure?(nil, NSError(domain: "Connected Contacts Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Failed to load contacts for element with id \(elementId)"]))
-//                    }
-//                })
-//               
-//            }, failure: { (operation, error) -> Void in
-//                let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-//                dispatch_async(globalQueue, { () -> Void in
-//                    if let responseString = operation.responseString
-//                    {
-//                        completionClosure?(nil, NSError(domain: "Connected Contacts Error", code: -103, userInfo: [NSLocalizedDescriptionKey: responseString]))
-//                    }
-//                    else
-//                    {
-//                        completionClosure?(nil, error)
-//                    }
-//                })
-//            })
-//            
-//            requestIDsOperation?.start()
-//            
-//            return
-        }
+            if let aData = responseData
+            {
+                do{
+                    if let responseValue = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableContainers) as? [String:AnyObject]
+                    {
+                        if let arrayOfIDs = responseValue["GetPassWhomIdsResult"] as? [NSNumber]
+                        {
+                            let aSet = Set(arrayOfIDs)
+                            print(aSet)
+                            if let comp = completionClosure
+                            {
+                                comp(aSet, nil)
+                            }
+                        }
+                    }
+                }
+                catch let jsonError as NSError {
+                    completionClosure?(nil, jsonError)
+                }
+                catch{
+                    completionClosure?(nil, NSError(domain: "com.Origami.UnknownError.", code: -1030, userInfo: [NSLocalizedDescriptionKey:"Unknown exception during parsing server response"]))
+                }
+            }
+        })
         
-        completionClosure?(nil, NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
+        let bgLowQueue:dispatch_queue_t?
+        if #available (iOS 8.0, *)
+        {
+            bgLowQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
+        }
+        else
+        {
+            bgLowQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+        }
+        if let ourQueue = bgLowQueue
+        {
+            dispatch_async(ourQueue, { () -> Void in
+                requestTask.resume()
+            })
+        }
     }
     
     func deleteElement(elementID:Int, completion closure:(deleted:Bool, error:NSError?) ->())

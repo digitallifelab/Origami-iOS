@@ -74,7 +74,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 let elementNew = Element()
                 //self.newElement = Element()
-                elementNew.rootElementId = NSNumber(integer:self.rootElementID)
+                elementNew.rootElementId = self.rootElementID
                 elementNew.passWhomIDs = Array(self.contactIDsToPass)
                 self.newElement = elementNew
                 if self.currentElementType != .None
@@ -311,7 +311,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             cell.isTitleCell = true
             
-            if let title = newElement?.title as? String
+            if let title = newElement?.title// as? String
             {
                 let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:attributedTextColor]
                 cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
@@ -327,7 +327,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             cell.isTitleCell = false
             cell.backgroundColor = cellColor
-            if let description = newElement?.details as? String
+            if let description = newElement?.details //as? String
             {
                 if description != ""
                 {
@@ -713,7 +713,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         self.table?.endEditing(false)
         
-        if let anElement = self.newElement, let currentTitle = newElement?.title as? String
+        if let anElement = self.newElement, let currentTitle = newElement?.title //as? String
         {
             if currentTitle.characters.count < 1
             {
@@ -747,7 +747,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 anElement.passWhomIDs.removeAll(keepCapacity: false)
             }
             
-            anElement.rootElementId = NSNumber(integer:  self.rootElementID)
+            anElement.rootElementId =  self.rootElementID
             
             
             if self.currentElementType != .None
@@ -757,7 +757,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 switch self.currentElementType
                 {
                     case .Signal:
-                        anElement.isSignal = NSNumber(bool:true)
+                        anElement.isSignal = true
                     case .Idea:
                         selectedOption = 1
                     case .Task:
@@ -771,9 +771,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 if selectedOption > 0
                 {
                     let option = optionsConverter.toggleOptionChange(0, selectedOption: selectedOption)
-                    anElement.typeId = NSNumber(integer: option)
+                    anElement.typeId = option
                 }
-                
             }
             
             composingDelegate?.newElementComposer(self, finishedCreatingNewElement: anElement)

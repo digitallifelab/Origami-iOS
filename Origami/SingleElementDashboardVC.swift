@@ -67,7 +67,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
        
         
         
-        if let ourElementIdInt = self.currentElement?.elementId?.integerValue
+        if let ourElementIdInt = self.currentElement?.elementId //?.integerValue
         {
             DataSource.sharedInstance.loadPassWhomIdsForElement(ourElementIdInt, comlpetion: {[weak self] (finished) -> () in
                 // background queue here
@@ -136,7 +136,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         let chatPath = NSIndexPath(forItem: 1, inSection: 0)
         let chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
-        if let elementId = self.currentElement?.elementId?.integerValue
+        if let elementId = self.currentElement?.elementId //?.integerValue
         {
             let currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId) //Optional
             if chatCell == nil && currentLastMessages != nil
@@ -283,7 +283,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             currentEl = self.currentElement,
             selfNav = self.navigationController
         {
-            editingVC.rootElementID = currentEl.rootElementId.integerValue
+            editingVC.rootElementID = currentEl.rootElementId//.integerValue
             editingVC.composingDelegate = self
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
               editingVC.editingStyle = .EditCurrent
@@ -316,7 +316,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementFavouriteToggled(notification:NSNotification)
     {
-        if let element = currentElement, _ = element.elementId?.integerValue
+        if let element = currentElement, _ = element.elementId//?.integerValue
         {
             if element.isArchived()
             {
@@ -424,7 +424,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             if let anElement = self.currentElement, anElementId = anElement.elementId
             {
                 newElementCreator.composingDelegate = self
-                newElementCreator.rootElementID = anElementId.integerValue
+                newElementCreator.rootElementID = anElementId//.integerValue
                 
                 let passwhomIDs = anElement.passWhomIDs
                 
@@ -453,7 +453,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             let currentDate = NSDate()
             if let string = currentDate.dateForServer()
             {
-                let elementId = copyElement.elementId?.integerValue
+                let elementId = copyElement.elementId//?.integerValue
                 if element.isArchived()
                 {
                     //will unarchve
@@ -495,11 +495,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             if !current.isArchived()
             {
-                
                 let anOptionsConverter = ElementOptionsConverter()
-                let newOptions = anOptionsConverter.toggleOptionChange(self.currentElement!.typeId.integerValue, selectedOption: 1)
+                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 1)
                 let editingElement = current.createCopy() // Element(info: self.currentElement!.toDictionary())
-                editingElement.typeId = NSNumber(integer: newOptions)
+                editingElement.typeId = newOptions
                 print("new element type id: \(editingElement.typeId)")
                 self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
@@ -519,7 +518,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
        
         if let element = self.currentElement
         {
-            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: element.typeId.integerValue)
+            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: element.typeId)
             {
                 
                 //1 - detect if element is owned
@@ -532,7 +531,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     if element.isOwnedByCurrentUser()
                     {
                         //2 - if is owned prompt user to start creating TASK with responsible user and remind date
-                        if let currentFinishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
                         {
                             switch currentFinishState
                             {
@@ -548,7 +547,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     }
                     else if element.isTaskForCurrentUser()
                     {
-                        if let currentFinishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
                         {
                             switch currentFinishState
                             {
@@ -578,7 +577,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     if element.isOwnedByCurrentUser()
                     {
                         //2 - if is owned prompt user to start creating TASK with responsible user and remind date
-                        if let currentFinishState = ElementFinishState(rawValue: element.finishState.integerValue)
+                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
                         {
                             switch currentFinishState
                             {
@@ -616,9 +615,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             if !current.isArchived()
             {
                 let anOptionsConverter = ElementOptionsConverter()
-                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId.integerValue, selectedOption: 3)
+                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 3)
                 let editingElement = current.createCopy()
-                editingElement.typeId = NSNumber(integer: newOptions)
+                editingElement.typeId = newOptions
                 print("new element type id: \(editingElement.typeId)")
                 self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
@@ -942,7 +941,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         if existingPassWhonIDs.isEmpty && !newPassWhomIDs.isEmpty
         {
             // add contacts to element
-            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!.integerValue, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!, completion: {[weak self] (succeededIDs, failedIDs) -> () in
                 print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                 if let aSelf = self
                 {
@@ -954,7 +953,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         else if !existingPassWhonIDs.isEmpty && newPassWhomIDs.isEmpty
         {
             //remove all contacts from element
-            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!.integerValue, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!, completion: {[weak self] (succeededIDs, failedIDs) -> () in
                 print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
                 if let aSelf = self
                 {
@@ -971,7 +970,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 //remove all contacts from element
                 DataSource.sharedInstance.removeSeveralContacts(contactIDsToRemoveSet,
-                                                                        fromElement: editingElement.elementId!.integerValue,
+                                                                        fromElement: editingElement.elementId!,
                                                                          completion: { [weak self](succeededIDs, failedIDs) -> () in
                                                                             
                     print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
@@ -996,7 +995,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 // add contacts to element
                 DataSource.sharedInstance.addSeveralContacts(newIDsSet,
-                                                            toElement: editingElement.elementId!.integerValue,
+                                                            toElement: editingElement.elementId!,
                                                            completion: {[weak self] (succeededIDs, failedIDs) -> () in
                         
                     print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
@@ -1022,7 +1021,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     
                     // add contacts to element
                     DataSource.sharedInstance.addSeveralContacts(contactIDsToAdd,
-                        toElement: editingElement.elementId!.integerValue,
+                        toElement: editingElement.elementId!,
                         completion: {[weak self] (succeededIDs, failedIDs) -> () in
                             
                             print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
@@ -1049,14 +1048,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleDeletingCurrentElement()
     {
-        if let elementId = self.currentElement?.elementId?.integerValue
+        if let elementId = self.currentElement?.elementId
         {
             DataSource.sharedInstance.deleteElementFromServer(elementId, completion: { [weak self] (deleted, error) -> () in
                 if let weakSelf = self
                 {
                     if deleted
                     {
-                        if let elementID = weakSelf.currentElement?.elementId?.integerValue
+                        if let elementID = weakSelf.currentElement?.elementId
                         {
                             weakSelf.currentElement = Element() //breaking our link to element in datasource
                             DataSource.sharedInstance.deleteElementFromLocalStorage(elementID, shouldNotify:true)
@@ -1137,7 +1136,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func refreshCurrentElementAfterElementChangedNotification(notif:NSNotification?)
     {
         if let currentElement = self.currentElement,
-            elementIdInt = currentElement.elementId?.integerValue,
+            elementIdInt = currentElement.elementId,
             existingOurElement = DataSource.sharedInstance.getElementById(elementIdInt)
         {
             
@@ -1190,7 +1189,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         //let currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId?.integerValue)
         
         //print("\n Refreshing attaches in viewWillAppear...")
-        if let elementIdInt = self.currentElement?.elementId?.integerValue
+        if let elementIdInt = self.currentElement?.elementId
         {
             DataSource.sharedInstance.refreshAttachesForElement(elementIdInt, completion: { [weak self] (attachesArray) -> () in
                 if let weakSelf = self
@@ -1447,7 +1446,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         if !self.currentShowingAttachName.isEmpty
         {
-            if let elementIdInt = self.currentElement?.elementId?.integerValue
+            if let elementIdInt = self.currentElement?.elementId
             {
                 let attachName = self.currentShowingAttachName
                 
@@ -1654,7 +1653,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func finishElementWithFinishState(state:ElementFinishState)
     {
-        if let current = self.currentElement, elementIdInt = current.elementId?.integerValue, dateString = NSDate().dateForServer() as? String
+        if let current = self.currentElement, elementIdInt = current.elementId, dateString = NSDate().dateForServer() //as? String
         {
             let finishState = state.rawValue
             
@@ -1703,7 +1702,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         self.navigationController?.popViewControllerAnimated(true)
         
     }
-    
+    /**
+    - Sends "*editElement*" to server with updated "*responsible*" value and "*typeId*" value.
+    - Also sends "*setElementFinishState*" if previous query for editing element was successfull
+    - In parallel with "*editElement*" query, sends "*setElementFinishDate*" to server
+    */
     private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate)
     {
         if let element = self.currentElement
@@ -1713,13 +1716,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             
             copy.finishDate = finishDate
             let optionsConverter = ElementOptionsConverter()
-            if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId.integerValue)
+            if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
             {
-                let newOptions = optionsConverter.toggleOptionChange(copy.typeId.integerValue, selectedOption: 2)
-                copy.typeId = NSNumber(integer: newOptions)
+                let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
+                copy.typeId = newOptions
             }
             
-            if let elementIdInt = copy.elementId?.integerValue
+            if let elementIdInt = copy.elementId
             {
                 let newState = ElementFinishState.InProcess.rawValue
                 
@@ -1735,7 +1738,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                        
                                         if let weakerSelf = weakSelf
                                         {
-                                            weakerSelf.collectionDataSource?.handledElement?.finishState = NSNumber(integer: newState)
+                                            weakerSelf.collectionDataSource?.handledElement?.finishState = newState
                                             weakerSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                                             weakerSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
                                         }
@@ -1746,7 +1749,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     }
                 })
             
-                if let dateString = copy.finishDate?.dateForServer() as? String
+                if let dateString = copy.finishDate?.dateForServer() //as? String
                 {
                     DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
                     

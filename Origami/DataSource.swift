@@ -339,9 +339,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func sendNewMessage(message:Message, completion:errorClosure)
     {
         //can be not main queue
-        let elementId = message.elementId?.integerValue
+        guard let messageElementId = message.elementId else {
+            
+            completion(NSError(domain: "com.Origami.InvalidParameterError", code: -1022, userInfo: [NSLocalizedDescriptionKey:"No element id from passing message."]))
+            return
+        }
 
-        DataSource.sharedInstance.serverRequester.sendMessage(message, toElement: message.elementId!) { (result, error) -> () in
+        DataSource.sharedInstance.serverRequester.sendMessage(message, toElement: messageElementId) { (result, error) -> () in
             
             //main queue
             if error != nil
@@ -354,9 +358,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 //return callback to ChatVC
                 completion(nil)
                 
-                if let intElementId = elementId
-                {
-                    if let existingElement = DataSource.sharedInstance.getElementById(intElementId)
+//                if let intElementId = elementId
+//                {
+                    if let existingElement = DataSource.sharedInstance.getElementById(messageElementId)
                     {
                         let date = NSDate()
                         if let currentStringDate = date.dateForServer()
@@ -372,7 +376,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                         }
                     }
-                }
+//                }
             }
         }
     }
@@ -554,7 +558,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 index += 1
                 
-                if let elementIdInt = aMessage.elementId?.integerValue
+                if let elementIdInt = aMessage.elementId
                 {
                     if let _ = DataSource.sharedInstance.getElementById(elementIdInt)
                     {
@@ -655,7 +659,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if let successElement = result as? Element
             {
                 DataSource.sharedInstance.addNewElements([successElement], completion: { () -> () in
-                    closure(newElementId: successElement.elementId?.integerValue, error: nil)
+                    closure(newElementId: successElement.elementId, error: nil)
                 })
                 
             }
@@ -707,16 +711,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getRootElementTreeForElement(targetElement:Element) -> [Element]?
     {
-        let root = targetElement.rootElementId.integerValue
+        let root = targetElement.rootElementId
         if root > 0
         {
             var elements = [Element]()
             
             var tempElement = targetElement
             
-            while tempElement.rootElementId.integerValue > 0
+            while tempElement.rootElementId > 0
             {
-                if let foundRootElement = DataSource.sharedInstance.getElementById(tempElement.rootElementId.integerValue)
+                if let foundRootElement = DataSource.sharedInstance.getElementById(tempElement.rootElementId)
                 {
                     elements.append(foundRootElement)
                     tempElement = foundRootElement
@@ -734,22 +738,21 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func getSubordinateElementsForElement(elementId:Int?, shouldIncludeArchived:Bool) -> [Element]
+    func getSubordinateElementsForElement(elementId:Int?, shouldIncludeArchived:Bool) -> [Element]?
     {
-       
-        var elementsToReturn:[Element] = [Element]()
-        if elementId == nil
-        {
-            return elementsToReturn
+        guard let lvElementId = elementId else {
+            return nil
         }
         
+        var elementsToReturn = [Element]()
         for lvElement in DataSource.sharedInstance.elements
         {
-            if lvElement.rootElementId.integerValue == elementId!
+            if lvElement.rootElementId == lvElementId
             {
                 elementsToReturn.append(lvElement)
             }
         }
+        
         if !elementsToReturn.isEmpty
         {
             ObjectsConverter.sortElementsByDate(&elementsToReturn)
@@ -760,14 +763,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
     
-        return elementsToReturn
+        return nil
     }
     
     func getSubordinateElementsTreeForElement(targetRootElement:Element) -> [Element]?
     {
         //var treeToReturn = [Element]()
         
-        let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId?.integerValue, shouldIncludeArchived:false)
+        guard let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId, shouldIncludeArchived:false) else
+        {
+            return nil
+        }
         if currentSubordinates.isEmpty
         {
             return nil
@@ -778,11 +784,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         for lvElement in currentSubordinates
         {
-            let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue, shouldIncludeArchived:false)
-            if !subordinatesFirst.isEmpty
+            if let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId, shouldIncludeArchived:false)
             {
-                let subSetFirst = Set(subordinatesFirst)
-                subordinatesSet.exclusiveOrInPlace(subSetFirst)
+                if !subordinatesFirst.isEmpty
+                {
+                    let subSetFirst = Set(subordinatesFirst)
+                    subordinatesSet.exclusiveOrInPlace(subSetFirst)
+                }
             }
         }
     
@@ -804,28 +812,28 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return
             }
             
+            var toReturnDict = [Int:[Element]]()
+            
             let preFavouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
                 return checkedElement.isFavourite.boolValue
             })
             
             var favouriteElements =  ObjectsConverter.filterArchiveElements(false, elements: preFavouriteElements)
             
-            ObjectsConverter.sortElementsByDate(&favouriteElements)
-        
-            //debug 
-//            for lvFavourite in favouriteElements
-//            {
-//                print(lvFavourite.elementId!, lvFavourite.title!, lvFavourite.elementId!.integerValue)
-//            }
-            
-            
+            if let _ = favouriteElements {
+                ObjectsConverter.sortElementsByDate(&favouriteElements!)
+                toReturnDict[2] = favouriteElements!
+            }
+            else {
+                toReturnDict[2] = [Element]()
+            }
         
             // ----
             var otherElementsSet = Set<Element>()//[Element]()
             
             let filteredMainElements = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
-                let rootId = element.rootElementId
-                return (rootId.integerValue == 0)
+                //let rootId = element.rootElementId
+                return (element.rootElementId == 0)
                 
             })
             
@@ -836,7 +844,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             let preOtherElementsArray = Array(otherElementsSet)
             var otherElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preOtherElementsArray)
-            ObjectsConverter.sortElementsByDate(&otherElementsArray)
+            if let _ = otherElementsArray {
+                ObjectsConverter.sortElementsByDate(&otherElementsArray!)
+                toReturnDict[3] = otherElementsArray!
+            }
+            else {
+                toReturnDict[3] = [Element]()
+            }
             
             // get all signals
             let filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
@@ -854,20 +868,19 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             
             var signalElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preSignalElementsArray)
-//            for aSignal in signalElementsArray
-//            {
-//                assert(!aSignal.isArchived(), "\n Tried to insert archived element to main dashboard.")
-//            }
-            
-            ObjectsConverter.sortElementsByDate(&signalElementsArray)
+            if let _ = signalElementsArray{
+                 ObjectsConverter.sortElementsByDate(&signalElementsArray!)
+                toReturnDict[1] = signalElementsArray!
+            }
+            else{
+                toReturnDict[1] = [Element]()
+            }
             
             dispatch_async(dispatch_get_main_queue(),
             {
                 _ in
-                let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
-                
-                // NSLog("\r _________ Finished gathering elements for Dashboard.....")
-                completion(toReturn)
+                //let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
+                completion(toReturnDict)
             })
         })
     }
@@ -928,7 +941,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 for anElement in allElements//DataSource.sharedInstance.elements
                 {
-                    if let anInt = anElement.elementId?.integerValue
+                    if let anInt = anElement.elementId //?.integerValue
                     {
                         if !anElement.isArchived()
                         {
@@ -1054,7 +1067,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func editElement(element:Element, completionClosure completion:(edited:Bool) -> () )
     {
-        if let elementId = element.elementId?.integerValue
+        if let elementId = element.elementId //?.integerValue
         {
             DataSource.sharedInstance.serverRequester.editElement(element, completion: { (success, error) -> () in
                 NSOperationQueue().addOperationWithBlock({ () -> Void in
@@ -1094,10 +1107,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             existingElement.archiveDate = element.archiveDate
                             if existingElement.isArchived()
                             {
-                                let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
-                                for aSubElement in subordinates
+                                if let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
                                 {
-                                    aSubElement.archiveDate = element.archiveDate
+                                    for aSubElement in subordinates
+                                    {
+                                        aSubElement.archiveDate = element.archiveDate
+                                    }
                                 }
                             }
                             
@@ -1147,41 +1162,37 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if let existingElement = DataSource.sharedInstance.getElementById(elementId)
                 {
-                    existingElement.finishState = NSNumber(integer: newFinishState)
+                    existingElement.finishState = newFinishState
                 }
             }
             completion?(success: success)
         }
     }
     
-    func updateElement(element:Element, isFavourite favourite:Bool, completion completionClosure:(edited:Bool)->() )
+    func updateElement(element:Element, isFavourite favourite:Bool, completion completionClosure:((edited:Bool)->())? )
     {
-        let elementId = element.elementId?.integerValue
+        guard let elementId = element.elementId else{
+            completionClosure?(edited:false)
+            return
+        }
        
-        
         DataSource.sharedInstance.serverRequester.setElementWithId(element.elementId!, favourite: favourite) { (success, error) -> () in
             
             if success{
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                    if let anId = elementId, existingElement = DataSource.sharedInstance.getElementById(anId)
+                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
                     {
-                        existingElement.isFavourite = NSNumber(bool: favourite)
-//                        let date = NSDate()
-//                        if let currentStringDate = date.dateForServer()
-//                        {
-//                            existingElement.changeDate = currentStringDate
-//                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-//                        }
+                        existingElement.isFavourite = favourite
                         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
                 })
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completionClosure(edited: true)
+                    completionClosure?(edited: true)
                 })
             }
             else
             {
-                completionClosure(edited: false)
+                completionClosure?(edited: false)
                 print("Error did not update FAVOURITE for element.")
             }
         }
@@ -1248,11 +1259,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     bgQueue.maxConcurrentOperationCount = 2
                     
                     
-                    
                     for lvSubordinateElement in allSubordinatesTree
                     {
                         bgQueue.addOperationWithBlock({ () -> Void in
-                            DataSource.sharedInstance.cleanAttachesForElement(lvSubordinateElement.elementId!.integerValue)
+                            if let _ = lvSubordinateElement.elementId {
+                                DataSource.sharedInstance.cleanAttachesForElement(lvSubordinateElement.elementId!)
+                            }
                         })
                     }
                     
@@ -1272,9 +1284,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 var setToDelete = Set<Element>()
                 for lvElement in DataSource.sharedInstance.elements
                 {
-                    if lvElement.rootElementId.integerValue > 0
+                    if lvElement.rootElementId > 0
                     {
-                        if DataSource.sharedInstance.getElementById(lvElement.rootElementId.integerValue) == nil
+                        if DataSource.sharedInstance.getElementById(lvElement.rootElementId) == nil
                         {
                             setToDelete.insert(lvElement)
                         }
@@ -1283,7 +1295,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 for lvElement in setToDelete
                 {
-                    DataSource.sharedInstance.cleanAttachesForElement(lvElement.elementId!.integerValue)
+                    if let _ = lvElement.elementId
+                    {
+                        DataSource.sharedInstance.cleanAttachesForElement(lvElement.elementId!)
+                    }
                 }
                 
                 let filterAgain = Set(DataSource.sharedInstance.elements)
@@ -1295,11 +1310,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 
                 DataSource.sharedInstance.elements = remainingElements
                 //Recheck after deleting
-                let reCheckSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
-                if !reCheckSubordinates.isEmpty
+                if let reCheckSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
                 {
-                    // assert(false, "Check properly deleted subordinates....")
-                    print("Did not delete subordinates for current element Id: \(elementId)")
+                    if !reCheckSubordinates.isEmpty
+                    {
+                        // assert(false, "Check properly deleted subordinates....")
+                        print("Did not delete subordinates for current element Id: \(elementId)")
+                    }
                 }
             }
         }
@@ -1428,19 +1445,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.attachFile(file, toElement: elementId!) { (successAttached, attachId ,errorAttached) -> () in
             
             if successAttached {
-                
-                /*
-                
-                NSNumber *attachID = [successResponse objectForKey:@"AttachFileToElementResult"];
-                AttachFile *newAttach = [[AttachFile alloc] init];
-                newAttach.createDate = [[NSDate date] dateForServer];
-                newAttach.creatorID = weakSelf.writerUser.userID;
-                newAttach.fileName = fileName;
-                newAttach.fileSize = imageSize;
-                newAttach.elementID = weakSelf.chatElementId;
-                newAttach.attachID = attachID;
-                
-                */
                 
                 let lvFileHandle = FileHandler()
                 lvFileHandle.saveFileToDisc(file.data, fileName: file.name, completion: { (filePath, saveError) -> Void in

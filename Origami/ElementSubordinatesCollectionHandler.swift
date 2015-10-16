@@ -49,8 +49,8 @@ class ElementSubordinatesCollectionHandler: CollectionHandler
         let element = elementForIndexPath(indexPath)
         subordinateCell.displayMode = self.displayMode
         subordinateCell.cellType = (element.isSignal.boolValue) ? .Signal : .Other
-        subordinateCell.titleLabel?.text = element.title as? String
-        subordinateCell.descriptionLabel?.text = element.details as? String
+        subordinateCell.titleLabel?.text = element.title //as? String
+        subordinateCell.descriptionLabel?.text = element.details //as? String
         //subordinateCell.layer.borderWidth = 1.0
         return subordinateCell
     }

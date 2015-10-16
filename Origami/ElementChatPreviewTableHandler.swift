@@ -53,7 +53,10 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         var contactIDs = Set<Int>()
             for aMessage in self.messageObjects
             {
-                contactIDs.insert(aMessage.creatorId!.integerValue)
+                if let aCreatorId = aMessage.creatorId
+                {
+                    contactIDs.insert(aCreatorId)//!.integerValue)
+                }
             }
             if let contacts = DataSource.sharedInstance.getContactsByIds(contactIDs)
             {
@@ -82,9 +85,10 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             let messageDateString = messageDate.timeDateStringShortStyle()
             chatCell.dateLabel.text = messageDateString as String
         }
-        if let creatorId = message.creatorId
+        
+        if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId?.integerValue
         {
-            if creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+            if creatorId == userID
             {
                 chatCell.nameLabel.text = DataSource.sharedInstance.user?.initialsString()//firstName /*as? String*/ ?? DataSource.sharedInstance.user?.lastName //as? String
                 
@@ -140,7 +144,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     
     private func contactForMessage(message:Message) -> Contact?
     {
-        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId?.integerValue
+        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
         {
             for aContact in contacts
             {
@@ -198,7 +202,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         }
     }
     
-    func indexPathsForUserId(anId:NSNumber) -> [NSIndexPath]?
+    func indexPathsForUserId(anId:Int) -> [NSIndexPath]?
     {
         if self.messageObjects.isEmpty
         {
@@ -213,7 +217,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         {
             if let creatorId = aMessage.creatorId
             {
-                if creatorId.isEqualToNumber(anId)
+                if creatorId == anId
                 {
                     indexPaths.append(NSIndexPath(forRow: counter, inSection: 0))
                 }
@@ -255,7 +259,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     func refreshTable(note:NSNotification)
     {
         self.trytoGetContactsForLastMessages()
-        if let table = self.tableView, userInfo = note.userInfo, ownerId = userInfo["avatarOwnerId"] as? NSNumber, indexPaths = indexPathsForUserId(ownerId)
+        if let table = self.tableView, userInfo = note.userInfo, ownerId = userInfo["avatarOwnerId"] as? NSNumber, indexPaths = indexPathsForUserId(ownerId.integerValue)
         {
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 

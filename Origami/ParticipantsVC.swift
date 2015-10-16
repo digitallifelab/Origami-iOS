@@ -23,7 +23,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if currentElement!.creatorId.integerValue == DataSource.sharedInstance.user!.userId!.integerValue
+        if currentElement!.creatorId == DataSource.sharedInstance.user!.userId!.integerValue
         {
             selectionEnabled = true
         }
@@ -290,11 +290,16 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                 return
             }
             
+            guard let elementID = currentElement?.elementId else{
+                tableView.deselectRowAtIndexPath(indexPath, animated: false)
+                return
+            }
+            
             switch indexPath.section
             {
                 case 0:
                     //unchecked contact from participants
-                DataSource.sharedInstance.removeContact(contactId, fromElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.removeContact(contactId, fromElement: elementID, completion: { [weak self] (success, error) -> () in
                     if let weakSelf = self
                     {
                         if success
@@ -313,7 +318,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                     }
                 })
                 case 1:
-                DataSource.sharedInstance.addContact(contactId, toElement: currentElement!.elementId!.integerValue, completion: { [weak self] (success, error) -> () in
+                DataSource.sharedInstance.addContact(contactId, toElement:elementID, completion: { [weak self] (success, error) -> () in
                     if let weakSelf = self
                     {
                         if success

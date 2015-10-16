@@ -208,3 +208,9 @@ enum MessageType:Int {
     case UserUnblocked = 65534
     case UserBlocked = 65535
 }
+
+enum InternalDiagnosticError:ErrorType {
+    case EmptyValuePassed(value:AnyObject)
+    case NilValuePassed
+    case UnknownError
+}

@@ -160,9 +160,9 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                         
                         let element = collectionDataSourse.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
-                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!.integerValue , shouldIncludeArchived: false)
-                        if !subordinates.isEmpty
-                        {
+                        if let _ = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId , shouldIncludeArchived: false)
+                        {//if !subordinates.isEmpty
+                        //{
                             elementWidth = HomeCellWideDimension
                         }
                         
@@ -194,8 +194,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                         
                         let element = collectionDataSource.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
-                        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!.integerValue, shouldIncludeArchived: false)
-                        if !subordinates.isEmpty
+                        if let _ = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId, shouldIncludeArchived: false)
                         {
                             elementWidth = HomeCellWideDimension
                         }

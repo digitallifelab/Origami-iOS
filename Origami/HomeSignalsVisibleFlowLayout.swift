@@ -292,22 +292,22 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                     {
                         if countOfSections < 3
                         {
-                            if let currentElement = privOther?[currentItem]
+                            if let currentElement = privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false)
                             {
-                                if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId?.integerValue, shouldIncludeArchived:false).isEmpty
-                                {
+                                //if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false).isEmpty
+                                //{
                                     elementWidth = HomeCellWideDimension
-                                }
+                                //}
                             }
                         }
                         else
                         {
-                            if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem]
+                            if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false)
                             {
-                                if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId?.integerValue, shouldIncludeArchived:false).isEmpty
-                                {
+//                                if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false).isEmpty
+//                                {
                                     elementWidth = HomeCellWideDimension
-                                }
+//                                }
                             }
                         }
                     }

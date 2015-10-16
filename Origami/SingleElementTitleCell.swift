@@ -205,7 +205,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else
             {
-                if (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId.integerValue))
+                if (optionsConverter.isOptionEnabled(ElementOptions.Idea, forCurrentOptions: currentElement.typeId))
                 {
                     ideaButton.tintColor = kWhiteColor
                 }
@@ -232,13 +232,13 @@ class SingleElementTitleCell: UICollectionViewCell {
             if currentElement.isOwnedByCurrentUser()
             {
                 taskButton.userInteractionEnabled = true
-                if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
+                if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId))
                 {
                     //self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     if !currentElement.isArchived()
                     {
                         taskButton.tintColor = kWhiteColor
-                        if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                        if let finishState = ElementFinishState(rawValue: currentElement.finishState)
                         {
                             switch finishState
                             {
@@ -257,7 +257,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                     else
                     {
                         taskButton.tintColor = UIColor.lightGrayColor()
-                        if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                        if let finishState = ElementFinishState(rawValue: currentElement.finishState)
                         {
                             switch finishState
                             {
@@ -291,10 +291,10 @@ class SingleElementTitleCell: UICollectionViewCell {
             else if currentElement.isTaskForCurrentUser()
             {
                 taskButton.userInteractionEnabled = true
-                if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId.integerValue))
+                if (optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: currentElement.typeId))
                 {
                    // self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
-                    if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                    if let finishState = ElementFinishState(rawValue: currentElement.finishState)
                     {
                         switch finishState
                         {
@@ -323,11 +323,11 @@ class SingleElementTitleCell: UICollectionViewCell {
             else //task for anyone else
             {
                 taskButton.userInteractionEnabled = false
-                if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId.integerValue))
+                if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId))
                 {
                    // self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     taskButton.hidden = false
-                    if let finishState = ElementFinishState(rawValue: currentElement.finishState.integerValue)
+                    if let finishState = ElementFinishState(rawValue: currentElement.finishState)
                     {
                         switch finishState
                         {
@@ -358,7 +358,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     {
         if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Decision.rawValue)
         {
-            if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId.integerValue))
+            if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId))
             {
                 decisionButton.tintColor = kWhiteColor
             }

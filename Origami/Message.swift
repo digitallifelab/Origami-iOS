@@ -26,9 +26,9 @@ class Message:Hashable, CreateDateComparable
     */
     var type:MessageType = .Undefined
     var messageId:Int = 0
-    var elementId:NSNumber?
-    var creatorId:NSNumber?
-    var isNew:NSNumber?
+    var elementId:Int?
+    var creatorId:Int?
+    var isNew:Bool = true
     
     var textBody:String?
     var firstName:String?
@@ -59,17 +59,17 @@ class Message:Hashable, CreateDateComparable
             {
                 self.messageId = lvMessageId
             }
-            if let lvElementId = info["ElementId"] as? NSNumber
+            if let lvElementId = info["ElementId"] as? Int
             {
                 self.elementId = lvElementId
             }
-            if let lvCreatorId = info["CreatorId"] as? NSNumber
+            if let lvCreatorId = info["CreatorId"] as? Int
             {
                 self.creatorId = lvCreatorId
             }
             if let lvIsNew = info["IsNew"] as? NSNumber
             {
-                self.isNew = lvIsNew
+                self.isNew = lvIsNew.boolValue
             }
             if let lvFirstName = info["FirstName"] as? String
             {
@@ -105,10 +105,9 @@ class Message:Hashable, CreateDateComparable
         {
             toReturn["CreatorId"] = creatorId
         }
-        if isNew != nil
-        {
-            toReturn["IsNew"] = isNew
-        }
+        
+        toReturn["IsNew"] = NSNumber(bool: isNew)
+        
         
         toReturn["TypeId"] = type.rawValue
         
@@ -165,9 +164,9 @@ class Message:Hashable, CreateDateComparable
 func == (lhs:Message, rhs:Message) -> Bool
 {
     return (
-        lhs.messageId == rhs.messageId &&  lhs.type == rhs.type &&
-        lhs.creatorId?.integerValue == rhs.creatorId?.integerValue
-       
+            lhs.messageId == rhs.messageId &&
+            lhs.type == rhs.type &&
+            lhs.creatorId == rhs.creatorId
     )
 }
 

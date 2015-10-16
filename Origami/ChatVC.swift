@@ -40,7 +40,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         bottomControlsContainerView.delegate = self
         // Do any additional setup after loading the view.
         if let
-            elementIdInt = self.currentElement?.elementId?.integerValue,
+            elementIdInt = self.currentElement?.elementId,
             messages = DataSource.sharedInstance.getMessagesQuantyty(5, elementId: elementIdInt, lastMessageId: nil)
         {
             currentChatMessages = messages
@@ -296,7 +296,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func setupNavigationTitleView()
     {
-        if let title = currentElement?.title as? String
+        if let title = currentElement?.title //as? String
         {
             let lvTitleLabel = UILabel()
             let titleFont =  UIFont(name: "Segoe UI", size: 15.0)
@@ -366,7 +366,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         if let
             existingMessage = messageForIndexPath(indexPath),
-            creatorIdInt = existingMessage.creatorId?.integerValue
+            creatorIdInt = existingMessage.creatorId
         {
             if creatorIdInt == DataSource.sharedInstance.user!.userId!.integerValue
             {
@@ -481,7 +481,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
         
-        guard let topMessage = self.currentChatMessages.first, messageElementId = topMessage.elementId?.integerValue else
+        guard let topMessage = self.currentChatMessages.first, messageElementId = topMessage.elementId else
         {
             let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1))
             dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
@@ -648,7 +648,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
-            if let elementIdInt = currentElement?.elementId?.integerValue
+            if let elementIdInt = currentElement?.elementId
             {
                 if let textBody = message?.textBody
                 {
@@ -732,7 +732,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             }
         }
         
-        let sentTypeIdInteger = element.typeId.integerValue
+        let sentTypeIdInteger = element.typeId
         
         let newLocalElement = Element(info:  element.toDictionary())
         self.newCreatedElement = newLocalElement

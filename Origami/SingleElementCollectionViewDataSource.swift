@@ -93,7 +93,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return nil
         }
-        else if element!.elementId!.integerValue <= 0
+        else if element!.elementId! <= 0
         {
             return nil
         }
@@ -103,7 +103,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementTitle() -> String?
     {
-        if let elementTitle = handledElement?.title as? String
+        if let elementTitle = handledElement?.title //as? String
         {
             return elementTitle
         }
@@ -112,7 +112,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementDetails() -> String?
     {
-        if let elementDetails = handledElement?.details as? String
+        if let elementDetails = handledElement?.details // as? String
         {
             return elementDetails
         }
@@ -131,7 +131,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementAttaches() -> [AttachFile]?
     {
-        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId?.integerValue)
+        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
         {
             return  attaches
         }
@@ -140,22 +140,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementSubordinates() -> [Element]?
     {
-        let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId?.integerValue, shouldIncludeArchived: true)
-        
-        if subordinates.isEmpty
-        {
+        guard let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(handledElement?.elementId, shouldIncludeArchived: true) else {
             return nil
         }
-        else
-        {
-            let unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates)
-            if unarchivedSubordinates.isEmpty
-            {
-                return nil
-            }
-            return unarchivedSubordinates
+        
+        guard let unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates) else {
+            return nil
         }
-        //return subordinates
+        
+        return unarchivedSubordinates
     }
     
     func elementIsTask() -> Bool
@@ -163,7 +156,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         if let element = self.handledElement
         {
             let optionsCovnerter = ElementOptionsConverter()
-            return optionsCovnerter.isOptionEnabled(.Task, forCurrentOptions: element.typeId.integerValue)
+            return optionsCovnerter.isOptionEnabled(.Task, forCurrentOptions: element.typeId)
         }
         return false
     }
@@ -174,7 +167,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             //prepare easy values
             var elementTitle:String?
-            if let title = self.handledElement?.title as? String
+            if let title = self.handledElement?.title //as? String
             {
                 elementTitle = title
             }
@@ -183,7 +176,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 return nil
             }
             
-            var elementDetails:String? = self.handledElement?.details as? String
+            var elementDetails:String? = self.handledElement?.details //as? String
             if elementDetails != nil
             {
                 if elementDetails!.isEmpty
@@ -213,7 +206,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     let value = allValues[i] //again tuple
                     let lvElement = value.1
-                    if DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId?.integerValue, shouldIncludeArchived: false).count > 0
+                    if let _ = DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId, shouldIncludeArchived: false)
                     {
                         lvSubordinatesInfo.append(.Wide)
                     }
@@ -376,7 +369,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     let avatarIconView = titleCell.responsiblePersonAvatarIcon
                     
                     let responsibleIdInt = currentelement.responsible.integerValue
-                    let creatorId = currentelement.creatorId.integerValue
+                    let creatorId = currentelement.creatorId
                     
                     titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
 
@@ -483,7 +476,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     for anElement in parentElements
                     {
-                        if anElement.creatorId.integerValue == userIdInt
+                        if anElement.creatorId == userIdInt
                         {
                             if !owned
                             {
@@ -563,21 +556,20 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 subordinatesStore = self.subordinatesByIndexPath,
                 lvElement = subordinatesStore[indexPath]
             {
-                subordinateCell.titleLabel?.text = lvElement.title as? String
-                subordinateCell.descriptionLabel?.text = lvElement.details as? String
+                subordinateCell.titleLabel?.text = lvElement.title
+                subordinateCell.descriptionLabel?.text = lvElement.details
                 subordinateCell.signalDetectorView?.hidden = true
                 
                 let signalFlag = lvElement.isSignal.boolValue
                 subordinateCell.signalDetectorView?.hidden = !signalFlag
                 
-                subordinateCell.currentElementType = lvElement.typeId.integerValue // will set visibility for icons
+                subordinateCell.currentElementType = lvElement.typeId // will set visibility for icons
                 
-                if let finishStateEnumValue = ElementFinishState(rawValue: lvElement.finishState.integerValue)
+                if let finishStateEnumValue = ElementFinishState(rawValue: lvElement.finishState)
                 {
                     switch finishStateEnumValue
                     {
                     case .Default:
-                        //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
                         subordinateCell.taskIcon?.image = nil
                         break
                     case .InProcess:
@@ -733,7 +725,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         {
             return UIImage(data:imageData)
         }
-        return UIImage(named: "icon-No-Image")
+        return kNoImageIcon
     }
     
     private func attachAtIndexPath(indexPath:NSIndexPath) -> AttachFile?
