@@ -380,20 +380,20 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.titleLabel?.text = "country".localizedWithComment("")
             textCell?.cellType = .Country
-            textCell?.textLabel?.text = user?.country as? String
+            textCell?.textLabel?.text = user?.country
             
         case ProfileTextCellType.Language.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.titleLabel?.text = "language".localizedWithComment("")
             textCell?.cellType = .Language
-            textCell?.textLabel?.text = user?.language as? String
+            textCell?.textLabel?.text = user?.language
             
         case ProfileTextCellType.Age.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.cellType = .Age
             textCell?.titleLabel?.text = "age".localizedWithComment("")
             textCell?.textLabel?.text = nil
-            if let userBirthDay = user?.birthDay as? String
+            if let userBirthDay = user?.birthDay
             {
                 if let date = userBirthDay.dateFromServerDateString()
                 {
@@ -419,7 +419,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
             textCell?.titleLabel?.text = "phone".localizedWithComment("")
             textCell?.cellType = .PhoneNumber
-            textCell?.textLabel?.text = user?.phone as? String
+            textCell?.textLabel?.text = user?.phone
             
         case ProfileTextCellType.Password.rawValue:
             textCell = collectionView.dequeueReusableCellWithReuseIdentifier(textCellIdentifier, forIndexPath: indexPath) as? UserProfileTextContainerCell
@@ -683,7 +683,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
       
         if let textCell = profileCollection.cellForItemAtIndexPath(indexPath) as? UserProfileTextContainerCell
         {
-            if let currentPhone = DataSource.sharedInstance.user?.phone as? String
+            if let currentPhone = DataSource.sharedInstance.user?.phone
             {
                 if currentPhone.isEmpty || currentPhone ==  " "
                 {
@@ -889,7 +889,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     {
         if let password = tempPassword
         {
-            let oldPassword = DataSource.sharedInstance.user?.password as? String
+            let oldPassword = DataSource.sharedInstance.user?.password
             
             if password == oldPassword
             {
@@ -992,7 +992,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func userDidChangeCountry(country:Country)
     {
         let oldId = DataSource.sharedInstance.user?.countryId
-        let oldName = DataSource.sharedInstance.user?.country as? String
+        let oldName = DataSource.sharedInstance.user?.country
         
         if country.countryName == oldName
         {
@@ -1028,7 +1028,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func userDidChangeLanguage(language:Language)
     {
         let oldId = DataSource.sharedInstance.user?.languageId
-        let oldName = DataSource.sharedInstance.user?.language as? String
+        let oldName = DataSource.sharedInstance.user?.language
         
         if language.languageName == oldName
         {
@@ -1066,7 +1066,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func userDidChangePhoneNumber(newString:String)
     {
         //store before updating user phone
-        let previousValue = DataSource.sharedInstance.user?.phone as? String
+        let previousValue = DataSource.sharedInstance.user?.phone 
         if newString == previousValue
         {
             return

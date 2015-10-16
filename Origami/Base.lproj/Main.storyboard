@@ -56,6 +56,8 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -750,11 +752,11 @@
                         <viewControllerLayoutGuide type="bottom" id="yD8-pd-zzj"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="XgA-qY-sW5">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="1056"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="ta0-yn-MRa">
@@ -1401,26 +1403,26 @@
                                         </connections>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="DateDetailsCell" id="Yws-fq-HpK" customClass="SingleElementDateDetailsCell" customModule="Origami_task_manager" customModuleProvider="target">
-                                        <rect key="frame" x="140" y="876" width="320" height="162"/>
+                                        <rect key="frame" x="140" y="876" width="320" height="180"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="162"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <tableView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" delaysContentTouches="NO" canCancelContentTouches="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="dmD-L1-cRi">
-                                                    <rect key="frame" x="0.0" y="0.0" width="200" height="132"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="250" height="132"/>
                                                     <animations/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="200" id="WaO-zR-SFx"/>
+                                                        <constraint firstAttribute="width" constant="250" id="WaO-zR-SFx"/>
                                                         <constraint firstAttribute="height" constant="132" id="lwR-KE-7MB"/>
                                                     </constraints>
                                                     <prototypes>
                                                         <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="DatesTableHolderCell" id="kuD-nz-lzl" userLabel="datesCell" customClass="ElementDashboardDatesCell" customModule="Origami_task_manager" customModuleProvider="target">
-                                                            <rect key="frame" x="0.0" y="22" width="200" height="44"/>
+                                                            <rect key="frame" x="0.0" y="22" width="250" height="44"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <tableViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kuD-nz-lzl" id="GyP-vA-6cY">
-                                                                <rect key="frame" x="0.0" y="0.0" width="200" height="44"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="250" height="44"/>
                                                                 <autoresizingMask key="autoresizingMask"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Archived" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HKN-Ge-hVy">
@@ -1437,7 +1439,7 @@
                                                                         </variation>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:30, 2 Aug 2015" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sgw-dA-FiL">
-                                                                        <rect key="frame" x="73" y="5" width="119" height="19"/>
+                                                                        <rect key="frame" x="123" y="5" width="119" height="19"/>
                                                                         <animations/>
                                                                         <constraints>
                                                                             <constraint firstAttribute="width" constant="119" id="cCA-Dn-JMZ"/>
@@ -1462,8 +1464,8 @@
                                                                     <constraint firstItem="HKN-Ge-hVy" firstAttribute="top" secondItem="GyP-vA-6cY" secondAttribute="top" constant="5" id="JQJ-cR-xi5">
                                                                         <variation key="widthClass=regular" constant="5"/>
                                                                     </constraint>
-                                                                    <constraint firstItem="sgw-dA-FiL" firstAttribute="leading" secondItem="GyP-vA-6cY" secondAttribute="leadingMargin" constant="65" id="QWI-oX-2Ms"/>
                                                                     <constraint firstItem="sgw-dA-FiL" firstAttribute="top" secondItem="HKN-Ge-hVy" secondAttribute="top" id="nI6-T1-0aJ"/>
+                                                                    <constraint firstAttribute="trailingMargin" secondItem="sgw-dA-FiL" secondAttribute="trailing" id="pEH-xi-aEr"/>
                                                                     <constraint firstItem="sgw-dA-FiL" firstAttribute="bottom" secondItem="GyP-vA-6cY" secondAttribute="bottom" constant="1" id="qVk-o6-nk6"/>
                                                                     <constraint firstAttribute="trailingMargin" secondItem="HKN-Ge-hVy" secondAttribute="trailing" constant="519" id="tx7-Fj-J7F"/>
                                                                 </constraints>
@@ -1501,9 +1503,10 @@
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WWm-VV-uAM" userLabel="ownerLocalizedLabel">
-                                                    <rect key="frame" x="8" y="142" width="113" height="18"/>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Creator" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WWm-VV-uAM" userLabel="ownerLocalizedLabel">
+                                                    <rect key="frame" x="8" y="160" width="113" height="18"/>
                                                     <animations/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="113" id="RaR-rI-qvd"/>
                                                     </constraints>
@@ -1511,8 +1514,24 @@
                                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Owner name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0J2-7A-j9p">
-                                                    <rect key="frame" x="232" y="141" width="80" height="19"/>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="243" verticalHuggingPriority="240" horizontalCompressionResistancePriority="746" verticalCompressionResistancePriority="743" text="Responsible" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bGi-qJ-EaK" userLabel="responsibleTitle">
+                                                    <rect key="frame" x="8" y="126" width="69" height="18"/>
+                                                    <animations/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="13"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="responsible person name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sHV-iU-Gtp" userLabel="responsibleName">
+                                                    <rect key="frame" x="156" y="126" width="156" height="19"/>
+                                                    <animations/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
+                                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Owner name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0J2-7A-j9p" userLabel="ownerName">
+                                                    <rect key="frame" x="232" y="159" width="80" height="19"/>
                                                     <animations/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
@@ -1525,22 +1544,31 @@
                                         </view>
                                         <animations/>
                                         <constraints>
+                                            <constraint firstItem="sHV-iU-Gtp" firstAttribute="trailing" secondItem="0J2-7A-j9p" secondAttribute="trailing" id="2YA-ir-SoN"/>
                                             <constraint firstItem="WWm-VV-uAM" firstAttribute="leading" secondItem="Yws-fq-HpK" secondAttribute="leadingMargin" id="5D8-9n-0b5"/>
                                             <constraint firstItem="0J2-7A-j9p" firstAttribute="bottom" secondItem="WWm-VV-uAM" secondAttribute="bottom" id="ANY-PQ-Lfo"/>
                                             <constraint firstItem="0J2-7A-j9p" firstAttribute="leading" secondItem="Yws-fq-HpK" secondAttribute="leading" constant="8" id="GDi-z4-qwG"/>
                                             <constraint firstAttribute="trailing" secondItem="6PR-gr-CzO" secondAttribute="trailing" constant="6" id="Jv0-k2-m6t"/>
+                                            <constraint firstItem="WWm-VV-uAM" firstAttribute="height" secondItem="bGi-qJ-EaK" secondAttribute="height" id="Lwf-RO-ZsB"/>
                                             <constraint firstItem="6PR-gr-CzO" firstAttribute="trailing" secondItem="Yws-fq-HpK" secondAttribute="trailing" constant="8" id="OBQ-MJ-U3g"/>
+                                            <constraint firstItem="WWm-VV-uAM" firstAttribute="top" secondItem="bGi-qJ-EaK" secondAttribute="bottom" constant="16" id="Pwu-4j-cSj"/>
+                                            <constraint firstItem="bGi-qJ-EaK" firstAttribute="leading" secondItem="WWm-VV-uAM" secondAttribute="leading" id="VUn-aN-WM0"/>
+                                            <constraint firstItem="0J2-7A-j9p" firstAttribute="top" secondItem="sHV-iU-Gtp" secondAttribute="bottom" constant="-3" id="Ybw-KQ-0IV"/>
                                             <constraint firstItem="dmD-L1-cRi" firstAttribute="leading" secondItem="Yws-fq-HpK" secondAttribute="leading" id="bbu-nL-I0K"/>
                                             <constraint firstAttribute="trailing" secondItem="0J2-7A-j9p" secondAttribute="trailing" constant="8" id="cZZ-fQ-wfF"/>
                                             <constraint firstAttribute="bottom" secondItem="0J2-7A-j9p" secondAttribute="bottom" constant="2" id="ddG-C0-ts3"/>
                                             <constraint firstItem="dmD-L1-cRi" firstAttribute="top" secondItem="Yws-fq-HpK" secondAttribute="top" id="fA5-lr-7pb"/>
+                                            <constraint firstItem="sHV-iU-Gtp" firstAttribute="centerY" secondItem="bGi-qJ-EaK" secondAttribute="centerY" id="gfw-GA-QD7"/>
                                             <constraint firstItem="6PR-gr-CzO" firstAttribute="top" secondItem="Yws-fq-HpK" secondAttribute="top" constant="40" id="gly-Gv-pGF"/>
+                                            <constraint firstItem="bGi-qJ-EaK" firstAttribute="leading" secondItem="WWm-VV-uAM" secondAttribute="trailing" constant="-113" id="ngH-x2-1P6"/>
                                         </constraints>
-                                        <size key="customSize" width="320" height="162"/>
+                                        <size key="customSize" width="320" height="180"/>
                                         <variation key="default">
                                             <mask key="constraints">
-                                                <exclude reference="GDi-z4-qwG"/>
+                                                <exclude reference="ngH-x2-1P6"/>
                                                 <exclude reference="OBQ-MJ-U3g"/>
+                                                <exclude reference="GDi-z4-qwG"/>
+                                                <exclude reference="Ybw-KQ-0IV"/>
                                             </mask>
                                         </variation>
                                         <connections>
@@ -1548,6 +1576,8 @@
                                             <outlet property="editButton" destination="6PR-gr-CzO" id="0ww-iI-boV"/>
                                             <outlet property="ownerLocalizedLabel" destination="WWm-VV-uAM" id="DUO-Ki-3wt"/>
                                             <outlet property="ownerNameLabel" destination="0J2-7A-j9p" id="Ib7-Cg-OCC"/>
+                                            <outlet property="responsibleLocalizedLabel" destination="bGi-qJ-EaK" id="psH-SU-O6W"/>
+                                            <outlet property="responsibleNameLabel" destination="sHV-iU-Gtp" id="saa-Wg-XsR"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -1562,6 +1592,8 @@
                             <constraint firstItem="lwg-b4-rtA" firstAttribute="top" secondItem="XgA-qY-sW5" secondAttribute="top" id="sk8-fd-JUw"/>
                         </constraints>
                     </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="1100"/>
                     <connections>
                         <outlet property="collectionView" destination="lwg-b4-rtA" id="i7Z-It-GDh"/>
                         <segue destination="mbh-4J-rdx" kind="show" identifier="ShowChatVC" id="ghb-Gn-sIb"/>
@@ -1569,7 +1601,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jpy-27-TYM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2572" y="51"/>
+            <point key="canvasLocation" x="2565" y="55"/>
         </scene>
         <!--All ContactsVC-->
         <scene sceneID="7wU-Tg-Hjb">
@@ -1777,11 +1809,11 @@
                         <viewControllerLayoutGuide type="bottom" id="1qn-l9-g7X"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="SgG-JJ-2ts">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4Ah-4v-u9l">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="1056"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -2846,7 +2878,7 @@
                         <viewControllerLayoutGuide type="bottom" id="Xik-ED-6be"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="zIQ-yH-gjU">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1100"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ooG-3T-Yxh" userLabel="topNavigationBarBackgroundView">
@@ -2858,7 +2890,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="77" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="aoE-9g-R1b">
-                                <rect key="frame" x="0.0" y="64" width="600" height="443"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="943"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -3048,7 +3080,7 @@
                                 </prototypes>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oGj-dc-QSj" customClass="ChatTextInputView" customModule="Origami_task_manager" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="507" width="600" height="49"/>
+                                <rect key="frame" x="0.0" y="1007" width="600" height="49"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ij3-eq-guf" userLabel="topDividerView">
                                         <rect key="frame" x="2" y="0.0" width="596" height="1"/>

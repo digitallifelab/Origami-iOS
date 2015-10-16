@@ -9,18 +9,18 @@
 import Foundation
 class Contact:Person, Hashable
 {
-    var birthDay:NSString?
-    var phone:NSString?
-    var country:NSString?
+    var birthDay:String?
+    var phone:String?
+    var country:String?
     var countryId:NSNumber?
-    var language:NSString?
+    var language:String?
     var languageId:NSNumber?
 
-    var lastSync:NSString?
+    var lastSync:String?
     var contactId:Int = 0
 
     var sex:NSNumber?
-    var regDate:NSString?
+    var regDate:String?
     var photo:NSData?
     
     var isFavourite:NSNumber = NSNumber(bool: false)
@@ -63,15 +63,15 @@ class Contact:Person, Hashable
         {
             self.state = contactState
         }
-        if let reg = info["RegDate"] as? NSString
+        if let reg = info["RegDate"] as? String
         {
             self.regDate = reg.timeDateStringFromServerDateString()
         }
-        if let birth = info["BirthDate"] as? NSString
+        if let birth = info["BirthDate"] as? String
         {
             self.birthDay = birth.timeDateStringFromServerDateString()
         }
-        if let sync = info["LastSync"] as? NSString
+        if let sync = info["LastSync"] as? String
         {
             self.lastSync = sync.timeDateStringFromServerDateString()
         }
@@ -83,11 +83,11 @@ class Contact:Person, Hashable
         {
             self.mood = lvMood
         }
-        if let tel = info["PhoneNUmber"] as? NSString
+        if let tel = info["PhoneNUmber"] as? String
         {
             self.phone = tel
         }
-        if let lvCountry = info["Country"] as? NSString
+        if let lvCountry = info["Country"] as? String
         {
             self.country = lvCountry
         }
@@ -95,7 +95,7 @@ class Contact:Person, Hashable
         {
             self.countryId = lvCountryId
         }
-        if let lvLanguage = info["Language"] as? NSString
+        if let lvLanguage = info["Language"] as? String
         {
             self.language = lvLanguage
         }
@@ -122,11 +122,11 @@ class Contact:Person, Hashable
         toReturn["Mood"]        = self.mood //?? NSNull()
         toReturn["State"]       = self.state.rawValue //?? NSNull()
         toReturn["Sex"]         = self.sex  //?? NSNull()
-        if let phoneNumber = self.phone as? String
+        if let phoneNumber = self.phone
         {
             toReturn["PhoneNumber"] = phoneNumber
         }
-        if let birthDate = self.birthDay as? String
+        if let birthDate = self.birthDay
         {
             toReturn["BirthDay"]  = birthDate
         }

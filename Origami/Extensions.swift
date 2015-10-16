@@ -13,58 +13,116 @@ import UIKit
 
 extension NSDate
 {
-    class func dummyDate() -> String //NSString
+    class func dummyDate() -> String
     {
-        return kWrongEmptyDate // "/Date(0)/"
+        return kWrongEmptyDate
     }
     
-    func dateForServer() -> String? //NSString?
+    func dateForServer() -> String?
     {
-        let utcTimeZone = NSTimeZone(abbreviation: "UTC")
         
-        let gmtOffset = utcTimeZone?.secondsFromGMTForDate(self)
-        if gmtOffset == nil
-        {
+        guard let utcTimeZone = NSTimeZone(abbreviation: "UTC") else {
             return nil
         }
         
+        let gmtOffset = utcTimeZone.secondsFromGMTForDate(self)
         let interval = self.timeIntervalSince1970
         
         var offsetString:NSString
         
         if gmtOffset >= 0 && gmtOffset <= 9
         {
-            offsetString = NSString(format: "+0%ld", Double(gmtOffset!))
+            offsetString = NSString(format: "+0%ld", Double(gmtOffset))
         }
         else if gmtOffset > 9
         {
-            offsetString = NSString(format: "+%ld", Double(gmtOffset!))
+            offsetString = NSString(format: "+%ld", Double(gmtOffset))
         }
         else if gmtOffset < 0 && gmtOffset >= -9
         {
-            offsetString = NSString(format: "-0%ld", Double(gmtOffset!))
+            offsetString = NSString(format: "-0%ld", Double(gmtOffset))
         }
         else
         {
-            offsetString = NSString(format: "-%ld", Double(gmtOffset!))
+            offsetString = NSString(format: "-%ld", Double(gmtOffset))
         }
         
-        let lvString = "/Date(\(Int(floor(Double(interval))))000\(offsetString)00)/" //as NSString
-        //let toReturn = NSString(format: "/Date(%ld000%@00)/", floor( Double(interval)), offsetString)
+        let lvString = "/Date(\(Int(floor(Double(interval))))000\(offsetString)00)/"
         
         return lvString
     }
     
-    func timeDateString() -> NSString
+    func dateForServerWithCurrentTimeZone() -> String?
+    {
+        let  currentTimeZone = NSTimeZone.localTimeZone()
+        if let currentTimeZoneAbreviation = currentTimeZone.abbreviationForDate(self)
+        {
+                print("Current timeZone  ABBREVIATION: \(currentTimeZoneAbreviation)")
+                
+                let gmtOffset = currentTimeZone.secondsFromGMT//ForDate(self)
+            
+            if let  offsetFromString = Int(currentTimeZoneAbreviation)
+            {
+                print(" -> Hours from GMT: \(offsetFromString)")
+                
+                let interval = self.timeIntervalSince1970
+                
+                var offsetString = ""
+                
+                if offsetFromString >= 0 && gmtOffset <= 9
+                {
+                    offsetString = "+0\(Double(gmtOffset))"
+                }
+                else if offsetFromString > 9
+                {
+                    offsetString = "+\(Double(gmtOffset))"
+                }
+                else if offsetFromString < 0 && offsetFromString >= -9
+                {
+                    offsetString = "-0\(Double(gmtOffset))"
+                }
+                else
+                {
+                    offsetString = "-\(Double(gmtOffset))"
+                }
+                
+                let lvString = "/Date(\(Int(floor(Double(interval))))000\(offsetString)00)/"
+                
+                return lvString
+            }
+            
+    
+        }
+     
+        
+        return nil
+        
+    }
+    
+    func dateForRequestURL() -> String?
+    {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MM/dd/YYYY-HH:MM"
+        
+        let dateString = dateFormatter.stringFromDate(self)
+        
+        return dateString
+    }
+    
+    func timeDateString() -> String
     {
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateStyle = .MediumStyle
         dateFormatter.timeStyle = .MediumStyle
-        
+        if let utcLocale = NSTimeZone(abbreviation: "UTC")
+        {
+            dateFormatter.timeZone = utcLocale
+        }
         let toReturn = dateFormatter.stringFromDate(self)
         
         return toReturn
     }
+    
     func timeDateStringShortStyle() -> NSString
     {
         let dateFormatter = NSDateFormatter()
@@ -120,14 +178,9 @@ extension NSDate
         let cal = NSCalendar.currentCalendar();
         let flags:NSCalendarUnit = [ NSCalendarUnit.Year , NSCalendarUnit.Month , NSCalendarUnit.Day]
         let date = NSDate()
-        
-//        let todayComps = cal.components(flags, fromDate:  date)
-        //print("today componetns day: \(todayComps.day)")
+
         let components = cal.components(flags, fromDate: date.dateByAddingTimeInterval(-1.days))
-        //print("today componetns day: \(components.day)")
-//        
-//        let selfComponents = cal.components(flags, fromDate: self)
-        //print(" self  .day = \(selfComponents.day)")
+
         if let yesterday = cal.dateFromComponents(components)
         {
             let comprarison = self.compareDateOnly(yesterday);
@@ -162,68 +215,12 @@ extension NSDate
     }
 }
 
-extension Int {
+extension Int
+{
     var days: NSTimeInterval {
         let DAY_IN_SECONDS = 60 * 60 * 24
         let aDays:Double = Double(DAY_IN_SECONDS) * Double(self)
         return aDays
-    }
-}
-
-extension NSString
-{
-    func dateFromServerDateString() -> NSDate?
-    {        
-        let badCharacters = NSCharacterSet(charactersInString: "1234567890-+").invertedSet
-        let dateUTCstring = self.stringByTrimmingCharactersInSet(badCharacters) as NSString
-        
-        let lettersCount = dateUTCstring.length
-        if lettersCount < 5
-        {
-            return nil
-        }
-        
-        let preDateValueString = dateUTCstring.substringToIndex(lettersCount - 5) as NSString
-        let newCount = preDateValueString.length
-        if newCount < 3
-        {
-            return nil
-        }
-        
-        let dateValueString = preDateValueString.substringToIndex(newCount - 3) as NSString
-        
-        let timeInterval = dateValueString.doubleValue as NSTimeInterval
-        let date = NSDate(timeIntervalSince1970: timeInterval)
-        
-        return date
-        
-    }
-    
-    func timeDateStringFromServerDateString() -> NSString?
-    {
-        let badChars = NSCharacterSet(charactersInString: "1234567890-+").invertedSet
-        var cleanString = self.stringByTrimmingCharactersInSet(badChars) as NSString
-        if cleanString.length < 5
-        {
-            return nil
-        }
-        
-        cleanString = cleanString.substringToIndex(cleanString.length - 5)
-        if cleanString.length < 3
-        {
-            return nil
-        }
-        
-        cleanString = cleanString.substringToIndex(cleanString.length - 3)
-        let timeInterval = cleanString.doubleValue as NSTimeInterval
-        let lvDate = NSDate(timeIntervalSince1970: timeInterval)
-        
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .ShortStyle
-        let toReturn = dateFormatter.stringFromDate(lvDate)
-        
-        return toReturn
     }
 }
 
@@ -259,10 +256,24 @@ extension String
         
         let dateValueString = preDateValueString.substringToIndex(nextStringIndex)
         
-        let timeInterval = (dateValueString as NSString).doubleValue as NSTimeInterval
-        let date = NSDate(timeIntervalSince1970: timeInterval)
+        if let doubleValue = Double(dateValueString)
+        {
+            let timeInterval = NSTimeInterval(doubleValue)// (dateValueString as NSString).doubleValue as NSTimeInterval
+            let date = NSDate(timeIntervalSince1970: timeInterval)
+            
+            return date
+        }
+        return nil
+    }
+    
+    func dateFromHumanReadableDateString() -> NSDate?
+    {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "MM/dd/YYYY-HH:MM"
         
-        return date
+        let dateString = dateFormatter.dateFromString(self)
+        
+        return dateString
     }
     
     func timeDateStringFromServerDateString() -> String?
@@ -313,8 +324,10 @@ extension NSData
     }
 }
 
-extension UIView {
-    class func loadFromNibNamed(nibNamed: String, bundle : NSBundle? = nil) -> UIView? {
+extension UIView
+{
+    class func loadFromNibNamed(nibNamed: String, bundle : NSBundle? = nil) -> UIView?
+    {
         return UINib(
             nibName: nibNamed,
             bundle: bundle

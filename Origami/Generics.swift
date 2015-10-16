@@ -38,7 +38,8 @@ func > <T where T:CreateDateComparable> (lhs:T, rhs:T) -> Bool
 }
 
 /**
-A Generic function that compares two objects by dateCreated property
+A Generic function that compares two objects by *dateCreated* property
+if *dateCreated* is nil in left or right object or in both objects - objects are still compared.
 */
 func < <T where T:CreateDateComparable> (lhs:T, rhs:T) -> Bool
 {

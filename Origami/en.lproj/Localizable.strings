@@ -68,6 +68,10 @@
 
 "Me" = "Me";
 "creator" = "Creator";
+"responsible" = "Responsible";
 
+"Created" = "Created";
+"Changed" = "Changed";
+"Finished" = "Finished";
 //Login attempt failures:
 "YouAreBlocked" = "You are blocked, please contact service administrator.";

@@ -26,6 +26,8 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
     @IBOutlet weak var datesTable:UITableView?
     @IBOutlet weak var ownerNameLabel:UILabel?
     @IBOutlet weak var ownerLocalizedLabel:UILabel?
+    @IBOutlet weak var responsibleLocalizedLabel:UILabel?
+    @IBOutlet weak var responsibleNameLabel:UILabel?
     @IBOutlet weak var editButton:UIButton?
     
     override func awakeFromNib() {
@@ -54,11 +56,11 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         
         self.editButton?.tintColor = kWhiteColor
         self.editButton?.setImage((UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
-        if let creatorId = self.handledElement?.creatorId
+        if let creatorId = self.handledElement?.creatorId, userId = DataSource.sharedInstance.user?.userId?.integerValue
         {
             var ownerNameToDisplay:String?// = String()
             
-            if creatorId == DataSource.sharedInstance.user?.userId
+            if creatorId == userId
             {
                 ownerNameToDisplay = DataSource.sharedInstance.user?.nameAndLastNameSpacedString()
             }
@@ -68,12 +70,41 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
                 {
                     ownerNameToDisplay = owner.nameAndLastNameSpacedString()
                 }
-
+            }
+            ownerNameLabel?.text = ownerNameToDisplay
+            ownerLocalizedLabel?.text = "creator".localizedWithComment("")
+            
+            
+            var responsibleName:String?
+            if let responsibleId = self.handledElement?.responsible
+            {
+                if responsibleId == userId
+                {
+                    responsibleName = DataSource.sharedInstance.user?.nameAndLastNameSpacedString()
+                }
+                else if let contact = DataSource.sharedInstance.getContactsByIds(Set([responsibleId]))?.first
+                {
+                   responsibleName = contact.nameAndLastNameSpacedString()
+                }
+                
+                if let _ = responsibleName
+                {
+                    responsibleNameLabel?.text = responsibleName
+                    responsibleLocalizedLabel?.text = "responsible".localizedWithComment("")
+                }
+                else
+                {
+                    responsibleNameLabel?.text = nil
+                    responsibleLocalizedLabel?.text = nil
+                }
+            }
+            else
+            {
+                responsibleNameLabel?.text = nil
+                responsibleLocalizedLabel?.text = nil
             }
             
-            ownerNameLabel?.text = ownerNameToDisplay
-
-            ownerLocalizedLabel?.text = "creator".localizedWithComment("")
+            print("->\n Current element: \(self.handledElement?.toDictionary())\n<-")
         }
     }
     
@@ -89,7 +120,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         {
             countRows += 1
         }
-        if let _ = handledElement?.finishDate?.timeDateString() as? String
+        if let _ = handledElement?.finishDate?.timeDateString()
         {
             countRows += 1
         }
@@ -124,13 +155,13 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         {
         case 0:
             cell.titleLabel.text = "Created".localizedWithComment("")
-            cell.dateLael.text = handledElement?.createDate.dateFromServerDateString()?.timeDateString() as String? ?? nil
+            cell.dateLael.text = handledElement?.createDate.dateFromServerDateString()?.timeDateString()
         case 1:
             cell.titleLabel.text = "Changed".localizedWithComment("")
-            cell.dateLael.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateString() as String? ?? nil
+            cell.dateLael.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateString()
         case 2:
             cell.titleLabel.text = "Finished".localizedWithComment("")
-            cell.dateLael.text = handledElement?.finishDate?.timeDateString() as String? ?? nil
+            cell.dateLael.text = handledElement?.finishDate?.timeDateString() ?? nil
         default:
             break
         }

@@ -436,7 +436,7 @@ class ServerRequester: NSObject
                         // afnetworking returns here in main thread
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                         
-                        if let responseString = operation.responseString
+                        if let responseString = operation?.responseString
                         {
                             if responseString.isEmpty
                             {
@@ -620,52 +620,67 @@ class ServerRequester: NSObject
     func setElementFinished(elementId:Int, finishDate:String, completion:((success:Bool)->())?)
     {
         //SetFinished
-        if let userToken = DataSource.sharedInstance.user?.token// as? String
+        guard let userToken = DataSource.sharedInstance.user?.token else {
+            completion?(success:false)
+            return
+        }
+        
+        let requestString = serverURL + finishDateUrlPart + "?token=" + userToken + "&elementId=" + "\(elementId)" + "&date=" + "\(finishDate)"
+        
+        print("\nSending finish date: \(finishDate)  to element: \(elementId)")
+        
+        guard let url = NSURL(string: requestString) else
         {
-            let requestString = serverURL + finishDateUrlPart + "?token=" + userToken + "&elementId=" + "\(elementId)" //+ "&date=" + "\(finishDate)"
-            if let url = NSURL(string: requestString)
-            {
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                let finishStateRequest = NSMutableURLRequest(URL: url)
-                finishStateRequest.HTTPMethod = "POST"
-                finishStateRequest.setValue("application/json", forHTTPHeaderField: "Accept")
-                finishStateRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                finishStateRequest.setValue(finishDate, forHTTPHeaderField: "date")
+            completion?(success:false)
+            return
+        }
+        
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            let finishStateRequest = NSMutableURLRequest(URL: url)
+            print(url.absoluteString)
+            finishStateRequest.HTTPMethod = "POST"
+            finishStateRequest.setValue("application/json", forHTTPHeaderField: "Accept")
+            finishStateRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            //finishStateRequest.setValue(finishDate, forHTTPHeaderField: "date")
+            
+            let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: {[weak self] (aData:NSData?, response:NSURLResponse?, anError:NSError?) -> Void in
                 
-                let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: {[weak self] (aData:NSData?, response:NSURLResponse?, anError:NSError?) -> Void in
-                    
-                    if let error = anError
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                
+                if let error = anError
+                {
+                    NSLog(" Error Setting finish Date for element:   \n \(error.description)")
+                    completion?(success:false)
+                }
+                
+                if let data = aData
+                {
+                    if data.length > 0
                     {
-                        NSLog(" Error Setting finish Date for element:   \n \(error.description)")
-                        completion?(success:false)
-                    }
-                    
-                    if let data = aData
-                    {
-                        if data.length > 0
+                        //var errorParsing:NSError?
+                        if let weakSelf = self
                         {
-                            //var errorParsing:NSError?
-                            if let weakSelf = self, completionBlock = completion
+                            if let completionBlock = completion
                             {
                                 weakSelf.handleResponseWithData(data, completion: completionBlock)
                                 return
                             }
+                        }
+                        else{
                             
                         }
                     }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+           
                 })
-                
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                    postFinishStateTask.resume()
-                })
-                
-            }
-        }
-        else
-        {
-            completion?(success:false)
-        }
+            
+            //start network query
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+                postFinishStateTask.resume()
+            })
+            
+        
+        
     }
     
     private func handleResponseWithData(data:NSData, completion:((success:Bool) -> ()) )
@@ -699,7 +714,11 @@ class ServerRequester: NSObject
             print(error.description)
             completion(success:false)
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            //throw error
+            
+            if let serverResponseString = NSString(data: data, encoding: NSUTF8StringEncoding) as? String
+            {
+                print("-->\n Error from Server: \n \(serverResponseString)\n<-")
+            }
         }
         catch {
             print("\n -> Did catch unknown error...")

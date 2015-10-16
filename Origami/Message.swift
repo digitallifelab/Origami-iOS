@@ -80,7 +80,7 @@ class Message:Hashable, CreateDateComparable
                 self.textBody = lvMessage
             }
             
-            if let dateString = info["CreateDate"] as? NSString
+            if let dateString = info["CreateDate"] as? String
             {
                 self.dateCreated = dateString.dateFromServerDateString()
             }

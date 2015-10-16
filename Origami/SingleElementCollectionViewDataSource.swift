@@ -368,7 +368,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     let avatarIconView = titleCell.responsiblePersonAvatarIcon
                     
-                    let responsibleIdInt = currentelement.responsible.integerValue
+                    let responsibleIdInt = currentelement.responsible
                     let creatorId = currentelement.creatorId
                     
                     titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
@@ -381,10 +381,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             {
                                 if creatorId == currentUserIDInt //user sees own element in which he is responsible
                                 {
-//                                    if let aName = user.nameAndLastNameSpacedString()
-//                                    {
-                                        titleCell.responsibleNameLabel?.text = "Your Own Task"
-//                                    }
+                                    titleCell.responsibleNameLabel?.text = "Your Own Task"
                                 }
                                 else //contact`s element in which this contact is responsible
                                 {
@@ -429,10 +426,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             //show current user`s data
                             if creatorId == currentUserIDInt //user sees own element
                             {
-//                                if let aName = user.nameAndLastNameSpacedString()
-//                                {
-                                    titleCell.responsibleNameLabel?.text = "Your Own Element"
-//                                }
+                                titleCell.responsibleNameLabel?.text = "Your Own Element"
                             }
                             else //contact`s data
                             {
@@ -464,33 +458,31 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 
             case .Dates:
                 let datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell",
-                                                                                forIndexPath: indexPath) as! SingleElementDateDetailsCell
+                    forIndexPath: indexPath) as! SingleElementDateDetailsCell
                 datesCell.displayMode = self.displayMode
                 datesCell.handledElement = self.handledElement
                 
                 var owned = elementIsOwned()
                 datesCell.setupActionButtons(owned)
-               if !owned
-               {
-                if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId?.integerValue, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement)
+                if !owned
                 {
-                    for anElement in parentElements
+                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId?.integerValue, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement)
                     {
-                        if anElement.creatorId == userIdInt
+                        for anElement in parentElements
                         {
-                            if !owned
+                            if anElement.creatorId == userIdInt
                             {
-                                owned = true
-                                datesCell.setupActionButtons(owned)
+                                if !owned
+                                {
+                                    owned = true
+                                    datesCell.setupActionButtons(owned)
+                                }
+                                
+                                break
                             }
-                            
-                            break
                         }
                     }
-                    
                 }
-                }
-                
                 
                 return datesCell
             }

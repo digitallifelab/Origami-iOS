@@ -497,7 +497,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         
         let sorted = existingMessagesForElementId.sort { (message1, message2) -> Bool in
-            return (message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
+            return message1 < message2 //(message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
         }
         let count = sorted.count
         if count <= messagesQuantity
@@ -1148,7 +1148,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if let existElement = DataSource.sharedInstance.getElementById(elementId)
                 {
-                    existElement.finishDate = date.dateFromServerDateString()
+                    existElement.finishDate = date.dateFromHumanReadableDateString()
                 }
             }
             completion?(success:success)

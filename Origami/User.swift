@@ -9,18 +9,18 @@
 import Foundation
 class User:Person
 {
-    var birthDay:NSString? //
-    var phone:NSString? //
-    var country:NSString? //
+    var birthDay:String? //
+    var phone:String? //
+    var country:String? //
     var countryId:NSNumber? //
-    var language:NSString? //
+    var language:String? //
     var languageId:NSNumber? //
  
     var sex:NSNumber? //
-    var regDate:NSString? //
+    var regDate:String? //
     var photo:NSData? //
-    var password:NSString? //
-    var lastSync:NSString? //
+    var password:String? //
+    var lastSync:String? //
     var token:String? //
     var userId:NSNumber? //
     
@@ -47,7 +47,7 @@ class User:Person
             {
                 self.token = token
             }
-            if let password = info["Password"] as? NSString
+            if let password = info["Password"] as? String
             {
                 self.password = password
             }
@@ -71,23 +71,23 @@ class User:Person
             {
                 self.photo = lvPhoto
             }
-            if let lvRegDate = info["RegDate"] as? NSString
+            if let lvRegDate = info["RegDate"] as? String
             {
                 self.regDate = lvRegDate
             }
-            if let lvSync = info["LastSync"] as? NSString
+            if let lvSync = info["LastSync"] as? String
             {
                 self.lastSync = lvSync
             }
-            if let lvBirthDay = info["BirthDay"] as? NSString
+            if let lvBirthDay = info["BirthDay"] as? String
             {
                 self.birthDay = lvBirthDay
             }
-            if let lvTel = info["PhoneNumber"] as? NSString
+            if let lvTel = info["PhoneNumber"] as? String
             {
                 self.phone = lvTel
             }
-            if let lvCountry = info["Country"] as? NSString
+            if let lvCountry = info["Country"] as? String
             {
                 self.country = lvCountry
             }
@@ -95,7 +95,7 @@ class User:Person
             {
                 self.countryId = lvCountryId
             }
-            if let lvLanguage = info["Language"] as? NSString
+            if let lvLanguage = info["Language"] as? String
             {
                 self.language = lvLanguage
             }
@@ -128,7 +128,7 @@ class User:Person
         {
             self.token = token
         }
-        if let password = info["Password"] as? NSString
+        if let password = info["Password"] as? String
         {
             self.password = password
         }
@@ -152,23 +152,23 @@ class User:Person
         {
             self.photo = lvPhoto
         }
-        if let lvRegDate = info["RegDate"] as? NSString
+        if let lvRegDate = info["RegDate"] as? String
         {
             self.regDate = lvRegDate
         }
-        if let lvSync = info["LastSync"] as? NSString
+        if let lvSync = info["LastSync"] as? String
         {
             self.lastSync = lvSync
         }
-        if let lvBirthDay = info["BirthDay"] as? NSString
+        if let lvBirthDay = info["BirthDay"] as? String
         {
             self.birthDay = lvBirthDay
         }
-        if let lvTel = info["PhoneNumber"] as? NSString
+        if let lvTel = info["PhoneNumber"] as? String
         {
             self.phone = lvTel
         }
-        if let lvCountry = info["Country"] as? NSString
+        if let lvCountry = info["Country"] as? String
         {
             self.country = lvCountry
         }
@@ -176,7 +176,7 @@ class User:Person
         {
             self.countryId = lvCountryId
         }
-        if let lvLanguage = info["Language"] as? NSString
+        if let lvLanguage = info["Language"] as? String
         {
             self.language = lvLanguage
         }
@@ -192,66 +192,64 @@ class User:Person
         var toReturn = [String:AnyObject]()
         toReturn["LoginName"]   = self.userName
         toReturn["Password"]    = self.password
-        if let regDate = self.regDate as? String
+        toReturn["State"]       = self.state.rawValue
+        toReturn["UserId"]      = self.userId
+        
+        if let regDate = self.regDate
         {
             toReturn["RegDate"] = regDate
         }
-        if let syncDate = self.lastSync as? String
+        if let syncDate = self.lastSync
         {
             toReturn["LastSync"]  = syncDate
         }
         
-        if let fName = self.firstName// as? String
+        if let fName = self.firstName
         {
             toReturn["FirstName"] = fName
         }
         
-        if let lName = self.lastName// as? String
+        if let lName = self.lastName
         {
             toReturn["LastName"] = lName
         }
         
-        if let token = self.token //as? String
+        if let token = self.token
         {
             toReturn["Token"] = token
         }
-        toReturn["UserId"] = self.userId //?? NSNull()
         
         if let mood = self.mood
         {
-            toReturn["Mood"]  = mood //?? NSNull()
+            toReturn["Mood"]  = mood
         }
-        //if let state = self.state
-        //{
-            toReturn["State"] = self.state.rawValue// state //?? NSNull()
-        //}
-        
+       
         if let sex = self.sex
         {
-            toReturn["Sex"] = sex  //?? NSNull()
+            toReturn["Sex"] = sex
         }
         
-        if let phoneNumber = self.phone as? String
+        if let phoneNumber = self.phone
         {
             toReturn["PhoneNumber"] = phoneNumber
         }
         
-        if let stringBDay = self.birthDay as? String
+        if let stringBDay = self.birthDay
         {
             toReturn["BirthDay"] = stringBDay
         }
         
-        if let aCountry = self.country as? String
+        if let aCountry = self.country
         {
             toReturn["Country"] = aCountry
         }
 
-        if let cId = self.countryId //as? NSNumber
+        if let cId = self.countryId
         {
             toReturn["CountryId"]  = cId
         }
         
-        if let lang = self.language as? String
+        if let lang = self.language
         {
             toReturn["Language"] = lang
         }

@@ -1653,10 +1653,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func finishElementWithFinishState(state:ElementFinishState)
     {
-        if let current = self.currentElement, elementIdInt = current.elementId, dateString = NSDate().dateForServer() //as? String
+        if let current = self.currentElement, elementIdInt = current.elementId, dateString = NSDate().dateForRequestURL()
         {
             let finishState = state.rawValue
-            
             DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
                 if edited
                 {
@@ -1712,7 +1711,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         if let element = self.currentElement
         {
             let copy = element.createCopy()
-            copy.responsible = NSNumber(integer: responsiblePersonId)
+            copy.responsible =  responsiblePersonId
             
             copy.finishDate = finishDate
             let optionsConverter = ElementOptionsConverter()
@@ -1744,34 +1743,37 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                         }
                                     })
                                 }
+                                
+                                
+                                if let dateString = copy.finishDate?.dateForRequestURL() //.dateForServer()
+                                {
+                                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
+                                        
+                                        if let weakSelf = self
+                                        {
+                                            if success
+                                            {
+                                                print("\n -> Element finish date WAS updated.\n")
+                                                if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
+                                                {
+                                                    print("\n exist element finish date : \(existElement.finishDate)")
+                                                    print(" current element finish date : \(weakSelf.currentElement?.finishDate)")
+                                                    print(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
+                                                }
+                                            }
+                                            else
+                                            {
+                                                print("\n -> Element finish date WAS NOT updated.\n")
+                                            }
+                                        }
+                                    })
+                                }
+                                
                             }
                         })
                     }
                 })
             
-                if let dateString = copy.finishDate?.dateForServer() //as? String
-                {
-                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
-                    
-                        if let weakSelf = self
-                        {
-                            if success
-                            {
-                                print("\n -> Element finish date WAS updated.\n")
-                                if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
-                                {
-                                    print("\n exist element finish date : \(existElement.finishDate)")
-                                    print(" current element finish date : \(weakSelf.currentElement?.finishDate)")
-                                    print(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
-                                }
-                            }
-                            else
-                            {
-                                print("\n -> Element finish date WAS NOT updated.\n")
-                            }
-                        }
-                    })
-                }
             }
         }
     }

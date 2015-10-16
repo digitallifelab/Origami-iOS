@@ -326,14 +326,14 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     }
                     
                     //setup avatar
-                    if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(element.responsible.integerValue)
+                    if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(element.responsible)
                     {
                         activityCell.elementCreatorAvatar?.image = avatarImage
                     }
                     
                     
                     
-                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.responsible.integerValue])), currentContact = contacts.first
+                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.responsible])), currentContact = contacts.first
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }

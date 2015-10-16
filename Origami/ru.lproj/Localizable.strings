@@ -71,7 +71,10 @@
 "Me" = "Я";
 
 "creator" = "Создатель";
+"responsible" = "Ответственный";
 
-
+"Created" = "Создан";
+"Changed" = "Изменён";
+"Finished" = "Окончание";
 //Login attempt failures:
 "YouAreBlocked" = "Вы забокированы. Пожялуйста, Свяжитесь с администратором сервиса.";

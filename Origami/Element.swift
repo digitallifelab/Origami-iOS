@@ -15,7 +15,7 @@ class Element:NSObject, CreateDateComparable
     var title:String?
     var details:String?
     var attachIDs:[NSNumber] = [NSNumber]()
-    var responsible:NSNumber = NSNumber(integer: 0)
+    var responsible:Int = 0
     var passWhomIDs:[NSNumber] = [NSNumber]()
     var isSignal:Bool = false
     var isFavourite:Bool = false
@@ -94,10 +94,11 @@ class Element:NSObject, CreateDateComparable
             if let date = finishDate.dateFromServerDateString() //still optional
             {
                 self.finishDate = date
+                print("elId: \(self.elementId!), finDate: \(finishDate)")
             }
         }
         
-        if let remind = info["RemindDate"] as? NSString
+        if let remind = info["RemindDate"] as? String
         {
             self.remindDate = remind.dateFromServerDateString()
         }
@@ -105,9 +106,9 @@ class Element:NSObject, CreateDateComparable
         {
             self.creatorId = creator
         }
-        if let responsibleD = info["Responsible"] as? NSNumber
+        if let responsibleID = info["Responsible"] as? Int
         {
-            self.responsible = responsibleD
+            self.responsible = responsibleID
         }
         if let creationDate = info["CreateDate"] as? String
         {
@@ -162,13 +163,13 @@ class Element:NSObject, CreateDateComparable
         toReturn["FinishState"] = self.finishState 
         toReturn["FinishDate"] = self.finishDate?.dateForServer() ?? NSDate.dummyDate() //extension on NSDate
         toReturn["RemindDate"] = self.remindDate?.dateForServer() ?? NSDate.dummyDate()
-        if let archDateString = self.archiveDate// as? String
-        {
-            if archDateString == kWrongEmptyDate
-            {
-                self.archiveDate = NSDate.dummyDate()
-            }
-        }
+//        if let archDateString = self.archiveDate// as? String
+//        {
+//            if archDateString == kWrongEmptyDate
+//            {
+//                self.archiveDate = NSDate.dummyDate()
+//            }
+//        }
         
         toReturn["ArchDate"] = self.archiveDate //?? NSNull()
         toReturn["CreateDate"] = self.createDate //?? NSNull()
@@ -210,7 +211,7 @@ class Element:NSObject, CreateDateComparable
     {
         if let user = DataSource.sharedInstance.user, userIdInt = user.userId?.integerValue
         {
-            if userIdInt == self.responsible.integerValue
+            if userIdInt == self.responsible
             {
                 return true
             }
@@ -322,7 +323,7 @@ class Element:NSObject, CreateDateComparable
                 finishStateIsEqual = true
             }
             
-            if self.responsible.integerValue == lvElement.responsible.integerValue
+            if self.responsible == lvElement.responsible
             {
                 responsiblesAreEqual = true
             }

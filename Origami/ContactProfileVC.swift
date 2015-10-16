@@ -158,7 +158,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 
                 case 4:
                     toReturnInfo[titleInfoKey] = "phone".localizedWithComment("")
-                    if let userPhone = contact.phone as? String
+                    if let userPhone = contact.phone
                     {
                         toReturnInfo[detailsInfoKey] = userPhone
                     }
@@ -170,13 +170,13 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     }
                 case 6:
                     toReturnInfo[titleInfoKey] = "language".localizedWithComment("")
-                    if let aLang = contact.language as? String
+                    if let aLang = contact.language
                     {
                         toReturnInfo[detailsInfoKey] = aLang
                     }
                 case 7:
                     toReturnInfo[titleInfoKey] = "country".localizedWithComment("")
-                    if let aCountry = contact.country as? String
+                    if let aCountry = contact.country 
                     {
                         toReturnInfo[detailsInfoKey] = aCountry
                     }

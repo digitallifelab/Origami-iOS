@@ -254,7 +254,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             }
             else // .Dates
             {
-                titleFrame.size = CGSizeMake(mainFrame.width, 150.0)
+                titleFrame.size = CGSizeMake(mainFrame.width, 180.0)
             }
         }
         
