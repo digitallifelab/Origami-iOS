@@ -73,6 +73,8 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         if self.shouldShowDatePicker
         {
             let datePicker = UIDatePicker(frame: CGRectMake(0, CGRectGetHeight(self.view.bounds) - 220.0, 300.0, 220.0))
+            datePicker.center.x = self.view.center.x
+            datePicker.autoresizingMask = [UIViewAutoresizing.FlexibleTopMargin, .FlexibleLeftMargin, .FlexibleRightMargin]
             datePicker.datePickerMode = UIDatePickerMode.DateAndTime
             datePicker.minimumDate = NSDate()
             //set one day ahead

@@ -49,90 +49,6 @@ class Element:Hashable, CreateDateComparable
     {
         self.init()
         self.setInfo(info)
-//        if let attachFiles = info["Attaches"] as? [NSNumber]
-//        {
-//            self.attachIDs = attachFiles
-//        }
-//        if let presentAttaches = info["HasAttaches"] as? NSNumber
-//        {
-//            self.hasAttaches = presentAttaches.boolValue
-//        }
-//        if let fav = info["IsFavorite"] as? NSNumber
-//        {
-//            self.isFavourite = fav.boolValue
-//        }
-//        if let signal = info["IsSignal"] as? NSNumber
-//        {
-//            self.isSignal = signal.boolValue
-//        }
-//        if let lvTitle = info["Title"] as? String
-//        {
-//            self.title = lvTitle
-//        }
-//        if let lvDescription = info["Description"] as? String
-//        {
-//            self.details = lvDescription
-//        }
-//        if let lvId = info["ElementId"] as? Int
-//        {
-//            self.elementId = lvId
-//        }
-//        if let rootId = info["RootElementId"] as? Int
-//        {
-//            self.rootElementId = rootId
-//        }
-//        if let type = info["TypeId"] as? Int
-//        {
-//            self.typeId = type
-//        }
-//        if let finish = info["FinishState"] as? Int
-//        {
-//            self.finishState = finish
-//        }
-//        if let finishDate = info["FinishDate"] as? String
-//        {
-//            if let date = finishDate.dateFromServerDateString() //still optional
-//            {
-//                self.finishDate = date
-//                print("elId: \(self.elementId!), finDate: \(finishDate)")
-//            }
-//        }
-//        
-//        if let remind = info["RemindDate"] as? String
-//        {
-//            self.remindDate = remind.dateFromServerDateString()
-//        }
-//        if let creator = info["CreatorId"] as? Int
-//        {
-//            self.creatorId = creator
-//        }
-//        if let responsibleID = info["Responsible"] as? Int
-//        {
-//            self.responsible = responsibleID
-//        }
-//        if let creationDate = info["CreateDate"] as? String
-//        {
-//            self.createDate = creationDate
-//        }
-//        if let changer = info["ChangerId"] as? Int
-//        {
-//            self.changerId = changer
-//        }
-//        if let lvChangeDate = info["ChangeDate"] as? String
-//        {
-//            self.changeDate = lvChangeDate
-//        }
-//        if let archDate = info["ArchDate"] as? String
-//        {
-//            self.archiveDate = archDate
-//        }
-//        if info["PassWhomIds"] !== NSNull()
-//        {
-//            if let passIDs = info["PassWhomIds"] as? [NSNumber]
-//            {
-//                self.passWhomIDs = passIDs
-//            }
-//        }
     }
     
     func setInfo(info:[String:AnyObject])
@@ -182,7 +98,7 @@ class Element:Hashable, CreateDateComparable
             if let date = finishDate.dateFromServerDateString() //still optional
             {
                 self.finishDate = date
-                print("elId: \(self.elementId!), finDate: \(finishDate)")
+                //print("elId: \(self.elementId!), finDate: \(finishDate)")
             }
         }
         

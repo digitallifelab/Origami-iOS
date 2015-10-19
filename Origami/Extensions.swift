@@ -65,7 +65,7 @@ extension NSDate
         //dateFormatter.timeZone = defaultTimeZone
         
         let toReturn = dateFormatter.stringFromDate(self)
-        print("timeDateString() -> \(toReturn)")
+        //print("timeDateString() -> \(toReturn)")
         return toReturn
     }
     

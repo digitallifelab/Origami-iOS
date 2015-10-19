@@ -162,7 +162,12 @@ class User:Person
         }
         if let lvBirthDay = info["BirthDay"] as? String
         {
-            self.birthDay = lvBirthDay
+            if lvBirthDay == "/Date(0+0000)/"{
+                self.birthDay = kWrongEmptyDate
+            }
+            else{
+                self.birthDay = lvBirthDay
+            }
         }
         if let lvTel = info["PhoneNumber"] as? String
         {

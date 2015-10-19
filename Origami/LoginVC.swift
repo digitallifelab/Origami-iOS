@@ -83,7 +83,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
                 }
                 weakSelf.loginButton.enabled = true
             }
-        }// User(info: dict)
+        }
     }
     
     func userDidLogin(user:User)

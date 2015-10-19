@@ -104,7 +104,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
                 responsibleLocalizedLabel?.text = nil
             }
             
-            print("->\n Current element: \(self.handledElement?.toDictionary())\n<-")
+            //print("->\n Current element: \(self.handledElement?.toDictionary())\n<-")
         }
     }
     
