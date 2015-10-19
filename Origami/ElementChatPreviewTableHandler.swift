@@ -82,8 +82,14 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
 
         if let messageDate = message.dateCreated
         {
-            let messageDateString = messageDate.timeDateStringShortStyle()
-            chatCell.dateLabel.text = messageDateString as String
+            if messageDate.lessThanDayAgo()
+            {
+                chatCell.dateLabel.text = messageDate.timeStringShortStyle()
+            }
+            else
+            {
+                chatCell.dateLabel.text = messageDate.dateStringShortStyle()
+            }
         }
         
         if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId?.integerValue
