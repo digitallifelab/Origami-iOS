@@ -669,6 +669,19 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         
         handleAddingNewElement(newElement)
     }
+    
+    //MARK: - replace next 3 functions, or delete them after refactoring: ->  they are optional
+//    func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
+//        return nil
+//    }
+//    
+//    func newElementComposerDetailsForNewElement(composer: NewElementComposerViewController) -> String? {
+//        return nil
+//    }
+//    
+//    func newElementForComposer(composer: NewElementComposerViewController) -> Element? {
+//        return nil
+//    }
     //MARK: -----
     func handleAddingNewElement(element:Element)
     {

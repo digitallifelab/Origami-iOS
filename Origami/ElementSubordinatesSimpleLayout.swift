@@ -161,8 +161,7 @@ class ElementSubordinatesSimpleLayout: UICollectionViewFlowLayout
                         let element = collectionDataSourse.elementForIndexPath(attribute.indexPath)
                         var elementWidth:CGFloat = self.itemSize.width
                         if let _ = DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId , shouldIncludeArchived: false)
-                        {//if !subordinates.isEmpty
-                        //{
+                        {
                             elementWidth = HomeCellWideDimension
                         }
                         

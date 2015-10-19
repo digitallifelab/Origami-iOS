@@ -56,22 +56,23 @@ protocol AttachPickingDelegate {
     func mediaPickerShouldAllowEditing(picker:AnyObject) -> Bool
 }
 
-@objc protocol ElementComposingDelegate
+protocol ElementComposingDelegate
 {
     func newElementComposerWantsToCancel(composer:NewElementComposerViewController)
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
     
-
-    optional func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
-    optional func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
-    optional func newElementForComposer(composer:NewElementComposerViewController) -> Element?// { return nil }
+////optional calls. //TODO: protocol extensions?
+//    func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
+//    func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
+//    func newElementForComposer(composer:NewElementComposerViewController) -> Element?// { return nil }
 }
-//extension ElementComposingDelegate
-//{
-//    func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
-//    func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
-//    func newElementForComposer(composer:NewElementComposerViewController) -> Element? { return nil }
-//}
+
+extension ElementComposingDelegate
+{
+    func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
+    func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
+    func newElementForComposer(composer:NewElementComposerViewController) -> Element? { return nil }
+}
 
 
 protocol MessageTapDelegate

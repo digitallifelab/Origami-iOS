@@ -138,6 +138,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         {
             if !textToSend.isEmpty
             {
+                let currentDate = NSDate()
+                let currentDateString = currentDate.dateForServer() ?? NSDate.dummyDate()
+                
                 let nsDict = NSDictionary(
                     objects:
                     [inputView.textView.text!,
@@ -145,7 +148,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                         "Ivan",
                         currentElement!.elementId!,
                         DataSource.sharedInstance.user!.userId!,
-                        NSDate().dateForServer() ?? NSDate.dummyDate()],  /*NSDate().dateForServerWithCurrentTimeZone()*/
+                        currentDateString],
                     forKeys:
                     ["Msg",
                         "TypeId",
@@ -177,7 +180,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                                         aSelf.showAlertWithTitle("Message Send Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
                                     }
                                 })
-                                
                             }
                         })
                     })

@@ -7,7 +7,7 @@
 //
 
 import Foundation
-class Element:NSObject, CreateDateComparable
+class Element:Hashable, CreateDateComparable
 {
     var elementId:Int?
     var rootElementId:Int = 0
@@ -48,7 +48,95 @@ class Element:NSObject, CreateDateComparable
     convenience init(info:[String:AnyObject])
     {
         self.init()
-        
+        self.setInfo(info)
+//        if let attachFiles = info["Attaches"] as? [NSNumber]
+//        {
+//            self.attachIDs = attachFiles
+//        }
+//        if let presentAttaches = info["HasAttaches"] as? NSNumber
+//        {
+//            self.hasAttaches = presentAttaches.boolValue
+//        }
+//        if let fav = info["IsFavorite"] as? NSNumber
+//        {
+//            self.isFavourite = fav.boolValue
+//        }
+//        if let signal = info["IsSignal"] as? NSNumber
+//        {
+//            self.isSignal = signal.boolValue
+//        }
+//        if let lvTitle = info["Title"] as? String
+//        {
+//            self.title = lvTitle
+//        }
+//        if let lvDescription = info["Description"] as? String
+//        {
+//            self.details = lvDescription
+//        }
+//        if let lvId = info["ElementId"] as? Int
+//        {
+//            self.elementId = lvId
+//        }
+//        if let rootId = info["RootElementId"] as? Int
+//        {
+//            self.rootElementId = rootId
+//        }
+//        if let type = info["TypeId"] as? Int
+//        {
+//            self.typeId = type
+//        }
+//        if let finish = info["FinishState"] as? Int
+//        {
+//            self.finishState = finish
+//        }
+//        if let finishDate = info["FinishDate"] as? String
+//        {
+//            if let date = finishDate.dateFromServerDateString() //still optional
+//            {
+//                self.finishDate = date
+//                print("elId: \(self.elementId!), finDate: \(finishDate)")
+//            }
+//        }
+//        
+//        if let remind = info["RemindDate"] as? String
+//        {
+//            self.remindDate = remind.dateFromServerDateString()
+//        }
+//        if let creator = info["CreatorId"] as? Int
+//        {
+//            self.creatorId = creator
+//        }
+//        if let responsibleID = info["Responsible"] as? Int
+//        {
+//            self.responsible = responsibleID
+//        }
+//        if let creationDate = info["CreateDate"] as? String
+//        {
+//            self.createDate = creationDate
+//        }
+//        if let changer = info["ChangerId"] as? Int
+//        {
+//            self.changerId = changer
+//        }
+//        if let lvChangeDate = info["ChangeDate"] as? String
+//        {
+//            self.changeDate = lvChangeDate
+//        }
+//        if let archDate = info["ArchDate"] as? String
+//        {
+//            self.archiveDate = archDate
+//        }
+//        if info["PassWhomIds"] !== NSNull()
+//        {
+//            if let passIDs = info["PassWhomIds"] as? [NSNumber]
+//            {
+//                self.passWhomIDs = passIDs
+//            }
+//        }
+    }
+    
+    func setInfo(info:[String:AnyObject])
+    {
         if let attachFiles = info["Attaches"] as? [NSNumber]
         {
             self.attachIDs = attachFiles
@@ -124,18 +212,7 @@ class Element:NSObject, CreateDateComparable
         }
         if let archDate = info["ArchDate"] as? String
         {
-//            if archDate == kWrongEmptyDate
-//            {
-//                NSLog(" \n Element archive date recieved : \"\(archDate)\" \n")
-//                self.archiveDate = "/Date(0)/"
-//            }
-//            else
-//            {
-//                self.archiveDate = archDate
-//            }
-            
             self.archiveDate = archDate
-           
         }
         if info["PassWhomIds"] !== NSNull()
         {
@@ -161,16 +238,10 @@ class Element:NSObject, CreateDateComparable
         toReturn["IsSignal"] = NSNumber(bool:self.isSignal)
         toReturn["IsFavorite"] = NSNumber(bool:self.isFavourite)
         toReturn["FinishState"] = self.finishState 
-        toReturn["FinishDate"] = self.finishDate?.dateForServer() ?? NSDate.dummyDate() //extension on NSDate
-        toReturn["RemindDate"] = self.remindDate?.dateForServer() ?? NSDate.dummyDate()
-//        if let archDateString = self.archiveDate// as? String
-//        {
-//            if archDateString == kWrongEmptyDate
-//            {
-//                self.archiveDate = NSDate.dummyDate()
-//            }
-//        }
-        
+        toReturn["FinishDate"] = self.finishDate?.dateForServer()// ?? NSDate.dummyDate() //extension on NSDate
+        print("self.remindDate = ")
+        print(self.remindDate)
+        toReturn["RemindDate"] = self.remindDate?.dateForServer()// ?? NSDate.dummyDate()
         toReturn["ArchDate"] = self.archiveDate //?? NSNull()
         toReturn["CreateDate"] = self.createDate //?? NSNull()
         toReturn["CreatorId"] = self.creatorId //?? NSNull()
@@ -261,89 +332,87 @@ class Element:NSObject, CreateDateComparable
         return nil
     }
     
-    override var hash:Int
+    //MARK: Hashable conformance
+    var hashValue:Int {
+        return self.title!.hashValue ^ self.elementId!.hashValue
+    }
+
+}
+
+
+
+func == (lhs:Element, rhs:Element) -> Bool {
+
+    var titlesEqual = false
+    var descriptionsEqual = false
+    var elementIdIsEqual = false
+    var isSignalEqual = false
+    //task especially
+    var typeIdsEqual = false
+    var finishStateIsEqual = false
+    var responsiblesAreEqual = false
+    
+    if lhs.elementId != nil && rhs.elementId != nil
+    {
+        if lhs.elementId! ==  rhs.elementId!
         {
-            let integer = self.title!.hashValue ^ self.elementId!.hashValue
-            return integer
+             elementIdIsEqual = true
+        }
+    }
+
+    if let aTitle = lhs.title, objTitle = rhs.title
+    {
+        if aTitle == objTitle
+        {
+            titlesEqual = true
+        }
+    }
+
+    if let aDescription = lhs.details, objDescription = rhs.details
+    {
+        if aDescription == objDescription
+        {
+            descriptionsEqual = true
+        }
+    }
+
+    if lhs.details == nil && rhs.details == nil
+    {
+        descriptionsEqual = true
+    }
+
+    if lhs.typeId == rhs.typeId
+    {
+        typeIdsEqual = true
+    }
+
+    if lhs.isSignal == rhs.isSignal
+    {
+        isSignalEqual = true
+    }
+
+    if lhs.finishState == rhs.finishState
+    {
+        finishStateIsEqual = true
+    }
+
+    if lhs.responsible == rhs.responsible
+    {
+        responsiblesAreEqual = true
+    }
+
+
+    let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual && finishStateIsEqual && responsiblesAreEqual
+    
+    //debug
+    if !equal
+    {
+        if lhs.elementId! == rhs.elementId!
+        {
+            print("\n -> Elements Not Equal: ")
+            print("title: \(titlesEqual), \ndescription: \(descriptionsEqual), \n elementId self:\(lhs.elementId), elementId object: \(rhs.elementId), \n typeIDs:\(lhs.typeId) - \(rhs.typeId), \n signals: \(lhs.isSignal) - \(rhs.isSignal),\n finishState: \(lhs.finishState) - \(rhs.finishState) -> \n")
+        }
     }
     
-    override func isEqual(object: AnyObject?) -> Bool {
-        if let lvElement = object as? Element
-        {
-            var titlesEqual = false
-            var descriptionsEqual = false
-            var elementIdIsEqual = false
-            var isSignalEqual = false
-            //task especially
-            var typeIdsEqual = false
-            var finishStateIsEqual = false
-            var responsiblesAreEqual = false
-            
-            if self.elementId != nil && lvElement.elementId != nil
-            {
-                if self.elementId! ==  lvElement.elementId!
-                {
-                     elementIdIsEqual = true
-                }
-            }
-            
-            if let aTitle = self.title, objTitle = lvElement.title
-            {
-                if aTitle == objTitle
-                {
-                    titlesEqual = true
-                }
-            }
-            
-            if let aDescription = self.details, objDescription = lvElement.details
-            {
-                if aDescription == objDescription
-                {
-                    descriptionsEqual = true
-                }
-            }
-            
-            if self.details == nil && lvElement.details == nil
-            {
-                descriptionsEqual = true
-            }
-            
-            if self.typeId == lvElement.typeId
-            {
-                typeIdsEqual = true
-            }
-            
-            if self.isSignal == lvElement.isSignal
-            {
-                isSignalEqual = true
-            }
-            
-            if self.finishState == lvElement.finishState
-            {
-                finishStateIsEqual = true
-            }
-            
-            if self.responsible == lvElement.responsible
-            {
-                responsiblesAreEqual = true
-            }
-            
-            
-            let equal:Bool = elementIdIsEqual && titlesEqual && descriptionsEqual && typeIdsEqual && isSignalEqual && finishStateIsEqual && responsiblesAreEqual
-            //debug
-            if !equal
-            {
-                if self.elementId! == lvElement.elementId!
-                {
-                    print("\n -> Elements Not Equal: ")
-                    print("title: \(titlesEqual), \ndescription: \(descriptionsEqual), \n elementId self:\(self.elementId), elementId object: \(lvElement.elementId), \n typeIDs:\(self.typeId) - \(lvElement.typeId), \n signals: \(self.isSignal) - \(lvElement.isSignal),\n finishState: \(self.finishState) - \(lvElement.finishState) -> \n")
-                }
-            }
-            
-            return equal
-            
-        }
-        
-        return false
-    }
+    return equal
 }

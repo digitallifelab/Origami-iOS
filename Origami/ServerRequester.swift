@@ -267,62 +267,79 @@ class ServerRequester: NSObject
  
     
     //MARK: Elements
-    func loadAllElements(completion:networkResult)
+    func loadAllElements(completion:networkResult?)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token
-        {
-            //let testUserId = DataSource.sharedInstance.user?.userId
-            print(" -> Starting to load all elements ...")
-            let params = [tokenKey:tokenString]
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            let requestString = "\(serverURL)" + "\(getElementsUrlPart)"
-            let requestOperation = httpManager.GET(
-                requestString,
-                parameters:params,
-                success:
-                { (operation, responseObject) -> Void in
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    let bgQueue = dispatch_queue_create("ElementsCompletionQueue", DISPATCH_QUEUE_SERIAL)
-                   
-                    dispatch_async(bgQueue, { () -> Void in
-                        if let dictionary = responseObject as? [String:AnyObject],
-                            elementsArray = dictionary["GetElementsResult"] as? [[String:AnyObject]]
-                        {
-                            
-                          //print(elementsArray)
-                            var elements = Set<Element>()
-                            for lvElementDict in elementsArray
-                            {                          
-                                let lvElement = Element(info: lvElementDict)
-                                elements.insert(lvElement)
-                            }
-                            print("\n -> Server requester loaded \(elements.count) elements ... ")
-                            
-                            var arrayOfRecievedElements = Array(elements)
-                            ObjectsConverter.sortElementsByElementId(&arrayOfRecievedElements)
-                            
-                            completion(arrayOfRecievedElements,nil)
-                        }
-                        else
-                        {
-                            completion(nil, NSError(domain: "com.Origami.WrongDataFormet.Error", code: -4321, userInfo: [NSLocalizedDescriptionKey:"Could not process response feom server while querying all attaches"]))
-                        }
-                    })
-            },
-                failure:
-                { (operation, responseError) -> Void in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                completion(nil, responseError)
-            })
+        guard let tokenString = DataSource.sharedInstance.user?.token else {
+            completion?(nil,noUserTokenError)
+            return
+        }
+        
+        let allElementsRequestString = "\(serverURL)" + "\(getElementsUrlPart)" + "?token=" + tokenString
+        
+        guard let requestURL = NSURL(string: allElementsRequestString) else {
             
-            requestOperation.start()
+            completion?(nil, nil)
+            return
+        }
+        
+        print(" -> Starting to load all elements ...")
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        let mutableRequest = NSMutableURLRequest(URL: requestURL)
+        mutableRequest.setValue("application-json", forHTTPHeaderField: "Accept")
+        
+        let completionHandler:sessionRequestCompletion = {(responseData, urlResponse, responseError) in
+            
+        
+            if let anError = responseError {
+                completion?(nil, anError)
+                return
+            }
+            
+            if let aData = responseData
+            {
+                do{
+                    if let serverResponseJson = try NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.MutableLeaves) as? [String:[[String:AnyObject]]], elementsArray = serverResponseJson["GetElementsResult"]
+                    {
+                        var elements = Set<Element>()
+                        for lvElementDict in elementsArray
+                        {
+                            let lvElement = Element()
+                            lvElement.setInfo(lvElementDict)
+                            elements.insert(lvElement)
+                        }
+                        
+                        print("\n -> Server requester loaded \(elements.count) elements ... ")
+                        
+                        var arrayOfRecievedElements = Array(elements)
+                        ObjectsConverter.sortElementsByElementId(&arrayOfRecievedElements)
+                        
+                        completion?(arrayOfRecievedElements,nil)
+                    }
+                    else
+                    {
+                        completion?(nil, NSError(domain: "com.Origami.WrongDataFormet.Error", code: -4321, userInfo: [NSLocalizedDescriptionKey:"Could not process response feom server while querying all attaches"]))
+                    }
+                }
+                catch{
+                    completion?(nil, NSError(domain: "com.Origami.JSONparsingError.", code: -3844, userInfo: [NSLocalizedDescriptionKey: "target JSON object could not be parsed as target data structure."]))
+                }
+            }
+        }
+        var targetQueue:dispatch_queue_t?
+        if #available(iOS 8.0, *)
+        {
+            targetQueue = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
         }
         else
         {
-            completion(nil,noUserTokenError)
+            targetQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
         }
+        
+        
+        self.performGETqueryWithURL(requestURL, onQueue: targetQueue, completion: completionHandler)
+        
     }
-    
     
     
     func submitNewElement(element:Element, completion:networkResult)
@@ -1710,12 +1727,6 @@ class ServerRequester: NSObject
         if let userToken = DataSource.sharedInstance.user?.token //as? String
         {
             let addUrlString = serverURL + "AddContact" + "?token=" + userToken + "&contactId=" + "\(contactId)"
-//            if let addToContactsURL = NSURL(string: addUrlString)
-//            {
-//                self.performGETqueryWithURL(addToContactsURL, completion: { (<#NSData?#>, <#NSURLResponse?#>, <#NSError?#>) -> () in
-//                    <#code#>
-//                })
-//            }
             let addContactOperation = httpManager.GET(addUrlString, parameters: nil, success: { (operation, response) -> Void in
                 if let _ = response as? [String:AnyObject]
                 {
@@ -1744,6 +1755,7 @@ class ServerRequester: NSObject
     }
     
     //MARK: - NSURLSession
+    
     func performGETqueryWithURL(url:NSURL, onQueue:dispatch_queue_t?, priority:Float = 0.5, completion:sessionRequestCompletion)
     {
         let request = NSMutableURLRequest(URL: url)

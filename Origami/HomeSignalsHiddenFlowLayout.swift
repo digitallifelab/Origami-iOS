@@ -283,20 +283,14 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                     {
                         if let currentElement = privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived: false)
                         {
-//                            if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived: false).isEmpty
-//                            {
-                                elementWidth = HomeCellWideDimension
-//                            }
+                            elementWidth = HomeCellWideDimension
                         }
                     }
                     else
                     {
                         if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived: false)
                         {
-//                            if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived: false).isEmpty
-//                            {
-                                elementWidth = HomeCellWideDimension
-//                            }
+                            elementWidth = HomeCellWideDimension
                         }
                     }
                     

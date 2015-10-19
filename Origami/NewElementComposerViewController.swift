@@ -79,8 +79,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 self.newElement = elementNew
                 if self.currentElementType != .None
                 {
-                    self.newElement?.title = self.composingDelegate?.newElementComposerTitleForNewElement?(self)
-                    self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement?(self)
+                    self.newElement?.title = self.composingDelegate?.newElementComposerTitleForNewElement(self)
+                    self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement(self)
                 }
             }
             

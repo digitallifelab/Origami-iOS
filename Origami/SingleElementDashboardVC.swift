@@ -768,7 +768,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             handleEditingElement(newElement)
         }
     }
-    
+        
     //MARK: -----
     func handleAddingNewElement(element:Element)
     {

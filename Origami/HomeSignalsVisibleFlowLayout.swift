@@ -294,20 +294,14 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                         {
                             if let currentElement = privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false)
                             {
-                                //if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false).isEmpty
-                                //{
-                                    elementWidth = HomeCellWideDimension
-                                //}
+                                elementWidth = HomeCellWideDimension
                             }
                         }
                         else
                         {
                             if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false)
                             {
-//                                if !DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false).isEmpty
-//                                {
-                                    elementWidth = HomeCellWideDimension
-//                                }
+                                elementWidth = HomeCellWideDimension
                             }
                         }
                     }
@@ -331,9 +325,6 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                         }
                         else if indexPathForItem.item == 1 //MessagesHolderCell
                         {
-                            //let maximumMessagesCellWidth = max(elementWidth * 2, viewWidth - elementWidth * 2 - minimumInteritemSpacing)
-                            //let messagesCellFrame = CGRectMake(viewWidth - maximumMessagesCellWidth + minimumInteritemSpacing, offsetY, maximumMessagesCellWidth, self.itemSize.height)
-                            
                             let itemFrame = CGRectMake(viewWidth - elementWidth * 2 , offsetY, elementWidth * 2, self.itemSize.height)
                             itemAttributes.frame = CGRectOffset(itemFrame, itemFrame.size.width * 2, 0)
                             

@@ -67,46 +67,5 @@ class ElementSubordinatesCollectionHandler: CollectionHandler
         
         collectionView.deselectItemAtIndexPath(indexPath, animated: false)
     }
-    
-//    // FlowLayout
-//    func  collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize
-//    {
-//        var sizeToReturn:CGSize = CGSizeMake(0.0,0.0)
-//        let element = elementForIndexPath(indexPath)
-////        
-////            if (DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!).count > 0)
-////            {
-////                return CGSizeMake(200, 100)
-////            }
-////        
-//        if (DataSource.sharedInstance.getSubordinateElementsForElement(element.elementId!).count > 0)
-//        {
-//            sizeToReturn = CGSizeMake(200.0, 100.0)
-//            
-//            let lvContentWidth = collectionView.bounds.size.width
-//            if lvContentWidth < 400
-//            {
-//                sizeToReturn = CGSizeMake(180.0, 100.0)
-//            }
-//        }
-//        else
-//        {
-//            sizeToReturn = CGSizeMake(100.0, 100.0)
-//        }
-//        
-//        return sizeToReturn
-//    }
-//    
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets
-//    {
-//        collectionViewLayout
-//        return UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0)
-//    }
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
-//        return 5.0
-//    }
-//    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAtIndex section: Int) -> CGFloat {
-//        return 5.0
-//    }
-    
+        
 }
