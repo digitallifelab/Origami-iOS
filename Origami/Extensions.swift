@@ -160,7 +160,19 @@ extension NSDate
         return NSComparisonResult.OrderedSame
     }
 }
+//MARK: - 
+extension NSTimeInterval {
+    func stringRepresentation() -> String {
+        
+        let ms = Int((self % 1) * 1000)
 
+        let seconds = self % 60
+        let minutes = (self / 60) % 60
+        let hours = (self / 3600)
+
+        return NSString(format: "%0.2d-%0.2d-%0.2d-%0.3d", hours, minutes, seconds, ms) as String
+    }
+}
 //MARK: -
 extension String
 {

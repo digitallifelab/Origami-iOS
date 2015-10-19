@@ -15,7 +15,7 @@ class ServerRequester: NSObject
     typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
     typealias messagesTuple = (chat:[Message], service:[Message])
     typealias messagesCompletionBlock = (messages:messagesTuple?, error:NSError?) -> ()
-    let httpManager:AFHTTPRequestOperationManager = AFHTTPRequestOperationManager()
+    let httpManager:AFHTTPSessionManager = AFHTTPSessionManager()
     
     let objectsConverter = ObjectsConverter()
     
@@ -25,18 +25,21 @@ class ServerRequester: NSObject
         let requestString:String = "\(serverURL)" + "\(registerUserUrlPart)"
         let parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
         
-        let operation = httpManager.GET(
-            requestString,
+        let dataTask = httpManager.GET(requestString,
             parameters: parametersToRegister,
             success:
-            { (operation, resultObject)  in
+            { (task, responseObject) -> Void in
+            
                 completion(success: true, error: nil)
+                
+            },
+            failure: { (task, responseError) -> Void in
+                
+            completion(success: false, error: responseError)
+                
         })
-        { (operation, error)  in
-            completion(success: false, error: error)
-        }
         
-        operation?.start()
+        dataTask?.resume()
     }
     
     func editUser(userToEdit:User, completion:((success:Bool, error:NSError?) -> ())? )
@@ -63,11 +66,11 @@ class ServerRequester: NSObject
             jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
         }
       
-        let editOperation = httpManager.POST(
+        let editTask = httpManager.POST(
             requestString,
             parameters: params,
             success:
-            { (operation, resultObject) -> Void in
+            { (task, resultObject) -> Void in
                 if let result = resultObject as? [String:AnyObject]
                 {
                     print(" -> Edit user result: \(result)")
@@ -83,21 +86,14 @@ class ServerRequester: NSObject
             
         })
             { (operation, responseError) -> Void in
-    
-                if let errorString = operation.responseString
-                {
-                    print("\n ->failure string in edit uer: \n \(errorString) \n")
-                }
-                
                 
                 print("\n -> Edit user Error: \(responseError)")
                 
-    
             completion?(success: false, error: responseError)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         
-        editOperation?.start()
+        editTask?.resume()
     }
     
     func loginWith(userName:String, password:String, completion:networkResult?)
@@ -231,7 +227,7 @@ class ServerRequester: NSObject
                 
         }
         
-        langOperation?.start()
+        langOperation?.resume()
     }
     
     func loadCountries(completion:((countries:[Country]?, error:NSError?) ->())?)
@@ -262,7 +258,7 @@ class ServerRequester: NSObject
             completion?(countries:nil, error: responseError)
         }
             
-        countriesOp?.start()
+        countriesOp?.resume()
     }
  
     
@@ -344,192 +340,139 @@ class ServerRequester: NSObject
     
     func submitNewElement(element:Element, completion:networkResult)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token// as? String
-        {
-            let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
-            dispatch_async(bgQueue, { [unowned self] () -> Void in
-                
-//            })
-//            NSOperationQueue().addOperationWithBlock({ [unowned self]() -> Void in
-                let elementDict = element.toDictionary()
-                print(" Submitting new element to server: \n")
-                print(elementDict)
-                print("\n<--")
-                let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
-                let params = ["element":elementDict]
-                
-                let requestSerializer = AFJSONRequestSerializer()
-                requestSerializer.timeoutInterval = 15.0 as NSTimeInterval
-                requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-                requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                self.httpManager.requestSerializer = requestSerializer
-                
-                let postOperation = self.httpManager.POST(
-                    postString,
-                    parameters: params,
-                    success:
-                    { (operation, result) -> Void in
-                        
-                        if let
-                            resultDict = result as? Dictionary<String, AnyObject>,
-                            newElementDict = resultDict["AddElementResult"] as? Dictionary<String, AnyObject>
-                        {
-                            let newUploadedElement = Element(info: newElementDict)
-                            completion(newUploadedElement, nil)
-                        }
-                        else
-                        {
-                            let lvError = NSError(domain: "com.DictionaryConversion.Failure", code: -801, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response to dictionary"])
-                            completion(nil, lvError)
-                        }
-                        
-                    },
-                    failure:
-                    { (operation, error) -> Void in
-                        
-                        if let errorString = operation.responseString
-                        {
-                            let lvError = NSError(domain: "com.ElementSubmission.Failure", code: -802, userInfo: [NSLocalizedDescriptionKey:errorString])
-                            completion(nil,lvError)
-                        }
-                        else
-                        {
-                            completion(nil, error)
-                        }
-                })
-                
-                postOperation?.start()
-            })
-        }
-        else
-        {
+        guard let tokenString = DataSource.sharedInstance.user?.token else {
+            
             completion(nil,noUserTokenError)
+            return
         }
+        
+            let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
+            dispatch_async(bgQueue) { [unowned self] () -> Void in
+                
+            let elementDict = element.toDictionary()
+            print(" Submitting new element to server: \n")
+            print(elementDict)
+            print("\n<--")
+            let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
+            let params = ["element":elementDict]
+            
+            let requestSerializer = AFJSONRequestSerializer()
+            requestSerializer.timeoutInterval = 15.0 as NSTimeInterval
+            requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
+            requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            self.httpManager.requestSerializer = requestSerializer
+            
+            let postOperation = self.httpManager.POST(
+                postString,
+                parameters: params,
+                success:
+                { (operation, result) -> Void in
+                    
+                    if let
+                        resultDict = result as? Dictionary<String, AnyObject>,
+                        newElementDict = resultDict["AddElementResult"] as? Dictionary<String, AnyObject>
+                    {
+                        let newUploadedElement = Element(info: newElementDict)
+                        completion(newUploadedElement, nil)
+                    }
+                    else
+                    {
+                        let lvError = NSError(domain: "com.DictionaryConversion.Failure", code: -801, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response to dictionary"])
+                        completion(nil, lvError)
+                    }
+                    
+                },
+                failure:
+                { (operation, error) -> Void in
+                        completion(nil, error)
+
+            })
+            
+            postOperation?.resume()
+        }//end of bg queue
     }
     
     func editElement(element:Element, completion completonClosure:(success:Bool, error:NSError?) -> () )
     {
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
-        {
-            var requestError:NSError?
-            
-            let bgQueue = dispatch_queue_create("edit_sueue", DISPATCH_QUEUE_SERIAL)
-            dispatch_async(bgQueue, { () -> Void in
-
-                let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
-                var elementDict = element.toDictionary()
-                if let archDateString = elementDict["ArchDate"] as? String
-                {
-                    if archDateString == kWrongEmptyDate
-                    {
-                        NSLog(" -> Archive date of element to pass: \n \(archDateString)\n <---<")
-                        elementDict["ArchDate"] = "/Date(0)/"
-                    }
-                    
-//                    if archDateString == "/Date(0)/"
-//                    {
-//                        elementDict["ArchDate"] = nil
-//                    }
-                }
-                let params = ["element":elementDict]
-                let debugDescription = params.description
-                NSLog("Sending editElement params: \n \(debugDescription) \n")
-                let manager = AFHTTPRequestOperationManager()
-                let requestSerializer = AFJSONRequestSerializer()
-                requestSerializer.timeoutInterval = 15.0
-                requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
-                requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-                manager.requestSerializer = requestSerializer
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                
-                let editRequestOperation = manager.POST(editUrlString,
-                    parameters: params,
-                    success: { (operation, resultObject) -> Void in
-                        // afnetworking returns here in main thread
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                       completonClosure(success: true, error: nil)
-                    },
-                    failure: { (operation, error) -> Void in
-                        // afnetworking returns here in main thread
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                        
-                        if let responseString = operation?.responseString
-                        {
-                            if responseString.isEmpty
-                            {
-                                requestError = error
-                            }
-                            else
-                            {
-                                requestError = NSError(domain: "ElementEditingError", code: -1002, userInfo: [NSLocalizedDescriptionKey:responseString])
-                            }
-                            completonClosure(success: false, error: requestError)
-                        }
-                        else
-                        {
-                            completonClosure(success: false, error: error)
-                        }                        
-                })
-                
-                editRequestOperation?.start()
-            })
+        guard let userToken = DataSource.sharedInstance.user?.token else {
+            completonClosure(success: false, error: noUserTokenError)
+            return
         }
+        
+
+        let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
+        var elementDict = element.toDictionary()
+        if let archDateString = elementDict["ArchDate"] as? String
+        {
+            if archDateString == kWrongEmptyDate
+            {
+                NSLog(" -> Archive date of element to pass: \n \(archDateString)\n <---<")
+                elementDict["ArchDate"] = "/Date(0)/"
+            }
+        }
+        let params = ["element":elementDict]
+        let debugDescription = params.description
+        NSLog("Sending editElement params: \n \(debugDescription) \n")
+        
+        let requestSerializer = AFJSONRequestSerializer()
+        requestSerializer.timeoutInterval = 15.0
+        requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
+        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
+        httpManager.requestSerializer = requestSerializer
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        let editRequestOperation = httpManager.POST(editUrlString,
+            parameters: params,
+            success: { (task, resultObject) -> Void in
+                // afnetworking returns here in main thread
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+               completonClosure(success: true, error: nil)
+            },
+            failure: { (task, error) -> Void in
+                // afnetworking returns here in main thread
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+
+                completonClosure(success: false, error: error)
+                
+        })
+        
+        editRequestOperation?.resume()
+        
     }
     
     func setElementWithId(elementId:NSNumber, favourite isFavourite:Bool, completion completionClosure:(success:Bool, error:NSError?)->())
     {
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
+        guard let userToken = DataSource.sharedInstance.user?.token else
         {
-            
-            NSOperationQueue().addOperationWithBlock({ () -> Void in
-                
-                let requestString = "\(serverURL)" + "\(favouriteElementUrlPart)" + "?elementId=" + "\(elementId.integerValue)" + "&token=" + "\(userToken)"
-                var requestError:NSError?
-                
-                let manager = AFHTTPRequestOperationManager()
-                let requestSerializer = AFJSONRequestSerializer()
-                requestSerializer.timeoutInterval = 15.0
-                requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
-                requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-                manager.requestSerializer = requestSerializer
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                let editRequestOperation = manager.POST(requestString,
-                    parameters: nil,
-                    success: { (operation, resultObject) -> Void in
-                        
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                        completionClosure(success: true, error: nil)
-                    },
-                    failure: { (operation, error) -> Void in
-                        
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                        
-                        if let responseString = operation.responseString
-                        {
-                            if responseString.isEmpty
-                            {
-                                requestError = error
-                            }
-                            else
-                            {
-                                requestError = NSError(domain: "ElementEditingError", code: -1002, userInfo: [NSLocalizedDescriptionKey:responseString])
-                            }
-                        }
-                        else
-                        {
-                            requestError = error
-                        }
-                        
-                       
-                        completionClosure(success: false, error: requestError)
-                        
-                })
-                
-                editRequestOperation?.start()
-            })
+            completionClosure(success: false, error: noUserTokenError)
             return
         }
-        completionClosure(success: false, error: NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
+        
+        let requestString = "\(serverURL)" + "\(favouriteElementUrlPart)" + "?elementId=" + "\(elementId.integerValue)" + "&token=" + "\(userToken)"
+        
+        let requestSerializer = AFJSONRequestSerializer()
+        requestSerializer.timeoutInterval = 15.0
+        requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
+        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
+        httpManager.requestSerializer = requestSerializer
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        let editRequestOperation = httpManager.POST(requestString,
+            parameters: nil,
+            success: { (operation, resultObject) -> Void in
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                completionClosure(success: true, error: nil)
+            },
+            failure: { (operation, error) -> Void in
+                
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+               
+                completionClosure(success: false, error: error)
+                
+        })
+        
+        editRequestOperation?.resume()
+        
     }
     
     
@@ -610,28 +553,22 @@ class ServerRequester: NSObject
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         let deleteOperation = httpManager.POST(deleteString,
             parameters: nil,
-            success: { (response, responseObject) -> Void in
+            success: { (task, responseObject) -> Void in
                 if let dict = responseObject as? [String:AnyObject]
                 {
                     print("Success response while deleting element: \(dict) ")
                 }
                 closure(deleted: true, error: nil)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-        }) { (response, failureError) -> Void in      /*...failure closure...*/
+        }) { (task, failureError) -> Void in      /*...failure closure...*/
             
-                if let responseString = response.responseString
-                {
-                    let lvError = NSError(domain: "Origami.DeleteElement.Error", code: -432, userInfo: [NSLocalizedDescriptionKey:responseString])
-                    closure(deleted: false, error: lvError)
-                }
-                else
-                {
-                    closure(deleted: false, error: failureError)
-                }
+            
+                closure(deleted: false, error: failureError)
+            
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
         
-        deleteOperation?.start()
+        deleteOperation?.resume()
     }
     
     func setElementFinished(elementId:Int, finishDate:String, completion:((success:Bool)->())?)
@@ -658,7 +595,6 @@ class ServerRequester: NSObject
             finishStateRequest.HTTPMethod = "POST"
             finishStateRequest.setValue("application/json", forHTTPHeaderField: "Accept")
             finishStateRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            //finishStateRequest.setValue(finishDate, forHTTPHeaderField: "date")
             
             let postFinishStateTask = NSURLSession.sharedSession().dataTaskWithRequest(finishStateRequest, completionHandler: {[weak self] (aData:NSData?, response:NSURLResponse?, anError:NSError?) -> Void in
                 
@@ -674,7 +610,6 @@ class ServerRequester: NSObject
                 {
                     if data.length > 0
                     {
-                        //var errorParsing:NSError?
                         if let weakSelf = self
                         {
                             if let completionBlock = completion
@@ -695,9 +630,6 @@ class ServerRequester: NSObject
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                 postFinishStateTask.resume()
             })
-            
-        
-        
     }
     
     private func handleResponseWithData(data:NSData, completion:((success:Bool) -> ()) )
@@ -820,19 +752,11 @@ class ServerRequester: NSObject
                     })
                    
                 })
-                { /*failure closure*/(operation, requestError) -> Void in
-                    if let errorString = operation.responseString
-                    {
-                        let lvError = NSError(domain: "Messages Loading Error", code: 704, userInfo: [NSLocalizedDescriptionKey:errorString])
-                        completion(nil, lvError)
-                    }
-                    else
-                    {
-                        completion(nil, requestError)
-                    }
+                { /*failure closure*/(task, requestError) -> Void in
+                   completion(nil, requestError)
             }
             
-            messagesOp?.start()
+            messagesOp?.resume()
             return
         }
         
@@ -840,68 +764,33 @@ class ServerRequester: NSObject
         
     }
     
-    func sendMessage(message:Message, toElement elementId:NSNumber, completion:networkResult?)
+    func sendMessage(message:String, toElement elementId:Int, completion:networkResult?)
     {
         print(" -> sendMessage Called.")
         //POST
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        if let tokenString = DataSource.sharedInstance.user?.token //as? String
-        {
-            let postUrlString =  "\(serverURL)" + "\(sendMessageUrlPart)" + "?token=" + "\(tokenString)" + "&elementId=" + "\(elementId.integerValue)"
-            print("sending message to element: \(elementId)")
-            if let messageToSend = message.textBody
-            {
-                
-                let params = NSDictionary(dictionary: ["msg":messageToSend])
-                let serializer = AFJSONRequestSerializer();
-                
-                serializer.timeoutInterval = 20;
-                serializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
-                serializer.setValue("application/json", forHTTPHeaderField:"Accept")
-                
-                
-                httpManager.requestSerializer = serializer;
-                
-                let messageSendOp = httpManager.POST(postUrlString,
-                    parameters: params,
-                    success: { (requestOp, result) -> Void in
-                        
-                        if let completionBlock = completion
-                        {
-                            completionBlock([String:AnyObject](), nil)
-                        }
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    },
-                    failure: { (requestOp, error) -> Void in
-                        
-                        if let responseString = requestOp.responseString
-                        {
-                            print("\r - Error Sending Message: \r \(responseString) ");
-                            let lvError = NSError(domain: "Failure Sending Message", code: 703, userInfo: [NSLocalizedDescriptionKey:responseString])
-                            if completion != nil{
-                                completion!(nil, lvError)
-                            }
-                        }
-                        else
-                        {
-                            if let completionBlock = completion
-                            {
-                                completionBlock(nil, error)
-                            }
-                        }
-                        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                })
-                
-                messageSendOp?.start()
-                
-                return
-            }
+        guard let tokenString = DataSource.sharedInstance.user?.token else {
+            completion?(nil, noUserTokenError)
             return
         }
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-        completion?(nil, noUserTokenError)
+        let postUrlString =  "\(serverURL)" + "\(sendMessageUrlPart)" + "?token=" + "\(tokenString)" + "&elementId=" + "\(elementId)"// + "&msg=" + message
         
+        httpManager.requestSerializer = AFJSONRequestSerializer()
+        
+        let messagePostTask = httpManager.POST(postUrlString,
+            parameters: ["token":tokenString, "elementId":elementId, "msg":message],
+            success: { (task, responseObject) in
+            
+            print(responseObject)
+            completion?(responseObject, nil)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            }) /*failure block -> */ { (task, responseError) in
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                completion?(nil, responseError)
+        }
+        
+        messagePostTask?.resume()
     }
     
     
@@ -915,6 +804,7 @@ class ServerRequester: NSObject
                 newMessagesURLString,
                 parameters: nil,
                 success: { (operation, response) -> Void in
+                    
                     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                         if let aResponse = response as? [NSObject:AnyObject], newMessageInfos = aResponse["GetNewMessagesResult"] as? [[String:AnyObject]]
                         {
@@ -953,7 +843,7 @@ class ServerRequester: NSObject
                 
             })
             
-            lastMessagesOperation?.start()
+            lastMessagesOperation?.resume()
             return
         }
         
@@ -1247,21 +1137,10 @@ class ServerRequester: NSObject
                     completionClosure?(success: true, error: nil)
             },
                 failure: { (operation, error) -> Void in
-                    if let errorString = operation.responseString {
-                        let lvError = NSError(domain: "Attachment Error", code: -44, userInfo: [NSLocalizedDescriptionKey:errorString])
-                        
-                            completionClosure?(success: false, error: lvError)
-                        
-                        
-                    }
-                    else {
-                        
-                        completionClosure?(success: false, error: error)
-                        
-                    }
+                 completionClosure?(success: false, error: error)
             })
             
-            requestOperation?.start()
+            requestOperation?.resume()
             return
         }
         
@@ -1436,19 +1315,19 @@ class ServerRequester: NSObject
             }, failure: { (operation, requestError) -> Void in
                 if let completion = completionClosure
                 {
-                    if let responseString = operation.responseString
-                    {
-                        let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
-                        completion(contacts: nil, error: lvError)
-                    }
-                    else
-                    {
+//                    if let responseString = operation.responseString
+//                    {
+//                        let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
+//                        completion(contacts: nil, error: lvError)
+//                    }
+//                    else
+//                    {
                         completion(contacts:nil, error:requestError)
-                    }
+//                    }
                 }
             })
             
-            contactsRequestOp?.start()
+            contactsRequestOp?.resume()
             return
         }
         
@@ -1491,19 +1370,19 @@ class ServerRequester: NSObject
             },
                 failure: { (operation, requestError) -> Void in
                 
-                if let responseString = operation.responseString
-                {
-                    let responseError = NSError(domain: "Pass Element request Error", code: -504, userInfo: [NSLocalizedDescriptionKey:responseString])
-                    completionClosure(success: false, error: responseError)
-                }
-                else
-                {
+//                if let responseString = operation.responseString
+//                {
+//                    let responseError = NSError(domain: "Pass Element request Error", code: -504, userInfo: [NSLocalizedDescriptionKey:responseString])
+//                    completionClosure(success: false, error: responseError)
+//                }
+//                else
+//                {
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     completionClosure(success: false, error: requestError)
-                }
+//                }
             })
             
-            requestOp?.start()
+            requestOp?.resume()
             return
         }
         
@@ -1573,8 +1452,6 @@ class ServerRequester: NSObject
                         }
                     }
                     
-                    
-                    
                     if completedRequestsCount == contactIDsCount
                     {
                         completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
@@ -1629,19 +1506,19 @@ class ServerRequester: NSObject
                 }, failure: { (operation, requestError) -> Void in
                     if let completionBlock = completion
                     {
-                        if let responseString = operation.responseString
-                        {
-                            let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
-                            completionBlock(contacts: nil, error: lvError)
-                        }
-                        else
-                        {
+//                        if let responseString = operation.responseString
+//                        {
+//                            let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
+//                            completionBlock(contacts: nil, error: lvError)
+//                        }
+//                        else
+//                        {
                             completionBlock(contacts:nil, error:requestError)
-                        }
+//                        }
                     }
             })
             
-            contactsRequestOp?.start()
+            contactsRequestOp?.resume()
             return
         }
         
@@ -1676,7 +1553,7 @@ class ServerRequester: NSObject
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
-            favOperation?.start()
+            favOperation?.resume()
             return
         }
         
@@ -1710,7 +1587,7 @@ class ServerRequester: NSObject
                     }
             })
             
-            removeContactOperation?.start()
+            removeContactOperation?.resume()
             return
         }
         
@@ -1744,7 +1621,7 @@ class ServerRequester: NSObject
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
             
-            addContactOperation?.start()
+            addContactOperation?.resume()
             return
         }
         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
@@ -1761,24 +1638,13 @@ class ServerRequester: NSObject
         let request = NSMutableURLRequest(URL: url)
         request.setValue("application-json", forHTTPHeaderField: "Accept")
         request.HTTPMethod = "GET"
- 
-        let postTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: completion)
-        
-        if priority >= 0 && priority <= 1.0
-        {
-            if #available(iOS 8.0, *) {
-                postTask.priority = priority
-            }
-        }
         
         if let targetRequestQueue = onQueue
         {
-            dispatch_async(targetRequestQueue, { _ in
-                 postTask.resume()
-            })
+            self.performRequest(request, onQueue: targetRequestQueue, priority: priority, completion: completion)
             return
         }
-        postTask.resume()
+        self.performRequest(request, onQueue: getBackgroundQueue_DEFAULT(), priority: priority, completion: completion)
     }
     
     /**
@@ -1792,7 +1658,7 @@ class ServerRequester: NSObject
     - Parameter completion: an optional closure to set the dataTask`s completionHandler
     
     */
-    func performPOSTqueryWithURL(url:NSURL, bodyData:NSData?, onQueue:dispatch_queue_t?, priority:Float = 0.5, completion:sessionRequestCompletion?)
+    private func performPOSTqueryWithURL(url:NSURL, bodyData:NSData?, onQueue:dispatch_queue_t?, priority:Float = 0.5, completion:sessionRequestCompletion?)
     {
         let request = NSMutableURLRequest(URL: url)
         request.setValue("application-json", forHTTPHeaderField: "Accept")
@@ -1803,48 +1669,72 @@ class ServerRequester: NSObject
             request.HTTPBody = dataToSend
         }
         
+        if let targetRequestQueue = onQueue
+        {
+            self.performRequest(request, onQueue: targetRequestQueue, priority: priority, completion: completion)
+            return
+        }
+        
+        self.performRequest(request, onQueue: getBackgroundQueue_DEFAULT(), completion: completion)
+    }
+    
+    private func performRequest(urlRequest:NSURLRequest, onQueue:dispatch_queue_t, priority:Float = 0.5, completion:sessionRequestCompletion?)
+    {
         if let completionBlock = completion
         {
-            let postTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: completionBlock)
+            let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest, completionHandler: completionBlock)
             if #available(iOS 8.0, *)
             {
                 if priority >= 0 && priority <= 1.0
                 {
-                    postTask.priority = priority
+                    dataTask.priority = priority
                 }
             }
-            if let targetRequestQueue = onQueue
-            {
-                dispatch_async(targetRequestQueue) { _ in
-                     postTask.resume()
-                }
-                return
+            dispatch_async(onQueue) { _ in
+                dataTask.resume()
             }
-            postTask.resume()
         }
         else
         {
-            let postTask = NSURLSession.sharedSession().dataTaskWithRequest(request)
+            let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest)
             if #available(iOS 8.0, *)
             {
                 if priority >= 0 && priority <= 1.0
                 {
-                    postTask.priority = priority
+                    dataTask.priority = priority
                 }
             }
-            
-            if let targetRequestQueue = onQueue
-            {
-                dispatch_async(targetRequestQueue) { _ in
-                    postTask.resume()
-                }
-                return
+            dispatch_async(onQueue) { _ in
+                    dataTask.resume()
             }
-            
-            postTask.resume()
         }
     }
-    
+}
+
+
+
+func getBackgroundQueue_UTILITY() -> dispatch_queue_t
+{
+    if #available (iOS 8.0, *)
+    {
+        return dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
+    }
+    else
+    {
+        return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+    }
+}
+
+func getBackgroundQueue_DEFAULT() -> dispatch_queue_t
+{
+    if #available (iOS 8.0, *)
+    {
+        return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
+    }
+    else
+    {
+        return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+    }
 }
 
 

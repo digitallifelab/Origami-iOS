@@ -44,6 +44,8 @@
 "done" = "Done";
 "change" = "Change";
 "start" = "Start";
+"close" = "Close";
+
 "startTaskPrompt" = "New task";
 "startTaskMessage" = "Assign responsible for new task, and set finish date.";
 "restartTaskPrompt" = "Restart task";

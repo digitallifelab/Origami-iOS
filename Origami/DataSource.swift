@@ -336,47 +336,49 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func sendNewMessage(message:Message, completion:errorClosure)
+    func sendNewMessage(message:Message, completion:errorClosure?)
     {
         //can be not main queue
-        guard let messageElementId = message.elementId else {
+        guard let messageElementId = message.elementId , text = message.textBody else {
             
-            completion(NSError(domain: "com.Origami.InvalidParameterError", code: -1022, userInfo: [NSLocalizedDescriptionKey:"No element id from passing message."]))
+            completion?(NSError(domain: "com.Origami.InvalidParameterError", code: -1022, userInfo: [NSLocalizedDescriptionKey:"No element id from passing message or empty message body."]))
             return
         }
-
-        DataSource.sharedInstance.serverRequester.sendMessage(message, toElement: messageElementId) { (result, error) -> () in
+        
+        let messageToInsert = message
+        DataSource.sharedInstance.serverRequester.sendMessage(text, toElement: messageElementId) { (result, error) -> () in
             
             //main queue
             if error != nil
             {
-                completion(error)
+                completion?(error)
             }
             else
             {
-                DataSource.sharedInstance.addMessages([message], forElementId: message.elementId!, completion: nil)
+                if let responseInfo = result as? [String:Int], messageId = responseInfo["SendElementMessageResult"]
+                {
+                    messageToInsert.dateCreated = NSDate()
+                    messageToInsert.messageId = messageId
+                }
+                DataSource.sharedInstance.addMessages([messageToInsert], forElementId: message.elementId!, completion: nil)
                 //return callback to ChatVC
-                completion(nil)
+                completion?(nil)
                 
-//                if let intElementId = elementId
-//                {
-                    if let existingElement = DataSource.sharedInstance.getElementById(messageElementId)
+                if let existingElement = DataSource.sharedInstance.getElementById(messageElementId)
+                {
+                    if let currentStringDate = NSDate().dateForServer()
                     {
-                        let date = NSDate()
-                        if let currentStringDate = date.dateForServer()
+                        existingElement.changeDate = currentStringDate
+                        if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
                         {
-                            existingElement.changeDate = currentStringDate
-                            if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement)
+                            for aParent in rootTree
                             {
-                                for aParent in rootTree
-                                {
-                                    aParent.changeDate = existingElement.changeDate
-                                }
+                                aParent.changeDate = existingElement.changeDate
                             }
-                            DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                         }
+                        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
-//                }
+                }
             }
         }
     }

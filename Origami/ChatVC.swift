@@ -172,12 +172,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     let bgQueue = NSOperationQueue()
                     bgQueue.addOperationWithBlock({ () -> Void in
                         DataSource.sharedInstance.sendNewMessage(newMessage, completion: { [weak self](error) -> () in
-                            if error != nil
+                            if let messageError =  error
                             {
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                     if let aSelf = self
                                     {
-                                        aSelf.showAlertWithTitle("Message Send Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
+                                        aSelf.showAlertWithTitle("Message Send Error", message: messageError.localizedDescription, cancelButtonTitle: "close".localizedWithComment(""))
                                     }
                                 })
                             }
@@ -383,6 +383,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             if creatorIdInt == DataSource.sharedInstance.user!.userId!.integerValue
             {
                 let sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
+                print(" ChatVC - Message ...")
                 sentCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
                 sentCell.message = existingMessage.textBody
                 sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
@@ -395,6 +396,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 let recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
                 recievedCell.message = existingMessage.textBody
                 recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
+                print(" ChatVC - Message ...")
                 recievedCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
                 recievedCell.avatar?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
                 recievedCell.backgroundColor = UIColor.clearColor()
