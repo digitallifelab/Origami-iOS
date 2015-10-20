@@ -650,11 +650,30 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     
     func presentNewSingleElementVC(element:Element)
     {
+        var viewControllersToAppend = [UIViewController]()
+        if let rootElementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element)
+        {
+            for anElement in rootElementsTree
+            {
+                if let elementController = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+                {
+                    elementController.currentElement = anElement
+                    viewControllersToAppend.append(elementController)
+                }
+            }
+        }
+        
         if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
         {
             newVC.currentElement = element
-            self.navigationController?.pushViewController(newVC, animated: true)
+           viewControllersToAppend.append(newVC)
         }
+        
+        if let currentVCs = self.navigationController?.viewControllers
+        {
+            viewControllersToAppend.insert(currentVCs.first!, atIndex: 0)
+            self.navigationController?.setViewControllers(viewControllersToAppend, animated: true)
+        }        
     }
     
     //MARK: ElementComposingDelegate

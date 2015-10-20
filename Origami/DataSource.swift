@@ -745,33 +745,37 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return  nil
     }
     
+    /**
+    returns array of elements, containing at leats one *Element* object
+    */
     func getRootElementTreeForElement(targetElement:Element) -> [Element]?
     {
-        let root = targetElement.rootElementId
-        if root > 0
-        {
-            var elements = [Element]()
-            
-            var tempElement = targetElement
-            
-            while tempElement.rootElementId > 0
-            {
-                if let foundRootElement = DataSource.sharedInstance.getElementById(tempElement.rootElementId)
-                {
-                    elements.append(foundRootElement)
-                    tempElement = foundRootElement
-                }
-                else
-                {
-                    break
-                }
-            }
-            return elements
+        var root = targetElement.rootElementId
+        guard  root > 0 else{
+            return nil
         }
-        else
+        
+        var elements = [Element]()
+        
+        while root > 0
+        {
+            if let foundRootElement = DataSource.sharedInstance.getElementById(root)
+            {
+                elements.append(foundRootElement)
+                root = foundRootElement.rootElementId
+            }
+            else
+            {
+                break
+            }
+        }
+        
+        if elements.isEmpty
         {
             return nil
         }
+        return elements
+        
     }
     
     func getSubordinateElementsForElement(elementId:Int?, shouldIncludeArchived:Bool) -> [Element]?

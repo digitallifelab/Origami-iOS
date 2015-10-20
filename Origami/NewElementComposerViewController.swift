@@ -94,20 +94,12 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     @IBOutlet weak var table:UITableView?
     
-    //@IBOutlet var toolbar:UIToolbar!
-    
-    //MARK: methods
+    //MARK: - methods
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // table view delegate and data source are set in interface builder
-        //transitionAnimator = FadeOpaqueAnimator()
         table?.estimatedRowHeight = 80.0
         table?.rowHeight = UITableViewAutomaticDimension
-        
-        
-        //self.editingStyle = .AddNew
-        
         
         let isNightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         if isNightMode
@@ -167,7 +159,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 if self.contactIDsToPass.isEmpty && self.editingStyle == .EditCurrent
                 {
-                    print("\n-> NewElementConposer:  starting refreshing Pass WHom IDs.. ")
+                    print("\n-> NewElementConposer:  starting refreshing Pass WHom IDs.. \n")
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                     NSOperationQueue().addOperationWithBlock({ [weak self] in
                         DataSource.sharedInstance.loadPassWhomIdsForElement(elementId, comlpetion: { (finished) -> () in
