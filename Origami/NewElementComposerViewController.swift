@@ -160,6 +160,32 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         addObserversForKeyboard()
         
         print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
+        
+        if let anElement = self.newElement, elementId = anElement.elementId //workaround for empty participants array, if after refreshing AllElements, current element has no passwhomids.
+        {
+            if elementId > 0
+            {
+                if self.contactIDsToPass.isEmpty && self.editingStyle == .EditCurrent
+                {
+                    print("\n-> NewElementConposer:  starting refreshing Pass WHom IDs.. ")
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                    NSOperationQueue().addOperationWithBlock({ [weak self] in
+                        DataSource.sharedInstance.loadPassWhomIdsForElement(elementId, comlpetion: { (finished) -> () in
+                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                            if finished
+                            {
+                                if let weakSelf = self
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { _ in
+                                       weakSelf.newElement = DataSource.sharedInstance.getElementById(elementId)
+                                    })
+                                }
+                            }
+                        })
+                    })
+                }
+            }
+        }
     }
     
     override func viewWillDisappear(animated: Bool)
