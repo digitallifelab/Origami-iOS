@@ -19,8 +19,8 @@ let lastNameKey = "LastName"
 let loginNameKey = "LoginName"
 let passwordKey = "Password"
 let NightModeKey = "NightModeOn" //NSUserDefaults  key
-let kLastSyncDate = "com.Origami.LocalLastSyncDate"
-let kLastSyncUSerName = "LoginName"
+let kAvatarsSyncHolder = "com.Origami.AvatarsSyncInfo"
+
 
 //Users
 let registerUserUrlPart = "RegisterUser"

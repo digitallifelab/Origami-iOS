@@ -107,7 +107,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
                     else
                     {
                         chatCell.avatarView.image = noAvatarImage
-                        startLoadingAvatarForUserName(username, andIndexPath:indexPath)
+                        loadAvatarForUserName(username, andIndexPath:indexPath)
                     }
                 }
                 
@@ -127,7 +127,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
                         else
                         {
                             chatCell.avatarView.image = noAvatarImage
-                            startLoadingAvatarForUserName(contact.userName, andIndexPath:indexPath)
+                            loadAvatarForUserName(contact.userName, andIndexPath:indexPath)
                         }
                     }
                     
@@ -163,9 +163,8 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         return nil
     }
     
-    private func startLoadingAvatarForUserName(name:String , andIndexPath indexPath:NSIndexPath)
+    private func loadAvatarForUserName(name:String , andIndexPath indexPath:NSIndexPath)
     {
-    
         if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(name)
         {
             if let avatar = UIImage(data: imageData)

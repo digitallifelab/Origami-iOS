@@ -188,13 +188,15 @@ class ServiceMessagesHandler {
 
         isUpdatingContacts = true
         
+        let currentDate = NSDate()
         for aContact in allCurrentContacts
         {
-            if contactAvatarChangeIDs.contains(aContact.contactId)
+            let contactId = aContact.contactId
+            if contactAvatarChangeIDs.contains(contactId)
             {
-
                 DataSource.sharedInstance.cleanAvatarDataForUserName(aContact.userName)
                 print("->ServiceMessagesHandler  did CLEAN AVATAR for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
+                DataSource.sharedInstance.setLastAvatarSyncDate(currentDate, forContactId: contactId)
             }
         }
 

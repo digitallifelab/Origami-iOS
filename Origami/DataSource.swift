@@ -203,41 +203,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadAllMessages {
             (resultArray, serverError) -> () in
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), { () -> Void in
-                if let messagesArray = resultArray as? [Message]
+                if let messagesTuple = resultArray
                 {
                     var lvMessagesHolder = [NSNumber:[Message]]()
-                    for lvMessage in messagesArray
+                    for lvMessage in messagesTuple.chat
                     {
-                        switch lvMessage.type{
-                        case .ChatMessage:
-                            if lvMessagesHolder[lvMessage.elementId!] != nil
-                            {
-                                lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
-                            }
-                            else
-                            {
-                                lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
-                            }
-                        case .Undefined:
-                            print(" will not store UNDEFINED message")
-                            
-                            //service messages
-                        case .Invitation:
-                            print(".Invitation Need to handle invitation from user")
-                        case .OnlineStatusChanged:
-                            print(" -- -- - Online Status did change..")
-                        case .UserInfoUpdated:
-                            print(".UserInfoUpdated")
-                        case .UserPhotoUpdated:
-                            print(".UserPhotoUpdated")
-                        case .UserBlocked:
-                            print(".UserBlocked")
-                        case .UserUnblocked:
-                            print(".UserUnblocked")
+                        if lvMessagesHolder[lvMessage.elementId!] != nil
+                        {
+                            lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
                         }
-                            
+                        else
+                        {
+                            lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
+                        }
                     }
-                    
                     if !lvMessagesHolder.isEmpty
                     {
                         for (keyElementId, messages) in lvMessagesHolder
@@ -261,6 +240,47 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    
+                    
+                    //handle service messages if present
+                    
+                    
+                    //currently handling "avatar change" messages only
+                    var avatarChangeMessages = messagesTuple.service.filter({ (serviceMessage) -> Bool in
+                        return serviceMessage.type == .UserPhotoUpdated
+                    })
+                    if !avatarChangeMessages.isEmpty
+                    {
+                        ObjectsConverter.sortMessagesByDate(&avatarChangeMessages, < )
+
+                        let theNewestAvatarUpdateMessage = avatarChangeMessages.removeLast()
+                        if let messageCreateDate = theNewestAvatarUpdateMessage.dateCreated, textBody = theNewestAvatarUpdateMessage.textBody, targetId = Int(textBody)
+                        {
+                            if let existingSyncDateForUserID = DataSource.sharedInstance.getLastAvatarSyncDateForContactId(targetId)
+                            {
+                                //compare message date and stored date
+                                if messageCreateDate.compare(existingSyncDateForUserID) != .OrderedAscending
+                                {
+                                    //delete current avatar for refreshing later
+                                    if let contact = DataSource.sharedInstance.getContactsByIds(Set([targetId]))?.first
+                                    {
+                                         DataSource.sharedInstance.cleanAvatarDataForUserName(contact.userName)
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                //delete current avatar for refreshing later
+                                if let contact = DataSource.sharedInstance.getContactsByIds(Set([targetId]))?.first
+                                {
+                                    DataSource.sharedInstance.cleanAvatarDataForUserName(contact.userName)
+                                }
+                            }
+                        }
+                    }
+                    
+                    
+                    
                     
                     DataSource.sharedInstance.messagesLoader = MessagesLoader()
                     DataSource.sharedInstance.startRefreshingNewMessages()
@@ -487,7 +507,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             return nil
         }
-        
     }
     
     func getChatPreviewMessagesForElementId(elementId:NSNumber) -> [Message]?
@@ -2381,54 +2400,63 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
     {
-       
-            let fileHandler = FileHandler()
-            
-            fileHandler.loadAvatarDataForLoginName(loginName, completion: { (avatarData, error) -> Void in
-                if let avatarBytes = avatarData
+        let fileHandler = FileHandler()
+        
+        fileHandler.loadAvatarDataForLoginName(loginName, completion: { (avatarData, error) -> Void in
+            if let avatarBytes = avatarData
+            {
+                guard let image = UIImage(data: avatarBytes) else {
+                    let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
+                    completionBlock?(image: nil, error: imageCreatingError)
+                    
+                    return
+                }
+                
+                completionBlock?(image: image, error: nil) //return value  
+                
+                //and continue background work
+                
+                if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
                 {
-                    guard let image = UIImage(data: avatarBytes) else {
-                        let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
-                        completionBlock?(image: nil, error: imageCreatingError)
-                        
-                        return
-                    }
-                    
-                    completionBlock?(image: image, error: nil) //return value  
-                    
-                    //and continue background work
-                    
-                    if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
+                    if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)),  avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
                     {
-                        if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)),  avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                        {
-                            if avatarIconData != avatarData
-                            {
-                                DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
-                            }
-                        }
-                        
-                    }
-                    else
-                    {
-                        if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)), avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                        if avatarIconData != avatarData
                         {
                             DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
                         }
                     }
-                }
-                else if let anError = error
-                {
-                    completionBlock?(image: nil, error: error)
                     
-                    if anError.code == 406
+                }
+                else
+                {
+                    if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)), avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
                     {
-                        DataSource.sharedInstance.startLoadingAvatarForUserName(loginName)
+                        DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
                     }
                 }
-            })
-        
+            }
+            else if let anError = error
+            {
+                completionBlock?(image: nil, error: error)
+                
+                if anError.code == 406 //no file or directory
+                {
+                    //find contact ID
+                    let allContacts = DataSource.sharedInstance.contacts.filter {(aContact) in return aContact.userName == loginName}
+                    if allContacts.isEmpty
+                    {
+                        return
+                    }
+                    
+                    
+                    let foundContact = allContacts.first!
+                    let passingParameter = (name:foundContact.userName, id:foundContact.contactId)
+                    DataSource.sharedInstance.startLoadingAvatarForUserName(passingParameter)
+                }
+            }
+        })
     }
+    
     /**
     Method first tries to get avatar thumbnail stored in RAM, if it is not found, the search on device`s disc is started, and if file is not fund, avatar downloading process starts.
     */
@@ -2476,18 +2504,22 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         })
     }
     
-    func startLoadingAvatarForUserName(name:String)
+    func startLoadingAvatarForUserName(info:(name:String, id:Int))
     {
-        if let _ = DataSource.sharedInstance.pendingUserAvatarsDownolads[name]
+        let aName = info.name
+        
+        if let _ = DataSource.sharedInstance.pendingUserAvatarsDownolads[aName]
         {
             print(" - Current avatar is pending. Will not try to load in again...")
             return
         }
         
-        print(" Loading Avatar: \(name)")
-        DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = Int(1)
+        print(" Loading Avatar: \(aName)")
         
-        DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(name, completion: { (avatarData, error) -> () in
+        DataSource.sharedInstance.pendingUserAvatarsDownolads[aName] = Int(1)
+        let syncingContactId = info.id
+        
+        DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(aName, completion: { (avatarData, error) -> () in
             if let avatarBytes = avatarData
             {
                 if let avatar = UIImage(data: avatarBytes)
@@ -2495,23 +2527,24 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200)), let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)
                     {
                         print(" got avatar from Server... Saving small preview data to ram")
-                        DataSource.sharedInstance.addAvatarData(avatarData, forContactUserName: name)//save to RAM also
+                        DataSource.sharedInstance.addAvatarData(avatarData, forContactUserName: aName)//save to RAM also
                     }
                     //save to disc
                     print(" saving avatar to disc...")
                     let fileHandler = FileHandler()
-                    fileHandler.saveAvatar(avatarBytes, forLoginName: name, completion: { (errorSaving) -> Void in
+                    fileHandler.saveAvatar(avatarBytes, forLoginName: aName, completion: { (errorSaving) -> Void in
                         if let error = errorSaving
                         {
-                            print(" Did not save currently loaded avatar for user name: \(name) \n Error: \(error.localizedDescription)")
+                            print(" Did not save currently loaded avatar for user name: \(aName) \n Error: \(error.localizedDescription)")
                         }
-                        DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
+                        DataSource.sharedInstance.pendingUserAvatarsDownolads[aName] = nil
+                        DataSource.sharedInstance.setLastAvatarSyncDate(NSDate(), forContactId: syncingContactId)
                     })
                 }
                 else
                 {
                     print(" Did not recieve avatar image bytes.")
-                    DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
+                    DataSource.sharedInstance.pendingUserAvatarsDownolads[aName] = nil
                 }
              
                 return
@@ -2519,9 +2552,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             if let anError = error
             {
-                print(" Error while downloading avatar for userName: \(name): \n \(anError.description) ")
+                print(" Error while downloading avatar for userName: \(aName): \n \(anError.description) ")
             }
-            DataSource.sharedInstance.pendingUserAvatarsDownolads[name] = nil
+            DataSource.sharedInstance.pendingUserAvatarsDownolads[aName] = nil
         })
 
     }
@@ -2558,11 +2591,51 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         })
     }
     
+    /**
+    Cleans avatar file from disc and removes avatar preview from RAM
+    */
     func cleanAvatarDataForUserName(name:String)
     {
         let aFileHandler = FileHandler()
         aFileHandler.eraseAvatarForUserName(name, completion: nil)
         DataSource.sharedInstance.avatarsHolder[name] = nil
+    }
+    /**
+    Synchronous method that searches for existing dictionary in UserDefaults and overrides it if found.  If no stored info found, it creates info dictionsty with passed values
+    - Note: consider using non main thread when calling it.
+    - Note: *synchronize* is not called by this method
+    */
+    func setLastAvatarSyncDate(date:NSDate, forContactId:Int)
+    {
+        if let syncInfo = NSUserDefaults.standardUserDefaults().objectForKey(kAvatarsSyncHolder) as? [String:NSDate]
+        {
+            var newSyncInfo = syncInfo
+            newSyncInfo["\(forContactId)"] = date
+            
+            NSUserDefaults.standardUserDefaults().setObject(newSyncInfo, forKey: kAvatarsSyncHolder)
+        }
+        else{
+            
+            let newSyncInfo = ["\(forContactId)" : date]
+            
+            NSUserDefaults.standardUserDefaults().setObject(newSyncInfo, forKey: kAvatarsSyncHolder)
+        }
+    }
+    /**
+    synchronous method, which reads NSUserDefaults.
+    - Note: Consider threading, when calling it.
+    */
+    func getLastAvatarSyncDateForContactId(contactId:Int) -> NSDate?
+    {
+        if let syncInfo = NSUserDefaults.standardUserDefaults().objectForKey(kAvatarsSyncHolder) as? [String:NSDate]
+        {
+            if let syncDate = syncInfo["\(contactId)"]
+            {
+                print("\n-> Last Avatar Sync Date for ContactId: \(contactId)  is \(syncDate)")
+                return syncDate
+            }
+        }
+        return nil
     }
     
     //MARK: Languages & Countries

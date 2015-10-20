@@ -730,7 +730,9 @@ class ServerRequester: NSObject
     }
     
     //MARK: Messages
-    func loadAllMessages(completion:networkResult)
+    func loadAllMessages(
+        completion: ((messages:(chat: [Message], service:[Message])?, error:NSError?) -> ())?
+        )
     {
         if let tokenString = DataSource.sharedInstance.user?.token //as? String
         {
@@ -747,20 +749,20 @@ class ServerRequester: NSObject
                             messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
                             messagesArray = ObjectsConverter.convertToMessages(messageDictsArray)
                         {
-                            completion(messagesArray.chat, nil)
+                            completion?(messages:messagesArray, error:nil)
                         }
                     })
                    
                 })
                 { /*failure closure*/(task, requestError) -> Void in
-                   completion(nil, requestError)
+                    completion?(messages:nil, error:requestError)
             }
             
             messagesOp?.resume()
             return
         }
         
-        completion(nil, NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
+        completion?(messages:nil, error:NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
         
     }
     

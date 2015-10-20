@@ -205,7 +205,7 @@ class ObjectsConverter {
                     //print("\n changed user info. \" \(lvNewMessage.textBody) \"")
                     serviceMessages.append(lvNewMessage)
                 case .UserPhotoUpdated:
-                    print(" \n changed user photo. \" \(lvNewMessage.textBody) \".")
+                    print(" \n changed user photo. \" \(lvNewMessage.textBody!) \".")
                     serviceMessages.append(lvNewMessage)
                 case .UserBlocked:
                     //print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
