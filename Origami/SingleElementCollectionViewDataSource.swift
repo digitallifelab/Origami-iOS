@@ -373,7 +373,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     
                     titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
 
-                    if let user = DataSource.sharedInstance.user, currentUserIDInt = user.userId?.integerValue
+                    if let currentUserIDInt = DataSource.sharedInstance.user?.userId
                     {
                         if responsibleIdInt > 0 //show responsible`s avatar and name
                         {
@@ -466,7 +466,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 datesCell.setupActionButtons(owned)
                 if !owned
                 {
-                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId?.integerValue, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement)
+                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement)
                     {
                         for anElement in parentElements
                         {

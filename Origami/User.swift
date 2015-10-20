@@ -12,9 +12,9 @@ class User:Person
     var birthDay:String? //
     var phone:String? //
     var country:String? //
-    var countryId:NSNumber? //
+    var countryId:Int? //
     var language:String? //
-    var languageId:NSNumber? //
+    var languageId:Int? //
  
     var sex:NSNumber? //
     var regDate:String? //
@@ -22,7 +22,7 @@ class User:Person
     var password:String? //
     var lastSync:String? //
     var token:String? //
-    var userId:NSNumber? //
+    var userId:Int? //
     
     
     convenience init(info:[String:AnyObject])
@@ -51,7 +51,7 @@ class User:Person
             {
                 self.password = password
             }
-            if let userId = info["UserId"] as? NSNumber
+            if let userId = info["UserId"] as? Int
             {
                 self.userId = userId
             }
@@ -91,7 +91,7 @@ class User:Person
             {
                 self.country = lvCountry
             }
-            if let lvCountryId = info["CountryId"] as? NSNumber
+            if let lvCountryId = info["CountryId"] as? Int
             {
                 self.countryId = lvCountryId
             }
@@ -99,7 +99,7 @@ class User:Person
             {
                 self.language = lvLanguage
             }
-            if let lvLangId = info["LanguageId"] as? NSNumber
+            if let lvLangId = info["LanguageId"] as? Int
             {
                 self.languageId = lvLangId
             }
@@ -132,7 +132,7 @@ class User:Person
         {
             self.password = password
         }
-        if let userId = info["UserId"] as? NSNumber
+        if let userId = info["UserId"] as? Int
         {
             self.userId = userId
         }
@@ -177,7 +177,7 @@ class User:Person
         {
             self.country = lvCountry
         }
-        if let lvCountryId = info["CountryId"] as? NSNumber
+        if let lvCountryId = info["CountryId"] as? Int
         {
             self.countryId = lvCountryId
         }
@@ -185,7 +185,7 @@ class User:Person
         {
             self.language = lvLanguage
         }
-        if let lvLangId = info["LanguageId"] as? NSNumber
+        if let lvLangId = info["LanguageId"] as? Int
         {
             self.languageId = lvLangId
         }

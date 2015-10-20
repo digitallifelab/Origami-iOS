@@ -207,6 +207,12 @@
 		F8DE685D1B4581ED001EE9A0 /* ObjectsConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */; };
 		F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7EF1B68FCC60004F0CB /* Structs.swift */; };
 		F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */; };
+		F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; settings = {ASSET_TAGS = (); }; };
+		F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3C1BD520F7006332D9 /* AFNetworkReachabilityManager.m */; settings = {ASSET_TAGS = (); }; };
+		F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3E1BD520F7006332D9 /* AFSecurityPolicy.m */; settings = {ASSET_TAGS = (); }; };
+		F8EC3C961BD63F68000201FE /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F401BD520F7006332D9 /* AFURLRequestSerialization.m */; settings = {ASSET_TAGS = (); }; };
+		F8EC3C971BD63F6B000201FE /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F421BD520F7006332D9 /* AFURLResponseSerialization.m */; settings = {ASSET_TAGS = (); }; };
+		F8EC3C981BD63F6F000201FE /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F441BD520F7006332D9 /* AFURLSessionManager.m */; settings = {ASSET_TAGS = (); }; };
 		F8EEC7531B98A334003525B0 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EEC7521B98A334003525B0 /* CoreGraphics.framework */; };
 		F8EEC7551B98A341003525B0 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EEC7541B98A341003525B0 /* Foundation.framework */; };
 		F8EEC7571B98A34B003525B0 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EEC7561B98A34B003525B0 /* SystemConfiguration.framework */; };
@@ -962,6 +968,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F8EC3C961BD63F68000201FE /* AFURLRequestSerialization.m in Sources */,
 				F8C93ABC1B861B94009D890E /* SimpleElementDashboardLayout.swift in Sources */,
 				F8C93ABD1B861B94009D890E /* Constants.swift in Sources */,
 				F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */,
@@ -971,6 +978,7 @@
 				F8C93AC21B861B94009D890E /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F8C93AC31B861B94009D890E /* MyContactListCell.swift in Sources */,
 				F8C93AC41B861B94009D890E /* Country.swift in Sources */,
+				F8EC3C981BD63F6F000201FE /* AFURLSessionManager.m in Sources */,
 				F8C93AC51B861B94009D890E /* HomeCollectionHandler.swift in Sources */,
 				F8C93AC71B861B94009D890E /* HomeVC.swift in Sources */,
 				F8C93ACA1B861B94009D890E /* SingleElementLastMessagesCell.swift in Sources */,
@@ -1010,6 +1018,7 @@
 				F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */,
 				F8C93AEF1B861B94009D890E /* Language.swift in Sources */,
 				F8C2BE991BCFC4C000A03FC9 /* ServiceMessagesHandler.swift in Sources */,
+				F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */,
 				F8C93AF01B861B94009D890E /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */,
 				F8C93AF31B861B94009D890E /* ImagePickingViewController.swift in Sources */,
@@ -1019,6 +1028,7 @@
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F8C93AFB1B861B94009D890E /* HomeNavigationController.swift in Sources */,
 				F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */,
+				F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */,
 				F8C93AFE1B861B94009D890E /* LoginVC.swift in Sources */,
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
 				F8DBE5371BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
@@ -1027,6 +1037,7 @@
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
 				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
 				F8C93B051B861B94009D890E /* RootViewController.swift in Sources */,
+				F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */,
 				F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F8C93B071B861B94009D890E /* PopupMenuCell.swift in Sources */,
 				F8C93B091B861B94009D890E /* ServerRequester.swift in Sources */,
@@ -1050,6 +1061,7 @@
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F8C93B1D1B861B94009D890E /* AllContactsVC.swift in Sources */,
 				F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */,
+				F8EC3C971BD63F6B000201FE /* AFURLResponseSerialization.m in Sources */,
 				F8C93B211B861B94009D890E /* Element.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

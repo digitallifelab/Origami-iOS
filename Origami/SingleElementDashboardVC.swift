@@ -220,6 +220,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     */
     func prepareCollectionViewDataAndLayout() throws
     {
+        let currentContantOffset = collectionView.contentOffset
         if let dataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
         {
             self.collectionDataSource = dataSource
@@ -247,7 +248,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             
             collectionView.reloadData()
-            
+            collectionView.setContentOffset(currentContantOffset, animated: false)
         }
         else
         {
@@ -433,7 +434,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     var idInts = Set<Int>()
                     for number in passwhomIDs
                     {
-                        idInts.insert(number.integerValue)
+                        idInts.insert(number)
                     }
                      newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.  But deleting will have no effect, because passwhomids are inherit wrom parent element.
                 }
@@ -782,7 +783,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             passWhomIDs = [Int]()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number.integerValue)
+                passWhomIDs!.append(number)
             }
         }
         
@@ -912,13 +913,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     })
                 }
             }
-            
         })
         
         
         
         let newPassWhomIDs = editingElement.passWhomIDs
         let existingPassWhonIDs = self.currentElement!.passWhomIDs
+        guard let editingElementId = editingElement.elementId else {
+            return
+        }
         
         if newPassWhomIDs.isEmpty && existingPassWhonIDs.isEmpty
         {
@@ -929,19 +932,19 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         var newIDsSet = Set<Int>()
         for aNumber in newPassWhomIDs
         {
-            newIDsSet.insert(aNumber.integerValue)
+            newIDsSet.insert(aNumber)
         }
         
         var existingIDsSet = Set<Int>()
         for aNumber in existingPassWhonIDs
         {
-            existingIDsSet.insert(aNumber.integerValue)
+            existingIDsSet.insert(aNumber)
         }
         
         if existingPassWhonIDs.isEmpty && !newPassWhomIDs.isEmpty
         {
             // add contacts to element
-            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElement.elementId!, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElementId, completion: {[weak self] (succeededIDs, failedIDs) -> () in
                 print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                 if let aSelf = self
                 {
@@ -953,7 +956,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         else if !existingPassWhonIDs.isEmpty && newPassWhomIDs.isEmpty
         {
             //remove all contacts from element
-            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElement.elementId!, completion: {[weak self] (succeededIDs, failedIDs) -> () in
+            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElementId, completion: {[weak self] (succeededIDs, failedIDs) -> () in
                 print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
                 if let aSelf = self
                 {
@@ -970,17 +973,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 //remove all contacts from element
                 DataSource.sharedInstance.removeSeveralContacts(contactIDsToRemoveSet,
-                                                                        fromElement: editingElement.elementId!,
+                                                                        fromElement: editingElementId,
                                                                          completion: { [weak self](succeededIDs, failedIDs) -> () in
                                                                             
                     print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
                                                                             
                     if let aSelf = self
                     {
-                        var numbersSet = Set<NSNumber>()
+                        var numbersSet = Set<Int>()
                         for anInt in contactIDsToRemoveSet
                         {
-                            numbersSet.insert(NSNumber(integer: anInt))
+                            numbersSet.insert(anInt)
                         }
                         let newSet = Set(existingPassWhonIDs).subtract(numbersSet)
                         
@@ -995,17 +998,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 // add contacts to element
                 DataSource.sharedInstance.addSeveralContacts(newIDsSet,
-                                                            toElement: editingElement.elementId!,
+                                                            toElement: editingElementId,
                                                            completion: {[weak self] (succeededIDs, failedIDs) -> () in
                         
                     print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                     
                     if let aSelf = self
                     {
-                        var numbersSet = Set<NSNumber>()
+                        var numbersSet = Set<Int>()
                         for anInt in newIDsSet
                         {
-                            numbersSet.insert(NSNumber(integer: anInt))
+                            numbersSet.insert(anInt)
                         }
                         let newSet = Set(existingPassWhonIDs).union(numbersSet)
                         
@@ -1021,23 +1024,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     
                     // add contacts to element
                     DataSource.sharedInstance.addSeveralContacts(contactIDsToAdd,
-                        toElement: editingElement.elementId!,
+                        toElement: editingElementId,
                         completion: {[weak self] (succeededIDs, failedIDs) -> () in
                             
-                            print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
-                            
-                            if let aSelf = self
+                        print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
+                        
+                        if let aSelf = self
+                        {
+                            var numbersSet = Set<Int>()
+                            for anInt in newIDsSet
                             {
-                                var numbersSet = Set<NSNumber>()
-                                for anInt in newIDsSet
-                                {
-                                    numbersSet.insert(NSNumber(integer: anInt))
-                                }
-                                let newSet = Set(existingPassWhonIDs).union(numbersSet)
-                                
-                                aSelf.currentElement?.passWhomIDs = Array(newSet)
+                                numbersSet.insert(anInt)
                             }
-                        })
+                            let newSet = Set(existingPassWhonIDs).union(numbersSet)
+                            
+                            aSelf.currentElement?.passWhomIDs = Array(newSet)
+                        }
+                    })
 
                 }
             }
@@ -1425,15 +1428,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func attachViewerShouldAllowDeletion(viewer: UIViewController) -> Bool {
 
         // Only the Attach Creator can delete files from elements.
-        if let attachViewer = viewer as? AttachImageViewerVC
+        if let attachViewer = viewer as? AttachImageViewerVC, currentUserId = DataSource.sharedInstance.user?.userId
         {
             let fileCreatorId = attachViewer.fileCreatorId
-            if let currentUserId = DataSource.sharedInstance.user?.userId?.integerValue
+            
+            if currentUserId == fileCreatorId
             {
-                if currentUserId == fileCreatorId
-                {
-                    return true
-                }
+                return true
             }
         }
         
@@ -1687,7 +1688,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, finishDate = contactsPickerVC.datePicker?.date
         {
-            sendElementTaskNewResponsiblePerson(aNumber.integerValue, finishDate:finishDate)
+            sendElementTaskNewResponsiblePerson(aNumber, finishDate:finishDate)
         }
         self.navigationController?.popViewControllerAnimated(true)
     }

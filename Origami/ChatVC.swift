@@ -134,7 +134,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     
     func chatInputView(inputView:ChatTextInputView, sendButtonTapped button:UIButton)
     {
-        if let textToSend = inputView.textView.text
+        if let textToSend = inputView.textView.text, userId = DataSource.sharedInstance.user?.userId, currentElementId = currentElement?.elementId
         {
             if !textToSend.isEmpty
             {
@@ -146,8 +146,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                     [inputView.textView.text!,
                         NSNumber(integer: 0),
                         "Ivan",
-                        currentElement!.elementId!,
-                        DataSource.sharedInstance.user!.userId!,
+                        currentElementId,
+                        userId,
                         currentDateString],
                     forKeys:
                     ["Msg",
@@ -378,12 +378,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         if let
             existingMessage = messageForIndexPath(indexPath),
-            creatorIdInt = existingMessage.creatorId
+            creatorIdInt = existingMessage.creatorId,
+            currentUserID = DataSource.sharedInstance.user?.userId
         {
-            if creatorIdInt == DataSource.sharedInstance.user!.userId!.integerValue
+            if creatorIdInt == currentUserID
             {
                 let sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
-                print(" ChatVC - Message ...")
                 sentCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
                 sentCell.message = existingMessage.textBody
                 sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
@@ -396,7 +396,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 let recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
                 recievedCell.message = existingMessage.textBody
                 recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
-                print(" ChatVC - Message ...")
                 recievedCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
                 recievedCell.avatar?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
                 recievedCell.backgroundColor = UIColor.clearColor()
@@ -679,7 +678,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                         var idInts = Set<Int>()
                         for number in passwhomIDs
                         {
-                            idInts.insert(number.integerValue)
+                            idInts.insert(number)
                         }
                         newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
                     }
@@ -742,7 +741,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
             passWhomIDs = [Int]()
             for number in nsNumberArray
             {
-                passWhomIDs!.append(number.integerValue)
+                passWhomIDs!.append(number)
             }
         }
         

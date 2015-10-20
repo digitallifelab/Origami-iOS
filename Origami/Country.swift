@@ -9,7 +9,7 @@
 import Foundation
 class Country
 {
-    var countryId:NSNumber = NSNumber(integer: 0)
+    var countryId:Int = 0
     var countryName:String = ""
     
     convenience init?(info:[String:AnyObject]?)
@@ -25,18 +25,17 @@ class Country
             return nil
         }
         
-        if info!.count > 0
+        
+        if let lvId = info!["Id"] as? Int
         {
-            if let lvId = info!["Id"] as? NSNumber
-            {
-                self.countryId = lvId
-            }
-            
-            if let lvName = info!["Name"] as? String
-            {
-                self.countryName = lvName
-            }
+            self.countryId = lvId
         }
+        
+        if let lvName = info!["Name"] as? String
+        {
+            self.countryName = lvName
+        }
+    
     }
     
     func toDictionary() -> [String:AnyObject]

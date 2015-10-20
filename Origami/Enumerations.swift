@@ -153,7 +153,7 @@ enum ActionButtonCellType:Int
     case Decision //7
 }
 
-enum ElementFinishState:Int{
+enum ElementFinishState:Int {
     case Default = 10
     case InProcess = 20
     case FinishedGood = 30
@@ -172,7 +172,7 @@ enum FileType:String {
     case Document = "document"
 }
 
-enum TableItemPickerType:Int{
+enum TableItemPickerType:Int {
     case Country = 1
     case Language = 2
 }

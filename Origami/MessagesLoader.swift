@@ -44,6 +44,7 @@ class MessagesLoader:NSObject
                     {
                         dispatch_suspend(source)
                     }
+                    
                     DataSource.sharedInstance.loadLastMessages({[weak self] (success, error) -> () in
                         
                         if let anError = error

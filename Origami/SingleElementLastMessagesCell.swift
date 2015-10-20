@@ -149,7 +149,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                 chatCell.dateLabel.text = messageDateString as String
             }
             
-            if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId?.integerValue
+            if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId
             {
                 if creatorId == userID
                 {

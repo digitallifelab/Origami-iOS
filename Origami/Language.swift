@@ -9,7 +9,7 @@
 import Foundation
 class Language
 {
-    var languageId:NSNumber = NSNumber(integer: 0)
+    var languageId:Int = 0
     var languageName:String = ""
     
     convenience init?(info:[String:AnyObject]?)
@@ -22,7 +22,7 @@ class Language
         
         if info!.count > 0
         {
-            if let lvId = info!["Id"] as? NSNumber
+            if let lvId = info!["Id"] as? Int
             {
                 self.languageId = lvId
             }

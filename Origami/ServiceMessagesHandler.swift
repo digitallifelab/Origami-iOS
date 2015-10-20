@@ -107,7 +107,7 @@ class ServiceMessagesHandler {
         
         isUpdatingContacts = true
         
-        guard let currentUserID = DataSource.sharedInstance.user?.userId?.integerValue else
+        guard let currentUserID = DataSource.sharedInstance.user?.userId else
         {
             isUpdatingContacts = false
             return

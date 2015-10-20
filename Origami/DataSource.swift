@@ -475,7 +475,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 return nil
             }
             //debug print out filtered last messages
-            print("\n ---Returning message ids for chat: ")
+            //print("\n ---Returning message ids for chat: ")
             for aFilteredMessage in messagesToReturn
             {
                 print( "-> \(aFilteredMessage.messageId)")
@@ -895,9 +895,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         dispatch_async(bgQueue, { () -> Void in
             
             var elementsToSort = DataSource.sharedInstance.elements
-            
+            print("-> DataSource->  getAllElementsSortedByActivity. All elements: \(elementsToSort.count)\n")
             ObjectsConverter.sortElementsByDate(&elementsToSort)
-            NSLog("_________ Finished gathering elements ( 0 elements! )  for RecentActivityTableVC.....")
+            
+            print("-> DataSource->  getAllElementsSortedByActivity. All elements Sorted by date: \(elementsToSort.count)\n")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 completion?(elements: elementsToSort)
             })
@@ -1212,7 +1213,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     var ordered = Array(recievedIDs)
                     
-                    ordered.sortInPlace {$0.integerValue < $1.integerValue}
+                    ordered.sortInPlace {$0 < $1}
                     
                     elementFromDataSource.passWhomIDs = ordered
                 }
@@ -2111,17 +2112,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         var alreadyExistIDsSet = Set<Int>()
                         for number in existingElement.passWhomIDs
                         {
-                            alreadyExistIDsSet.insert(number.integerValue)
+                            alreadyExistIDsSet.insert(number)
                         }
                         
                         let succseededIDsSet = Set(succeededIDs)
                         
                         let commonValuesSet = alreadyExistIDsSet.union(succseededIDsSet)
                         
-                        var idsArray = [NSNumber]()
+                        var idsArray = [Int]()
                         for integer in commonValuesSet
                         {
-                            idsArray.append(NSNumber(integer:integer))
+                            idsArray.append(integer)
                         }
                         
                         existingElement.passWhomIDs = idsArray
@@ -2161,7 +2162,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         let succeededSet = Set(succeededIds)
                         let currentPassWhomIDs = existingElement.passWhomIDs
                         let filteredOut = currentPassWhomIDs.filter({ (contactID) -> Bool in
-                            if succeededSet.contains(contactID.integerValue)
+                            if succeededSet.contains(contactID)
                             {
                                 return false
                             }
@@ -2353,32 +2354,29 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getAvatarForUserId(userIdInt:Int) -> UIImage?
     {
-        if let currentUserId = DataSource.sharedInstance.user?.userId?.integerValue
-        {
-            if userIdInt == currentUserId
-            {
-                if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(DataSource.sharedInstance.user?.userName /*as? String*/)
-                {
-                    return UIImage(data: data)
-                }
-            }
-            else if let
-                contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])),
-                firstContact = contacts.first,
-                cData = DataSource.sharedInstance.getAvatarDataForContactUserName(firstContact.userName)
-            {
-                let image = UIImage(data: cData)
-                return image
-            }
-            
+        guard let currentUserId = DataSource.sharedInstance.user?.userId else {
+            print("\n  NO USER ID in DATA SOURCE!\n")
             return nil
         }
-        else
+        
+        if userIdInt == currentUserId
         {
-            assert(DataSource.sharedInstance.user != nil, "No User in DataSource.  Probably logged out.")
+            if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(DataSource.sharedInstance.user?.userName /*as? String*/)
+            {
+                return UIImage(data: data)
+            }
+        }
+        else if let
+            contacts = DataSource.sharedInstance.getContactsByIds(Set([userIdInt])),
+            firstContact = contacts.first,
+            cData = DataSource.sharedInstance.getAvatarDataForContactUserName(firstContact.userName)
+        {
+            let image = UIImage(data: cData)
+            return image
         }
         
         return nil
+
     }
     
     func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
@@ -2389,33 +2387,34 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             fileHandler.loadAvatarDataForLoginName(loginName, completion: { (avatarData, error) -> Void in
                 if let avatarBytes = avatarData
                 {
-                    if let image = UIImage(data: avatarBytes)
-                    {
-                        completionBlock?(image: image, error: nil)
+                    guard let image = UIImage(data: avatarBytes) else {
+                        let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
+                        completionBlock?(image: nil, error: imageCreatingError)
                         
-                        if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
+                        return
+                    }
+                    
+                    completionBlock?(image: image, error: nil) //return value  
+                    
+                    //and continue background work
+                    
+                    if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
+                    {
+                        if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)),  avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
                         {
-                            if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)),  avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-                            {
-                                if avatarIconData != avatarData
-                                {
-                                    DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
-                                }
-                            }
-                            
-                        }
-                        else
-                        {
-                            if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)), avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                            if avatarIconData != avatarData
                             {
                                 DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
                             }
                         }
+                        
                     }
                     else
                     {
-                        let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
-                        completionBlock?(image: nil, error: imageCreatingError)
+                        if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)), avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                        {
+                            DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
+                        }
                     }
                 }
                 else if let anError = error
@@ -2430,7 +2429,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             })
         
     }
-        
+    /**
+    Method first tries to get avatar thumbnail stored in RAM, if it is not found, the search on device`s disc is started, and if file is not fund, avatar downloading process starts.
+    */
     func loadAvatarForLoginName(loginName:String, completion completionBlock:((image:UIImage?) ->())? )
     {
         let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)

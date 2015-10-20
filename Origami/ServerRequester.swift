@@ -476,7 +476,7 @@ class ServerRequester: NSObject
     }
     
     
-    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:((Set<NSNumber>?, NSError?)->())? )
+    func loadPassWhomIdsForElementID(elementId:Int, completion completionClosure:((Set<Int>?, NSError?)->())? )
     {
         guard let userToken = DataSource.sharedInstance.user?.token else {
             completionClosure?(nil, NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
@@ -507,7 +507,7 @@ class ServerRequester: NSObject
                 do{
                     if let responseValue = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableContainers) as? [String:AnyObject]
                     {
-                        if let arrayOfIDs = responseValue["GetPassWhomIdsResult"] as? [NSNumber]
+                        if let arrayOfIDs = responseValue["GetPassWhomIdsResult"] as? [Int]
                         {
                             let aSet = Set(arrayOfIDs)
                             print(aSet)

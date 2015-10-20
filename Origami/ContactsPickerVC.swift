@@ -26,40 +26,32 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         
-        
-            
-            let bgOpQueue = NSOperationQueue()
-            bgOpQueue.addOperationWithBlock({[weak self] () -> Void in
-                if let weakSelf = self, contacts = weakSelf.contactsToSelectFrom
+        let bgOpQueue = NSOperationQueue()
+        bgOpQueue.addOperationWithBlock({[weak self] () -> Void in
+            if let weakSelf = self, contacts = weakSelf.contactsToSelectFrom
+            {
+                var i = 0
+                for aContact in contacts
                 {
-                    var i = 0
-                    for aContact in contacts
+                    let indexPath = NSIndexPath(forRow: i, inSection: 1)
+                    
+                    i++
+                    let userId = aContact.contactId
+                    if userId > 0
                     {
-                        let indexPath = NSIndexPath(forRow: i, inSection: 1)
-                        
-                        i++
-                        let userId = aContact.contactId
-                        if userId > 0
+                        if let avatar = DataSource.sharedInstance.getAvatarForUserId(userId)
                         {
-                            if let avatar = DataSource.sharedInstance.getAvatarForUserId(userId)
-                            {
-                                weakSelf.avatarsHolder[indexPath] = avatar
-                            }
-                        }
-                    }
-                    if let userIdInt = DataSource.sharedInstance.user?.userId?.integerValue
-                    {
-                        if let image = DataSource.sharedInstance.getAvatarForUserId(userIdInt)
-                        {
-                            weakSelf.avatarsHolder[NSIndexPath(forRow: 0, inSection: 0)] = (image.copy() as! UIImage)
+                            weakSelf.avatarsHolder[indexPath] = avatar
                         }
                     }
                 }
-            })
-            
-            
-        
-        
+                
+                if let userIdInt = DataSource.sharedInstance.user?.userId, image = DataSource.sharedInstance.getAvatarForUserId(userIdInt)
+                {
+                    weakSelf.avatarsHolder[NSIndexPath(forRow: 0, inSection: 0)] = (image.copy() as! UIImage)
+                }
+            }
+        })
     }
     
     override func didReceiveMemoryWarning() {

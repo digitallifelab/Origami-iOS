@@ -225,7 +225,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                 currentElementsDataRefresher.startRefreshingElementsWithTimeoutInterval(30.0)
             }
         }
-        else if let _ = DataSource.sharedInstance.user?.userId?.integerValue
+        else if let _ = DataSource.sharedInstance.user?.userId
         {
             DataSource.sharedInstance.dataRefresher = DataRefresher()
             DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
@@ -695,7 +695,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             passWhomIDs = Set<Int>()
             for number in nsNumberArray
             {
-                passWhomIDs!.insert(number.integerValue)
+                passWhomIDs!.insert(number)
             }
         }
         

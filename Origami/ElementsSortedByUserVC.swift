@@ -16,6 +16,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     is subject to change if subclassing
     */
+    
     var currentTopRightButton:UIButton?
     
     var currentSelectedUserAvatar:UIImage? = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
@@ -23,9 +24,9 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     var elementsUserParticipatesIn:[Element]?
     var selectedUserId:Int = 0
     
-    override var displayMode:DisplayMode{
+    override var displayMode:DisplayMode {
         
-        didSet{
+        didSet {
             switch displayMode
             {
             case .Day:
@@ -68,17 +69,18 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         if let userName = DataSource.sharedInstance.user?.userName
         {
             DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: { [weak self] (image) -> () in
-                if let weakSelf = self
+                
+                guard let weakSelf = self, anImage = image, userId = DataSource.sharedInstance.user?.userId else
                 {
-                    if let anImage = image, userId = DataSource.sharedInstance.user?.userId?.integerValue
-                    {
-                        if weakSelf.selectedUserId == userId
-                        {
-                            weakSelf.currentSelectedUserAvatar = anImage
-                            weakSelf.configureCurrentRightButtonImage()
-                        }
-                    }
+                    return
                 }
+                
+                if weakSelf.selectedUserId == userId
+                {
+                    weakSelf.currentSelectedUserAvatar = anImage
+                    weakSelf.configureCurrentRightButtonImage()
+                }
+                
             })
         }
         
@@ -123,7 +125,6 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     override func startLoadingElementsByActivity(completion:(()->())?) {
         
-        
         self.setLoadingIndicatorVisible(true)
         isReloadingTable = true
         print(" -> Getting all elements By Activity from DataSource... ")
@@ -132,7 +133,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             {
                 if let elementsPresent = elements
                 {
-                        let archVisibleLocal = weakSelf.archivedVisible
+                    let archVisibleLocal = weakSelf.archivedVisible
                     let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
                     dispatch_async(bgQueue, {[weak self] () -> Void in
                         var allCurrentElements = [Element]()
@@ -161,87 +162,80 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                             }
                         }
                         
-                        weakSelf.checkFiltersEnabled({ () -> () in
-                            dispatch_async(dispatch_get_main_queue(), {/*[weak self]*/() -> Void in
-                               // if let _ = self
-                               // {
-                                    //if !weakSelf.isReloadingTable
-                                    //{
-                                        completion?()
-                                    //}
-                                //}
-                                
-                            })//end of main_queue
-                        })
-                     
+                        weakSelf.checkFiltersEnabled()
+                        
+                        dispatch_async(dispatch_get_main_queue(), {() -> Void in
+                                    completion?()
+                        })//end of main_queue
+                        
                     }) //end of bgQue
                 }
             }
         }
-        
     }
     
     func sortCurrentElementsForNewUserId()
     {
-        //let numberOfSectionsBeforeDeleting = self.numberOfSectionsInTableView(self.tableView!)
-        
         self.elementsCreatedByUser?.removeAll(keepCapacity: false)
         self.elementsUserParticipatesIn?.removeAll(keepCapacity: false)
         self.elementsCreatedByUser = nil
         self.elementsUserParticipatesIn = nil      
-        let currentSelecnedUserId = self.selectedUserId
-        
-        if let allElements = self.elements
+        let currentSelectedUserId = self.selectedUserId
+        print("\nSorting for selected user ID: \(currentSelectedUserId)")
+        guard let allElements = self.elements else
         {
-            let userIDFromDataSource = DataSource.sharedInstance.user?.userId?.integerValue
-            
-            var toSortMyElements = Set<Element>()
-            var toSortParticipatingElements = Set<Element>()
-            
-            for anElement in allElements
+            isReloadingTable = false
+            return
+        }
+    
+        guard let userIDFromDataSource = DataSource.sharedInstance.user?.userId else {
+            return
+        }
+        
+        var toSortOwnedElements = Set<Element>()
+        var toSortParticipatingElements = Set<Element>()
+        
+        for anElement in allElements
+        {
+            //print("Creator: \(anElement.creatorId)")
+            if anElement.creatorId == currentSelectedUserId
             {
-                //print("Element`s pass whom IDs: \(anElement.passWhomIDs)")
-                
-                if anElement.creatorId == currentSelecnedUserId
+                toSortOwnedElements.insert(anElement)
+            }
+            else
+            {
+                //print("PassWhomIDs: \(anElement.passWhomIDs)")
+                if userIDFromDataSource == currentSelectedUserId
                 {
-                    toSortMyElements.insert(anElement)
+                    toSortParticipatingElements.insert(anElement)
                 }
-                else
+                else if anElement.passWhomIDs.count > 0
                 {
-                    if userIDFromDataSource != nil
+                    let passIDsSet = Set(anElement.passWhomIDs)
+                    
+                    if passIDsSet.contains(currentSelectedUserId)
                     {
-                        if userIDFromDataSource == currentSelecnedUserId
-                        {
-                            toSortParticipatingElements.insert(anElement)
-                        }
-                        else if anElement.passWhomIDs.count > 0
-                        {
-                            let passIDsSet = Set(anElement.passWhomIDs)
-                            
-                            if passIDsSet.contains(self.selectedUserId)
-                            {
-                                toSortParticipatingElements.insert(anElement)
-                            }
-                        }
+                        toSortParticipatingElements.insert(anElement)
                     }
                 }
             }
-            
-            var sortedMyElements = Array(toSortMyElements)
-            ObjectsConverter.sortElementsByDate(&sortedMyElements)
-            
-            var sortedParticipatingElements = Array(toSortParticipatingElements)
-            ObjectsConverter.sortElementsByDate(&sortedParticipatingElements)
-            
-            if sortedMyElements.count > 0
-            {
-                self.elementsCreatedByUser = sortedMyElements
-            }
-            if sortedParticipatingElements.count > 0
-            {
-                self.elementsUserParticipatesIn = sortedParticipatingElements
-            }
         }
+        
+        var sortedMyElements = Array(toSortOwnedElements)
+        ObjectsConverter.sortElementsByDate(&sortedMyElements)
+        
+        var sortedParticipatingElements = Array(toSortParticipatingElements)
+        ObjectsConverter.sortElementsByDate(&sortedParticipatingElements)
+        
+        if sortedMyElements.count > 0
+        {
+            self.elementsCreatedByUser = sortedMyElements
+        }
+        if sortedParticipatingElements.count > 0
+        {
+            self.elementsUserParticipatesIn = sortedParticipatingElements
+        }
+        
         
         isReloadingTable = false
     }
@@ -372,6 +366,38 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if tasksFilterEnabled  //when displaying elements by TASK filter, we show PArticipating elements first
+        {
+            switch section
+            {
+            case 0:
+                if let elementsParticipating = elementsUserParticipatesIn
+                {
+                    return elementsParticipating.count
+                }
+                else if let elementsByUser = elementsCreatedByUser
+                {
+                    return elementsByUser.count
+                }
+                else
+                {
+                    return 0
+                }
+            case 1:
+                if let elementsByUser = elementsCreatedByUser
+                {
+                    return elementsByUser.count
+                }
+                else
+                {
+                    return 0
+                }
+            default:
+                return 0
+            }
+        }
+        
         switch section
         {
         case 0:
@@ -403,6 +429,37 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     }
     
     override func elementForIndexPath(indexPath: NSIndexPath) -> Element? {
+        if tasksFilterEnabled //when displaying elements by TASK filter, we show PArticipating elements first
+        {
+            switch indexPath.section
+            {
+            case 0:
+                if let elementsParticipating = elementsUserParticipatesIn
+                {
+                    return elementsParticipating[indexPath.row]
+                }
+                else if let elementsOwned = elementsCreatedByUser
+                {
+                    return elementsOwned[indexPath.row]
+                }
+                else
+                {
+                    return nil
+                }
+            case 1:
+                if let elementsOwned = elementsCreatedByUser
+                {
+                    return elementsOwned[indexPath.row]
+                }
+                else
+                {
+                    return nil
+                }
+            default:
+                return nil
+            }
+        }
+        
         switch indexPath.section
         {
         case 0:
@@ -442,9 +499,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         self.tableView?.reloadData()
-        //let length = self.numberOfSectionsInTableView(self.tableView!)
         
-        //self.tableView?.reloadSections(NSIndexSet(indexesInRange: NSMakeRange(0, length)), withRowAnimation: .None)
         isReloadingTable = false
         
         self.setLoadingIndicatorVisible(false)
@@ -454,24 +509,48 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if tasksFilterEnabled //when displaying elements by TASK filter, we show PArticipating elements first
+        {
+            switch section
+            {
+                case 0:
+                    if let _ = elementsUserParticipatesIn
+                    {
+                        return "Participant of".localizedWithComment("")
+                    }
+                    else if let _ = elementsCreatedByUser
+                    {
+                        return "Creator of".localizedWithComment("")
+                    }
+                case 1:
+                    if let _ = elementsCreatedByUser
+                    {
+                        return "Creator of".localizedWithComment("")
+                    }
+                default:
+                    return nil
+            }
+            return nil
+        }
+        
         switch section
         {
-        case 0:
-            if let _ = elementsCreatedByUser
-            {
-                return "Creator of".localizedWithComment("")
-            }
-            else if let _ = elementsUserParticipatesIn
-            {
-                return "Participant of".localizedWithComment("")
-            }
-        case 1:
-            if let _ = elementsUserParticipatesIn
-            {
-                return "Participant of".localizedWithComment("")
-            }
-        default:
-            break
+            case 0:
+                if let _ = elementsCreatedByUser
+                {
+                    return "Creator of".localizedWithComment("")
+                }
+                else if let _ = elementsUserParticipatesIn
+                {
+                    return "Participant of".localizedWithComment("")
+                }
+            case 1:
+                if let _ = elementsUserParticipatesIn
+                {
+                    return "Participant of".localizedWithComment("")
+                }
+            default:
+                return nil
         }
         return nil
     }
@@ -490,29 +569,26 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     //MARK: - right nav button
     func configureCurrentRightTopButton()
     {
-//        if let rightButton = UIButton(type:.System)//UIButton.buttonWithType(.System) as? UIButton
-//        {
-            let rightButton = UIButton(type:.System)//UIButton.buttonWithType(.System) as! UIButton
-            rightButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
-            rightButton.imageEdgeInsets = UIEdgeInsetsMake(4, 4, 4, 4)
-            rightButton.imageView?.contentMode = .ScaleAspectFit
-            rightButton.setImage(self.currentSelectedUserAvatar, forState: .Normal)
-            rightButton.addTarget(self, action: "selectElementsOwnerTapped:", forControlEvents: .TouchUpInside)
-         
-            rightButton.maskToCircle()
-            self.currentTopRightButton = rightButton
-            
-            let rightBarButton = UIBarButtonItem(customView: self.currentTopRightButton!)
-            
-            self.navigationItem.rightBarButtonItem = rightBarButton
-           
-            configureCurrentRightButtonImage()
-//        }
+        let rightButton = UIButton(type:.System)//UIButton.buttonWithType(.System) as! UIButton
+        rightButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
+        rightButton.imageEdgeInsets = UIEdgeInsetsMake(4, 4, 4, 4)
+        rightButton.imageView?.contentMode = .ScaleAspectFit
+        rightButton.setImage(self.currentSelectedUserAvatar, forState: .Normal)
+        rightButton.addTarget(self, action: "selectElementsOwnerTapped:", forControlEvents: .TouchUpInside)
+     
+        rightButton.maskToCircle()
+        self.currentTopRightButton = rightButton
+        
+        let rightBarButton = UIBarButtonItem(customView: self.currentTopRightButton!)
+        
+        self.navigationItem.rightBarButtonItem = rightBarButton
+       
+        configureCurrentRightButtonImage()
     }
     
     func configureCurrentRightButtonImage()
     {
-        guard let userIdExists = DataSource.sharedInstance.user?.userId?.integerValue else {
+        guard let userIdExists = DataSource.sharedInstance.user?.userId else {
             return
         }
         
@@ -584,16 +660,16 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     func itemPickerDidCancel(itemPicker: AnyObject)
     {
        
-        if let aUserID = DataSource.sharedInstance.user?.userId?.integerValue
+        if let aUserID = DataSource.sharedInstance.user?.userId
         {
             if self.selectedUserId != aUserID
             {
                 self.selectedUserId = aUserID// NSNumber(integer: aNumber.integerValue)
                 self.configureCurrentRightButtonImage()
                 
-                sortCurrentElementsForNewUserId()
+                //sortCurrentElementsForNewUserId()
                 
-                self.reloadTableView()
+                //self.reloadTableView()
             }
             else
             {
@@ -619,8 +695,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 self.selectedUserId = contactId
                 self.configureCurrentRightButtonImage()
                 
-                sortCurrentElementsForNewUserId()
-                self.reloadTableView()
+                //sortCurrentElementsForNewUserId()
+                //self.reloadTableView()
             }
             else
             {
@@ -660,11 +736,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     //MARK: Filter by type
     func filterButtonTapped(sender:FilterAttributeButton)
     {
-        //let debugCurrentToggleType = sender.toggleType.description()
-        //print(" old toggle type: \(debugCurrentToggleType)")
         sender.toggleType = sender.toggleType.toggleToOpposite()
-        //let debugNewToggleType = sender.toggleType.description()
-        //print(" new toggle type: \(debugNewToggleType)")
         applyFilter(sender.toggleType)
     }
     
@@ -798,22 +870,22 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
             if let weakSelf = self, _ = weakSelf.elements
             {
                 let bgQueue = dispatch_queue_create("com.origami.sorting.queue", DISPATCH_QUEUE_SERIAL)
-                dispatch_async(bgQueue, { () -> Void in
-                    weakSelf.checkFiltersEnabled({ () -> () in
+                dispatch_async(bgQueue) { _ in
+                    
+                    weakSelf.checkFiltersEnabled()
                        
-                        dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                            if let anotherWeakSelf = self
-                            {
-                                anotherWeakSelf.reloadTableView()
-                            }
-                        })
-                    })
-                })
+                    dispatch_async(dispatch_get_main_queue()) {[weak self] () -> Void in
+                        if let anotherWeakSelf = self
+                        {
+                            anotherWeakSelf.reloadTableView()
+                        }
+                    }
+                }
             }
         }
     }
     
-    func checkFiltersEnabled(completion:(()->())?)
+    func checkFiltersEnabled()
     {
         if self.signalsFilterEnabled
         {
@@ -834,8 +906,6 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         {
             filterOutElementsWithOptionsEnabled(.Decision)
         }
-        
-        completion?()
     }
     
     

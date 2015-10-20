@@ -56,7 +56,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         
         self.editButton?.tintColor = kWhiteColor
         self.editButton?.setImage((UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
-        if let creatorId = self.handledElement?.creatorId, userId = DataSource.sharedInstance.user?.userId?.integerValue
+        if let creatorId = self.handledElement?.creatorId, userId = DataSource.sharedInstance.user?.userId
         {
             var ownerNameToDisplay:String?// = String()
             

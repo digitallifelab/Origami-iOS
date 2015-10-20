@@ -31,7 +31,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 for number in passIDs
                 {
-                    contactIDsToPass.insert(number.integerValue)
+                    contactIDsToPass.insert(number)
                 }
             }
             self.table?.reloadData()

@@ -23,7 +23,11 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if currentElement!.creatorId == DataSource.sharedInstance.user!.userId!.integerValue
+        guard let elementCreatorId = currentElement?.creatorId, userId = DataSource.sharedInstance.user?.userId else {
+            return
+        }
+        
+        if elementCreatorId == userId
         {
             selectionEnabled = true
         }

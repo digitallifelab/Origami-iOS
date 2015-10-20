@@ -92,7 +92,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             }
         }
         
-        if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId?.integerValue
+        if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId
         {
             if creatorId == userID
             {

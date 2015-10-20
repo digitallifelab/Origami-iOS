@@ -16,7 +16,7 @@ class Element:Hashable, CreateDateComparable
     var details:String?
     var attachIDs:[NSNumber] = [NSNumber]()
     var responsible:Int = 0
-    var passWhomIDs:[NSNumber] = [NSNumber]()
+    var passWhomIDs:[Int] = [Int]()
     var isSignal:Bool = false
     var isFavourite:Bool = false
     var hasAttaches:Bool = false
@@ -130,13 +130,12 @@ class Element:Hashable, CreateDateComparable
         {
             self.archiveDate = archDate
         }
-        if info["PassWhomIds"] !== NSNull()
+       
+        if let passIDs = info["PassWhomIds"] as? [Int]
         {
-            if let passIDs = info["PassWhomIds"] as? [NSNumber]
-            {
-                self.passWhomIDs = passIDs
-            }
+            self.passWhomIDs = passIDs
         }
+        
     }
     
     func toDictionary() -> [String:AnyObject]
@@ -184,9 +183,9 @@ class Element:Hashable, CreateDateComparable
     
     func isOwnedByCurrentUser() -> Bool
     {
-        if let user = DataSource.sharedInstance.user, userIdInt = user.userId?.integerValue
+        if let userId = DataSource.sharedInstance.user?.userId
         {
-            if userIdInt == self.creatorId
+            if userId == self.creatorId
             {
                 return true
             }
@@ -196,9 +195,9 @@ class Element:Hashable, CreateDateComparable
     
     func isTaskForCurrentUser() -> Bool
     {
-        if let user = DataSource.sharedInstance.user, userIdInt = user.userId?.integerValue
+        if let userId = DataSource.sharedInstance.user?.userId
         {
-            if userIdInt == self.responsible
+            if userId == self.responsible
             {
                 return true
             }

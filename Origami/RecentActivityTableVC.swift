@@ -115,13 +115,6 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         }
     }
     
-//    override func viewWillDisappear(animated: Bool) {
-//        super.viewDidDisappear(animated)
-////        self.tableView?.delegate = nil
-////        self.tableView?.dataSource = nil
-////        self.elements = nil
-//    }
-    
     //MARK --
     
     func startLoadingElementsByActivity(completion:(()->())?)
@@ -198,52 +191,19 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         
         let currentToolbarItems:[UIBarButtonItem] = [flexibleSpaceLeft, homeImageButton ,flexibleSpaceRight]
         
-        //
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
-    
-//    func homeButtonPressed(sender:UIBarButtonItem)
-//    {
-//        if let currentVCs = self.navigationController?.viewControllers
-//        {
-//            if currentVCs.count > 1
-//            {
-//                if let rootIsHome = currentVCs.first as? HomeVC
-//                {
-//                    self.navigationController?.popToRootViewControllerAnimated(true)
-//                }
-//                else
-//                {
-//                    if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-//                    {
-//                        self.navigationController?.setViewControllers([home], animated: true)
-//                    }
-//                }
-//            }
-//            else
-//            {
-//                if let home = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-//                {
-//                    self.navigationController?.setViewControllers([home], animated: true)
-//                }
-//            }
-//        }
-//    }
     
     func pushElementDashBoardForElement(element:Element)
     {
         self.view.userInteractionEnabled = false
-//            DataSource.sharedInstance.loadAttachesInfoForElement(element, completion: {[weak self] (_) -> () in
-//                if let weakSelf = self
-//                {
-                    if let dashboard = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-                    {
-                        dashboard.currentElement = element
-                        self.navigationController?.pushViewController(dashboard, animated: true)
-                    }
-                    self.view.userInteractionEnabled = true
-//                }
-//            })
+
+        if let dashboard = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
+        {
+            dashboard.currentElement = element
+            self.navigationController?.pushViewController(dashboard, animated: true)
+        }
+        self.view.userInteractionEnabled = true
     }
     
     //MARK: UITableViewDataSource
@@ -281,6 +241,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 activityCell.elementTitleLabel?.text = element.title // as? String
                 activityCell.elementDetailsTextView?.text = element.details //as? String
                 activityCell.displayMode = self.displayMode
+                
                 if element.isArchived()
                 {
                     activityCell.backgroundColor = UIColor.lightGrayColor()
@@ -337,7 +298,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
-                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
+                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId
                     {
                         if userIdInt == element.creatorId
                         {
@@ -379,7 +340,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
-                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId?.integerValue
+                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId
                     {
                         if userIdInt == element.creatorId
                         {
