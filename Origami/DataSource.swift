@@ -249,38 +249,53 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     var avatarChangeMessages = messagesTuple.service.filter({ (serviceMessage) -> Bool in
                         return serviceMessage.type == .UserPhotoUpdated
                     })
+                    
                     if !avatarChangeMessages.isEmpty
                     {
                         ObjectsConverter.sortMessagesByDate(&avatarChangeMessages, < )
 
-                        let theNewestAvatarUpdateMessage = avatarChangeMessages.removeLast()
-                        if let messageCreateDate = theNewestAvatarUpdateMessage.dateCreated, textBody = theNewestAvatarUpdateMessage.textBody, targetId = Int(textBody)
+                        //detect all users who had changed avatar
+                        var usersAndMessages = [Int:NSDate]()
+                        while  avatarChangeMessages.count > 0
                         {
-                            if let existingSyncDateForUserID = DataSource.sharedInstance.getLastAvatarSyncDateForContactId(targetId)
+                            let existingMessage = avatarChangeMessages.removeLast()
+                            if let textBody = existingMessage.textBody, userId = Int(textBody)
+                            {
+                                if let _ = usersAndMessages[userId]
+                                {
+                                    continue
+                                }
+                                if let messageDate = existingMessage.dateCreated
+                                {
+                                    usersAndMessages[userId] = messageDate
+                                }
+                            }
+                        }
+                        
+                        for (userId, date) in usersAndMessages
+                        {
+                            if let existingSyncDateForUserID = DataSource.sharedInstance.getLastAvatarSyncDateForContactId(userId)
                             {
                                 //compare message date and stored date
-                                if messageCreateDate.compare(existingSyncDateForUserID) != .OrderedAscending
+                                if date.compare(existingSyncDateForUserID) != .OrderedAscending
                                 {
                                     //delete current avatar for refreshing later
-                                    if let contact = DataSource.sharedInstance.getContactsByIds(Set([targetId]))?.first
+                                    if let contact = DataSource.sharedInstance.getContactsByIds(Set([userId]))?.first
                                     {
-                                         DataSource.sharedInstance.cleanAvatarDataForUserName(contact.userName)
+                                        DataSource.sharedInstance.cleanAvatarDataForUserName(contact.userName)
                                     }
                                 }
                             }
                             else
                             {
                                 //delete current avatar for refreshing later
-                                if let contact = DataSource.sharedInstance.getContactsByIds(Set([targetId]))?.first
+                                if let contact = DataSource.sharedInstance.getContactsByIds(Set([userId]))?.first
                                 {
                                     DataSource.sharedInstance.cleanAvatarDataForUserName(contact.userName)
                                 }
                             }
                         }
                     }
-                    
-                    
-                    
                     
                     DataSource.sharedInstance.messagesLoader = MessagesLoader()
                     DataSource.sharedInstance.startRefreshingNewMessages()
