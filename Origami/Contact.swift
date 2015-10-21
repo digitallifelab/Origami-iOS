@@ -9,22 +9,11 @@
 import Foundation
 class Contact:Person, Hashable
 {
-    var birthDay:String?
-    var phone:String?
-    var country:String?
-    var countryId:NSNumber?
-    var language:String?
-    var languageId:NSNumber?
-
     var lastSync:String?
     var contactId:Int = 0
-
-    var sex:NSNumber?
-    var regDate:String?
-    var photo:NSData?
     
     var isFavourite:NSNumber = NSNumber(bool: false)
-    var elementId:NSNumber?
+    var elementId:Int?
     var isOnline:NSNumber?
     
     convenience init(info:Dictionary<String, AnyObject>)
@@ -46,7 +35,7 @@ class Contact:Person, Hashable
             let fixedUserName = uName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
             self.userName = fixedUserName
         }
-        if let element = info["ElementId"] as? NSNumber
+        if let element = info["ElementId"] as? Int
         {
             self.elementId = element
         }
@@ -91,7 +80,7 @@ class Contact:Person, Hashable
         {
             self.country = lvCountry
         }
-        if let lvCountryId = info["CountryId"] as? NSNumber
+        if let lvCountryId = info["CountryId"] as? Int
         {
             self.countryId = lvCountryId
         }
@@ -99,7 +88,7 @@ class Contact:Person, Hashable
         {
             self.language = lvLanguage
         }
-        if let lvLangId = info["LanguageId"] as? NSNumber
+        if let lvLangId = info["LanguageId"] as? Int
         {
             self.languageId = lvLangId
         }

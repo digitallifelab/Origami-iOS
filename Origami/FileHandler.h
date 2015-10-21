@@ -20,8 +20,7 @@
 
 -(void) saveLanguagesToDisk:(nonnull NSArray *)languages;
 
-//-(nullable NSURL *) urlForAmbience;
-//-(nullable NSURL *) urlForEmotionAtIndex:(NSInteger)emotionIndex;
+- (NSURL  * _Nullable )applicationDocumentsDirectory;
 
 -(void) saveCurrentUserToDisk:(nonnull NSDictionary *)userInfo;
 -(nullable NSDictionary *)getSavedUser;
@@ -30,11 +29,6 @@
 -(void) saveCurrentMessagesToDisk:(nonnull NSArray *)messages;
 -(nullable NSArray *)getSavedMessages;
 -(void) deleteSavedMessages;
-
-//-(NSString *) saveTempVideoToDisk:(NSData *)videoData completionPath:(void(^)(NSString *path)) completion;
-
-//-(void)deleteTempVideo;
-
 
 -(void) saveFileToDisc:(nonnull NSData *)file fileName:(nonnull NSString *)fileName completion:( nullable void(^)(NSString * __nullable filePath,  NSError * __nullable error)) completionBlock;
 

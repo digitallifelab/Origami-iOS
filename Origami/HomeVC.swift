@@ -48,7 +48,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
-        //configureRefreshControl()
+        
+
 
         print("\(self)  viewDidLoad")
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)
@@ -81,14 +82,24 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
                     //wSelf.loadingAllElementsInProgress = false
                     
                     let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
-                    let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+                    let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
                     dispatch_after(time, bgQueue, {/*[weak self]*/ () -> Void in
                         
                         if let _ = DataSource.sharedInstance.user?.userId
                         {
                             if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
                             {
-                                DataSource.sharedInstance.loadAllMessagesFromServer()
+//                                DataSource.sharedInstance.loadAllMessagesFromServer()
+                                //TODO: get last message id from LocalDataBase
+                                DataSource.sharedInstance.syncLastMessages(0)  { (success, error) -> () in
+                                    
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
+                                    })
+                                    
+                                    DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                                    DataSource.sharedInstance.startRefreshingNewMessages()
+                                }
                             }
                         }
                     })

@@ -63,6 +63,28 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var isRemovingObsoleteMessages = false
     var shouldLoadAllMessages = true
     
+    var localDatadaseHandler: LocalDatabaseHandler?
+    func createLocalDatabaseHandler(completion:((dbInitialization:Bool)->())?)
+    {
+        if let model = LocalDatabaseHandler.getManagedObjectModel()
+        {
+            do{
+                if let storeCoordinator = try LocalDatabaseHandler.getPersistentStoreCoordinatorForModel(model)
+                {
+                    DataSource.sharedInstance.localDatadaseHandler = LocalDatabaseHandler(storeCoordinator: storeCoordinator, completion: { (success) -> () in
+                        if success == false
+                        {
+                            DataSource.sharedInstance.localDatadaseHandler = nil
+                        }
+                        completion?(dbInitialization:success)
+                    })
+                }
+            }
+            catch{
+                completion?(dbInitialization: false)
+            }
+        }
+    }
     var messagesLoader:MessagesLoader?
     var dataRefresher:DataRefresher?
     
@@ -132,7 +154,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         DataSource.sharedInstance.dataCache.removeAllObjects()
     }
-    //MARK: User
+    //MARK: - User
     func tryToGetUser(completion:(user:User?, error:NSError?)->())
     {
         if DataSource.sharedInstance.user != nil
@@ -191,12 +213,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    //MARK: Message
-    
-    func isMessagesEmpty() -> Bool{
-        return DataSource.sharedInstance.messages.isEmpty
-    }
-    
+    //MARK: - Message
+    //MARK: -
+    //MARK: Messages ServerRequests
     func loadAllMessagesFromServer()
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
@@ -297,8 +316,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                     }
                     
-                    DataSource.sharedInstance.messagesLoader = MessagesLoader()
-                    DataSource.sharedInstance.startRefreshingNewMessages()
+//                    DataSource.sharedInstance.messagesLoader = MessagesLoader()
+//                    DataSource.sharedInstance.startRefreshingNewMessages()
                 }
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             })
@@ -314,61 +333,90 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     completionBlock(success: false, error: anError)
                 }
+                return
             }
-            else
-            {
-                if let messagesArray = messages
-                {
-                    var lvMessagesHolder = [NSNumber:[Message]]()
-                    for lvMessage in messagesArray.chat
-                    {
-                        print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
-                        if lvMessagesHolder[lvMessage.elementId!] != nil
-                        {
-                            lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
-                        }
-                        else
-                        {
-                            lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
-                        }
-                    }
-                    
-                    if !lvMessagesHolder.isEmpty
-                    {
-                        for (keyElementId, messages) in lvMessagesHolder
-                        {
-                            DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
-                        }
-                        
-                        
-                        if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
-                        {
-                            DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: { (lastMessages) -> () in
-                                
-                                if let lastMessagesReal = lastMessages
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        observerForHomeScreen.newMessagesAdded(lastMessagesReal)
-                                    })
-                                }
-                            })
-                        }
-                    }
-
-                    let serviceMessages = messagesArray.service
-                    if !serviceMessages.isEmpty
-                    {
-                        let serviceHandler = ServiceMessagesHandler()
-                        serviceHandler.startProcessingServiceMessages(serviceMessages)
-                    }
-                }
                 
+            guard let returnedStruct = messages else
+            {  //if no new messages
+                completion?(success: true, error: nil)
+                return
+            }
+            
+            DataSource.sharedInstance.handleRecievedMessagesTuple(returnedStruct, completion: { () -> () in
                 if let completionBlock = completion
                 {
                     completionBlock(success: true, error: nil)
                 }
+            })
+        }
+    }
+    
+    func syncLastMessages(lastMessageId:Int = 0, completion:((Bool, error:NSError?)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.loadNewMessagesWithLastMessageID(lastMessageId) { (messagesTuple, error) -> () in
+            if let anError = error{
+                completion?(false, error: anError)
+                return
+            }
+            guard let unHandledTupleHolderStruct = messagesTuple else
+            {
+                // no new last messages recieved
+                completion?(true, error:nil)
+                return
+            }
+            
+            DataSource.sharedInstance.handleRecievedMessagesTuple(unHandledTupleHolderStruct, completion: { () -> () in
+                completion?(true, error:nil)
+            })
+        }
+    }
+    
+    private func handleRecievedMessagesTuple(messagesTupleHolder: TypeAliasMessagesTuple, completion:(()->())?)
+    {
+        var lvMessagesHolder = [NSNumber:[Message]]()
+        for lvMessage in messagesTupleHolder.messagesTuple.chat
+        {
+            //print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
+            if lvMessagesHolder[lvMessage.elementId!] != nil
+            {
+                lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
+            }
+            else
+            {
+                lvMessagesHolder[lvMessage.elementId!] = [lvMessage]
             }
         }
+        
+        if !lvMessagesHolder.isEmpty
+        {
+            for (keyElementId, messages) in lvMessagesHolder
+            {
+                DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
+            }
+            
+            
+            if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
+            {
+                DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: { (lastMessages) -> () in
+                    
+                    if let lastMessagesReal = lastMessages
+                    {
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            observerForHomeScreen.newMessagesAdded(lastMessagesReal)
+                        })
+                    }
+                })
+            }
+        }
+        
+        let serviceMessages = messagesTupleHolder.messagesTuple.service
+        if !serviceMessages.isEmpty
+        {
+            let serviceHandler = ServiceMessagesHandler()
+            serviceHandler.startProcessingServiceMessages(serviceMessages)
+        }
+
+        completion?()
     }
     
     func sendNewMessage(message:Message, completion:errorClosure?)
@@ -416,6 +464,26 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
             }
         }
+    }
+    
+    
+    func startRefreshingNewMessages()
+    {
+        DataSource.sharedInstance.stopRefreshingNewMessages()
+        if let loader = DataSource.sharedInstance.messagesLoader
+        {
+            loader.startRefreshingLastMessages()
+        }
+    }
+    
+    func stopRefreshingNewMessages()
+    {
+        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
+    }
+    //MARK: Messages Local Stuff
+    
+    func isMessagesEmpty() -> Bool{
+        return DataSource.sharedInstance.messages.isEmpty
     }
     
     func addMessages(messageObjects:[Message], forElementId elementId:NSNumber, completion:voidClosure?)
@@ -642,19 +710,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return response
     }
     
-    func startRefreshingNewMessages()
-    {
-        DataSource.sharedInstance.stopRefreshingNewMessages()
-        if let loader = DataSource.sharedInstance.messagesLoader
-        {
-            loader.startRefreshingLastMessages()
-        }
-    }
     
-    func stopRefreshingNewMessages()
-    {
-        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
-    }
     
     func removeMessagesForDeletedElements(elementIDs:Set<Int>)
     {
@@ -683,7 +739,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.isRemovingObsoleteMessages = false
     }
     
-    //MARK: Element
+    //MARK: - Element
     /**
         submitNewElementToServer completion : Sends POST request to server to create new Element.
     
@@ -1389,7 +1445,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.attaches[elementId] = nil // delete attachFile from memory
     }
     
-    //MARK: Attaches
+    //MARK: - Attaches
     /** 
     Queries attach info from the RAM
     - Returns: **nil** if no attaches info was found or if attaches info is empty
@@ -1928,7 +1984,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    //MARK: Contact
+    //MARK: - Contact
     func addNewContacts(contacts:[Contact], completion:voidClosure?)
     {        
         DataSource.sharedInstance.contacts += contacts
@@ -2330,7 +2386,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     
     
-    //MARK: Avatars
+    //MARK: - Avatars
     func addAvatarData(avatarBytes:NSData, forContactUserName userName:String) -> ResponseType
     {
         var response:ResponseType
@@ -2657,7 +2713,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
-    //MARK: Languages & Countries
+    //MARK: - Languages & Countries
     func getCountries(completion:((countries:[Country]?, error:NSError?)->())?)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true

@@ -8,13 +8,14 @@
 
 import UIKit
 
+typealias messagesTuple = (chat:[Message], service:[Message])
 
 class ServerRequester: NSObject
 {
     typealias networkResult = (AnyObject?,NSError?) -> ()
     typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
-    typealias messagesTuple = (chat:[Message], service:[Message])
-    typealias messagesCompletionBlock = (messages:messagesTuple?, error:NSError?) -> ()
+    
+    typealias messagesCompletionBlock = (messages:TypeAliasMessagesTuple?, error:NSError?) -> ()
     let httpManager:AFHTTPSessionManager = AFHTTPSessionManager()
     
     let objectsConverter = ObjectsConverter()
@@ -297,20 +298,24 @@ class ServerRequester: NSObject
                 do{
                     if let serverResponseJson = try NSJSONSerialization.JSONObjectWithData(aData, options: NSJSONReadingOptions.MutableLeaves) as? [String:[[String:AnyObject]]], elementsArray = serverResponseJson["GetElementsResult"]
                     {
-                        var elements = Set<Element>()
+                        var elements = [Element]()
                         for lvElementDict in elementsArray
                         {
                             let lvElement = Element()
                             lvElement.setInfo(lvElementDict)
-                            elements.insert(lvElement)
+                            
+                            elements.append(lvElement)
                         }
                         
                         print("\n -> Server requester loaded \(elements.count) elements ... ")
-                        
-                        var arrayOfRecievedElements = Array(elements)
-                        ObjectsConverter.sortElementsByElementId(&arrayOfRecievedElements)
-                        
-                        completion?(arrayOfRecievedElements,nil)
+                        ObjectsConverter.sortElementsByElementId(&elements)
+//                        //debug
+//                        print("sortedElements: \(elements.count)")
+//                        for anElement in elements
+//                        {
+//                            print("ElementID: \(anElement.elementId!), rootId: \(anElement.rootElementId)")
+//                        }
+                        completion?(elements,nil)
                     }
                     else
                     {
@@ -816,7 +821,7 @@ class ServerRequester: NSObject
                                 {
                                     print("loaded new Messages")
                                     
-                                    completionBlock(messages: messagesArrayTuple, error: nil)
+                                    completionBlock(messages: TypeAliasMessagesTuple(messagesTuple:messagesArrayTuple), error: nil)
                                 }
                                 else
                                 {
@@ -854,6 +859,70 @@ class ServerRequester: NSObject
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             completionBlock(messages:nil, error:noUserTokenError)
         }
+    }
+    /**
+    Loads all messages, which are new to current device
+    - Parameter messageId: last(highest) message id stored on device
+    - Parameter completion: completion block containing message tuple or error if query fails or no new messages loaded.
+    */
+    func loadNewMessagesWithLastMessageID(messageId:Int, completion:( (TypeAliasMessagesTuple?, error:NSError?) ->() )?)
+    {
+        guard let userToken = DataSource.sharedInstance.user?.token else
+        {
+            completion?(nil, error:noUserTokenError)
+            return
+        }
+        
+        let requestString = serverURL + getMessagesToSyncUrlPart + "?token=" + userToken + "&messageId=" + "\(messageId)"
+        
+        guard let requestURL = NSURL(string: requestString) else {
+            completion?(nil, error: NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]) )
+            return
+        }
+        
+        self.performGETqueryWithURL(requestURL, onQueue: nil) { (responseData, urlResponse, responseError) -> Void in
+            if let error = responseError{
+                completion?(nil, error:error)
+                return
+            }
+            
+            if let aData = responseData
+            {
+                do{
+                    if let responseDict = try NSJSONSerialization.JSONObjectWithData(aData, options: .MutableLeaves) as? [String:[[String:AnyObject]]]
+                    {
+                        //print(responseDict)
+                        if responseDict.isEmpty
+                        {
+                            completion?(nil, error: nil)
+                            return
+                        }
+                        guard let dictsArray = responseDict["GetNewMessagesExResult"] else {
+                            completion?(nil, error:NSError(domain: "com.Origami.WrongDataFormat", code: -1035, userInfo: [NSLocalizedDescriptionKey:"Wrong ResponseFormat for messages syncronization query"]))
+                            return
+                        }
+                        
+                        guard let validTuple = ObjectsConverter.convertToMessages( dictsArray) else {
+                            completion?(nil, error:nil)
+                            return
+                        }
+                        
+                        completion?(TypeAliasMessagesTuple(messagesTuple: validTuple), error:nil)
+                        
+                    }
+                }
+                catch let jsonError as NSError {
+                    completion?(nil, error:jsonError)
+                }
+                catch{
+                    completion?(nil, error:unKnownExceptionError)
+                }
+                return
+            }
+            
+            completion?(nil, error:NSError(domain: "com.Origami.EmptyResponseData.Error", code: -2020, userInfo: [NSLocalizedDescriptionKey:"Empty Response data recieved."]))
+        }
+        
     }
     
     //MARK: Attaches
@@ -986,7 +1055,7 @@ class ServerRequester: NSObject
                                         if arrayOfIntegers.isEmpty
                                         {
                                             print("Empty response for Attach File id = \(attachId)")
-                                            completion?(attachFileData: NSData(), error: nil)
+                                            completion?(attachFileData: nil, error: nil)
                                         }
                                         else
                                         {

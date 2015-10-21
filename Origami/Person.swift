@@ -13,6 +13,15 @@ class Person //: NSObject
     var lastName:String?
     var userName:String = ""
     var mood:String?
+    var birthDay:String?
+    var phone:String?
+    var country:String? //
+    var countryId:Int? //
+    var language:String? //
+    var languageId:Int? //
+    var photo:NSData?
+    var sex:NSNumber? //
+    var regDate:String? //
     var state:PersonAuthorisationState = .Undefined
     
     func nameAndLastNameSpacedString() -> String?

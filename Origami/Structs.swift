@@ -68,3 +68,7 @@ struct ElementCellsOptions
         return options
     }
 }
+
+struct TypeAliasMessagesTuple {
+    let messagesTuple:(chat:[Message], service:[Message])
+}

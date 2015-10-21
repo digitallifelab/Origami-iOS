@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="15A284" minimumToolsVersion="Xcode 7.0">
+    <entity name="DBAttach" representedClassName=".DBAttach" syncable="YES">
+        <attribute name="attachId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fileSize" optional="YES" attributeType="Double" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="fileType" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="preview" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBAttachImagePreview" inverseName="tagretAttach" inverseEntity="DBAttachImagePreview" syncable="YES"/>
+        <relationship name="targetElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBElement" inverseName="attaches" inverseEntity="DBElement" syncable="YES"/>
+    </entity>
+    <entity name="DBAttachImagePreview" representedClassName=".DBAttachImagePreview" syncable="YES">
+        <attribute name="attachId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="imagePreviewData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="tagretAttach" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBAttach" inverseName="preview" inverseEntity="DBAttach" syncable="YES"/>
+    </entity>
+    <entity name="DBContact" representedClassName=".DBContact" parentEntity="DBPerson" syncable="YES">
+        <attribute name="contactId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <relationship name="personalMessages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBMessageChat" inverseName="targetContact" inverseEntity="DBMessageChat" syncable="YES"/>
+    </entity>
+    <entity name="DBElement" representedClassName=".DBElement" syncable="YES">
+        <attribute name="dateArchived" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateChanged" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateFinished" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dateRemind" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="elementId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="finishState" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="isFavourite" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isSignal" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="rootElementId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="attaches" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBAttach" inverseName="targetElement" inverseEntity="DBAttach" syncable="YES"/>
+        <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBMessageChat" inverseName="targetElement" inverseEntity="DBMessageChat" syncable="YES"/>
+    </entity>
+    <entity name="DBMessageChat" representedClassName=".DBMessageChat" syncable="YES">
+        <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="elementId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="textBody" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="targetContact" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBContact" inverseName="personalMessages" inverseEntity="DBContact" syncable="YES"/>
+        <relationship name="targetElement" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBElement" inverseName="messages" inverseEntity="DBElement" syncable="YES"/>
+    </entity>
+    <entity name="DBMessageService" representedClassName=".DBMessageService" syncable="YES">
+        <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="messageId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="targetId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="DBPerson" representedClassName=".DBPerson" syncable="YES">
+        <attribute name="birthDay" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="country" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="firstName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="language" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="mood" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="avatarPreview" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DBUserAvatarPreview" inverseName="avatarOwnerPerson" inverseEntity="DBUserAvatarPreview" syncable="YES"/>
+    </entity>
+    <entity name="DBUser" representedClassName=".DBUser" parentEntity="DBPerson" syncable="YES">
+        <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="token" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="DBUserAvatarPreview" representedClassName=".DBUserAvatarPreview" syncable="YES">
+        <attribute name="avatarPreviewData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="avatarOwnerPerson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBPerson" inverseName="avatarPreview" inverseEntity="DBPerson" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="DBMessageChat" positionX="-522" positionY="-0" width="128" height="163"/>
+        <element name="DBMessageService" positionX="-495" positionY="-162" width="128" height="118"/>
+        <element name="DBUserAvatarPreview" positionX="286" positionY="38" width="128" height="88"/>
+        <element name="DBContact" positionX="-252" positionY="-34" width="128" height="88"/>
+        <element name="DBPerson" positionX="18" positionY="6" width="128" height="178"/>
+        <element name="DBUser" positionX="-252" positionY="-252" width="128" height="88"/>
+        <element name="DBElement" positionX="-720" positionY="108" width="128" height="268"/>
+        <element name="DBAttach" positionX="-459" positionY="320" width="128" height="163"/>
+        <element name="DBAttachImagePreview" positionX="-281" positionY="468" width="128" height="88"/>
+    </elements>
+</model>

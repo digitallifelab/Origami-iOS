@@ -9,16 +9,6 @@
 import Foundation
 class User:Person
 {
-    var birthDay:String? //
-    var phone:String? //
-    var country:String? //
-    var countryId:Int? //
-    var language:String? //
-    var languageId:Int? //
- 
-    var sex:NSNumber? //
-    var regDate:String? //
-    var photo:NSData? //
     var password:String? //
     var lastSync:String? //
     var token:String? //

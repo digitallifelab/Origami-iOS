@@ -157,6 +157,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
         }
         
+        //debug display root element id in title view
+        if let rootElementId = self.currentElement?.rootElementId, elementId = self.currentElement?.elementId
+        {
+            let elementIdString = "\(elementId)"
+            let rootElementIdString = " \(rootElementId)"
+            self.title = rootElementIdString + " <- " + elementIdString
+        }
+        
     }
     
     override func viewWillDisappear(animated: Bool)
@@ -1704,8 +1712,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     }
     /**
     - Sends "*editElement*" to server with updated "*responsible*" value and "*typeId*" value.
-    - Also sends "*setElementFinishState*" if previous query for editing element was successfull
-    - In parallel with "*editElement*" query, sends "*setElementFinishDate*" to server
+        - if successfull sends "*setElementFinishState*" if previous query for editing element was successfull
+            - if successfull sends "*setElementFinishDate*" to server
     */
     private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate)
     {
@@ -1744,7 +1752,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                         }
                                     })
                                 }
-                                
                                 
                                 if let dateString = copy.finishDate?.dateForRequestURL() //.dateForServer()
                                 {
