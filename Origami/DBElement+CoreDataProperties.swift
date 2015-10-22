@@ -22,13 +22,13 @@ extension DBElement {
     @NSManaged var details: String?
     @NSManaged var elementId: NSNumber?
     @NSManaged var finishState: NSNumber?
+    @NSManaged var hasAttaches: NSNumber?
     @NSManaged var isFavourite: NSNumber?
     @NSManaged var isSignal: NSNumber?
+    @NSManaged var responsibleId: NSNumber?
     @NSManaged var rootElementId: NSNumber?
     @NSManaged var title: String?
     @NSManaged var type: NSNumber?
-    @NSManaged var hasAttaches: NSNumber?
-    @NSManaged var responsibleId: NSNumber?
     @NSManaged var attaches: NSSet?
     @NSManaged var messages: NSSet?
 

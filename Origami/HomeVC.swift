@@ -127,45 +127,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         // Dispose of any resources that can be recreated.
     }
     
-//    @available(iOS 8.0, *)
-//    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-//        
-//        coordinator.animateAlongsideTransition({[unowned self] (context) -> Void in
-//                if size.width > size.height
-//                {
-//                    self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-//                }
-//                else
-//                {
-//                    self.collectionDashboard.contentInset = UIEdgeInsetsZero
-//                }
-//            })
-//            { (context) -> Void in
-//                
-//        }
-//        
-//        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
-//    }
-//    
-//    @available(iOS 8.0, *)
-//    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-//        
-//        
-//        if self.traitCollection.horizontalSizeClass == .Compact && newCollection.horizontalSizeClass == .Regular
-//        {
-//            self.collectionDashboard.contentInset = UIEdgeInsetsMake(20, 0, 0, 0)
-//            return
-//        }
-//        
-//        if self.traitCollection.horizontalSizeClass == .Regular && newCollection.horizontalSizeClass == .Compact
-//        {
-//            self.collectionDashboard.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
-//            return
-//        }
-//        
-//        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
-//        
-//    }
     
     override func viewWillAppear(animated: Bool)
     {
@@ -174,6 +135,31 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             nightModeDidChange(nil)
         }
+        
+        DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true, completion: { (info) -> () in
+            if let signals = info.signals
+            {
+                print("Did read signals: \(signals.count)")
+            }
+            else{
+                print("Did read signals:  nil")
+            }
+            if let favs = info.favourites
+            {
+                print("Did read favourites: \(favs.count)")
+            }
+            else{
+                print("Did read favourites:  nil")
+            }
+            if let otherElements = info.other
+            {
+                print("Did read other: \(otherElements.count)")
+            }
+            else{
+                print("Did read other:  nil")
+            }
+            
+        })
     }
     
     override func viewDidAppear(animated: Bool)

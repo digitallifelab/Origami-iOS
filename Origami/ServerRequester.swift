@@ -10,7 +10,7 @@ import UIKit
 
 typealias messagesTuple = (chat:[Message], service:[Message])
 
-class ServerRequester: NSObject
+class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDelegate
 {
     typealias networkResult = (AnyObject?,NSError?) -> ()
     typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
@@ -409,7 +409,7 @@ class ServerRequester: NSObject
         var elementDict = element.toDictionary()
         if let archDateString = elementDict["ArchDate"] as? String
         {
-            if archDateString == kWrongEmptyDate
+            if archDateString ==  "/Date(0+0000)/"
             {
                 NSLog(" -> Archive date of element to pass: \n \(archDateString)\n <---<")
                 elementDict["ArchDate"] = "/Date(0)/"
@@ -1294,8 +1294,13 @@ class ServerRequester: NSObject
             return
         }
         
-        if let userToken = DataSource.sharedInstance.user?.token// as? String
-        {
+        guard let userToken = DataSource.sharedInstance.user?.token else {
+             completionBlock?(response: nil, error: noUserTokenError)
+            return
+        }
+        
+
+        
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             let requestString = serverURL + "SetPhoto" + "?token=" + userToken
             if let url = NSURL(string: requestString)
@@ -1304,9 +1309,16 @@ class ServerRequester: NSObject
                 mutableRequest.HTTPMethod = "POST"
                 mutableRequest.HTTPBody = data
                 
+                
                 let bgQueue = NSOperationQueue()
-                NSURLConnection.sendAsynchronousRequest(mutableRequest, queue: bgQueue, completionHandler: { (response, responseData, responseError) -> Void in
-                    
+                
+                let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+                config.HTTPMaximumConnectionsPerHost = 1
+                
+                let session = NSURLSession(configuration: config, delegate: self, delegateQueue: nil)
+                
+                
+                let imageUploadTask = session.uploadTaskWithRequest(mutableRequest, fromData: data, completionHandler: { (responseData, urlResponse, responseError) -> Void in
                     if let respError = responseError
                     {
                         completionBlock?(response: nil,error: respError)
@@ -1331,10 +1343,48 @@ class ServerRequester: NSObject
                         } catch{
                             completionBlock?(response: nil, error: unKnownExceptionError)
                         }
-                       
+                        
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 })
+               
+                imageUploadTask.taskDescription = "uploadImageFor: current user"
+                
+                
+                bgQueue.addOperationWithBlock({ () -> Void in
+                    imageUploadTask.resume()
+                })
+                
+//                NSURLConnection.sendAsynchronousRequest(mutableRequest, queue: bgQueue, completionHandler: { (response, responseData, responseError) -> Void in
+//                    
+//                    if let respError = responseError
+//                    {
+//                        completionBlock?(response: nil,error: respError)
+//                    }
+//                    else if let respData = responseData
+//                    {
+//                        do{
+//                            if let dataObject = try NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+//                            {
+//                                print("-> user avatar uploading result: \(dataObject)")
+//                                completionBlock?(response: dataObject, error: nil)
+//                            }
+//                            else
+//                            {
+//                                let errorReading = NSError(domain: "com.Origami.jsonCasting.Error", code: -5432, userInfo: [NSLocalizedDescriptionKey: "Failed to parse \"uploadUserAvatarBytes\" response"])
+//                                completionBlock?(response: nil, error: errorReading)
+//                            }
+//                            
+//                            
+//                        }catch let error as NSError{
+//                            completionBlock?(response: nil, error: error)
+//                        } catch{
+//                            completionBlock?(response: nil, error: unKnownExceptionError)
+//                        }
+//                       
+//                    }
+//                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//                })
             }
             else
             {
@@ -1342,11 +1392,10 @@ class ServerRequester: NSObject
                 completionBlock?(response: nil,error: error)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }
-        }
-        else
-        {
-            completionBlock?(response: nil, error: noUserTokenError)
-        }
+        
+        
+        
+        
     }
     //MARK: Contacts
     
@@ -1780,33 +1829,27 @@ class ServerRequester: NSObject
             }
         }
     }
+    
+    //MARK: DELEGATE
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        if let description = task.taskDescription{
+            if description == "uploadImageFor: current user" {
+                if totalBytesSent > 0 {
+                    let progress = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
+                
+                    print("progress: \(progress * 100) /%")
+                }
+            }
+        }
+    }
+    
+    func URLSession(session: NSURLSession, didBecomeInvalidWithError error: NSError?)
+    {
+        print( "Session error: \n \(error)")
+    }
+    
 }
 
-
-
-func getBackgroundQueue_UTILITY() -> dispatch_queue_t
-{
-    if #available (iOS 8.0, *)
-    {
-        return dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
-    }
-    else
-    {
-        return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-    }
-}
-
-func getBackgroundQueue_DEFAULT() -> dispatch_queue_t
-{
-    if #available (iOS 8.0, *)
-    {
-        return dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
-    }
-    else
-    {
-        return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-    }
-}
 
 
 //JSON Parsing

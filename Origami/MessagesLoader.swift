@@ -8,19 +8,18 @@
 
 import Foundation
 
-class MessagesLoader:NSObject
+class MessagesLoader
 {
   
     var dispatchSource:dispatch_source_t?
     
-    override init() {
-        super.init()
+    init() {
         print("\n... MessagesLoader initialized ...")
     }
     
     deinit
     {
-        print("\n... MessagesLoader deinit ...")
+        print("\n... Messages Loader deinit ...")
     }
     
     func startRefreshingLastMessages()
@@ -79,13 +78,13 @@ class MessagesLoader:NSObject
     
     func createDispatch_source()
     {
-         let globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
+        let globalQueue = getBackgroundQueue_UTILITY()
         
-            self.dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, globalQueue)
-                // Setup params for creation of a recurring timer
-            let interval:Double = 5.0
-            let intervalTime = UInt64(interval * Double(NSEC_PER_SEC))
-            let startTime = dispatch_time(DISPATCH_TIME_NOW, 0)
+        self.dispatchSource = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, globalQueue)
+            // Setup params for creation of a recurring timer
+        let interval:Double = 5.0
+        let intervalTime = UInt64(interval * Double(NSEC_PER_SEC))
+        let startTime = dispatch_time(DISPATCH_TIME_NOW, 0)
         
         dispatch_source_set_timer(dispatchSource!, startTime, intervalTime, 0)
     }

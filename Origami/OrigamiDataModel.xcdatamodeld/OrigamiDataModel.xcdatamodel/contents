@@ -15,6 +15,11 @@
         <attribute name="imagePreviewData" optional="YES" attributeType="Binary" syncable="YES"/>
         <relationship name="tagretAttach" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBAttach" inverseName="preview" inverseEntity="DBAttach" syncable="YES"/>
     </entity>
+    <entity name="DBAvatarPreview" representedClassName=".DBUserAvatarPreview" syncable="YES">
+        <attribute name="avatarPreviewData" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="avatarUserId" attributeType="Integer 64" minValueString="0" defaultValueString="0" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="DBContact" representedClassName=".DBContact" parentEntity="DBPerson" syncable="YES">
         <attribute name="contactId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="favorite" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -65,27 +70,21 @@
         <attribute name="mood" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="avatarPreview" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DBUserAvatarPreview" inverseName="avatarOwnerPerson" inverseEntity="DBUserAvatarPreview" syncable="YES"/>
     </entity>
     <entity name="DBUser" representedClassName=".DBUser" parentEntity="DBPerson" syncable="YES">
         <attribute name="password" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="token" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="userId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
     </entity>
-    <entity name="DBUserAvatarPreview" representedClassName=".DBUserAvatarPreview" syncable="YES">
-        <attribute name="avatarPreviewData" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="avatarOwnerPerson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBPerson" inverseName="avatarPreview" inverseEntity="DBPerson" syncable="YES"/>
-    </entity>
     <elements>
         <element name="DBAttach" positionX="-459" positionY="320" width="128" height="163"/>
         <element name="DBAttachImagePreview" positionX="-281" positionY="468" width="128" height="88"/>
-        <element name="DBContact" positionX="-252" positionY="-34" width="128" height="88"/>
+        <element name="DBContact" positionX="-252" positionY="-34" width="128" height="90"/>
         <element name="DBElement" positionX="-720" positionY="108" width="128" height="300"/>
         <element name="DBMessageChat" positionX="-522" positionY="-0" width="128" height="163"/>
         <element name="DBMessageService" positionX="-495" positionY="-162" width="128" height="118"/>
-        <element name="DBPerson" positionX="18" positionY="6" width="128" height="178"/>
+        <element name="DBPerson" positionX="18" positionY="6" width="128" height="165"/>
         <element name="DBUser" positionX="-252" positionY="-252" width="128" height="88"/>
-        <element name="DBUserAvatarPreview" positionX="286" positionY="38" width="128" height="88"/>
+        <element name="DBAvatarPreview" positionX="286" positionY="38" width="128" height="90"/>
     </elements>
 </model>

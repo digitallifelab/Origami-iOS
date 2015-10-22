@@ -325,7 +325,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementFavouriteToggled(notification:NSNotification)
     {
-        if let element = currentElement, _ = element.elementId//?.integerValue
+        if let element = currentElement, elementId = element.elementId//?.integerValue
         {
             if element.isArchived()
             {
@@ -337,6 +337,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             let elementCopy = Element(info: element.toDictionary())
 
             DataSource.sharedInstance.updateElement(elementCopy, isFavourite: isFavourite) { [weak self] (edited) -> () in
+                
+                DataSource.sharedInstance.localDatadaseHandler?.setFavourite(isFavourite, elementId: elementId, completion: nil)
                 
                 if let weakSelf = self
                 {
@@ -384,9 +386,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementSignalToggled()
     {
-        //print("Signal element toggled.")
-        
-        if let theElement = currentElement
+        if let theElement = currentElement, elementId = theElement.elementId
         {
             if !theElement.isOwnedByCurrentUser()
             {
@@ -408,6 +408,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 {
                     if edited
                     {
+                        DataSource.sharedInstance.localDatadaseHandler?.setSignal(isCurrentlySignal, elementId: elementId, completion: { () -> () in
+                            
+                        })
+                        
                         aSelf.currentElement?.isSignal = isCurrentlySignal
                         aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }

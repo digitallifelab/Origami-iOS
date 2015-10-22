@@ -376,7 +376,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         var lvMessagesHolder = [NSNumber:[Message]]()
         for lvMessage in messagesTupleHolder.messagesTuple.chat
         {
-            //print(" ->New message: >>> \(lvMessage.toDictionary().description)))")
+            print(" ->handleRecievedMessagesTuple: >>> \(lvMessage.textBody!)))")
             if lvMessagesHolder[lvMessage.elementId!] != nil
             {
                 lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -1006,13 +1006,44 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         DataSource.sharedInstance.serverRequester.loadAllElements {(result, error) -> () in
             
+            
             if let allElements = result as? [Element]
             {
+                
                 if allElements .isEmpty
                 {
                     completion(success: false, failure: nil)
                     return
                 }
+                
+                DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(allElements, completion: { (didSave, error) -> () in
+                    if didSave == true
+                    {
+                        let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
+                        dispatch_async(backgroundQueue, { () -> Void in
+                            DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
+                            
+                            
+                            let elementsSet = Set(allElements)
+                            var elementsArrayFromSet = Array(elementsSet)
+                            
+                            ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
+                            
+                            DataSource.sharedInstance.elements += elementsArrayFromSet
+                            print("\n -> Added Elements = \(elementsArrayFromSet.count)")
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                completion(success: true, failure: nil)
+                            })
+                        })
+                    }
+                    else
+                    {
+                        if let insertError = error
+                        {
+                            print(insertError)
+                        }
+                    }
+                })
                 
                 let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
                 dispatch_async(backgroundQueue, { () -> Void in
@@ -1042,11 +1073,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         if !anElement.isArchived()
                         {
-//                            bgOperationQueue.addOperationWithBlock({ () -> Void in
-//                                // load connected userIDs for element
-//                                
-//                                    DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
-//                            })
                             
                             bgOperationQueue.addOperationWithBlock({ () -> Void in
                                 // load attach files info
