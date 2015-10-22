@@ -28,12 +28,14 @@
         <attribute name="dateRemind" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="details" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="elementId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="finishState" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="isFavourite" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isSignal" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="rootElementId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="finishState" attributeType="Integer 32" defaultValueString="10" syncable="YES"/>
+        <attribute name="hasAttaches" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isFavourite" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="isSignal" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="responsibleId" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="rootElementId" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" attributeType="String" defaultValueString="&quot;&quot;" syncable="YES"/>
+        <attribute name="type" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <relationship name="attaches" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBAttach" inverseName="targetElement" inverseEntity="DBAttach" syncable="YES"/>
         <relationship name="messages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="DBMessageChat" inverseName="targetElement" inverseEntity="DBMessageChat" syncable="YES"/>
     </entity>
@@ -76,14 +78,14 @@
         <relationship name="avatarOwnerPerson" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DBPerson" inverseName="avatarPreview" inverseEntity="DBPerson" syncable="YES"/>
     </entity>
     <elements>
-        <element name="DBMessageChat" positionX="-522" positionY="-0" width="128" height="163"/>
-        <element name="DBMessageService" positionX="-495" positionY="-162" width="128" height="118"/>
-        <element name="DBUserAvatarPreview" positionX="286" positionY="38" width="128" height="88"/>
-        <element name="DBContact" positionX="-252" positionY="-34" width="128" height="88"/>
-        <element name="DBPerson" positionX="18" positionY="6" width="128" height="178"/>
-        <element name="DBUser" positionX="-252" positionY="-252" width="128" height="88"/>
-        <element name="DBElement" positionX="-720" positionY="108" width="128" height="268"/>
         <element name="DBAttach" positionX="-459" positionY="320" width="128" height="163"/>
         <element name="DBAttachImagePreview" positionX="-281" positionY="468" width="128" height="88"/>
+        <element name="DBContact" positionX="-252" positionY="-34" width="128" height="88"/>
+        <element name="DBElement" positionX="-720" positionY="108" width="128" height="300"/>
+        <element name="DBMessageChat" positionX="-522" positionY="-0" width="128" height="163"/>
+        <element name="DBMessageService" positionX="-495" positionY="-162" width="128" height="118"/>
+        <element name="DBPerson" positionX="18" positionY="6" width="128" height="178"/>
+        <element name="DBUser" positionX="-252" positionY="-252" width="128" height="88"/>
+        <element name="DBUserAvatarPreview" positionX="286" positionY="38" width="128" height="88"/>
     </elements>
 </model>

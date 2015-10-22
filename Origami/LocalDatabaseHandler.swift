@@ -266,8 +266,19 @@ class LocalDatabaseHandler{
         
         }
     }
+
+    func readElementById(elementId:Int) -> DBElement?
+    {
+        let fetchRequest = NSFetchRequest(entityName: "DBElement")
+        fetchRequest.fetchLimit = 3
+        
+        return nil
+    }
     
-    
+    func readElementByIdAsync(elementId:Int, completion:((DBElement?)->())?)
+    {
+        
+    }
     
     
     
