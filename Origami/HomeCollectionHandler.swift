@@ -10,23 +10,21 @@ import UIKit
 
 @objc class HomeCollectionHandler: NSObject, UICollectionViewDataSource, UICollectionViewDelegate // UICollectionViewDelegateFlowLayout
 {
-    var signals:[Element]?
-    var favourites:[Element]?
-    var other:[Element]?
-    //private var realSignals = [Element]()
+    var signals:[DBElement]?
+    var favourites:[DBElement]?
+    var other:[DBElement]?
     
     var elementSelectionDelegate:ElementSelectionDelegate?
   
     var isSignalsToggled = false
     private var nightModeEnabled = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
   
-    convenience init(signals:[Element]?, favourites:[Element]?, other:[Element]?)
+    convenience init(info:dashboardDBElementsInfoTuple)
     {
         self.init()
-        self.favourites = favourites
-        self.other = other
-        self.signals = signals
-        //print("---> HomeCollectionHandler -  Initialized with \(self.signals?.count) signals");
+        self.signals = info.signals
+        self.favourites = info.favourites
+        self.other = info.other
     }
 
     func deleteAllElements()
@@ -35,6 +33,7 @@ import UIKit
         favourites?.removeAll(keepCapacity: false)
         other?.removeAll(keepCapacity: false)
     }
+    
     //MARK: DataSource
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int
     {
@@ -49,7 +48,6 @@ import UIKit
             let otherCount = (other!.count > 0) ? 1 : 0
             sectionsCountToReturn += otherCount
         }
-//        print("---- -- -- NumberOfSections: \(sectionsCountToReturn)")
         return sectionsCountToReturn
     }
     
@@ -64,16 +62,19 @@ import UIKit
                 toReturn = existSignals.count + 2 // "toggle bubbon" cell + "last messages" cell
             }
         case 1:
-            if favourites!.count > 0
+            if let favourites = self.favourites
             {
-                toReturn = favourites!.count
+                toReturn = favourites.count
             }
-            else
+            else if let other = self.other
             {
-                toReturn = other!.count
+                toReturn = other.count
             }
         case 2:
-            toReturn = other!.count
+            if let other = self.other
+            {
+                toReturn = other.count
+            }
         default:
             break
         }
@@ -85,6 +86,7 @@ import UIKit
         let cellType = cellTypeForIndexPath(indexPath)
         if cellType == .Messages
         {
+            //print("row: \(indexPath.row) in section: \(indexPath.section) -> \(cellType)")
             let messagesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("LastMessagesHolderCollectionCell", forIndexPath: indexPath) as! DashboardMessagesCell
             messagesHolderCell.displayMode = (nightModeEnabled) ? .Night : .Day
             messagesHolderCell.getLastMessages()
@@ -92,9 +94,8 @@ import UIKit
         }
         else
         {
+            //print("row: \(indexPath.row) in section: \(indexPath.section) -> \(cellType)")
             let dashCell:DashCell =  collectionView.dequeueReusableCellWithReuseIdentifier("DashCell", forIndexPath: indexPath) as! DashCell
-//            dashCell.layer.shouldRasterize = true
-//            dashCell.layer.rasterizationScale = UIScreen.mainScreen().scale
             dashCell.displayMode = (nightModeEnabled) ? .Night : .Day
             dashCell.cellType = cellType
             
@@ -108,21 +109,22 @@ import UIKit
             {
                 if let existingElement = elementForIndexPath(indexPath)
                 {
-                    
-                    if let title = existingElement.title //as? String
-                    {
-                        dashCell.titleLabel?.text = title.uppercaseString
-                    }
-                    if let lvDescription = existingElement.details // as? String
-                    {
-                        dashCell.descriptionLabel?.text = lvDescription
-                    }
-                
-                    dashCell.signalDetectorView?.hidden = !existingElement.isSignal.boolValue
-                    
-                    dashCell.currentElementType = existingElement.typeId//.integerValue // will set visibility for icons
 
-                    if let finishStateEnumValue = ElementFinishState(rawValue: existingElement.finishState)//.integerValue)
+                dashCell.titleLabel?.text = existingElement.title?.uppercaseString
+
+                dashCell.descriptionLabel?.text = existingElement.details
+
+                if let signalBool = existingElement.isSignal
+                {
+                    dashCell.signalDetectorView?.hidden = !signalBool.boolValue //existingElement.isSignal?.boolValue
+                }
+                    
+                    if let elType = existingElement.type?.integerValue
+                    {
+                        dashCell.currentElementType = elType //existingElement.typeId //.integerValue // will set visibility for icons
+                    }
+                    
+                    if let finishState = existingElement.finishState, let finishStateEnumValue = ElementFinishState(rawValue: finishState.integerValue)//.integerValue)
                     {
                         switch finishStateEnumValue
                         {
@@ -186,147 +188,58 @@ import UIKit
     
     
     
-    func elementForIndexPath(indexPath:NSIndexPath) -> Element?
+    func elementForIndexPath(indexPath:NSIndexPath) -> DBElement?
     {
         let lvRow = indexPath.row
-        switch indexPath.section {
-        case 0:
-            if signals!.count > indexPath.row - 2 && indexPath.row > 0
-            {
-                return signals![(lvRow - 2)]
-            }
-        case 1:
-            if let favCount = favourites?.count
-            {
-                if favCount > 0 && favCount > lvRow
+        switch indexPath.section
+        {
+            case 0:
+                if lvRow == 0
                 {
-                    return favourites![lvRow]
+                    return nil
                 }
-                else if other!.count > lvRow
+                if let signals = self.signals
+                {
+                    if indexPath.row > 0
+                    {
+                        let foundSignalElement = signals[(indexPath.row - 1)]
+                        
+                        return foundSignalElement
+                        
+                    }
+                }
+            case 1:
+                if let favCount = favourites?.count
+                {
+                    if favCount > 0 && favCount > lvRow
+                    {
+                        return favourites![lvRow]
+                    }
+                }
+                else if let otherCount = other?.count
+                {
+                    if otherCount > 0
+                    {
+                        return other![lvRow]
+                    }
+                }
+            case 2:
+                if other!.count > lvRow
                 {
                     return other![lvRow]
                 }
-            }
-        case 2:
-            if other!.count > lvRow
-            {
-                return other![lvRow]
-            }
-        default:
-            break
+            default:
+                break
         }
         
         return nil
     }
     
-    func indexpathForElementById(elementId:Int, shouldDelete:Bool) -> [NSIndexPath]?
-    {
-        var indexpaths = [NSIndexPath]()
-        var section:Int = 0
-        var item:Int?
-        if let sig = self.signals
-        {
-            for var i = 0; i < sig.count; i++
-            {
-                let element = sig[i]
-                
-                if element.elementId! == elementId
-                {
-                    item = i + 2
-                    if shouldDelete
-                    {
-                        self.signals!.removeAtIndex(i)
-                    }
-                    break
-                }
-            }
-            if item != nil
-            {
-                let signalIndexPath = NSIndexPath(forItem: item!, inSection: section)
-                indexpaths.append(signalIndexPath)
-                item = nil
-            }
-        }
-        if let fav = self.favourites
-        {
-            section = 1
-            for var i = 0; i < fav.count; i++
-            {
-                let element = fav[i]
-                
-                if element.elementId! == elementId
-                {
-                    item = i
-                    if shouldDelete
-                    {
-                        self.favourites!.removeAtIndex(i)
-                    }
-                    break
-                }
-            }
-            if item != nil
-            {
-                let favIndexPath = NSIndexPath(forItem: item!, inSection: section)
-                indexpaths.append(favIndexPath)
-            }
-            item = nil
-        }
-        if let other = self.other
-        {
-            if section == 1
-            {
-                section = 2
-            }
-            else
-            {
-                section = 1 // when no favourites
-            }
-            for var i = 0; i < other.count; i++
-            {
-                let element = other[i]
-                
-                if element.elementId! == elementId
-                {
-                    item = i
-                    if shouldDelete
-                    {
-                        self.other!.removeAtIndex(i)
-                    }
-                    break
-                }
-            }
-            if item != nil
-            {
-                let otherIndexPath = NSIndexPath(forItem: item!, inSection: section)
-                indexpaths.append(otherIndexPath)
-            }
-            item = nil
-        }
-        
-        if !indexpaths.isEmpty
-        {
-            return indexpaths
-        }
-        
-        return nil
-    }
-    
-    func deleteElementById(elementId:Int)
-    {
-        //if let
-    }
+   
     
     func cellTypeForIndexPath(indexPath:NSIndexPath) -> DashCellType
     {
         switch indexPath.section {
-        case 2:
-            fallthrough //return .Other
-        case 1:
-            if favourites!.count > 0
-            {
-                return .Other
-            }
-            return .Other
         case 0:
             if indexPath.row == 0
             {
@@ -334,12 +247,17 @@ import UIKit
             }
             else if indexPath.row == 1
             {
+                if isSignalsToggled
+                {
+                    return .Signal
+                }
                 return .Messages
             }
             else
             {
                 return .Signal
             }
+
         default:
             return .Other
             
@@ -357,10 +275,10 @@ import UIKit
         
         if cellTypeForIndexPath(indexPath) != .SignalsToggleButton
         {
-            if let selectedElement = elementForIndexPath(indexPath)
+            if let selectedElement = elementForIndexPath(indexPath), elementIdInt = selectedElement.elementId?.integerValue
             {
                 //NSLog("\r Item selected: %ld : %ld", indexPath.section, indexPath.row)
-                self.elementSelectionDelegate?.didTapOnElement(selectedElement)
+                self.elementSelectionDelegate?.didTapOnElement(elementIdInt)
                 return
             }
             assert(false, "Did not find tapped element");
@@ -371,21 +289,31 @@ import UIKit
             //print("  - Toggle Signals Pressed\n")
             isSignalsToggled = !isSignalsToggled
             var newLayout:UICollectionViewFlowLayout?
+            
+            
+            
+            let infoForLayout:dashboardDBElementsInfoTuple = (signals: self.signals, favourites:self.favourites, other: self.other)
+            let layoutStruct = HomeSignalsHiddenFlowLayout.prepareLayoutStructWithInfo(infoForLayout)
+            
             if isSignalsToggled
             {
-                newLayout = HomeSignalsVisibleFlowLayout(signals: signals!.count + 1, favourites: favourites, other: other)
+                newLayout = HomeSignalsVisibleFlowLayout(layoutInfoStruct: layoutStruct)
             }
             else
             {
-                newLayout = HomeSignalsHiddenFlowLayout(signals: signals!.count + 1, favourites: favourites, other: other)
+                newLayout = HomeSignalsHiddenFlowLayout(layoutInfoStruct: layoutStruct)
             }
-             //collectionView.collectionViewLayout.invalidateLayout()
-//            collectionView.performBatchUpdates({ () -> Void in
             
-                collectionView.setCollectionViewLayout(newLayout!, animated: true)
-//            }, completion: { (finished) -> Void in
-//                
+                   collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 1, inSection: 0)])
+            collectionView.setCollectionViewLayout(newLayout!, animated: true)
+//            
+//            collectionView.performBatchUpdates({ () -> Void in
+//              
+//                }, completion: { (filished) -> Void in
+//                    
+//       
 //            })
+            
             
         }
        

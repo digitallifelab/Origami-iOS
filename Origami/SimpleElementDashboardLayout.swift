@@ -16,63 +16,6 @@ This is default layout for element view - no subgrouping subordnate elements int
 
 import UIKit
 
-enum SubordinateItemLayoutWidth
-{
-    case Normal
-    case Wide
-    
-    mutating func changeTo(newWidth:SubordinateItemLayoutWidth) -> SubordinateItemLayoutWidth
-    {
-        self = newWidth
-        return self
-    }
-}
-
-struct ElementDetailsStruct
-{
-    var title:String
-    var details:String?
-    var messagesPreviewCell:Bool = false
-    //var buttonsCell:Bool = false
-    var attachesCell:Bool = false
-    var subordinates:[SubordinateItemLayoutWidth]?
-    
-    var hiddenDetailsText = true {
-        didSet{
-            print(" - > elementStruct details visibility toggled! -- Visible = \(self.hiddenDetailsText)")
-        }
-    }
-    
-    mutating func toggleDetailsHidden()
-    {
-        self.hiddenDetailsText = !self.hiddenDetailsText
-    }
-    
-    init(title:String, details:String?, messagesCell:Bool?, /*buttonsCell:Bool?,*/ attachesCell:Bool?, subordinateItems:[SubordinateItemLayoutWidth]?)
-    {
-        self.title = title
-        self.details = details
-        if messagesCell != nil
-        {
-            self.messagesPreviewCell = messagesCell!
-        }
-        
-        if attachesCell != nil
-        {
-            self.attachesCell = attachesCell!
-        }
-        if subordinateItems != nil
-        {
-            if !subordinateItems!.isEmpty
-            {
-                self.subordinates = subordinateItems
-            }
-        }
-        
-       // print(" -> \n SimpleElementDashboardLayout  struct description:\n title: \"\(self.title)\",\n details :\" \(self.details) \",\n messagesContained: \(self.messagesPreviewCell), \n attaches: \(self.attachesCell),\n subordinates:  \(self.subordinates) <- \n")
-    }
-}
-
 
 class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
    
@@ -445,22 +388,5 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
             self.elementStruct?.toggleDetailsHidden()
         }
     }
-    //MARK: - moving, inserting, deleting items
-//    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        print("filalForDisappearing: item: \(itemIndexPath.item) , section: \(itemIndexPath.section)")
-//        if itemIndexPath.item == 1
-//        {
-//            if let attributes = cellLayoutAttributes[NSIndexPath(forItem: 2, inSection: 0)]
-//            {
-//                return attributes
-//            }
-//        }
-//        return nil
-//    }
-//    
-//    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//                print("initialForAppearing: item: \(itemIndexPath.item) , section: \(itemIndexPath.section)")
-//        
-//        return self.cellLayoutAttributes[itemIndexPath]
-//    }
+    
 }

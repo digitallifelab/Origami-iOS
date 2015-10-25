@@ -39,9 +39,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         super.viewDidLoad()
 
         configureLeftBarButtonItem()
-        configureRightBarButtonItem()
         
-//        addNavigationBarBackgroundView()
+        configureRightBarButtonItem()
         
         configureNavigationControllerToolbarItems()
         
@@ -51,47 +50,47 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         profileCollection.dataSource = self
         profileCollection.delegate = self
         
-        //self.navigationController?.navigationBar.tintColor = kWhiteColor
-        
         if let layout = UserProfileFlowLayout(numberOfItems: 11)
         {
             profileCollection.setCollectionViewLayout(layout, animated: false) //we are in view did load, so false
         }
      
-        if let userName = DataSource.sharedInstance.user?.userName// as? String
+        if let userName = DataSource.sharedInstance.user?.userName, userId = DataSource.sharedInstance.user?.userId
         {
-            if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
+            if let avatarPreview = DataSource.sharedInstance.userAvatarsHolder[userId]
             {
-                self.currentAvatar = UIImage(data: avatarData)
+                self.currentAvatar = avatarPreview
             }
+            
             let backGroundQueue = dispatch_queue_create("user_Avatar_queue", DISPATCH_QUEUE_SERIAL)
             dispatch_async(backGroundQueue, { [weak self] () -> Void in
                 DataSource.sharedInstance.loadAvatarFromDiscForLoginName(userName, completion: { (image, error) -> () in
-                        if let fullSizeAvatarImage = image, weakSelf = self
+                        if let fullSizeAvatarImage = image
                         {
-                            weakSelf.currentAvatar = fullSizeAvatarImage
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                            })
+                            if let weakSelf = self
+                            {
+                                weakSelf.currentAvatar = fullSizeAvatarImage
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                })
+                            }
+                            
+                            if let previewImage = fullSizeAvatarImage.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0))
+                            {
+                                DataSource.sharedInstance.userAvatarsHolder[userId] = previewImage
+                            }
                         }
                         else if let errorImage = error
                         {
                             print(" - Error loading image drom disc: \(errorImage)")
                             if errorImage.code == 406 // "No File For Avatar."
                             {
-                                DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
-                                    if let _ = image //image exists
-                                    {
-                                        if let avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
-                                        {
-                                            if let weakerSelf = self
-                                            {
-                                                weakerSelf.currentAvatar = UIImage(data: avatarData)
-                                                weakerSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                                            }
-                                        }
-                                    }
-                                })
+                                if let weakSelf = self
+                                {
+                                    NSNotificationCenter.defaultCenter().addObserver(weakSelf, selector: "reReadAvatarFromDisc:", name: kAvatarDidFinishDownloadingNotification, object: nil)
+                                    
+                                    DataSource.sharedInstance.startLoadingAvatarForUserName( (name: userName, id: DataSource.sharedInstance.user!.userId!))
+                                }
                             }
                         }
                     })
@@ -99,7 +98,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(animated: Bool)
+    {
         super.viewDidAppear(animated)
         defaultEdgeInsets = profileCollection.contentInset
         addObserversForKeyboard()
@@ -108,27 +108,10 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
-        
-//        if  #available (iOS 8.0, *)
-//        {
-//            
-//        }
-//        else
-//        {
-//            //self.profileCollection.collectionViewLayout.invalidationContextForBoundsChange(CGRectMake(0, 0, self.view.bounds.size.width, 200.0))
-//            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
-//            dispatch_after(timeout, dispatch_get_main_queue(), {[weak self] () -> Void in
-//                if let aSelf = self
-//                {
-//                    if let avatarCell = aSelf.profileCollection.cellForItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserProfileAvatarCollectionCell
-//                    {
-//                        avatarCell.avatarImageView?.maskToCircle()
-//                    }
-//                }
-//            })
-//        }
     }
-    override func viewWillDisappear(animated: Bool) {
+    
+    override func viewWillDisappear(animated: Bool)
+    {
         super.viewWillDisappear(animated)
         
         removeObserversForKeyboard()
@@ -138,14 +121,47 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
-        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kAvatarDidFinishDownloadingNotification, object: nil)
     }
 
-    override func didReceiveMemoryWarning() {
+    override func didReceiveMemoryWarning()
+    {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-   
+    
+    //MARK: -----
+    func reReadAvatarFromDisc(notification:NSNotification)
+    {
+        if let userInfo = notification.userInfo as? [String:AnyObject]
+        {
+            if let avatarUserId = userInfo["userId"] as? Int
+            {
+                print("finished saving avatar for id: \(avatarUserId)")
+            }
+            
+            if let avatarUserName = userInfo["userName"] as? String
+            {
+                print("finished saving avatar for user: \(avatarUserName)")
+                dispatch_async(getBackgroundQueue_DEFAULT()) {[weak self] _ in
+                    
+                    DataSource.sharedInstance.loadAvatarFromDiscForLoginName(avatarUserName){ (image, _ ) -> () in
+                        if let fullSizeAvatarImage = image
+                        {
+                            if let weakSelf = self
+                            {
+                                weakSelf.currentAvatar = fullSizeAvatarImage
+                                dispatch_async(dispatch_get_main_queue(), { _ in
+                                    weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                })
+                            }
+                        }
+                    }
+                }//bg queue end
+                
+            }
+        }
+    }
     
     //MARK: --- Appearance
     func configureNavigationControllerToolbarItems()
@@ -568,7 +584,18 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                 {
                     weakSelf.currentAvatar = UIImage(data: lvData)
                 
-                    
+                    if let reducedImage = weakSelf.currentAvatar?.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0)), userId = DataSource.sharedInstance.user?.userId
+                    {
+                        DataSource.sharedInstance.userAvatarsHolder[userId] = reducedImage
+                        
+                        print("Trying To Insert New Avatar Preview Image Data into database")
+                        
+                        if let userName = DataSource.sharedInstance.user?.userName, reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                        {
+                            DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: userId, fileName: userName)
+                        }
+                        
+                    }
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     })

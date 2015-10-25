@@ -10,7 +10,8 @@ import UIKit
 
 class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UIViewControllerTransitioningDelegate,*/ ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate , FinishTaskResultViewDelegate, AttachViewerDelegate {
 
-    var currentElement:Element?
+    //var currentElement:Element?
+    var currentElement:DBElement?
     var collectionDataSource:SingleElementCollectionViewDataSource?
     var currentShowingAttachName:String = ""
     
@@ -67,25 +68,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
        
         
         
-        if let ourElementIdInt = self.currentElement?.elementId //?.integerValue
-        {
-            DataSource.sharedInstance.loadPassWhomIdsForElement(ourElementIdInt, comlpetion: {[weak self] (finished) -> () in
-                // background queue here
-                if let aSelf = self
-                {
-                    if finished
-                    {
-                        print("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
-                        aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElementIdInt)
-                        print("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
-                    }
-                    else
-                    {
-                        
-                    }
-                }
-            })
-        }
+//        if let ourElementIdInt = self.currentElement?.elementId?.integerValue
+//        {
+//            DataSource.sharedInstance.loadPassWhomIdsForElement(ourElementIdInt, comlpetion: {[weak self] (finished) -> () in
+//                // background queue here
+//                if let aSelf = self
+//                {
+//                    if finished
+//                    {
+//                        print("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
+//                        aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElementIdInt)
+//                        print("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
+//                    }
+//                    else
+//                    {
+//                        
+//                    }
+//                }
+//            })
+//        }
         
         afterViewDidLoad = true
     }
@@ -134,28 +135,28 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshCurrentElementAfterElementChangedNotification:", name: kElementWasChangedNotification, object: nil)
         
-        let chatPath = NSIndexPath(forItem: 1, inSection: 0)
-        let chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
-        if let elementId = self.currentElement?.elementId //?.integerValue
-        {
-            let currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId) //Optional
-            if chatCell == nil && currentLastMessages != nil
-            {
-                do{
-                    try prepareCollectionViewDataAndLayout()}
-                catch{
-                    print("\n viewDidAppear in: \n\(self) \n -> Could not prepare layout for collectionView..\n")
-                }
-            }
-            else if let cell = chatCell, messages = currentLastMessages
-            {
-                if messages.last !== cell.messages?.last
-                {
-                    chatCell!.messages = messages
-                    self.collectionView.reloadItemsAtIndexPaths([chatPath])
-                }
-            }
-        }
+//        let chatPath = NSIndexPath(forItem: 1, inSection: 0)
+//        let chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
+//        if let elementId = self.currentElement?.elementId //?.integerValue
+//        {
+//            let currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId) //Optional
+//            if chatCell == nil && currentLastMessages != nil
+//            {
+//                do{
+//                    try prepareCollectionViewDataAndLayout()}
+//                catch{
+//                    print("\n viewDidAppear in: \n\(self) \n -> Could not prepare layout for collectionView..\n")
+//                }
+//            }
+//            else if let cell = chatCell, messages = currentLastMessages
+//            {
+//                if messages.last !== cell.messages?.last
+//                {
+//                    chatCell!.messages = messages
+//                    self.collectionView.reloadItemsAtIndexPaths([chatPath])
+//                }
+//            }
+//        }
         
         //debug display root element id in title view
         if let rootElementId = self.currentElement?.rootElementId, elementId = self.currentElement?.elementId
@@ -228,10 +229,21 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     */
     func prepareCollectionViewDataAndLayout() throws
     {
-        let currentContantOffset = collectionView.contentOffset
-        if let dataSource = SingleElementCollectionViewDataSource(element: currentElement) // both can be nil
+        if let messages = currentElement?.messages as? Set<DBMessageChat>
         {
-            self.collectionDataSource = dataSource
+            if !messages.isEmpty
+            {
+                print(" Current element has messages! \(messages.count) ")
+            }
+            else{
+                print("...Current element does not have messages....")
+            }
+        }
+        
+        
+        let currentContantOffset = collectionView.contentOffset
+         let dataSource = SingleElementCollectionViewDataSource()//element: currentElement) // both can be nil
+                    self.collectionDataSource = dataSource
           
             collectionDataSource!.handledElement = currentElement
             collectionDataSource!.handledCollectionView = self.collectionView
@@ -239,34 +251,21 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             collectionDataSource!.subordinateTapDelegate = self
             collectionDataSource!.attachTapDelegate = self
             collectionDataSource!.messageTapDelegate = self
-            
-            
+        
             collectionView.dataSource = collectionDataSource!
             collectionView.delegate = collectionDataSource!
-            
-            if let layout = self.prepareCollectionLayoutForElement(self.currentElement)
-            {
-                self.collectionView.setCollectionViewLayout(layout, animated: false)
-            }
-            else
-            {
-                print(" ! -> Some error occured while reloading collectionView with new lyout.")
-                let layoutError = NSError(domain: "com.Origami.LayoutCreationError", code: -2010, userInfo: [NSLocalizedDescriptionKey: "Could not create UICollectionViewFlowLayout instance for given element"])
-                throw layoutError
-            }
-            
+        
             collectionView.reloadData()
             collectionView.setContentOffset(currentContantOffset, animated: false)
-        }
-        else
+
+        if let collectionViewLayout = self.prepareCollectionLayoutForElement(collectionDataSource?.handledElement)
         {
-            let dataSourceCreationError = NSError(domain: "com.Origami.ElementCollectionViewDataSourceError", code: -2012, userInfo: [NSLocalizedDescriptionKey:"Could not create dataSource for current element."])
-            throw dataSourceCreationError
+            collectionView.setCollectionViewLayout(collectionViewLayout, animated: false)
         }
     }
     
     //MARK: Custom CollectionView Layout
-    func prepareCollectionLayoutForElement(element:Element?) -> SimpleElementDashboardLayout?
+    func prepareCollectionLayoutForElement(element:DBElement?) -> SimpleElementDashboardLayout?
     {
         guard let _ = element else
         {
@@ -278,6 +277,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             infoStruct = readyDataSource.getLayoutInfo(),
             aLayout = SimpleElementDashboardLayout(infoStruct: infoStruct)
         {
+            print("SingleElementLayoutInfoStruct -> needed number of sections: \(infoStruct.numberOfSections())")
             return aLayout
         }
         
@@ -292,7 +292,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             currentEl = self.currentElement,
             selfNav = self.navigationController
         {
-            editingVC.rootElementID = currentEl.rootElementId//.integerValue
+            editingVC.rootElementID = currentEl.rootElementId!.integerValue
             editingVC.composingDelegate = self
             self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
               editingVC.editingStyle = .EditCurrent
@@ -306,11 +306,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             if editingVC.editingStyle == .EditCurrent
             {
-                if let copyElement = self.currentElement?.createCopy()
-                {
-                    editingVC.newElement = copyElement
-                    //editingVC.editingStyle = .EditCurrent
-                }
+                //TODO: switch to DBElement
+//                if let copyElement = self.currentElement?.createCopy()
+//                {
+//                    editingVC.newElement = copyElement
+//                    //editingVC.editingStyle = .EditCurrent
+//                }
             }
         }
         else if viewController == self
@@ -325,18 +326,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementFavouriteToggled(notification:NSNotification)
     {
-        if let element = currentElement, elementId = element.elementId//?.integerValue
+        if let element = currentElement, elementId = element.elementId?.integerValue, oldFavourite = element.isFavourite?.boolValue
         {
             if element.isArchived()
             {
                 self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
                 return
             }
-            let favourite = element.isFavourite.boolValue
-            let isFavourite = !favourite
-            let elementCopy = Element(info: element.toDictionary())
+            
+            let isFavourite = !oldFavourite
+           // let elementCopy = Element(info: element.toDictionary())
 
-            DataSource.sharedInstance.updateElement(elementCopy, isFavourite: isFavourite) { [weak self] (edited) -> () in
+            DataSource.sharedInstance.updateElement(elementId, isFavourite: isFavourite) { [weak self] (edited) -> () in
                 
                 DataSource.sharedInstance.localDatadaseHandler?.setFavourite(isFavourite, elementId: elementId, completion: nil)
                 
@@ -386,7 +387,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementSignalToggled()
     {
-        if let theElement = currentElement, elementId = theElement.elementId
+        if let theElement = currentElement, elementId = theElement.elementId, oldSignal = theElement.isSignal?.boolValue
         {
             if !theElement.isOwnedByCurrentUser()
             {
@@ -398,29 +399,29 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 return
             }
             
-            let isSignal = theElement.isSignal.boolValue
-            let elementCopy = theElement.createCopy()
-            let isCurrentlySignal = !isSignal
-            elementCopy.isSignal = isCurrentlySignal
-            
-            DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
-                if let aSelf = self
-                {
-                    if edited
-                    {
-                        DataSource.sharedInstance.localDatadaseHandler?.setSignal(isCurrentlySignal, elementId: elementId, completion: { () -> () in
-                            
-                        })
-                        
-                        aSelf.currentElement?.isSignal = isCurrentlySignal
-                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                    }
-                    else
-                    {
-                        aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
-                    }
-                }
-            })
+            let isSignal = !oldSignal
+//            let elementCopy = theElement.createCopy()
+//
+//            elementCopy.isSignal = isSignal
+//            
+//            DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
+//                if let aSelf = self
+//                {
+//                    if edited
+//                    {
+//                        DataSource.sharedInstance.localDatadaseHandler?.setSignal(isCurrentlySignal, elementId: elementId, completion: { () -> () in
+//                            
+//                        })
+//                        
+//                        aSelf.currentElement?.isSignal = isCurrentlySignal
+//                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+//                    }
+//                    else
+//                    {
+//                        aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+//                    }
+//                }
+//            })
         }
     }
     
@@ -434,23 +435,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
             newElementCreator.editingStyle = .AddNew
-            if let anElement = self.currentElement, anElementId = anElement.elementId
+            if let anElement = self.currentElement, anElementId = anElement.elementId?.integerValue
             {
                 newElementCreator.composingDelegate = self
-                newElementCreator.rootElementID = anElementId//.integerValue
+//                newElementCreator.rootElementID = anElementId//.integerValue
                 
-                let passwhomIDs = anElement.passWhomIDs
+//                let passwhomIDs = anElement.passWhomIDs
                 
-                if !passwhomIDs.isEmpty
-                {
-                    var idInts = Set<Int>()
-                    for number in passwhomIDs
-                    {
-                        idInts.insert(number)
-                    }
-                     newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.  But deleting will have no effect, because passwhomids are inherit wrom parent element.
-                }
-                   
+//                if !passwhomIDs.isEmpty
+//                {
+//                    var idInts = Set<Int>()
+//                    for number in passwhomIDs
+//                    {
+//                        idInts.insert(number)
+//                    }
+//                     newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.  But deleting will have no effect, because passwhomids are inherit wrom parent element.
+//                }
+                
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
             }
         }
@@ -460,39 +461,39 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     {
         print("Archive element tapped.")
         
-        if let element = self.currentElement
-        {
-            let copyElement = element.createCopy()
-            let currentDate = NSDate()
-            if let string = currentDate.dateForServer()
-            {
-                let elementId = copyElement.elementId//?.integerValue
-                if element.isArchived()
-                {
-                    //will unarchve
-                    copyElement.archiveDate = NSDate.dummyDate()
-                }
-                else
-                {
-                    //will archive
-                    copyElement.archiveDate = string
-                }
-                DataSource.sharedInstance.editElement(copyElement,
-                    completionClosure:{[weak self] (edited) -> () in
-                    if edited
-                    {
-                        if let weakSelf = self
-                        {
-                            weakSelf.navigationController?.popViewControllerAnimated(true)
-                            if let int = elementId
-                            {
-                                NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
-                            }
-                        }
-                    }
-                })
-            }
-        }
+//        if let element = self.currentElement
+//        {
+//            let copyElement = element.createCopy()
+//            let currentDate = NSDate()
+//            if let string = currentDate.dateForServer()
+//            {
+//                let elementId = copyElement.elementId//?.integerValue
+//                if element.isArchived()
+//                {
+//                    //will unarchve
+//                    copyElement.archiveDate = NSDate.dummyDate()
+//                }
+//                else
+//                {
+//                    //will archive
+//                    copyElement.archiveDate = string
+//                }
+//                DataSource.sharedInstance.editElement(copyElement,
+//                    completionClosure:{[weak self] (edited) -> () in
+//                    if edited
+//                    {
+//                        if let weakSelf = self
+//                        {
+//                            weakSelf.navigationController?.popViewControllerAnimated(true)
+//                            if let int = elementId
+//                            {
+//                                NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
+//                            }
+//                        }
+//                    }
+//                })
+//            }
+//        }
     }
     
     func elementDeletePressed()
@@ -508,12 +509,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             if !current.isArchived()
             {
-                let anOptionsConverter = ElementOptionsConverter()
-                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 1)
-                let editingElement = current.createCopy() // Element(info: self.currentElement!.toDictionary())
-                editingElement.typeId = newOptions
-                print("new element type id: \(editingElement.typeId)")
-                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+//                let anOptionsConverter = ElementOptionsConverter()
+//                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 1)
+//                let editingElement = current.createCopy() // Element(info: self.currentElement!.toDictionary())
+//                editingElement.typeId = newOptions
+//                print("new element type id: \(editingElement.typeId)")
+//                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
             else
             {
@@ -528,96 +529,96 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         print("CheckMark tapped.")
         
         let anOptionsConverter = ElementOptionsConverter()
-       
-        if let element = self.currentElement
-        {
-            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: element.typeId)
-            {
-                
-                //1 - detect if element is owned
-                //2 - if owned prompt owner to be sure to uncheck TASK
-                //3 - if is not owned, but current user is responsible for this TASK
-                //4- prompt to mark this TASK as finished with some result, or dismiss
-                //5 - if now owned and current user is not responsible - do nothing
-                if !element.isArchived()
-                {
-                    if element.isOwnedByCurrentUser()
-                    {
-                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
-                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
-                        {
-                            switch currentFinishState
-                            {
-                            case .Default:
-                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-                            case .FinishedBad, .FinishedGood:
-                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
-                            case .InProcess:
-                                print(" Element is in process..\n")
-                                showFinishTaskPrompt()
-                            }
-                        } 
-                    }
-                    else if element.isTaskForCurrentUser()
-                    {
-                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
-                        {
-                            switch currentFinishState
-                            {
-                            case .Default:
-                                print("element is not owned. current user cannot assign task.")
-                            case .FinishedBad , .FinishedGood:
-                                print("element is already finished. current user cannot update task.")
-                            case .InProcess:
-                                showFinishTaskPrompt()
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if element.isOwnedByCurrentUser()
-                    {
-                        self.showAlertWithTitle("Unauthorized.", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
-                    }
-                }
-            }
-            else
-            {
-                if !element.isArchived()
-                {
-                    //1 - detect if element is owned
-                    if element.isOwnedByCurrentUser()
-                    {
-                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
-                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
-                        {
-                            switch currentFinishState
-                            {
-                            case .Default:
-                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-                            case .FinishedBad , .FinishedGood :
-                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
-                            case .InProcess:
-                                print(" Element is in process..")
-                                showFinishTaskPrompt()
-                            }
-                        }
-                        
-                        return
-                    }
-                    print("\n Error: Element is not owned by current user.")
-                }
-                else
-                {
-                    if element.isOwnedByCurrentUser()
-                    {
-                         self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
-                    }
-                }
-            }
-        }
-     
+//       
+//        if let element = self.currentElement
+//        {
+//            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: element.typeId)
+//            {
+//                
+//                //1 - detect if element is owned
+//                //2 - if owned prompt owner to be sure to uncheck TASK
+//                //3 - if is not owned, but current user is responsible for this TASK
+//                //4- prompt to mark this TASK as finished with some result, or dismiss
+//                //5 - if now owned and current user is not responsible - do nothing
+//                if !element.isArchived()
+//                {
+//                    if element.isOwnedByCurrentUser()
+//                    {
+//                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
+//                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
+//                        {
+//                            switch currentFinishState
+//                            {
+//                            case .Default:
+//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
+//                            case .FinishedBad, .FinishedGood:
+//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
+//                            case .InProcess:
+//                                print(" Element is in process..\n")
+//                                showFinishTaskPrompt()
+//                            }
+//                        } 
+//                    }
+//                    else if element.isTaskForCurrentUser()
+//                    {
+//                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
+//                        {
+//                            switch currentFinishState
+//                            {
+//                            case .Default:
+//                                print("element is not owned. current user cannot assign task.")
+//                            case .FinishedBad , .FinishedGood:
+//                                print("element is already finished. current user cannot update task.")
+//                            case .InProcess:
+//                                showFinishTaskPrompt()
+//                            }
+//                        }
+//                    }
+//                }
+//                else
+//                {
+//                    if element.isOwnedByCurrentUser()
+//                    {
+//                        self.showAlertWithTitle("Unauthorized.", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                if !element.isArchived()
+//                {
+//                    //1 - detect if element is owned
+//                    if element.isOwnedByCurrentUser()
+//                    {
+//                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
+//                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
+//                        {
+//                            switch currentFinishState
+//                            {
+//                            case .Default:
+//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
+//                            case .FinishedBad , .FinishedGood :
+//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
+//                            case .InProcess:
+//                                print(" Element is in process..")
+//                                showFinishTaskPrompt()
+//                            }
+//                        }
+//                        
+//                        return
+//                    }
+//                    print("\n Error: Element is not owned by current user.")
+//                }
+//                else
+//                {
+//                    if element.isOwnedByCurrentUser()
+//                    {
+//                         self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+//                    }
+//                }
+//            }
+//        }
+//     
     }
     
     func elementDecisionPressed()
@@ -627,12 +628,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             if !current.isArchived()
             {
-                let anOptionsConverter = ElementOptionsConverter()
-                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 3)
-                let editingElement = current.createCopy()
-                editingElement.typeId = newOptions
-                print("new element type id: \(editingElement.typeId)")
-                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+//                let anOptionsConverter = ElementOptionsConverter()
+//                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 3)
+//                let editingElement = current.createCopy()
+//                editingElement.typeId = newOptions
+//                print("new element type id: \(editingElement.typeId)")
+//                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
             else
             {
@@ -898,10 +899,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     aSelf.collectionDataSource?.handledElement = aSelf.currentElement
                    
                     //aSelf.collectionView.collectionViewLayout.invalidateLayout()
-                    if let layout = aSelf.prepareCollectionLayoutForElement(aSelf.currentElement)
-                    {
-                        aSelf.collectionView.setCollectionViewLayout(layout, animated: false)
-                    }
+                   // if let layout = aSelf.prepareCollectionLayoutForElement(aSelf.currentElement)
+                    //{
+                   //     aSelf.collectionView.setCollectionViewLayout(layout, animated: false)
+                   // }
                     aSelf.collectionView.performBatchUpdates({ () -> Void in
                         aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
                     }, completion: { ( _ ) -> Void in
@@ -930,7 +931,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         
         let newPassWhomIDs = editingElement.passWhomIDs
-        let existingPassWhonIDs = self.currentElement!.passWhomIDs
+        let existingPassWhonIDs = Set<Int>() //TODO: --- - -  pass whom IDs logic 
+            //self.currentElement!.passWhomIDs
         guard let editingElementId = editingElement.elementId else {
             return
         }
@@ -960,7 +962,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
                 if let aSelf = self
                 {
-                    aSelf.currentElement?.passWhomIDs = Array(newPassWhomIDs)
+                    //aSelf.currentElement?.passWhomIDs = Array(newPassWhomIDs)
                 }
                 
             })
@@ -972,7 +974,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
                 if let aSelf = self
                 {
-                    aSelf.currentElement?.passWhomIDs.removeAll(keepCapacity: false)
+                   // aSelf.currentElement?.passWhomIDs.removeAll(keepCapacity: false)
                 }
             })
         }
@@ -999,7 +1001,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         }
                         let newSet = Set(existingPassWhonIDs).subtract(numbersSet)
                         
-                        aSelf.currentElement?.passWhomIDs = Array(newSet)
+                        //aSelf.currentElement?.passWhomIDs = Array(newSet)
                     }
                 })
             }
@@ -1024,7 +1026,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         }
                         let newSet = Set(existingPassWhonIDs).union(numbersSet)
                         
-                        aSelf.currentElement?.passWhomIDs = Array(newSet)
+                        //aSelf.currentElement?.passWhomIDs = Array(newSet)
                     }
                 })
             }
@@ -1050,7 +1052,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                             }
                             let newSet = Set(existingPassWhonIDs).union(numbersSet)
                             
-                            aSelf.currentElement?.passWhomIDs = Array(newSet)
+                           // aSelf.currentElement?.passWhomIDs = Array(newSet)
                         }
                     })
 
@@ -1063,16 +1065,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleDeletingCurrentElement()
     {
-        if let elementId = self.currentElement?.elementId
+        if let elementId = self.currentElement?.elementId?.integerValue
         {
             DataSource.sharedInstance.deleteElementFromServer(elementId, completion: { [weak self] (deleted, error) -> () in
                 if let weakSelf = self
                 {
                     if deleted
                     {
-                        if let elementID = weakSelf.currentElement?.elementId
+                        if let elementID = weakSelf.currentElement?.elementId?.integerValue
                         {
-                            weakSelf.currentElement = Element() //breaking our link to element in datasource
+                            weakSelf.currentElement = nil//Element() //breaking our link to element in datasource
                             DataSource.sharedInstance.deleteElementFromLocalStorage(elementID, shouldNotify:true)
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }
@@ -1150,53 +1152,53 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func refreshCurrentElementAfterElementChangedNotification(notif:NSNotification?)
     {
-        if let currentElement = self.currentElement,
-            elementIdInt = currentElement.elementId,
-            existingOurElement = DataSource.sharedInstance.getElementById(elementIdInt)
-        {
-            
-            dispatch_async(dispatch_get_main_queue(), { [weak self]() -> Void in
-                if let weakSelf = self
-                {
-                    let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
-                    print("old count: \(oldItemsCount)")
-                    weakSelf.currentElement = existingOurElement
-                    weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
-                    
-                    let newItemsCount = weakSelf.collectionDataSource!.countAllItems()
-                    print("newCount: \(newItemsCount)")
-                    if oldItemsCount == newItemsCount
-                    {
-                        do{
-                            try  weakSelf.prepareCollectionViewDataAndLayout()
-                        }
-                        catch{
-                            print("\n -> refreshCurrentElementAfterElementChangedNotification: Could not create new layout for current element.\n")
-                        }
-                    }
-                    else
-                    {
-                        do{
-                            try  weakSelf.prepareCollectionViewDataAndLayout()
-                        }
-                        catch{
-                            print("\n -> refreshCurrentElementAfterElementChangedNotification: Could not create new layout for current element.\n")
-                        }
-                    }
-                }
-            })
-            
-            refreshAttachesAndProceedLayoutChangesIdfNeeded()
-        }
-        else
-        {
-            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                if let aSelf = self
-                {
-                    aSelf.navigationController?.popViewControllerAnimated(true)
-                }
-            })
-        }
+//        if let currentElement = self.currentElement,
+//            elementIdInt = currentElement.elementId,
+//            existingOurElement = DataSource.sharedInstance.getElementById(elementIdInt)
+//        {
+//            
+//            dispatch_async(dispatch_get_main_queue(), { [weak self]() -> Void in
+//                if let weakSelf = self
+//                {
+//                    let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
+//                    print("old count: \(oldItemsCount)")
+//                    weakSelf.currentElement = existingOurElement
+//                    weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+//                    
+//                    let newItemsCount = weakSelf.collectionDataSource!.countAllItems()
+//                    print("newCount: \(newItemsCount)")
+//                    if oldItemsCount == newItemsCount
+//                    {
+//                        do{
+//                            try  weakSelf.prepareCollectionViewDataAndLayout()
+//                        }
+//                        catch{
+//                            print("\n -> refreshCurrentElementAfterElementChangedNotification: Could not create new layout for current element.\n")
+//                        }
+//                    }
+//                    else
+//                    {
+//                        do{
+//                            try  weakSelf.prepareCollectionViewDataAndLayout()
+//                        }
+//                        catch{
+//                            print("\n -> refreshCurrentElementAfterElementChangedNotification: Could not create new layout for current element.\n")
+//                        }
+//                    }
+//                }
+//            })
+//            
+//            refreshAttachesAndProceedLayoutChangesIdfNeeded()
+//        }
+//        else
+//        {
+//            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+//                if let aSelf = self
+//                {
+//                    aSelf.navigationController?.popViewControllerAnimated(true)
+//                }
+//            })
+//        }
     }
     
     func refreshAttachesAndProceedLayoutChangesIdfNeeded()
@@ -1204,133 +1206,133 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         //let currentAttachesInDataSource = DataSource.sharedInstance.getAttachesForElementById(self.currentElement?.elementId?.integerValue)
         
         //print("\n Refreshing attaches in viewWillAppear...")
-        if let elementIdInt = self.currentElement?.elementId
-        {
-            DataSource.sharedInstance.refreshAttachesForElement(elementIdInt, completion: { [weak self] (attachesArray) -> () in
-                if let weakSelf = self
-                {
-                    if let recievedAttaches = attachesArray
-                    {
-                        if let existAttaches = weakSelf.collectionDataSource?.currentAttaches
-                        {
-                            let setOfExisting = Set(existAttaches)
-                            let setOfNew = Set(recievedAttaches)
-                            var remainderSet:Set<AttachFile>?
-                            if setOfNew.isStrictSubsetOf(setOfExisting)
-                            {
-                                print("\n New Attaches is smaller than existing...  Clean obsolete attaches...\n")
-                                //setOwNew is smaller than existing - delete obsolete attaches from memory, disc, and refresh collectionView
-                                remainderSet = setOfExisting.subtract(setOfNew)
-                                //remainderSet here is set to delete from local storage and memory
-                                
-                                //var remainingAttachesArray = Array(remainderSet!)
-                                for anAttach in remainderSet!
-                                {
-                                    DataSource.sharedInstance.eraseFileFromDiscForAttach(anAttach)
-                                }
-                                
-                                DataSource.sharedInstance.eraseFileInfoFromMemoryForAttaches(Array(remainderSet!))
-                                
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    do{
-                                        try  weakSelf.prepareCollectionViewDataAndLayout()
-                                    }
-                                    catch{
-                                        
-                                    }
-                                })
-                                
-                            }
-                            else if setOfExisting.isStrictSubsetOf(setOfNew)
-                            {
-                                print("\n Recieved New Attaches.....")
-                                remainderSet = setOfNew.subtract(setOfExisting)
-                                
-                                if remainderSet!.isEmpty
-                                {
-                                    
-                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                        print("\n Starting to Query attach previews in background..")
-                                        weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
-                                    })
-                                }
-                                else
-                                {
-                                    print("-> Loaded \(remainderSet!.count) new attaches")
-                                    
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        do{
-                                            try  weakSelf.prepareCollectionViewDataAndLayout()
-                                        }
-                                        catch{
-                                            
-                                        }
-                                    })
-                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                        print("\n Starting to Query EXIST attachInfo previews in background..")
-                                        weakSelf.startLoadingDataForMissingAttaches(existAttaches)
-                                    })
-                                    
-                                }
-                            }
-                            else if setOfExisting == setOfNew
-                            {
-                                print("existing attaches are equal to recieved after refresh..  Do nothing..")
-                                print(setOfNew)
-                                print(setOfExisting)
-                            }
-                            else if setOfNew.isDisjointWith(setOfExisting)
-                            {
-                                //replace all current atatches with totally new ones: delete all current and query all new attach file datas for new attaches
-                                
-                            }
-                        }
-                        else //local attaches info do not exist
-                        {
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                do{
-                                    try  weakSelf.prepareCollectionViewDataAndLayout()
-                                }
-                                catch{
-                                    
-                                }
-                            })
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                                print("\n Starting to Query EXIST attachInfo previews in background..")
-                                if let weakSelf = self
-                                {
-                                    weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
-                                }
-                            })
-                        }
-                    }
-                    else if let attachesInMemory = DataSource.sharedInstance.getAttachesForElementById(elementIdInt) //clear existing ettaches in memory, because server said - there are no attaches for current element already.
-                    {
-                        print("->\n refreshAttachesAndProceedLayoutChangesIdfNeeded: -> No Attaches for current element found... ->\n")
-                        
-                        print("\n -> Clearing attaches from local storage and memory")
-                        
-                        DataSource.sharedInstance.cleanAttachesForElement(elementIdInt)
-                        DataSource.sharedInstance.eraseFileInfoFromMemoryForAttaches(attachesInMemory)
-                        
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            print("\n .... Reloading ElementDashboard CollectionView after attaches cleaned.....\n")
-                            do{
-                                try  weakSelf.prepareCollectionViewDataAndLayout()
-                            }
-                            catch{
-                                
-                            }
-                        })
-                     
-                    }
-                    else{
-                        print("... No existing attaches and no new attaches reciever for current element ... Will not refresh collectionView. ...")
-                    }
-                }
-            })
-        }
-
+//        if let elementIdInt = self.currentElement?.elementId
+//        {
+//            DataSource.sharedInstance.refreshAttachesForElement(elementIdInt, completion: { [weak self] (attachesArray) -> () in
+//                if let weakSelf = self
+//                {
+//                    if let recievedAttaches = attachesArray
+//                    {
+//                        if let existAttaches = weakSelf.collectionDataSource?.currentAttaches
+//                        {
+//                            let setOfExisting = Set(existAttaches)
+//                            let setOfNew = Set(recievedAttaches)
+//                            var remainderSet:Set<AttachFile>?
+//                            if setOfNew.isStrictSubsetOf(setOfExisting)
+//                            {
+//                                print("\n New Attaches is smaller than existing...  Clean obsolete attaches...\n")
+//                                //setOwNew is smaller than existing - delete obsolete attaches from memory, disc, and refresh collectionView
+//                                remainderSet = setOfExisting.subtract(setOfNew)
+//                                //remainderSet here is set to delete from local storage and memory
+//                                
+//                                //var remainingAttachesArray = Array(remainderSet!)
+//                                for anAttach in remainderSet!
+//                                {
+//                                    DataSource.sharedInstance.eraseFileFromDiscForAttach(anAttach)
+//                                }
+//                                
+//                                DataSource.sharedInstance.eraseFileInfoFromMemoryForAttaches(Array(remainderSet!))
+//                                
+//                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                    do{
+//                                        try  weakSelf.prepareCollectionViewDataAndLayout()
+//                                    }
+//                                    catch{
+//                                        
+//                                    }
+//                                })
+//                                
+//                            }
+//                            else if setOfExisting.isStrictSubsetOf(setOfNew)
+//                            {
+//                                print("\n Recieved New Attaches.....")
+//                                remainderSet = setOfNew.subtract(setOfExisting)
+//                                
+//                                if remainderSet!.isEmpty
+//                                {
+//                                    
+//                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+//                                        print("\n Starting to Query attach previews in background..")
+//                                        weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
+//                                    })
+//                                }
+//                                else
+//                                {
+//                                    print("-> Loaded \(remainderSet!.count) new attaches")
+//                                    
+//                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                        do{
+//                                            try  weakSelf.prepareCollectionViewDataAndLayout()
+//                                        }
+//                                        catch{
+//                                            
+//                                        }
+//                                    })
+//                                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+//                                        print("\n Starting to Query EXIST attachInfo previews in background..")
+//                                        weakSelf.startLoadingDataForMissingAttaches(existAttaches)
+//                                    })
+//                                    
+//                                }
+//                            }
+//                            else if setOfExisting == setOfNew
+//                            {
+//                                print("existing attaches are equal to recieved after refresh..  Do nothing..")
+//                                print(setOfNew)
+//                                print(setOfExisting)
+//                            }
+//                            else if setOfNew.isDisjointWith(setOfExisting)
+//                            {
+//                                //replace all current atatches with totally new ones: delete all current and query all new attach file datas for new attaches
+//                                
+//                            }
+//                        }
+//                        else //local attaches info do not exist
+//                        {
+//                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                do{
+//                                    try  weakSelf.prepareCollectionViewDataAndLayout()
+//                                }
+//                                catch{
+//                                    
+//                                }
+//                            })
+//                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
+//                                print("\n Starting to Query EXIST attachInfo previews in background..")
+//                                if let weakSelf = self
+//                                {
+//                                    weakSelf.startLoadingDataForMissingAttaches(recievedAttaches)
+//                                }
+//                            })
+//                        }
+//                    }
+//                    else if let attachesInMemory = DataSource.sharedInstance.getAttachesForElementById(elementIdInt) //clear existing ettaches in memory, because server said - there are no attaches for current element already.
+//                    {
+//                        print("->\n refreshAttachesAndProceedLayoutChangesIdfNeeded: -> No Attaches for current element found... ->\n")
+//                        
+//                        print("\n -> Clearing attaches from local storage and memory")
+//                        
+//                        DataSource.sharedInstance.cleanAttachesForElement(elementIdInt)
+//                        DataSource.sharedInstance.eraseFileInfoFromMemoryForAttaches(attachesInMemory)
+//                        
+//                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                            print("\n .... Reloading ElementDashboard CollectionView after attaches cleaned.....\n")
+//                            do{
+//                                try  weakSelf.prepareCollectionViewDataAndLayout()
+//                            }
+//                            catch{
+//                                
+//                            }
+//                        })
+//                     
+//                    }
+//                    else{
+//                        print("... No existing attaches and no new attaches reciever for current element ... Will not refresh collectionView. ...")
+//                    }
+//                }
+//            })
+//        }
+//
     }
     
     func checkoutParentAndRefreshIfPresent()
@@ -1350,13 +1352,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     }
     
     //MARK: ElementSelectionDelegate
-    func didTapOnElement(element: Element) {
-        
-        let nextViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as! SingleElementDashboardVC
-        nextViewController.currentElement = element
-        self.navigationController?.pushViewController(nextViewController, animated: true)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement:", name: kNewElementsAddedNotification, object: nil)
+    func didTapOnElement(elementId: Int) {
+        if let foundElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+        {
+            let nextViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as! SingleElementDashboardVC
+            nextViewController.currentElement = foundElement
+            self.navigationController?.pushViewController(nextViewController, animated: true)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshSubordinatesAfterNewElementWasAddedFromChatOrChildElement:", name: kNewElementsAddedNotification, object: nil)
+        }
+    
     }
     
     //MARK: AttachmentSelectionDelegate
@@ -1459,7 +1464,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         if !self.currentShowingAttachName.isEmpty
         {
-            if let elementIdInt = self.currentElement?.elementId
+            if let elementIdInt = self.currentElement?.elementId?.integerValue
             {
                 let attachName = self.currentShowingAttachName
                 
@@ -1666,7 +1671,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func finishElementWithFinishState(state:ElementFinishState)
     {
-        if let current = self.currentElement, elementIdInt = current.elementId, dateString = NSDate().dateForRequestURL()
+        if let current = self.currentElement, elementIdInt = current.elementId?.integerValue, dateString = NSDate().dateForRequestURL()
         {
             let finishState = state.rawValue
             DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
@@ -1723,70 +1728,70 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     {
         if let element = self.currentElement
         {
-            let copy = element.createCopy()
-            copy.responsible =  responsiblePersonId
-            
-            copy.finishDate = finishDate
-            let optionsConverter = ElementOptionsConverter()
-            if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
-            {
-                let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
-                copy.typeId = newOptions
-            }
-            
-            if let elementIdInt = copy.elementId
-            {
-                let newState = ElementFinishState.InProcess.rawValue
-                
-                DataSource.sharedInstance.editElement(copy, completionClosure: {[weak self] (edited) -> () in
-                    if edited
-                    {
-                        DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: newState, completion: {[weak self] (success) -> () in
-                            if success
-                            {
-                                if let weakSelf = self
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { [weak weakSelf]() -> Void in
-                                       
-                                        if let weakerSelf = weakSelf
-                                        {
-                                            weakerSelf.collectionDataSource?.handledElement?.finishState = newState
-                                            weakerSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                                            weakerSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
-                                        }
-                                    })
-                                }
-                                
-                                if let dateString = copy.finishDate?.dateForRequestURL() //.dateForServer()
-                                {
-                                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
-                                        
-                                        if let weakSelf = self
-                                        {
-                                            if success
-                                            {
-                                                print("\n -> Element finish date WAS updated.\n")
-                                                if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
-                                                {
-                                                    print("\n exist element finish date : \(existElement.finishDate)")
-                                                    print(" current element finish date : \(weakSelf.currentElement?.finishDate)")
-                                                    print(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
-                                                }
-                                            }
-                                            else
-                                            {
-                                                print("\n -> Element finish date WAS NOT updated.\n")
-                                            }
-                                        }
-                                    })
-                                }
-                                
-                            }
-                        })
-                    }
-                })
-            
-            }
+//            let copy = element.createCopy()
+//            copy.responsible =  responsiblePersonId
+//            
+//            copy.finishDate = finishDate
+//            let optionsConverter = ElementOptionsConverter()
+//            if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
+//            {
+//                let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
+//                copy.typeId = newOptions
+//            }
+//            
+//            if let elementIdInt = copy.elementId
+//            {
+//                let newState = ElementFinishState.InProcess.rawValue
+//                
+//                DataSource.sharedInstance.editElement(copy, completionClosure: {[weak self] (edited) -> () in
+//                    if edited
+//                    {
+//                        DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: newState, completion: {[weak self] (success) -> () in
+//                            if success
+//                            {
+//                                if let weakSelf = self
+//                                {
+//                                    dispatch_async(dispatch_get_main_queue(), { [weak weakSelf]() -> Void in
+//                                       
+//                                        if let weakerSelf = weakSelf
+//                                        {
+//                                            weakerSelf.collectionDataSource?.handledElement?.finishState = newState
+//                                            weakerSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+//                                            weakerSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
+//                                        }
+//                                    })
+//                                }
+//                                
+//                                if let dateString = copy.finishDate?.dateForRequestURL() //.dateForServer()
+//                                {
+//                                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
+//                                        
+//                                        if let weakSelf = self
+//                                        {
+//                                            if success
+//                                            {
+//                                                print("\n -> Element finish date WAS updated.\n")
+//                                                if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
+//                                                {
+//                                                    print("\n exist element finish date : \(existElement.finishDate)")
+//                                                    print(" current element finish date : \(weakSelf.currentElement?.finishDate)")
+//                                                    print(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
+//                                                }
+//                                            }
+//                                            else
+//                                            {
+//                                                print("\n -> Element finish date WAS NOT updated.\n")
+//                                            }
+//                                        }
+//                                    })
+//                                }
+//                                
+//                            }
+//                        })
+//                    }
+//                })
+//            
+//            }
         }
     }
     

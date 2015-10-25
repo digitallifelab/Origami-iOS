@@ -66,7 +66,7 @@ class LocalDatabaseHandler{
     
     
     //MARK: - Work stuff
-    
+    //MARK: - Elements
     func readAllElements() -> Set<DBElement>? {
         
         var toReturn:Set<DBElement>?
@@ -90,6 +90,96 @@ class LocalDatabaseHandler{
         
         return toReturn
     }
+    //MARK: ---
+    func readRecentArchiverElements() -> [DBElement]?
+    {
+        let request = NSFetchRequest(entityName: "DBElement")
+        request.predicate = NSPredicate(format: "dateArchived != nil")
+        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
+        
+        var elementsToReturn:[DBElement]?
+        self.privateContext.performBlockAndWait {[unowned self] () -> Void in
+            do{
+                if let elements = try self.privateContext.executeFetchRequest(request) as? [DBElement]
+                {
+                    if !elements.isEmpty
+                    {
+                        elementsToReturn = elements
+                    }
+                }
+            }
+            catch let error {
+                print("\nError while fetching archived elements:")
+                print(error)
+                return
+            }
+        }
+        
+        return elementsToReturn
+    }
+    
+    func readRecentNonArchivedElements() -> [DBElement]?
+    {
+        let request = NSFetchRequest(entityName: "DBElement")
+        request.predicate = NSPredicate(format: "dateArchived == nil")
+        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
+        
+        var elementsToReturn:[DBElement]?
+        self.privateContext.performBlockAndWait {[unowned self] () -> Void in
+            do{
+                if let elements = try self.privateContext.executeFetchRequest(request) as? [DBElement]
+                {
+                    if !elements.isEmpty
+                    {
+                        elementsToReturn = elements
+                    }
+                }
+            }
+            catch let error {
+                print("\nError while fetching archived elements:")
+                print(error)
+                return
+            }
+        }
+        
+        return elementsToReturn
+    }
+    
+    //MARK: ---
+    func readRootElementTreeForElementManagedObjectId(managedId:NSManagedObjectID) -> [DBElement]?
+    {
+        guard let currentElement = self.privateContext.objectWithID(managedId) as? DBElement else
+        {
+            return nil
+        }
+        
+        var foundRoots = [DBElement]()
+        var pendingElement:DBElement? = currentElement
+        while let _ = pendingElement
+        {
+            if let parentFound = self.findParentElementForElement(pendingElement!)
+            {
+                foundRoots.append(parentFound)
+                pendingElement = parentFound
+                continue
+            }
+            pendingElement = nil
+        }
+        
+        if foundRoots.isEmpty{
+            return nil
+        }
+        
+        return foundRoots
+    }
+    
+    private func findParentElementForElement(element:DBElement) -> DBElement?
+    {
+        if let rootId = element.rootElementId?.integerValue{
+           return self.readElementById(rootId)
+        }
+        return nil
+    }
     
     /**
     Mathod is used for querying only count for creating layout of for displaying actual subordinates info.
@@ -103,7 +193,7 @@ class LocalDatabaseHandler{
         - optional array of DBElement objects
         - error if fetchRequest fails or if something unusual happens
     */
-    func readSubordinatesElementsForElementId(elementId:Int, shouldReturnObjects:Bool = false, completion:((count:Int, elements:[DBElement]?, error:NSError?)->())?)
+    func readSubordinateElementsForElementIdAsync(elementId:Int, shouldReturnObjects:Bool = false, completion:((count:Int, elements:[DBElement]?, error:NSError?) ->())? )
     {
         let elementsRequest = NSFetchRequest(entityName: "DBElement")
         let predicate = NSPredicate(format: "rootElementId == %ld", elementId)
@@ -112,34 +202,37 @@ class LocalDatabaseHandler{
         
         if shouldReturnObjects
         {
-            do{
-                if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [DBElement]
-                {
-                    let count = requestResult.count
-                    if count > 0{
-                    
-                        completion?(count: count, elements: requestResult, error: nil)
+            dispatch_async(getBackgroundQueue_DEFAULT(), { () -> Void in
+                do{
+                    if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [DBElement]
+                    {
+                        let count = requestResult.count
+                        if count > 0{
+                            
+                            completion?(count: count, elements: requestResult, error: nil)
+                        }
+                        else
+                        {
+                            completion?(count: count, elements: nil, error: nil)
+                        }
                     }
                     else
                     {
-                        completion?(count: count, elements: nil, error: nil)
+                        let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
+                        completion?(count: 0, elements: nil, error: anError)
                     }
                 }
-                else
+                catch let error as NSError
                 {
-                    let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
-                    completion?(count: 0, elements: nil, error: anError)
+                    completion?(count:0, elements: nil, error:error)
                 }
-            }
-            catch let error as NSError
-            {
-                completion?(count:0, elements: nil, error:error)
-            }
-            catch
-            {
-                let unKnownError = unKnownExceptionError
-                completion?(count:0, elements: nil, error:unKnownError)
-            }
+                catch
+                {
+                    let unKnownError = unKnownExceptionError
+                    completion?(count:0, elements: nil, error:unKnownError)
+                }
+            })
+            
         }
         else //return only count or error
         {
@@ -167,78 +260,154 @@ class LocalDatabaseHandler{
         }
     }
     
+    func readSubordinateElementsForDBElementIdSync(elementId:Int, shouldReturnObjects:Bool = false) -> (count:Int, elements:[DBElement]?, error:NSError?)
+    {
+        let elementsRequest = NSFetchRequest(entityName: "DBElement")
+        
+        let predicate = NSPredicate(format: "rootElementId = \(elementId) AND dateArchived = nil")
+        elementsRequest.predicate = predicate
+        elementsRequest.shouldRefreshRefetchedObjects = false //TODO: set this flag to false if the method is called in a loop....
+        
+        var returnCount = 0
+        var returnError:NSError?
+        
+        if shouldReturnObjects
+        {
+            var returnElements:[DBElement]?
+            
+            self.privateContext.performBlockAndWait({ () -> Void in
+                do{
+                    if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [DBElement]
+                    {
+                        returnCount = requestResult.count
+                        if returnCount > 0
+                        {
+                            returnElements = requestResult
+                        }
+                    }
+                    else
+                    {
+                        let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
+                        returnError = anError
+                    }
+                }
+                catch let error as NSError
+                {
+                    returnError = error
+                }
+                catch
+                {
+                    returnError = unKnownExceptionError
+                }
+            })
+            
+            return (count: returnCount, elements: returnElements, error: returnError)
+            
+        }
+        else //return only count or error
+        {
+            elementsRequest.resultType = .ManagedObjectIDResultType
+            
+            self.privateContext.performBlockAndWait({ () -> Void in
+                do{
+                    if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [NSManagedObjectID]
+                    {
+                        returnCount = requestResult.count
+                    }
+                    else
+                    {
+                        let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
+                        returnError = anError
+                    }
+                }
+                catch let error as NSError
+                {
+                    returnError = error
+                }
+                catch
+                {
+                    returnError = unKnownExceptionError
+                }
+            })
+
+            return (count: returnCount, elements: nil, error: returnError)
+        }
+    }
+    
     func readHomeDashboardElements(shouldRefetch:Bool = true, completion:( ((signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?) )->() )?)
     {
-        var returningValue: (signals:[DBElement]?,favourites:[DBElement]?, other:[DBElement]?) = (signals:nil, favourites:nil, other:nil)
-        
-        let signalsRequest = NSFetchRequest(entityName: "DBElement")
-        signalsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal"]
-        signalsRequest.shouldRefreshRefetchedObjects = shouldRefetch
-        signalsRequest.predicate = NSPredicate(format: "isSignal == true")
-        signalsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
-        
-        self.privateContext.performBlockAndWait { _ in
-            do{
-                if let signalElements = try self.privateContext.executeFetchRequest(signalsRequest) as? [DBElement]
-                {
-                    if signalElements.count > 0
+        let bgQueue = getBackgroundQueue_CONCURRENT()
+        dispatch_async(bgQueue) { () -> Void in
+            var returningValue: (signals:[DBElement]?,favourites:[DBElement]?, other:[DBElement]?) = (signals:nil, favourites:nil, other:nil)
+            
+            let signalsRequest = NSFetchRequest(entityName: "DBElement")
+            signalsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal"]
+            signalsRequest.shouldRefreshRefetchedObjects = shouldRefetch
+            signalsRequest.predicate = NSPredicate(format: "isSignal == true")
+            signalsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
+            
+            self.privateContext.performBlockAndWait { _ in
+                do{
+                    if let signalElements = try self.privateContext.executeFetchRequest(signalsRequest) as? [DBElement]
                     {
-                        returningValue.signals = signalElements
+                        if signalElements.count > 0
+                        {
+                            returningValue.signals = signalElements
+                        }
                     }
                 }
-            }
-            catch{
-                
-            }
-        }
-      
-        
-        let favouritesRequest = signalsRequest
-        favouritesRequest.shouldRefreshRefetchedObjects = shouldRefetch
-        favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
-        favouritesRequest.predicate = NSPredicate(format: "isFavourite == true")
-        self.privateContext.performBlockAndWait { _ in
-            do{
-                if let favouriteElements = try self.privateContext.executeFetchRequest(favouritesRequest) as? [DBElement]
-                {
-                    if favouriteElements.count > 0
-                    {
-                        returningValue.favourites = favouriteElements
-                    }
+                catch{
+                    
                 }
             }
-            catch{
-                
-            }
-        }
-       
-        
-        
-        let otherDashboardElementsRequest = signalsRequest
-        otherDashboardElementsRequest.shouldRefreshRefetchedObjects = shouldRefetch
-        otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
-        otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId == 0")
-        
-        self.privateContext.performBlockAndWait { _ in
-            do{
-                if let otherDashboardElements = try self.privateContext.executeFetchRequest(otherDashboardElementsRequest) as? [DBElement]
-                {
-                    if otherDashboardElements.count > 0
+            
+            
+            let favouritesRequest = signalsRequest
+            favouritesRequest.shouldRefreshRefetchedObjects = shouldRefetch
+            favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
+            favouritesRequest.predicate = NSPredicate(format: "isFavourite == true")
+            self.privateContext.performBlockAndWait { _ in
+                do{
+                    if let favouriteElements = try self.privateContext.executeFetchRequest(favouritesRequest) as? [DBElement]
                     {
-                        returningValue.other = otherDashboardElements
+                        if favouriteElements.count > 0
+                        {
+                            returningValue.favourites = favouriteElements
+                        }
                     }
                 }
+                catch{
+                    
+                }
             }
-            catch{
-                
+            
+            
+            let otherDashboardElementsRequest = signalsRequest
+            otherDashboardElementsRequest.shouldRefreshRefetchedObjects = shouldRefetch
+            otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
+            otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId == 0")
+            
+            self.privateContext.performBlockAndWait { _ in
+                do{
+                    if let otherDashboardElements = try self.privateContext.executeFetchRequest(otherDashboardElementsRequest) as? [DBElement]
+                    {
+                        if otherDashboardElements.count > 0
+                        {
+                            returningValue.other = otherDashboardElements
+                        }
+                    }
+                }
+                catch{
+                    
+                }
             }
+            
+            dispatch_async(dispatch_get_main_queue(), { _ in
+                completion?(returningValue)
+            })
         }
-        
-        
-        
-        completion?(returningValue)
-        
     }
+    
     /**
     Method calls *`readElementById()`* on every element in a *for-in* loop.
     If Element is found - it is updated to current state, 
@@ -257,7 +426,7 @@ class LocalDatabaseHandler{
                 print("2 - changingFoundElement in database")
                
                 existingElement.fillInfoFromInMemoryElement(anElement)
-                        
+               // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
             }
             else
             {
@@ -265,6 +434,7 @@ class LocalDatabaseHandler{
                 if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: self.privateContext) as? DBElement
                 {
                     newElement.fillInfoFromInMemoryElement(anElement)
+                    //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")
                 }
             }
         
@@ -272,14 +442,17 @@ class LocalDatabaseHandler{
         
         if self.privateContext.hasChanges
         {
-            do{
+            do
+            {
                 try self.privateContext.save()
                 completion?(didSave: true, error: nil)
             }
-            catch let error as NSError{
+            catch let error as NSError
+            {
                 completion?(didSave: false, error: error)
             }
-            catch{
+            catch
+            {
                 abort()
             }
         }
@@ -294,7 +467,7 @@ class LocalDatabaseHandler{
     func readElementById(elementId:Int) -> DBElement?
     {
         let fetchRequest = NSFetchRequest(entityName: "DBElement")
-        let predicate = NSPredicate(format: "elementId == \(elementId)")
+        let predicate = NSPredicate(format: "elementId = \(elementId)")
         fetchRequest.predicate = predicate
         
         do{
@@ -324,12 +497,21 @@ class LocalDatabaseHandler{
     
     func readElementByIdAsync(elementId:Int, completion:((DBElement?)->())?)
     {
-        guard let foundElement = self.readElementById(elementId) else
-        {
-            completion?(nil)
-            return
+        dispatch_async(getBackgroundQueue_CONCURRENT()) { () -> Void in
+            guard let foundElement = self.readElementById(elementId) else
+            {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    completion?(nil)
+                })
+                
+                return
+            }
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                completion?(foundElement)
+            })
+            
         }
-        completion?(foundElement)
+       
     }
     
     func setFavourite(newFavValue:Bool, elementId:Int, completion:(()->())?)
@@ -372,12 +554,12 @@ class LocalDatabaseHandler{
         
         if self.privateContext.hasChanges
         {
-            do{
+            do {
                 try self.privateContext.save()
                 completion?()
                 print("SAVED CHANGES after SIGNAL element value updated")
             }
-            catch let saveError{
+            catch let saveError {
                 print("did not save privateContext after element SIGNAL changed: ")
                 print(saveError)
                 completion?()
@@ -388,38 +570,448 @@ class LocalDatabaseHandler{
         print(" ERROR while updating element SIGNAL: privateContextHasNoChanges")
     }
     
-    
-    //MARK:  - avatar previews
-    func saveAvatarPreview(data:NSData, contactId:Int, completion:(()->())?)
+    func deleteAllElements()
     {
+        let allElementsRequest = NSFetchRequest(entityName: "DBElement")
+        allElementsRequest.includesPropertyValues = false
+        if #available (iOS 9.0, *)
+        {
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: allElementsRequest)
+            do
+            {
+                try self.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.privateContext)
+            }
+            catch
+            {
+                
+            }
+        }
+        else //pre iOS 9
+        {
+            do
+            {
+                if let allElements = try self.privateContext.executeFetchRequest(allElementsRequest) as? [DBElement]
+                {
+                    for anElement in allElements
+                    {
+                        self.privateContext.deleteObject(anElement)
+                    }
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+        
+        if self.privateContext.hasChanges
+        {
+            do{
+                try self.privateContext.save()
+                print("Deleted all elements from local Database...")
+            }
+            catch{
+                
+            }
+        }
+    }
+    
+    //MARK: - Messages
+    func saveChatMessagesToLocalDataBase(messages:[Message], completion:((Bool, error:NSError?) -> ())?)
+    {
+        guard !messages.isEmpty else
+        {
+            completion?(true, error:nil)
+            return
+        }
+        
+        var mutableSet = Set<DBMessageChat>()
+        for aMessage in messages
+        {
+            if let existingMessage = self.readChatMessageById(aMessage.messageId)
+            {
+                existingMessage.fillInfoFromMessageObject(aMessage)
+                mutableSet.insert(existingMessage)
+            }
+            else
+            {
+                print("inserting new message into database")
+             
+                if let message = NSEntityDescription.insertNewObjectForEntityForName("DBMessageChat", inManagedObjectContext: self.privateContext) as? DBMessageChat
+                {
+                    message.fillInfoFromMessageObject(aMessage)
+                    mutableSet.insert(message)
+                }
+            }
+        }
+        
+        if mutableSet.count > 0
+        {
+            if let anyMessage = mutableSet.first, elementId = anyMessage.elementId?.integerValue
+            {
+                //link message to existing element if found
+                if let existingElement = self.readElementById(elementId)
+                {
+                    if let existingSet = existingElement.messages as? Set<DBMessageChat>
+                    {
+                        let newMessagesSet = existingSet.union(mutableSet)
+                        existingElement.messages = newMessagesSet
+                    }
+                    else
+                    {
+                        existingElement.messages = mutableSet
+                    }
+                }
+            }
+        }
+        
+        if self.privateContext.hasChanges
+        {
+            do{
+                try self.privateContext.save()
+                print("\n->did save Context after messages inserted or updated.")
+                completion?(true, error:nil)
+            }
+            catch let error as NSError{
+                print("\n->did NOT save Context after messages inserted or updated.")
+                print("Error: \n\(error)")
+                completion?(false, error:error)
+            }
+            
+            return
+        }
+        print("\n->did NOT save Context after messages inserted or updated.")
+        print("Reason: context has NO CHANGES\n")
+        completion?(false, error:nil)
+    }
+    
+    func readChatMessageById(messageId:Int) -> DBMessageChat?
+    {
+        let fetchRequest = NSFetchRequest(entityName: "DBMessageChat")
+        let predicate = NSPredicate(format: "messageId = \(messageId)")
+        fetchRequest.predicate = predicate
+        
+        do{
+            if let messagesResult = try self.privateContext.executeFetchRequest(fetchRequest) as? [DBMessageChat]
+            {
+                if messagesResult.count == 1
+                {
+                    return messagesResult.first!
+                }
+                else if messagesResult.count == 0
+                {
+                    return nil
+                }
+                else if messagesResult.count > 1
+                {
+                    assert(false, "readChatMessageById  ERROR  -> Found duplicate messages in Local Database...")
+                    //TODO: delete duplicate entries
+                }
+            }
+            return nil
+        }
+        catch let error {
+            print(error)
+            return nil
+        }
+    }
+    
+    func readLastMessagesForHomeDashboard(completion:( ([DBMessageChat]?, error:NSError?) -> ())? )
+    {
+        let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
+        let sortById = NSSortDescriptor(key: "messageId", ascending: false)
+        //let sortByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
+        lastMessagesRequest.sortDescriptors = [sortById]
+        lastMessagesRequest.fetchLimit = 3
+        
+        self.privateContext.performBlock { () -> Void in
+            do{
+                if let messages = try self.privateContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                {
+                    if !messages.isEmpty
+                    {
+                        let sortedMessages = messages.sort({ (message1, message2) -> Bool in
+                            return message1.messageId!.integerValue < message2.messageId!.integerValue
+                        })
+                        //debug
+                        for aDBMessage in sortedMessages
+                        {
+                            print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+                        }
+                        
+                        completion?(sortedMessages, error:nil)
+                    }
+                    else{
+                        completion?(nil, error:nil)
+                    }
+                }
+            }
+            catch let error as NSError{
+                completion?(nil, error:error)
+            }
+        }
+    }
+    /**
+     - Returns: 
+        - nil messages if no messages were found
+        - error and nil messages if something bad happens
+        - array of DBMessage if found at least one message
+     */
+    func readLastMessagesForElementById(elementId:Int, fetchSize:Int, completion:(([DBMessageChat]?, error:NSError?) -> ())?)
+    {
+        let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
+        let sort = NSSortDescriptor(key: "dateCreated", ascending: true)
+        let predicate = NSPredicate(format: "elementId = \(elementId)")
+        
+        lastMessagesRequest.predicate = predicate
+        lastMessagesRequest.sortDescriptors = [sort]
+        lastMessagesRequest.fetchLimit = fetchSize
+        
+        self.privateContext.performBlock { () -> Void in
+            do{
+                if let messages = try self.privateContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                {
+                    if !messages.isEmpty
+                    {
+                        //debug
+                        for aDBMessage in messages
+                        {
+                            print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+                        }
+                        completion?(messages, error:nil)
+                    }
+                    else
+                    {
+                        completion?(nil, error:nil)
+                    }
+                }
+            }
+            catch let error as NSError
+            {
+                completion?(nil, error:error)
+            }
+        }
+    }
+    
+    
+    func deleteAllChatMessages()
+    {
+        let allElementsRequest = NSFetchRequest(entityName: "DBMessageChat")
+        allElementsRequest.includesPropertyValues = false
+        if #available (iOS 9.0, *)
+        {
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: allElementsRequest)
+            do
+            {
+                try self.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.privateContext)
+            }
+            catch
+            {
+                
+            }
+        }
+        else //pre iOS 9
+        {
+            do
+            {
+                if let allMessages = try self.privateContext.executeFetchRequest(allElementsRequest) as? [DBMessageChat]
+                {
+                    for aChatMessage in allMessages
+                    {
+                        self.privateContext.deleteObject(aChatMessage)
+                    }
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+        
+        if self.privateContext.hasChanges
+        {
+            do{
+                try self.privateContext.save()
+                print("Deleted all CHAT Messages from local Database...")
+            }
+            catch{
+                
+            }
+        }
+
+    }
+    //MARK: - avatar previews
+    
+    /**
+    calls *`saveAvatarPreview()`* in a `for-in` loop, saves private context after loop end
+    - Parameter infoArray: array of tuples to save
+    - Parameter completion:
+        - has `false` if an empty infoArray was passed to method
+        - has `false` if privateContext has no changes
+        - has `false` if privateContext did catch an error while trying to save
+        - has `true` if privateContext did save
+    */
+    func batchSaveAvatars(infoArray:[(data:NSData, userId:Int, fileName:String)], completion:((Bool)->())?)
+    {
+        guard !infoArray.isEmpty else {
+            completion?(false)
+            return
+        }
+        
+        for aTuple in infoArray
+        {
+            self.saveAvatarPreview(aTuple.data, forUserId: aTuple.userId, fileName: aTuple.fileName)
+        }
+        
+        if self.privateContext.hasChanges{
+            do{
+                try self.privateContext.save()
+                completion?(true)
+            }
+            catch let saveError{
+                print(saveError)
+                completion?(false)
+            }
+            return
+        }
+        
+        completion?(false)
+    }
+    
+    /**
+    - if existing DBUserAvatarPreview was found by calling *`findAvatarPreviewForUserId()`*
+    an update occurs
+    - if not found - new DBUserAvatarPreview entity is created in privateContext
+    - Parameter data: image preview data object
+    - Parameter forUserId: contactId or userId(if current user`s avatar preview is saved)
+    - Parameter fileName: local stored name with extension for a file that actually stores full size image data on disc
+    */
+    func saveAvatarPreview(data:NSData, forUserId:Int, fileName:String)
+    {
+        let localContext = self.privateContext
+        
+        localContext.performBlock { () -> Void in
+            if let existingPreview = self.findAvatarPreviewForUserId(forUserId), existingImageData = existingPreview.avatarPreviewData
+            {
+                if existingImageData.hashValue != data.hashValue
+                {
+                    existingPreview.avatarPreviewData = data
+                    print("edited existing avatar preview IMAGE DATA")
+                }
+                if existingPreview.fileName != fileName
+                {
+                    existingPreview.fileName = fileName
+                    print("edited existing avatar preview FILE NAME")
+                }
+            }
+            else
+            {
+                if let
+                    newAvatarPreview = NSEntityDescription.insertNewObjectForEntityForName("DBAvatarPreview", inManagedObjectContext: self.privateContext) as? DBAvatarPreview
+                {
+                    newAvatarPreview.fileName = fileName
+                    newAvatarPreview.avatarUserId = forUserId
+                    newAvatarPreview.avatarPreviewData = data
+                    print("inserted new avatar preview")
+                }
+            }
+        }
         
     }
     
     func readAvatarPreviewForContactId(contactId:Int) -> NSData?
     {
+        guard let avatarPreview = self.findAvatarPreviewForUserId(contactId) else
+        {
+            return nil
+        }
+        
+        if let _ = avatarPreview.avatarPreviewData
+        {
+            return avatarPreview.avatarPreviewData
+        }
+        print("\n->no file data for avatar previewData")
         return nil
     }
     
-    private func findAvatarPreviewForUserId(userId:Int) -> DBUserAvatarPreview?
+    private func findAvatarPreviewForUserId(userId:Int) -> DBAvatarPreview?
     {
-        let previewFetchRequest = NSFetchRequest(entityName: "DBUserAvatarPreview")
+        let previewFetchRequest = NSFetchRequest(entityName: "DBAvatarPreview")
         previewFetchRequest.predicate = NSPredicate(format: "avatarUserId == \(userId)")
         do{
-            if let previews = try self.privateContext.executeFetchRequest(previewFetchRequest) as? [DBUserAvatarPreview]
+            if let previews = try self.privateContext.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
             {
                 if previews.count == 1
                 {
                     return previews.first!
                 }
+                else if previews.count == 0
+                {
+                    return nil
+                }
+                else if previews.count > 1
+                {
+                    return previews.last!
+                }
             }
+            else
+            {
+                return nil
+            }
+        }
+        catch let fetchError
+        {
+            print(fetchError)
             return nil
         }
-        catch{
-            return nil
+        
+        return nil
+    }
+    
+    /**
+     private context performs async block on it`s queue
+     - Returns:
+        - dictionary of found images
+        - error if fetch request fails
+        - nil if at least one DBAvatarPreview object was found
+     - Note: completion block may be called on any queue
+     
+    */
+    func preloadSavedAvatarPreviewsToDataSource(completion:(([Int:UIImage]?, error:NSError?) -> ())?)
+    {
+        let previewsRequest = NSFetchRequest(entityName: "DBAvatarPreview")
+        previewsRequest.propertiesToFetch = ["avatarUserId","avatarPreviewData"]
+        let privateContextLocal = self.privateContext
+        privateContextLocal.performBlock { () -> Void in
+            do{
+                if let previewObjects = try privateContextLocal.executeFetchRequest(previewsRequest) as?[DBAvatarPreview] where !previewObjects.isEmpty
+                {
+                    var returningDict = [Int:UIImage]()
+                    for aPreview in previewObjects
+                    {
+                        if let avatarData = aPreview.avatarPreviewData, userId = aPreview.avatarUserId?.integerValue, image = UIImage(data: avatarData)
+                        {
+                            returningDict[userId] = image
+                        }
+                    }
+                    if !returningDict.isEmpty
+                    {
+                        completion?(returningDict, error:nil)
+                        return
+                    }
+                }
+                //return nil, if images not founs and if imagePreview containers not found
+                completion?(nil, error:nil)
+                
+            }
+            catch let fetchError as NSError {
+                completion?(nil, error:fetchError)
+            }
         }
         
     }
     
+    //MARK: - Person
     func findPersonByUserName(userName:String) -> DBPerson?
     {
         let personFetshRequest = NSFetchRequest(entityName: "DBContact")
@@ -479,27 +1071,115 @@ class LocalDatabaseHandler{
         }
     }
     
+    func findPersonById(userId:Int) -> (db:DBPerson?, memory:Person?)
+    {
+        if let aUserId = DataSource.sharedInstance.user?.userId
+        {
+            if aUserId == userId
+            {
+                return (db:nil, memory:DataSource.sharedInstance.user)
+            }
+            else if let foundContact = self.readContactById(userId)
+            {
+                return (db:foundContact, memory:nil)
+            }
+        }
+        
+        return (db:nil, memory:nil)
+    }
+    
+    //MARK: - Contacts
+    
+    func saveContactsToDataBase(contacts:[Contact], completion:((Bool, error:NSError?)->())?)
+    {
+        guard !contacts.isEmpty else
+        {
+            completion?(false, error:NSError(domain: "com.Origami.EmptyValue.Error", code: -3030, userInfo: [NSLocalizedDescriptionKey:"Tried to insert empty contacts to local database."]))
+            return
+        }
+        for aContact in contacts
+        {
+            if let existingContact = self.readContactById(aContact.contactId)
+            {
+                print("Updating Contact: \(existingContact.contactId!)")
+                existingContact.fillInfoFromContact(aContact)
+            }
+            else
+            {
+                print("Inserting new Contact")
+                if let newContact = NSEntityDescription.insertNewObjectForEntityForName("DBContact", inManagedObjectContext: self.privateContext) as? DBContact
+                {
+                    newContact.fillInfoFromContact(aContact)
+                }
+            }
+        }
+        
+        if self.privateContext.hasChanges
+        {
+            do
+            {
+                try self.privateContext.save()
+                print(" Did save context after SavingContacts...")
+                completion?(true, error: nil)
+            }
+            catch let contextSaveError as NSError
+            {
+                print(" --- !!!!  Did NOT context after SavingContacts : ")
+                print(contextSaveError)
+                completion?(false, error: contextSaveError)
+            }
+        }
+        else
+        {
+            print("\n ->->->-> PrivateContext has no changes after contacts saving.")
+            completion?(false, error:nil)
+        }
+        
+        
+    }
+
+    func readContactById(contactId:Int) -> DBContact?
+    {
+        let contactRequest = NSFetchRequest(entityName: "DBContact")
+        contactRequest.predicate = NSPredicate(format: "contactId = \(contactId)")
+        do{
+            if let contactsResult = try self.privateContext.executeFetchRequest(contactRequest) as? [DBContact]
+            {
+                let contactsCount = contactsResult.count
+                if contactsCount == 1
+                {
+                    return contactsResult.first
+                }
+                else if contactsCount == 0
+                {
+                    return nil
+                }
+                else
+                {
+                    //get last returned contact and delete the rest
+                    var severalContacts = contactsResult
+                    let toReturn = severalContacts.removeLast()
+                    
+                    for aContact in severalContacts
+                    {
+                        self.privateContext.deleteObject(aContact)
+                    }
+                    //save context after deletion will happen at some point in time, not here, because this method potentially will be called in loops
+                    return toReturn
+                }
+            }
+            
+            return nil
+        }
+        catch let error as NSError{
+            print("Could not execute Single Contact Fetch:")
+            print(error)
+            return nil
+        }
+    }
+    
+    
+    
+    
+    
 }
-
-
-/*
-func fillInfoFromInMemoryElement(element:Element)
-{
-self.elementId      = element.elementId
-self.rootElementId  = NSNumber(integer: element.rootElementId)
-self.responsibleId  = NSNumber(integer: element.responsible)
-self.title          = element.title
-self.details        = element.details
-self.dateChanged    = element.changeDate?.dateFromServerDateString()
-self.dateCreated    = element.createDate.dateFromServerDateString()
-self.dateRemind     = element.remindDate
-self.dateArchived   = element.archiveDate?.dateFromServerDateString()
-self.dateFinished   = element.finishDate
-self.type           = NSNumber(integer:element.typeId)
-self.finishState    = NSNumber(integer: element.finishState)
-self.isFavourite    = NSNumber(bool:element.isFavourite)
-self.isSignal       = NSNumber(bool:element.isSignal)
-self.hasAttaches    = NSNumber(bool: element.hasAttaches)
-}
-
-*/

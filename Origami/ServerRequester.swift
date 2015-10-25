@@ -735,40 +735,37 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     }
     
     //MARK: Messages
-    func loadAllMessages(
-        completion: ((messages:(chat: [Message], service:[Message])?, error:NSError?) -> ())?
-        )
+    func loadAllMessages(completion: ((messages:(chat: [Message], service:[Message])?, error:NSError?) -> ())?)
     {
-        if let tokenString = DataSource.sharedInstance.user?.token //as? String
-        {
-            let urlString = "\(serverURL)" + "\(getAllMessagesPart)" + "?token=" + "\(tokenString)"
+        guard let tokenString = DataSource.sharedInstance.user?.token else{
             
-            let messagesOp = httpManager.GET(urlString,
-                parameters: nil,
-                success:
-                { (operation, result) -> Void in
-                    
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
-                        if let
-                            lvResultDict = result as? [NSObject:AnyObject],
-                            messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
-                            messagesArray = ObjectsConverter.convertToMessages(messageDictsArray)
-                        {
-                            completion?(messages:messagesArray, error:nil)
-                        }
-                    })
-                   
-                })
-                { /*failure closure*/(task, requestError) -> Void in
-                    completion?(messages:nil, error:requestError)
-            }
-            
-            messagesOp?.resume()
+            completion?(messages:nil, error:noUserTokenError)
             return
         }
         
-        completion?(messages:nil, error:NSError(domain: "TokenError", code: -101, userInfo: [NSLocalizedDescriptionKey:"No User token found."]))
+        let urlString = "\(serverURL)" + "\(getAllMessagesPart)" + "?token=" + "\(tokenString)"
         
+        let messagesOp = httpManager.GET(urlString,
+            parameters: nil,
+            success:
+            { (operation, result) -> Void in
+                
+                dispatch_async(getBackgroundQueue_UTILITY(), { () -> Void in
+                    if let
+                        lvResultDict = result as? [String:AnyObject],
+                        messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
+                        messagesArray = ObjectsConverter.convertToMessages(messageDictsArray)
+                    {
+                        completion?(messages:messagesArray, error:nil)
+                    }
+                })
+               
+            })
+            { /*failure closure*/(task, requestError) -> Void in
+                completion?(messages:nil, error:requestError)
+        }
+        
+        messagesOp?.resume()
     }
     
     func sendMessage(message:String, toElement elementId:Int, completion:networkResult?)
@@ -1250,8 +1247,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 
                 if let responseBytes = responseData
                 {
-                    
-                    do{
+                    do
+                    {
                         if let jsonObject = try NSJSONSerialization.JSONObjectWithData(responseBytes, options: NSJSONReadingOptions.MutableContainers) as? [String:AnyObject]
                         {
                             if let response = jsonObject["GetPhotoResult"] as? [Int]
@@ -1271,10 +1268,13 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                             completion?(avatarData: nil, error: nil)
                         }
                         
-                    }catch let error as NSError{
+                    }
+                    catch let error as NSError
+                    {
                         completion?(avatarData: nil, error: error)
                     }
-                    catch{
+                    catch
+                    {
                         completion?(avatarData: nil, error: unKnownExceptionError)
                     }
                 }
@@ -1299,104 +1299,72 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             return
         }
         
-
+        let requestString = serverURL + "SetPhoto" + "?token=" + userToken
         
+        guard  let url = NSURL(string: requestString) else
+        {
+            let error = NSError (domain: "Origami.internal", code: -606, userInfo: [NSLocalizedDescriptionKey: "Could not create URL for image uploading request"])
+            completionBlock?(response: nil,error: error)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            return
+        }
+    
+        let mutableRequest = NSMutableURLRequest(URL: url)
+        mutableRequest.HTTPMethod = "POST"
+        mutableRequest.HTTPBody = data
+        
+        
+        let bgQueue = NSOperationQueue()
+        bgQueue.maxConcurrentOperationCount = 1
+    
+        let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+        config.HTTPMaximumConnectionsPerHost = 1
+        
+        let session = NSURLSession(configuration: config, delegate: self, delegateQueue: nil)
+        
+        
+        let imageUploadTask = session.uploadTaskWithRequest(mutableRequest, fromData: data) { (responseData, urlResponse, responseError) -> Void in
+            
+            if let respError = responseError
+            {
+                completionBlock?(response: nil,error: respError)
+            }
+            else if let respData = responseData
+            {
+                do{
+                    if let dataObject = try NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
+                    {
+                        print("-> user avatar uploading result: \(dataObject)")
+                        completionBlock?(response: dataObject, error: nil)
+                    }
+                    else
+                    {
+                        let errorReading = NSError(domain: "com.Origami.jsonCasting.Error", code: -5432, userInfo: [NSLocalizedDescriptionKey: "Failed to parse \"uploadUserAvatarBytes\" response"])
+                        completionBlock?(response: nil, error: errorReading)
+                    }
+                }
+                catch let error as NSError
+                {
+                    completionBlock?(response: nil, error: error)
+                }
+                catch
+                {
+                    completionBlock?(response: nil, error: unKnownExceptionError)
+                }
+                
+            }
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        }
+       
+        imageUploadTask.taskDescription = "uploadImageFor: current user"
+        
+        
+        bgQueue.addOperationWithBlock({ () -> Void in
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            let requestString = serverURL + "SetPhoto" + "?token=" + userToken
-            if let url = NSURL(string: requestString)
-            {
-                let mutableRequest = NSMutableURLRequest(URL: url)
-                mutableRequest.HTTPMethod = "POST"
-                mutableRequest.HTTPBody = data
-                
-                
-                let bgQueue = NSOperationQueue()
-                
-                let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
-                config.HTTPMaximumConnectionsPerHost = 1
-                
-                let session = NSURLSession(configuration: config, delegate: self, delegateQueue: nil)
-                
-                
-                let imageUploadTask = session.uploadTaskWithRequest(mutableRequest, fromData: data, completionHandler: { (responseData, urlResponse, responseError) -> Void in
-                    if let respError = responseError
-                    {
-                        completionBlock?(response: nil,error: respError)
-                    }
-                    else if let respData = responseData
-                    {
-                        do{
-                            if let dataObject = try NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
-                            {
-                                print("-> user avatar uploading result: \(dataObject)")
-                                completionBlock?(response: dataObject, error: nil)
-                            }
-                            else
-                            {
-                                let errorReading = NSError(domain: "com.Origami.jsonCasting.Error", code: -5432, userInfo: [NSLocalizedDescriptionKey: "Failed to parse \"uploadUserAvatarBytes\" response"])
-                                completionBlock?(response: nil, error: errorReading)
-                            }
-                            
-                            
-                        }catch let error as NSError{
-                            completionBlock?(response: nil, error: error)
-                        } catch{
-                            completionBlock?(response: nil, error: unKnownExceptionError)
-                        }
-                        
-                    }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                })
-               
-                imageUploadTask.taskDescription = "uploadImageFor: current user"
-                
-                
-                bgQueue.addOperationWithBlock({ () -> Void in
-                    imageUploadTask.resume()
-                })
-                
-//                NSURLConnection.sendAsynchronousRequest(mutableRequest, queue: bgQueue, completionHandler: { (response, responseData, responseError) -> Void in
-//                    
-//                    if let respError = responseError
-//                    {
-//                        completionBlock?(response: nil,error: respError)
-//                    }
-//                    else if let respData = responseData
-//                    {
-//                        do{
-//                            if let dataObject = try NSJSONSerialization.JSONObjectWithData(respData, options: NSJSONReadingOptions.AllowFragments) as? [String:AnyObject]
-//                            {
-//                                print("-> user avatar uploading result: \(dataObject)")
-//                                completionBlock?(response: dataObject, error: nil)
-//                            }
-//                            else
-//                            {
-//                                let errorReading = NSError(domain: "com.Origami.jsonCasting.Error", code: -5432, userInfo: [NSLocalizedDescriptionKey: "Failed to parse \"uploadUserAvatarBytes\" response"])
-//                                completionBlock?(response: nil, error: errorReading)
-//                            }
-//                            
-//                            
-//                        }catch let error as NSError{
-//                            completionBlock?(response: nil, error: error)
-//                        } catch{
-//                            completionBlock?(response: nil, error: unKnownExceptionError)
-//                        }
-//                       
-//                    }
-//                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                })
-            }
-            else
-            {
-                let error = NSError (domain: "Origami.internal", code: -606, userInfo: [NSLocalizedDescriptionKey: "Could not create URL for image uploading request"])
-                completionBlock?(response: nil,error: error)
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            }
-        
-        
-        
-        
+            imageUploadTask.resume()
+        })
     }
+    
     //MARK: Contacts
     
     /** 
@@ -1416,7 +1384,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
                 success: { (operation, result) -> Void in
-                NSOperationQueue().addOperationWithBlock({ () -> Void in
+                    
+                NSOperationQueue().addOperationWithBlock({ _ in
                     if let completion = completionClosure
                     {
                         if let lvContactsArray = result["GetContactsResult"] as? [[String:AnyObject]]

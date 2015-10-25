@@ -33,3 +33,8 @@ func getBackgroundQueue_DEFAULT() -> dispatch_queue_t
         return dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
     }
 }
+
+func getBackgroundQueue_CONCURRENT() -> dispatch_queue_t
+{
+        return dispatch_queue_create("com.Origami.ConcurrentQueue", DISPATCH_QUEUE_CONCURRENT)
+}

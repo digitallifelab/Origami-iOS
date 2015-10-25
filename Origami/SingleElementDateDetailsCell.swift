@@ -22,7 +22,7 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
             }
         }
     }
-    weak var handledElement:Element?
+    var handledElementInfo:DateDetailsStruct?
     @IBOutlet weak var datesTable:UITableView?
     @IBOutlet weak var ownerNameLabel:UILabel?
     @IBOutlet weak var ownerLocalizedLabel:UILabel?
@@ -56,71 +56,44 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         
         self.editButton?.tintColor = kWhiteColor
         self.editButton?.setImage((UIImage(named: "icon-edit")?.imageWithRenderingMode(.AlwaysTemplate)), forState: .Normal)
-        if let creatorId = self.handledElement?.creatorId, userId = DataSource.sharedInstance.user?.userId
+        
+        if let ownerNameToDisplay = self.handledElementInfo?.creatorName
         {
-            var ownerNameToDisplay:String?// = String()
-            
-            if creatorId == userId
-            {
-                ownerNameToDisplay = DataSource.sharedInstance.user?.nameAndLastNameSpacedString()
-            }
-            else if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId]))
-            {
-                if let owner = contacts.first
-                {
-                    ownerNameToDisplay = owner.nameAndLastNameSpacedString()
-                }
-            }
             ownerNameLabel?.text = ownerNameToDisplay
             ownerLocalizedLabel?.text = "creator".localizedWithComment("")
-            
-            
-            var responsibleName:String?
-            if let responsibleId = self.handledElement?.responsible
-            {
-                if responsibleId == userId
-                {
-                    responsibleName = DataSource.sharedInstance.user?.nameAndLastNameSpacedString()
-                }
-                else if let contact = DataSource.sharedInstance.getContactsByIds(Set([responsibleId]))?.first
-                {
-                   responsibleName = contact.nameAndLastNameSpacedString()
-                }
-                
-                if let _ = responsibleName
-                {
-                    responsibleNameLabel?.text = responsibleName
-                    responsibleLocalizedLabel?.text = "responsible".localizedWithComment("")
-                }
-                else
-                {
-                    responsibleNameLabel?.text = nil
-                    responsibleLocalizedLabel?.text = nil
-                }
-            }
-            else
-            {
-                responsibleNameLabel?.text = nil
-                responsibleLocalizedLabel?.text = nil
-            }
+        }
+        
+        if let responsibleName = self.handledElementInfo?.responsibleName
+        {
+            responsibleNameLabel?.text = responsibleName
+            responsibleLocalizedLabel?.text = "responsible".localizedWithComment("")
+       
+            responsibleNameLabel?.text = nil
+            responsibleLocalizedLabel?.text = nil
+        }
+        else
+        {
+            responsibleNameLabel?.text = nil
+            responsibleLocalizedLabel?.text = nil
+        }
             
             //print("->\n Current element: \(self.handledElement?.toDictionary())\n<-")
-        }
+        
     }
     
     //MARK: UITableViewDataSource
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         var countRows = 0
-        if let _ = handledElement?.createDate.timeDateStringFromServerDateString() //as? String
+        if let _ = handledElementInfo?.dateCreated?.timeDateString()//.timeDateStringFromServerDateString() //as? String
         {
             countRows += 1
         }
-        if let _ = handledElement?.changeDate?.timeDateStringFromServerDateString() //as? String
+        if let _ = handledElementInfo?.dateChanged?.timeDateString() //as? String
         {
             countRows += 1
         }
-        if let _ = handledElement?.finishDate?.timeDateString()
+        if let _ = handledElementInfo?.dateFinished?.timeDateString()
         {
             countRows += 1
         }
@@ -155,13 +128,13 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         {
         case 0:
             cell.titleLabel.text = "Created".localizedWithComment("")
-            cell.dateLael.text = handledElement?.createDate.dateFromServerDateString()?.timeDateString()
+            cell.dateLael.text = handledElementInfo?.dateCreated?.timeDateString()
         case 1:
             cell.titleLabel.text = "Changed".localizedWithComment("")
-            cell.dateLael.text = handledElement?.changeDate?.dateFromServerDateString()?.timeDateString()
+            cell.dateLael.text = handledElementInfo?.dateChanged?.timeDateString()
         case 2:
             cell.titleLabel.text = "Finished".localizedWithComment("")
-            cell.dateLael.text = handledElement?.finishDate?.timeDateString() ?? nil
+            cell.dateLael.text = handledElementInfo?.dateFinished?.timeDateString()
         default:
             break
         }

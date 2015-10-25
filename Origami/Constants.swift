@@ -123,11 +123,11 @@ let kHomeScreenMessageTappedNotification = "HomeScreenMessageTapped"
 let kLogoutNotificationName = "LogOutPressed"
 let kContactFavouriteButtonTappedNotification = "ContactFavouriteTapped"
 let kContactsStatusDidChangeNotification = "ContactsStatusDidChangeNotification"
-let kContactAvatarDidChangeNotification = "ContactAvatarDidChangeNotification"
+//let kContactAvatarDidChangeNotification = "ContactAvatarDidChangeNotification"
 let kLongPressMessageNotification = "LongPressedMessage"
 let kNewElementsAddedNotification = "NewElementsAdded"
 let kElementWasChangedNotification = "ElementWasChanged"
 let kAttachDataDidFinishLoadingNotification = "DidLoadAttachFileData"
 let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"
-
+let kAvatarDidFinishDownloadingNotification = "AvatarDidFinishDownloadingNotification"
 

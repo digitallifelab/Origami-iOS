@@ -1,5 +1,5 @@
 //
-//  DBUserAvatarPreview+CoreDataProperties.swift
+//  DBAvatarPreview+CoreDataProperties.swift
 //  Origami
 //
 //  Created by CloudCraft on 23.10.15.
@@ -12,7 +12,7 @@
 import Foundation
 import CoreData
 
-extension DBUserAvatarPreview {
+extension DBAvatarPreview {
 
     @NSManaged var avatarPreviewData: NSData?
     @NSManaged var avatarUserId: NSNumber?

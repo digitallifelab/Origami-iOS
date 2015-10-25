@@ -48,22 +48,20 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                     if !userName.isEmpty
                     {
                         dispatch_group_enter(bgGroup)
-                        DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: {[weak self] (image) -> () in
-                            if let weakSelf = self
-                            {
-                                if let avatar = image
-                                {
-                                    weakSelf.contactImages[userName] = avatar
-                                    shouldReloadAfterRealAvatarLoaded = true
-                                }
-//                                else
-//                                {
-//                                    weakSelf.contactImages[userName] = UIImage(named: "icon-contacts")
-//                                }
-                                
+                        
+                        if let avatar = DataSource.sharedInstance.getAvatarForUserId(lvContact.contactId)
+                        {
+                            if let weakSelf = self{
+                                weakSelf.contactImages[userName] = avatar
+                                shouldReloadAfterRealAvatarLoaded = true
                             }
+                        }
+//                        
+
+                                
+                            //}
                             dispatch_group_leave(bgGroup)
-                        })
+                        //})
                     }
                 }
             

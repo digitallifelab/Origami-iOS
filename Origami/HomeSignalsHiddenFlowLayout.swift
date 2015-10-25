@@ -57,31 +57,34 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         }
     }
     
-    var privSignals:Int = 0
-    var privFavourites:[Element]?// = [Element]()
-    var privOther:[Element]? //= [Element]()
+//    var privSignals:Int = 0
+//    var privFavourites:[Element]?
+//    var privOther:[Element]?
     
-    init(signals:Int, favourites:[Element]?, other:[Element]?)
+//    convenience init(signals:Int, favourites:[Element]?, other:[Element]?)
+//    {
+//        self.init()
+//        
+//        self.scrollDirection = .Vertical
+//        self.headerReferenceSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width, 30.0)
+//        self.privSignals = signals
+//        self.privFavourites = favourites
+//        self.privOther = other
+//    }
+    private var layoutInfoStruct:HomeLayoutStruct?
+    
+    convenience init(layoutInfoStruct:HomeLayoutStruct)
     {
-        super.init()
+        self.init()
         self.scrollDirection = .Vertical
-        //self.minimumLineSpacing = 5.0
-        //self.minimumInteritemSpacing = 5.0
-        self.itemSize = CGSizeMake(HomeCellNormalDimension, HomeCellNormalDimension)
         self.headerReferenceSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width, 30.0)
-        self.privSignals = signals
-        self.privFavourites = favourites
-        self.privOther = other
-        
-        //print(" ------- Hidden Layout initialized with \(self.privSignals) signals")
-        
-        //self.configureAttributes()
+        self.layoutInfoStruct = layoutInfoStruct
     }
     
-    required init?(coder aDecoder: NSCoder)
-    {
-        super.init(coder: aDecoder)
-    }
+//    required init?(coder aDecoder: NSCoder)
+//    {
+//        super.init(coder: aDecoder)
+//    }
     
     override func prepareLayout()
     {
@@ -99,9 +102,11 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
     func clearAllElements()
     {
-        privSignals = 0
-        privOther?.removeAll(keepCapacity: false)
-        privFavourites?.removeAll(keepCapacity: false)
+//        privSignals = 0
+//        privOther?.removeAll(keepCapacity: false)
+//        privFavourites?.removeAll(keepCapacity: false)
+        
+        layoutInfoStruct = nil
     }
     
     func configureAttributes()
@@ -145,31 +150,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         var offsetX:CGFloat = self.minimumInteritemSpacing
         var offsetY:CGFloat = self.minimumLineSpacing
         
-        /* - fix top offset in iPhone 6,5,4- */
-
-//        if #available (iOS 8.0, *)
-//        {
-//            let currentTraitCollection = FrameCounter.getCurrentTraitCollection()
-//            let currentTraitCollectionWidth = currentTraitCollection.horizontalSizeClass
-//            let currentTraitCollectionHeight = currentTraitCollection.verticalSizeClass
-//            
-//            if currentTraitCollectionWidth == .Compact && currentTraitCollectionHeight == .Compact
-//            {
-//                offsetY += 40.0
-//            }
-//            else if currentTraitCollectionWidth == .Regular && currentTraitCollectionHeight == .Compact
-//            {
-//                offsetY += 20.0
-//            }
-//        }
-//        else
-//        {
-//             offsetY += 44.0
-//        }
-        
-       
-        /*---------*/
-        
         if cellAttributes == nil
         {
             cellAttributes = [NSIndexPath : UICollectionViewLayoutAttributes]()
@@ -180,20 +160,30 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         }
         
         var countOfSections = 0
-        if privSignals > 0
+        
+        var countOfSignals = 0
+        var countOfFavourites = 0
+        var countOfOther = 0
+        if let signalsInfo = layoutInfoStruct?.signals
         {
-            countOfSections += 1
-        }
-        if let favs = privFavourites
-        {
-            if favs.count > 0
+            countOfSignals = signalsInfo.count
+            if countOfSignals > 0
             {
                 countOfSections += 1
             }
         }
-        if let other = privOther
+        if let favs = layoutInfoStruct?.favourites
         {
-            if other.count > 0
+            countOfFavourites = favs.count
+            if countOfFavourites > 0
+            {
+                countOfSections += 1
+            }
+        }
+        if let other = layoutInfoStruct?.other
+        {
+            countOfOther = other.count
+            if countOfOther > 0
             {
                 countOfSections += 1
             }
@@ -210,7 +200,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             
             headerAttributes![indexPathForSection] = sectionHeaderAttributes
             
-            //print("header attributes: \(headerAttributes?.count)")
+            //print("header attributes: \(headerAttributes!.count)")
             
             //move down
             offsetY += sectionHeaderAttributes.frame.size.height + self.minimumLineSpacing
@@ -221,18 +211,19 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             switch section
             {
             case 0:
-                numberOfItemsInSection = max(privSignals + 1, 2)
+                //TODO: debug and change datasource numberOfItemsInSection:   for returnin 2 cells only - signalButtonCell and HomeLastMesagesCell
+                numberOfItemsInSection = max(countOfSignals + 1, 2) //TODO: 2
             case 1:
                 if countOfSections == 2
                 {
-                    numberOfItemsInSection = privOther?.count ?? 0
+                    numberOfItemsInSection = countOfOther
                 }
                 else if countOfSections == 3
                 {
-                    numberOfItemsInSection = privFavourites?.count ?? 0
+                    numberOfItemsInSection = countOfFavourites
                 }
             case 2:
-                numberOfItemsInSection = privOther?.count ?? 0
+                numberOfItemsInSection = countOfOther
             default:
                 numberOfItemsInSection = 0
             }
@@ -281,16 +272,22 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
                 {
                     if countOfSections < 3
                     {
-                        if let currentElement = privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived: false)
+                        if let currentElementSize = layoutInfoStruct?.other?[currentItem]
                         {
-                            elementWidth = HomeCellWideDimension
+                            if currentElementSize == .Wide
+                            {
+                                elementWidth = HomeCellWideDimension
+                            }
                         }
                     }
                     else
                     {
-                        if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived: false)
+                        if let currentElementSize = (section == 1) ? layoutInfoStruct?.favourites?[currentItem] : layoutInfoStruct?.other?[currentItem]
                         {
-                            elementWidth = HomeCellWideDimension
+                            if currentElementSize == .Wide
+                            {
+                                elementWidth = HomeCellWideDimension
+                            }
                         }
                     }
                     
@@ -342,10 +339,10 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
     override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes?
     {
-        var superForIndexPath = super.layoutAttributesForItemAtIndexPath(indexPath)
+        let superForIndexPath = super.layoutAttributesForItemAtIndexPath(indexPath)
         if let existingItemAttrs =  cellAttributes?[indexPath]
         {
-            superForIndexPath = existingItemAttrs
+            return  existingItemAttrs
         }
 
         return superForIndexPath
@@ -355,6 +352,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     {
         if elementKind == UICollectionElementKindSectionHeader
         {
+            //print("Header requested index path: \(indexPath.section) - \(indexPath.item)")
             if let headerAttrs = headerAttributes?[indexPath]
             {
                 return headerAttrs
@@ -362,23 +360,26 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             else
             {
                 //print("returning SUPER HEADER attributes for indexPath: \(indexPath)")
-                let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
-                return superAttrs
+//                let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
+//                return superAttrs
+                return nil
             }
         }
-        else
-        {
-            //print("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
-            let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
-            return superAttrs
-        }
+        
+        return nil
+//        else
+//        {
+//            //print("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
+//            let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath)
+//            return superAttrs
+//        }
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [UICollectionViewLayoutAttributes]?
     {
         //print("\(rect)")
-        if let superAttrs = super.layoutAttributesForElementsInRect(rect)
-        {
+        /*if*/ //let superAttrs = super.layoutAttributesForElementsInRect(rect)
+        //{
             var existingAttrs = [UICollectionViewLayoutAttributes]()
             
             if let cellAttrs = cellAttributes
@@ -406,14 +407,14 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             
             if existingAttrs.isEmpty
             {
-                //print(" returning >>>SUPER<<<< attributes fo rect: \(rect),  \n \(superAttrs)")
-                return superAttrs
+                //print(" returning NIL instaed of >>>SUPER<<<< attributes fo rect: \(rect),  \n \(superAttrs)")
+                return nil
             }
             
             return existingAttrs
-        }
+        //}
         
-        return nil
+        //return nil
     }
     
     // fixing collection view jump up when switching to this Layout
@@ -428,5 +429,84 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             }
         }
         return proposedContentOffset
+    }
+    
+    //MARK: - 
+    class func prepareLayoutStructWithInfo(info:dashboardDBElementsInfoTuple) -> HomeLayoutStruct
+    {
+        print("--LAYOUT--")
+        var signalsDimensionsArray = [ElementItemLayoutWidth]()
+        var favouritesDimensionsArray = [ElementItemLayoutWidth]()
+        var otherElementDimensionsArray = [ElementItemLayoutWidth]()
+        
+        if let signals = info.signals
+        {
+            //print("SIGNALS:")
+            for aSignalBDelement in signals
+            {
+                //print("->")
+                if let elementId = aSignalBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                {
+                    if subordinatesQueryResult.count > 0
+                    {
+                        //print(" -> WIDE")
+                        signalsDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                        continue
+                    }
+                    //print(" ->NORMAL")
+                    signalsDimensionsArray.append(ElementItemLayoutWidth.Normal)
+                    continue
+                }
+                print(" -> ERROR SIGNAL <- ")
+            }
+        }
+        
+        if let favs = info.favourites
+        {
+            //print("FAVOURITES:")
+            for aFavBDelement in favs
+            {
+                //print("->")
+                if let elementId = aFavBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                {
+                    if subordinatesQueryResult.count > 0
+                    {
+                        //print(" -> WIDE")
+                        favouritesDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                        continue
+                    }
+                    favouritesDimensionsArray.append(ElementItemLayoutWidth.Normal)
+                    continue
+                }
+                print(" -> ERROR FAV <- ")
+            }
+        }
+        
+        if let other = info.other
+        {
+            //print("OTHER:")
+            for anOtherBDelement in other
+            {
+                //print("->")
+                if let elementId = anOtherBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                {
+                    if subordinatesQueryResult.count > 0
+                    {
+                        //print(" ->WIDE")
+                        otherElementDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                        continue
+                    }
+                    //print(" ->NORMAL")
+                    otherElementDimensionsArray.append(ElementItemLayoutWidth.Normal)
+                    continue
+                }
+                print(" -> ERROR OTHER <- ")
+            }
+        }
+        
+        let homeLayoutStruct = HomeLayoutStruct(signalsCount: signalsDimensionsArray.count, favourites: favouritesDimensionsArray, other: otherElementDimensionsArray)
+        
+        return homeLayoutStruct
+
     }
 }

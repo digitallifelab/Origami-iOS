@@ -1,5 +1,5 @@
 //
-//  DBUserAvatarPreview.swift
+//  DBAvatarPreview.swift
 //  Origami
 //
 //  Created by CloudCraft on 23.10.15.
@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class DBUserAvatarPreview: NSManagedObject {
+class DBAvatarPreview: NSManagedObject {
 
 // Insert code here to add functionality to your managed object subclass
 

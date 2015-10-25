@@ -42,31 +42,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                         weakSelf.allContacts = allContacts
                         weakSelf.contactsSearchButton?.enabled = true
                     }
-                    
-                    
-                    //download avatars for contacts
-                    for lvContact in allContacts
-                    {
-                        //set avatar image
-                        let userName = lvContact.userName
-                        if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
-                        {
-                            if let weakSelf = self
-                            {
-                                if let avatar = UIImage(data: contactAvatarData)
-                                {
-                                    weakSelf.contactImages[userName] = avatar
-                                }
-                            }
-                        }
-                        
-                    }
-                    if !weakSelf.contactImages.isEmpty
-                    {
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            weakSelf.myContactsTable?.reloadData()
-                            })
-                    }
                 }
             }
         }
@@ -80,43 +55,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewWillAppear(animated: Bool) {
-        
-        
-        if let existContacts = myContacts
-        {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), { [weak self] () -> Void in
-                
-                for lvContact in existContacts
-                {
-                    //set avatar image
-                    let userName = lvContact.userName// as? String
-                                            //set avatar image
-                    if let contactAvatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName)
-                    {
-                        if let weakSelf = self
-                        {
-                            if let avatar = UIImage(data: contactAvatarData)
-                            {
-                                weakSelf.contactImages[userName] = avatar
-                            }
-                        }
-                    }
-                        
-                    
-                }
-                
-                if let weakSelf = self
-                {
-                    if !weakSelf.contactImages.isEmpty
-                    {
-                        dispatch_async(dispatch_get_main_queue()){ _ in
-                            weakSelf.myContactsTable?.reloadData()
-                        }
-                    }
-                }
-            })
-        }
+    override func viewWillAppear(animated: Bool)
+    {
         self.calculateFavouriteContacts { (favouriteContacts) -> () in
             if let fav = favouriteContacts
             {
@@ -359,7 +299,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             //avatar
             cell.avatar.tintColor = kDayCellBackgroundColor
            
-            if let avatarImage = contactImages[contact.userName]
+            if let avatarImage = DataSource.sharedInstance.userAvatarsHolder[contact.contactId]
             {
                 cell.avatar?.image = avatarImage
             }

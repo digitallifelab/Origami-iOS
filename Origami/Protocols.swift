@@ -16,7 +16,7 @@ protocol MessageObserver
 
 protocol ElementSelectionDelegate
 {
-    func didTapOnElement(element:Element)
+    func didTapOnElement(elementId:Int)
 }
 
 protocol AttachmentSelectionDelegate

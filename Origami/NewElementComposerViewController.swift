@@ -38,7 +38,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-    var contactImages = [String:UIImage]()
+    //var contactImages = [String:UIImage]()
     
     var allContacts = DataSource.sharedInstance.getMyContacts()
     
@@ -111,24 +111,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             self.displayMode = .Day
         }
    
-        if let contacts = self.allContacts
-        {
-            let bgAvatarsQueue = dispatch_queue_create("com.Origami.Avatars.Queue.Composer", DISPATCH_QUEUE_SERIAL)
-            dispatch_async(bgAvatarsQueue) {[weak self] () -> Void in
-                for lvContact in contacts
-                {
-                    //set avatar image
-                    let userName = lvContact.userName //as? String,
-                    if let
-                        avatarData = DataSource.sharedInstance.getAvatarDataForContactUserName(userName),
-                        avatar = UIImage(data: avatarData),
-                        weakSelf = self
-                    {
-                        weakSelf.contactImages[userName] = avatar
-                    }
-                }
-            }
-        }
         print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
     }
 
@@ -368,8 +350,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         if let lvContact = allContacts?[indexPath.row]
         {
-            
-            if let avatarImage = contactImages[lvContact.userName]
+            if let avatarImage = DataSource.sharedInstance.userAvatarsHolder[lvContact.contactId]
             {
                 cell.avatar?.image = avatarImage
             }

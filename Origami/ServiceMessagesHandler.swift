@@ -194,7 +194,7 @@ class ServiceMessagesHandler {
             let contactId = aContact.contactId
             if contactAvatarChangeIDs.contains(contactId)
             {
-                DataSource.sharedInstance.cleanAvatarDataForUserName(aContact.userName)
+                DataSource.sharedInstance.cleanAvatarDataForUserName(aContact.userName, userId: contactId)
                 print("->ServiceMessagesHandler  did CLEAN AVATAR for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
                 DataSource.sharedInstance.setLastAvatarSyncDate(currentDate, forContactId: contactId)
             }

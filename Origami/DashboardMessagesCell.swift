@@ -13,36 +13,31 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     var displayMode:DisplayMode = .Day
     var messagesDatasource:ElementChatPreviewTableHandler?
     @IBOutlet var messagesTable:UITableView!
-    var currentMessages:[Message]?
+    //var currentMessages:[Message]?
+    var messages:[DBMessageChat]?
     
-        override func awakeFromNib() {
-            NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
-            messagesTable.scrollsToTop = false
-            if currentMessages == nil
-            {
-                currentMessages = [Message]()
-            }
-        }
+    override func awakeFromNib()
+    {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
+        messagesTable.scrollsToTop = false
+    }
+    
     override func prepareForReuse()
     {
-        
         NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
-        
-        if currentMessages == nil
-        {
-            currentMessages = [Message]()
-        }
     }
     
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
     {
-        //NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:nil, userInfo: nil)
-        
-        if let messageTapped = self.messagesDatasource?.messageForIndexPath(indexPath)
+        if let tappedMessage = messages?[indexPath.row], elementId = tappedMessage.elementId
         {
-            NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:messageTapped, userInfo: nil)
+             NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:elementId, userInfo: nil)
         }
+//        if let messageTapped = self.messagesDatasource?.messageForIndexPath(indexPath)
+//        {
+//            NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:, userInfo: nil)
+//        }
     }
     
     
@@ -52,51 +47,83 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
         
-        DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount/*3 by default*/, completion: {[weak self] (messages) -> () in
-            if let aSelf = self
+        DataSource.sharedInstance.localDatadaseHandler?.readLastMessagesForHomeDashboard {[weak self] (dbMessages, error) -> () in
+            if let dbError = error{
+                print("error while querying messages from dashboart messages cell: \(dbError)")
+                return
+            }
+            
+            if let messagesFromDB = dbMessages
             {
-                if let recievedMessages = messages, _ = aSelf.currentMessages
+                if let weakSelf = self
                 {
-                    aSelf.reloadChatTableWithNewMessages(recievedMessages)
-                    DataSource.sharedInstance.addObserverForNewMessagesForElement(aSelf, elementId: All_New_Messages_Observation_ElementId)
+                    weakSelf.messages = messagesFromDB
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        weakSelf.reloadChatTableWithNewMessages(weakSelf.messages)
+                    })
+                }
+                
+            }
+        }
+    }
+    
+    func reloadChatTableWithNewMessages(messages:[DBMessageChat]?)
+    {
+        guard let nonNilMessages = messages else
+        {
+            return
+        }
+        
+        //prepare info for chat cells
+        var messageInfosForDataSource = [ChatMessagePreviewStruct]()
+        
+        for aChatMessage in nonNilMessages
+        {
+            var dateString = aChatMessage.dateCreated?.timeDateString()
+            if let date = aChatMessage.dateCreated
+            {
+                if date.lessThanDayAgo()
+                {
+                    dateString = date.dateStringShortStyle()
                 }
                 else
                 {
-                    NSNotificationCenter.defaultCenter().addObserver(aSelf, selector: "refreshHomeMessages:", name: FinishedLoadingMessages, object: DataSource.sharedInstance)
+                    dateString = date.timeStringShortStyle()
                 }
             }
-        })
-    }
-    
-    func reloadChatTableWithNewMessages(messages:[Message]?)
-    {
-        if let toShow = messages, existing = self.currentMessages
-        {
-            let currentMessagesSet = Set(existing)
-            let newMessages = Set(toShow)
             
-            let filteredSetOfMessages = currentMessagesSet.exclusiveOr(newMessages)
-            var messagesArray = Array(filteredSetOfMessages)
+            var messageInfo = ChatMessagePreviewStruct(name: nil, text: aChatMessage.textBody, date: dateString, avatarPreview: nil)
             
-            ObjectsConverter.sortMessagesByDate(&messagesArray, >)
-            
-            let count = messagesArray.count
-            if count > MaximumLastMessagesCount
+           
+            if let creatorId = aChatMessage.creatorId?.integerValue
             {
-                //leave only 3 last messages ( or any number set in "MaximumLastMessagesCount" constant)
-                let cutArray = Array(messagesArray[count-MaximumLastMessagesCount..<count])
-                self.messagesDatasource = ElementChatPreviewTableHandler(messages: cutArray)
-            }
-            else
-            {
-                self.messagesDatasource = ElementChatPreviewTableHandler(messages: toShow)
+                if let messageCreatorTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
+                {
+                    if let dbPerson = messageCreatorTuple.db
+                    {
+                        messageInfo.authorName = dbPerson.initialsString()
+                    }
+                    else if let  memoryPerson = messageCreatorTuple.memory // should be only current user
+                    {
+                        messageInfo.authorName = memoryPerson.initialsString()
+                    }
+                }
+                
+                if let avatarPreview = DataSource.sharedInstance.localDatadaseHandler?.readAvatarPreviewForContactId(creatorId)
+                {
+                    messageInfo.authorAvatar = UIImage(data: avatarPreview)
+                }
             }
             
-            self.messagesDatasource?.displayMode = self.displayMode
-            self.messagesTable.dataSource = self.messagesDatasource
-            self.messagesTable.delegate = self
-            self.messagesTable.reloadData()
+            messageInfosForDataSource.append(messageInfo)
         }
+        
+        self.messagesDatasource = ElementChatPreviewTableHandler(messages: messageInfosForDataSource)
+        
+        self.messagesDatasource?.displayMode = self.displayMode
+        self.messagesTable.dataSource = self.messagesDatasource
+        self.messagesTable.delegate = self
+        self.messagesTable.reloadData()
     }
     
     func refreshHomeMessages(notification:NSNotification?)
@@ -107,12 +134,12 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
     //MARK: MessageObserver
     func newMessagesAdded(messages:[Message])
     {
-        let mainQueue = NSOperationQueue.mainQueue()
-        
-        mainQueue.addOperationWithBlock
-            {
-                [unowned self] () -> Void in
-                self.reloadChatTableWithNewMessages(messages)
-        }
+//        let mainQueue = NSOperationQueue.mainQueue()
+//        
+//        mainQueue.addOperationWithBlock
+//            {
+//                [unowned self] () -> Void in
+//                self.reloadChatTableWithNewMessages(messages)
+//        }
     }
 }

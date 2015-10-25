@@ -10,7 +10,7 @@ import UIKit
 
 class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableViewDataSource, UITableViewDelegate, TableItemPickerDelegate, ElementComposingDelegate {
 
-    var currentElement:Element?
+    var currentElement:DBElement?
     
     @IBOutlet var chatTable:UITableView!
     @IBOutlet var bottomControlsContainerView:ChatTextInputView!
@@ -40,7 +40,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         bottomControlsContainerView.delegate = self
         // Do any additional setup after loading the view.
         if let
-            elementIdInt = self.currentElement?.elementId,
+            elementIdInt = self.currentElement?.elementId?.integerValue,
             messages = DataSource.sharedInstance.getMessagesQuantyty(5, elementId: elementIdInt, lastMessageId: nil)
         {
             currentChatMessages = messages
@@ -180,6 +180,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                                         aSelf.showAlertWithTitle("Message Send Error", message: messageError.localizedDescription, cancelButtonTitle: "close".localizedWithComment(""))
                                     }
                                 })
+                            }
+                            else{
+                                
                             }
                         })
                     })
@@ -591,7 +594,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
         {
             if let toVC = segue.destinationViewController as? ParticipantsVC
             {
-                toVC.currentElement = currentElement
+               // toVC.currentElement = currentElement
             }
         }
     }
@@ -661,7 +664,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
-            if let elementIdInt = currentElement?.elementId
+            if let elementIdInt = currentElement?.elementId?.integerValue
             {
                 if let textBody = message?.textBody
                 {
@@ -671,19 +674,19 @@ class ChatVC: UIViewController, ChatInputViewDelegate, MessageObserver, UITableV
                 newElementCreator.composingDelegate = self
                 newElementCreator.rootElementID = elementIdInt
                 
-                if let passwhomIDs = currentElement?.passWhomIDs
-                {
-                    if passwhomIDs.count > 0
-                    {
-                        var idInts = Set<Int>()
-                        for number in passwhomIDs
-                        {
-                            idInts.insert(number)
-                        }
-                        newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
-                    }
-                    
-                }
+//                if let passwhomIDs = currentElement?.passWhomIDs
+//                {
+//                    if passwhomIDs.count > 0
+//                    {
+//                        var idInts = Set<Int>()
+//                        for number in passwhomIDs
+//                        {
+//                            idInts.insert(number)
+//                        }
+//                        newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.
+//                    }
+//                    
+//                }
               
                 newElementCreator.currentElementType = type
                 

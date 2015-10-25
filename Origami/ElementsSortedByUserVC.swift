@@ -66,26 +66,21 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        if let userName = DataSource.sharedInstance.user?.userName
+        if let userId = DataSource.sharedInstance.user?.userId
         {
-            DataSource.sharedInstance.loadAvatarForLoginName(userName, completion: { [weak self] (image) -> () in
-                
-                guard let weakSelf = self, anImage = image, userId = DataSource.sharedInstance.user?.userId else
+           
+            if let anImage = DataSource.sharedInstance.getAvatarForUserId(userId)
+            {
+                if selectedUserId == userId
                 {
-                    return
+                    currentSelectedUserAvatar = anImage
                 }
-                
-                if weakSelf.selectedUserId == userId
-                {
-                    weakSelf.currentSelectedUserAvatar = anImage
-                    weakSelf.configureCurrentRightButtonImage()
-                }
-                
-            })
+            }
+
+//            configureCurrentRightButtonImage()
         }
         
         configureCurrentRightTopButton()
-        //configureTopToolbarItems()
     }
 
     override func didReceiveMemoryWarning() {
@@ -154,7 +149,8 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                         
                         if let weakerSelf = self
                         {
-                            weakerSelf.elements = allCurrentElements
+                            //TODO:_ Switch to DBElements
+                            //weakerSelf.elements = allCurrentElements
                             if weakerSelf.selectedUserId > 0  //sort elements by currently selected user
                             {
                                 print(" -> Sorting all elements - sortCurrentElementsForNewUserId()")
@@ -197,28 +193,29 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         
         for anElement in allElements
         {
-            //print("Creator: \(anElement.creatorId)")
-            if anElement.creatorId == currentSelectedUserId
-            {
-                toSortOwnedElements.insert(anElement)
-            }
-            else
-            {
-                //print("PassWhomIDs: \(anElement.passWhomIDs)")
-                if userIDFromDataSource == currentSelectedUserId
-                {
-                    toSortParticipatingElements.insert(anElement)
-                }
-                else if anElement.passWhomIDs.count > 0
-                {
-                    let passIDsSet = Set(anElement.passWhomIDs)
-                    
-                    if passIDsSet.contains(currentSelectedUserId)
-                    {
-                        toSortParticipatingElements.insert(anElement)
-                    }
-                }
-            }
+            //TODO: ----
+//            //print("Creator: \(anElement.creatorId)")
+//            if anElement.creatorId == currentSelectedUserId
+//            {
+//                toSortOwnedElements.insert(anElement)
+//            }
+//            else
+//            {
+//                //print("PassWhomIDs: \(anElement.passWhomIDs)")
+//                if userIDFromDataSource == currentSelectedUserId
+//                {
+//                    toSortParticipatingElements.insert(anElement)
+//                }
+//                else if anElement.passWhomIDs.count > 0
+//                {
+//                    let passIDsSet = Set(anElement.passWhomIDs)
+//                    
+//                    if passIDsSet.contains(currentSelectedUserId)
+//                    {
+//                        toSortParticipatingElements.insert(anElement)
+//                    }
+//                }
+//            }
         }
         
         var sortedMyElements = Array(toSortOwnedElements)
@@ -428,7 +425,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
         }
     }
     
-    override func elementForIndexPath(indexPath: NSIndexPath) -> Element? {
+    /*override*/ func elementForIndexPath(indexPath: NSIndexPath) -> Element? {
         if tasksFilterEnabled //when displaying elements by TASK filter, we show PArticipating elements first
         {
             switch indexPath.section
@@ -614,30 +611,25 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 }
             }
             
-            if let userNameExist = currentUserName
+            if let _ = currentUserName
             {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
-                    DataSource.sharedInstance.loadAvatarForLoginName(userNameExist, completion: {[weak self] (image) -> () in
-                        
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            if let weakSelf = self
-                            {
-                                if let anImage = image
-                                {
-                                    print(" - > Avatar image size: \(anImage.size)")
-                                    weakSelf.currentSelectedUserAvatar = anImage
-                                    weakSelf.currentTopRightButton?.setImage(weakSelf.currentSelectedUserAvatar?.imageWithRenderingMode(.AlwaysOriginal), forState: .Normal)
-                                    return
-                                }
-                                else
-                                {
-                                    weakSelf.currentSelectedUserAvatar = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
-                                    weakSelf.currentTopRightButton?.setImage(weakSelf.currentSelectedUserAvatar, forState: .Normal)
-                                    
-                                    print(" -> Could not load AVATAR image for selected contact.")
-                                }
-                            }
-                        })
+                let userId = selectedUserId
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), {[weak self] () -> Void in
+                    
+                    if let avatarPreviewImage = DataSource.sharedInstance.getAvatarForUserId(userId)
+                    {
+                        self?.currentSelectedUserAvatar = avatarPreviewImage
+                    }
+                    else
+                    {
+                        self?.currentSelectedUserAvatar = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                    }
+                    
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            weakSelf.currentTopRightButton?.setImage(weakSelf.currentSelectedUserAvatar, forState: .Normal)
+                        }
                     })
                 })
             }

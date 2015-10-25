@@ -12,5 +12,5 @@ import CoreData
 class DBUser: DBPerson {
 
 // Insert code here to add functionality to your managed object subclass
-
+    
 }

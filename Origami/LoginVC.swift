@@ -94,8 +94,23 @@ class LoginVC: UIViewController , UITextFieldDelegate
         NSUserDefaults.standardUserDefaults().synchronize()
         
         self.dismissViewControllerAnimated(true, completion: nil)
-        NSOperationQueue().addOperationWithBlock { () -> Void in
+        NSOperationQueue().addOperationWithBlock { _ in
+            
+            DataSource.sharedInstance.localDatadaseHandler?.preloadSavedAvatarPreviewsToDataSource { (imagesDict, error) -> () in
+                if let imagesInfo = imagesDict
+                {
+                    DataSource.sharedInstance.userAvatarsHolder = imagesInfo
+                    print(" __ Did read avatars from database into memory: ")
+                    print(" avatars: \(imagesInfo.count)")
+                }
+                
+            }
+            
             DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
+            DataSource.sharedInstance.syncLastMessages(completion: { (finished, error) -> () in
+                
+            })
+            
         }
     }
     

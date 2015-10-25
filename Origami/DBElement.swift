@@ -15,7 +15,7 @@ class DBElement: NSManagedObject {
 
     func fillInfoFromInMemoryElement(element:Element)
     {
-        self.elementId      = element.elementId
+        self.elementId      = NSNumber(integer: element.elementId!)
         self.rootElementId  = NSNumber(integer: element.rootElementId)
         self.responsibleId  = NSNumber(integer: element.responsible)
         self.title          = element.title
@@ -30,5 +30,60 @@ class DBElement: NSManagedObject {
         self.isFavourite    = NSNumber(bool:element.isFavourite)
         self.isSignal       = NSNumber(bool:element.isSignal)
         self.hasAttaches    = NSNumber(bool: element.hasAttaches)
+    }
+    
+    func isTaskForCurrentUser() -> Bool{
+        guard let responsibleIdInt = self.responsibleId?.integerValue, userId = DataSource.sharedInstance.user?.userId else
+        {
+            return false
+        }
+        return responsibleIdInt == userId
+    }
+    
+    func lastChangeDateReadableString() -> String?
+    {
+        if let changeDate = self.dateChanged
+        {
+            if changeDate.lessThanDayAgo()
+            {
+                let timString = changeDate.timeStringShortStyle()
+                return timString
+            }
+            
+            let dateString = changeDate.dateStringShortStyle()
+            return dateString
+        }
+        return nil
+    }
+    
+    func creationDateReadableString(shouldEvaluateCurrentDay shouldEvaluateCurrentDay:Bool = true) -> String?
+    {
+        if let date = self.dateCreated
+        {
+            let readable:String = date.timeDateStringShortStyle() as String
+            if shouldEvaluateCurrentDay
+            {
+                //TODO: create string like "2 days ago" , "3 months ago"
+            }
+            return readable
+        }
+        return nil
+    }
+    
+    func isArchived() -> Bool
+    {
+        return self.dateArchived != nil
+    }
+    
+    func isOwnedByCurrentUser() -> Bool
+    {
+        if let userId = DataSource.sharedInstance.user?.userId, elementCreatorId = self.creatorId?.integerValue
+        {
+            if userId == elementCreatorId
+            {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -52,6 +52,18 @@ enum DashCellType:Int
                         //we also need to show wide cell with messages in it
 }
 
+enum ElementItemLayoutWidth
+{
+    case Normal
+    case Wide
+    
+    mutating func changeTo(newWidth:ElementItemLayoutWidth) -> ElementItemLayoutWidth
+    {
+        self = newWidth
+        return self
+    }
+}
+
 enum ProfileTextCellType:Int
 {
     case Mood = 1

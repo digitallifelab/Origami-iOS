@@ -27,6 +27,7 @@ extension DBElement {
     @NSManaged var isSignal: NSNumber?
     @NSManaged var responsibleId: NSNumber?
     @NSManaged var rootElementId: NSNumber?
+    @NSManaged var creatorId:NSNumber?
     @NSManaged var title: String?
     @NSManaged var type: NSNumber?
     @NSManaged var attaches: NSSet?

@@ -11,13 +11,13 @@ import UIKit
 class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource, UITableViewDelegate
 {
     var cellMessageTapDelegate:MessageTapDelegate?
-    var messages:[Message]?
+    var messages:[DBMessageChat]?
         {
         didSet{
-            if let _ = messages
-            {
-                trytoGetContactsForLastMessages()
-            }
+//            if let _ = messages
+//            {
+//                trytoGetContactsForLastMessages()
+//            }
         }
     }
     var contactsForLastMessages:[Contact]?
@@ -46,7 +46,6 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     }
     
     override func prepareForReuse() {
-        //messages = nil
         self.backgroundColor = UIColor.clearColor()
     }
     
@@ -101,25 +100,25 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         //self.layer.shouldRasterize = true
     }
     
-    private func trytoGetContactsForLastMessages()
-    {
-        var contactIDs = Set<Int>()
-        if let messages = self.messages
-        {
-            for aMessage in messages
-            {
-                if let anInt = aMessage.creatorId
-                {
-                    contactIDs.insert(anInt)
-                }
-            }
-        }
-        
-        if let contacts = DataSource.sharedInstance.getContactsByIds(contactIDs)
-        {
-            self.contactsForLastMessages = Array(contacts)
-        }
-    }
+//    private func trytoGetContactsForLastMessages()
+//    {
+//        var contactIDs = Set<Int>()
+//        if let messages = self.messages
+//        {
+//            for aMessage in messages
+//            {
+//                if let anInt = aMessage.creatorId
+//                {
+//                    contactIDs.insert(anInt)
+//                }
+//            }
+//        }
+//        
+//        if let contacts = DataSource.sharedInstance.getContactsByIds(contactIDs)
+//        {
+//            self.contactsForLastMessages = Array(contacts)
+//        }
+//    }
     
     //MARK: UITableViewDataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -127,7 +126,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         {
             return self.messages!.count
         }
-        return 1
+        return 0
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -149,29 +148,24 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
                 chatCell.dateLabel.text = messageDateString as String
             }
             
-            if let creatorId = message.creatorId, userID = DataSource.sharedInstance.user?.userId
+            if let creatorId = message.creatorId?.integerValue
             {
-                if creatorId == userID
+                if let avatarPreview = DataSource.sharedInstance.userAvatarsHolder[creatorId]
                 {
-                    if let username = DataSource.sharedInstance.user?.userName// as? String
-                    {
-                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(username)
-                        {
-                            chatCell.avatarView.image = UIImage(data: imageData)
-                        }
-                    }
-                    chatCell.nameLabel.text = DataSource.sharedInstance.user?.initialsString()//firstName/* as? String*/ ?? DataSource.sharedInstance.user?.lastName// as? String
+                    chatCell.avatarView.image = avatarPreview
                 }
-                else
+                
+                if let personInfo = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
                 {
-                    if let contact = contactForMessage(message)
+                    if let user = personInfo.memory
                     {
-                        chatCell.nameLabel.text = contact.initialsString() ?? "anonymus"
-                        if let imageData = DataSource.sharedInstance.getAvatarDataForContactUserName(contact.userName)
-                        {
-                            chatCell.avatarView.image = UIImage(data: imageData)
-                        }
+                        chatCell.nameLabel.text = user.initialsString()
                     }
+                    else if let contact = personInfo.db
+                    {
+                        chatCell.nameLabel.text = contact.initialsString()
+                    }
+                   
                 }
             }
         }
@@ -201,16 +195,19 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        if let
-            delegate = self.cellMessageTapDelegate,
-            currentMessages = self.messages
-        {
-            if indexPath.row >= 0 && indexPath.row < currentMessages.count
-            {
-                let tappedMessage = currentMessages[indexPath.row]
-                delegate.chatMessageWasTapped(tappedMessage)
-            }
-        }
+//        if let
+//            delegate = self.cellMessageTapDelegate,
+//            currentMessages = self.messages
+//        {
+//            if indexPath.row >= 0 && indexPath.row < currentMessages.count
+//            {
+//                let tappedMessage = currentMessages[indexPath.row]
+//                delegate.chatMessageWasTapped(tappedMessage)
+//            }
+//            return
+//        }
+        
+        self.cellMessageTapDelegate?.chatMessageWasTapped(nil)
     }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

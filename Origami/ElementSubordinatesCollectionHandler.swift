@@ -63,7 +63,7 @@ class ElementSubordinatesCollectionHandler: CollectionHandler
     //Delegate
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
     {
-        self.elementSelectionDelegate?.didTapOnElement(elementForIndexPath(indexPath))
+        self.elementSelectionDelegate?.didTapOnElement(elementForIndexPath(indexPath).elementId!)
         
         collectionView.deselectItemAtIndexPath(indexPath, animated: false)
     }

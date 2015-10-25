@@ -17,7 +17,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
             print(" ->  isReloadingTable = \(isReloadingTable)")
         }
     }
-    var elements:[Element]?
+    var elements:[DBElement]?
     
     var avatarForElementHolder:[Int:UIImage] = [Int:UIImage]()
     
@@ -69,10 +69,12 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                             //1 insert creatorIDs
                             for anElement in elementsForBgQueue
                             {
-                                let idInt = anElement.creatorId
-                                if idInt > 0
+                                if let idInt = anElement.creatorId?.integerValue
                                 {
-                                    creatorIDsSet.insert(idInt)
+                                    if idInt > 0
+                                    {
+                                        creatorIDsSet.insert(idInt)
+                                    }
                                 }
                             }
                             
@@ -119,39 +121,52 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
     
     func startLoadingElementsByActivity(completion:(()->())?)
     {
-        DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
-            let bgQueue = dispatch_queue_create("filter.queue", DISPATCH_QUEUE_SERIAL)
-            dispatch_async(bgQueue, { () -> Void in
-                if let elementsToFilter = elements
+//        DataSource.sharedInstance.getAllElementsSortedByActivity { [weak self] (elements) -> () in
+//            let bgQueue = dispatch_queue_create("filter.queue", DISPATCH_QUEUE_SERIAL)
+//            dispatch_async(bgQueue, { () -> Void in
+//                if let elementsToFilter = elements
+//                {
+//                    let withoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsToFilter)
+//                    if let weakSelf = self
+//                    {
+//                        if !weakSelf.isReloadingTable
+//                        {
+//                            weakSelf.elements = withoutArchived
+//                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+//                                if let _ = self
+//                                {
+//                                    completion?()
+//                                }
+//                            })
+//                        }
+//                        else
+//                        {
+//                            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+//                            dispatch_after(timeout, dispatch_get_main_queue(), { [weak self]() -> Void in
+//                                if let weakSelf = self
+//                                {
+//                                    weakSelf.elements = withoutArchived
+//                                    completion?()
+//                                }
+//                            })
+//                        }
+//                    }
+//                }
+//            })
+//        }
+        dispatch_async(getBackgroundQueue_DEFAULT()) {[weak self] () -> Void in
+            if let recentElements = DataSource.sharedInstance.localDatadaseHandler?.readRecentNonArchivedElements()
+            {
+                if let weakSelf = self
                 {
-                    let withoutArchived = ObjectsConverter.filterArchiveElements(false, elements: elementsToFilter)
-                    if let weakSelf = self
-                    {
-                        if !weakSelf.isReloadingTable
-                        {
-                            weakSelf.elements = withoutArchived
-                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                                if let _ = self
-                                {
-                                    completion?()
-                                }
-                            })
-                        }
-                        else
-                        {
-                            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
-                            dispatch_after(timeout, dispatch_get_main_queue(), { [weak self]() -> Void in
-                                if let weakSelf = self
-                                {
-                                    weakSelf.elements = withoutArchived
-                                    completion?()
-                                }
-                            })
-                        }
-                    }
+                    weakSelf.elements = recentElements
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        weakSelf.tableView?.reloadData()
+                    })
                 }
-            })
+            }
         }
+        
     }
     
     func reloadTableView()
@@ -194,7 +209,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
     
-    func pushElementDashBoardForElement(element:Element)
+    func pushElementDashBoardForElement(element:DBElement)
     {
         self.view.userInteractionEnabled = false
 
@@ -248,7 +263,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup decision Icon Image
-                if self.optionsConverter.isOptionEnabled(.Decision, forCurrentOptions: element.typeId)
+                if self.optionsConverter.isOptionEnabled(.Decision, forCurrentOptions: element.type!.integerValue)
                 {
                     activityCell.decisionIcon?.image = UIImage(named: "tile-decision")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
@@ -258,7 +273,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup idea icon image
-                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.typeId)
+                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.type!.integerValue)
                 {
                     activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
                 }
@@ -268,9 +283,9 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup avatar, name and task Icon image depending on Task property of element
-                if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.typeId)
+                if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.type!.integerValue)
                 {
-                    if let finishState = ElementFinishState(rawValue: element.finishState)
+                    if let finishState = ElementFinishState(rawValue: element.finishState!.integerValue)
                     {
                         switch finishState
                         {
@@ -287,14 +302,14 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     }
                     
                     //setup avatar
-                    if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(element.responsible)
+                    if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(element.responsibleId!.integerValue)
                     {
                         activityCell.elementCreatorAvatar?.image = avatarImage
                     }
                     
                     
                     
-                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.responsible])), currentContact = contacts.first
+                    if let responsible = element.responsibleId?.integerValue, contacts = DataSource.sharedInstance.getContactsByIds(Set([responsible])), currentContact = contacts.first
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
@@ -309,7 +324,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 else //no task
                 {
                     activityCell.taskIcon?.image = nil
-                    if let avatar = avatarForElementHolder[element.creatorId]
+                    if let avatar = avatarForElementHolder[element.creatorId!.integerValue]
                     {
                         activityCell.elementCreatorAvatar?.image = avatar
                     }
@@ -317,26 +332,29 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     {
                         activityCell.elementCreatorAvatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
                         //and try to query avatar from ram again
-                        let creatorIdInt = element.creatorId
-                        if creatorIdInt > 0
+                        if let creatorIdInt = element.creatorId?.integerValue
                         {
-                            let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
-                            dispatch_async(bgQueue, {[weak self] () -> Void in
-                                if let imageAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
-                                {
-                                    if let aSelf = self
+                            if creatorIdInt > 0
+                            {
+                                let bgQueue = dispatch_queue_create("com.origami.Cell.For.IndexPath.Queue", DISPATCH_QUEUE_SERIAL)
+                                dispatch_async(bgQueue, {[weak self] () -> Void in
+                                    if let imageAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
                                     {
-                                        aSelf.avatarForElementHolder[creatorIdInt] = imageAvatar
-                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                            aSelf.tableView?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
-                                        })
+                                        if let aSelf = self
+                                        {
+                                            aSelf.avatarForElementHolder[creatorIdInt] = imageAvatar
+                                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                                aSelf.tableView?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+                                            })
+                                        }
                                     }
-                                }
-                                })
+                                    })
+                            }
                         }
+                        
                     }
                     
-                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([element.creatorId])), currentContact = contacts.first
+                    if let creatorId = element.creatorId?.integerValue, contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), currentContact = contacts.first
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
@@ -356,7 +374,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
         return UITableViewCell(style: .Default, reuseIdentifier: "Cell")
     }
     
-    func elementForIndexPath(indexPath:NSIndexPath) -> Element?
+    func elementForIndexPath(indexPath:NSIndexPath) -> DBElement?
     {
         if let element = elements?[indexPath.row]
         {

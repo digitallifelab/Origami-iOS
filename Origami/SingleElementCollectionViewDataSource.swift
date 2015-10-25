@@ -22,12 +22,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     var currentCellsOptions:ElementCellsOptions?
     
     //var attachesHandler:ElementAttachedFilesCollectionHandler?
-    var subordinatesByIndexPath:[NSIndexPath : Element]?
+    var subordinatesByIndexPath:[NSIndexPath : DBElement]?
     var taskUserAvatar:UIImage?
-    var currentAttaches:[AttachFile]?
+    var currentAttaches:[DBAttach]?
     weak var handledCollectionView:UICollectionView?
     
-    weak var handledElement:Element? {
+    weak var handledElement:DBElement? {
         didSet {
             // detect visible cells by checking options
             var options:[ElementCellType] = [ElementCellType]()
@@ -36,10 +36,18 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 //print("\n appended Title")
                 options.append(.Title)
             }
-            if let _ = getElementLastMessages()
+//            if let _ = getElementLastMessages()
+//            {
+//                //print("\n appended CHAT\n")
+//                options.append(.Chat)
+//            }
+            
+            if let messages = handledElement?.messages as? Set<DBMessageChat>
             {
-                //print("\n appended CHAT\n")
-                options.append(.Chat)
+                if !messages.isEmpty
+                {
+                    options.append(.Chat)
+                }
             }
             if let details = getElementDetails()
             {
@@ -53,17 +61,29 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
             //self.attachesHandler = nil
             
-            if let attachesForElement = getElementAttaches()//let attachesCollectionHandler = getElementAttachesHandler()
+//            if let attachesForElement = getElementAttaches()//let attachesCollectionHandler = getElementAttachesHandler()
+//            {
+//                print("\n -> Current Attaches : \(attachesForElement.count)")
+//                self.currentAttaches = attachesForElement
+//                
+//                options.append(.Attaches)
+//            }           
+            if let attachesBool = self.handledElement?.hasAttaches?.boolValue
             {
-                print("\n -> Current Attaches : \(attachesForElement.count)")
-                self.currentAttaches = attachesForElement
-                options.append(.Attaches)
-            }           
+                if attachesBool == true
+                {
+                    options.append(.Attaches)
+                }
+            }
             
-            if let _ = getElementSubordinates()
+            if let
+                elementId = handledElement?.elementId?.integerValue,
+                result = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
             {
-                //print("\n appended Subordinates")
-                options.append(.Subordinates)
+                if result.count > 0
+                {
+                    options.append(.Subordinates)
+                }
             }
             
             self.currentCellsOptions = ElementCellsOptions(types: Set(options))
@@ -81,25 +101,25 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
     }
     
-    convenience init?(element:Element?)
-    {
-        self.init()
-        
-        if element == nil
-        {
-            return nil
-        }
-        else if element!.elementId == nil
-        {
-            return nil
-        }
-        else if element!.elementId! <= 0
-        {
-            return nil
-        }
-        
-        //self.handledElement = element!
-    }
+//    convenience init?(element:Element?)
+//    {
+//        self.init()
+//        
+//        if element == nil
+//        {
+//            return nil
+//        }
+//        else if element!.elementId == nil
+//        {
+//            return nil
+//        }
+//        else if element!.elementId! <= 0
+//        {
+//            return nil
+//        }
+//        
+//        //self.handledElement = element!
+//    }
     
     func getElementTitle() -> String?
     {
@@ -129,111 +149,112 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         return nil
     }
     
-    func getElementAttaches() -> [AttachFile]?
-    {
-        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
-        {
-            return  attaches
-        }
-        return nil
-    }
+//    func getElementAttaches() -> [AttachFile]?
+//    {
+//        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
+//        {
+//            return  attaches
+//        }
+//        return nil
+//    }
     
-    func getElementSubordinates() -> [Element]?
+    func getElementSubordinates() -> [DBElement]?
     {
-        guard let elementId = handledElement?.elementId, subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived: false) else {
+//        guard let elementId = handledElement?.elementId, subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived: false) else {
+//            return nil
+//        }
+//        
+//        guard let unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates) else {
+//            return nil
+//        }
+        
+        guard let elementId = self.handledElement?.elementId?.integerValue else{
             return nil
         }
-        
-        guard let unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates) else {
-            return nil
+        if let info = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId, shouldReturnObjects: true)
+        {
+            return info.elements
         }
         
-        return unarchivedSubordinates
+        return nil
     }
     
     func elementIsTask() -> Bool
     {
-        if let element = self.handledElement
+        if let element = self.handledElement, elementTypeInt = element.type?.integerValue
         {
             let optionsCovnerter = ElementOptionsConverter()
-            return optionsCovnerter.isOptionEnabled(.Task, forCurrentOptions: element.typeId)
+            return optionsCovnerter.isOptionEnabled(.Task, forCurrentOptions: elementTypeInt)
         }
         return false
     }
     
     func getLayoutInfo() -> ElementDetailsStruct?
     {
-        if let options = self.currentCellsOptions
-        {
-            //prepare easy values
-            var elementTitle:String?
-            if let title = self.handledElement?.title //as? String
-            {
-                elementTitle = title
-            }
-            if elementTitle == nil
-            {
-                return nil
-            }
-            
-            var elementDetails:String? = self.handledElement?.details //as? String
-            if elementDetails != nil
-            {
-                if elementDetails!.isEmpty
-                {
-                    elementDetails = nil
-                }
-            }
-            let messages:Bool = options.cellTypes.contains(.Chat)
-            let attaches:Bool = options.cellTypes.contains(.Attaches)
-            //var buttons = options.cellTypes.contains(.Buttons)
-            
-            
-            var subordinatesInfo:[SubordinateItemLayoutWidth]?
-            //prepare subordinate cells values
-            if let subordinateStore = self.subordinatesByIndexPath
-            {
-                //get ordered array of indexPaths for subordinates
-                var allValues = Array(subordinateStore)
-                allValues.sortInPlace({ (item1, item2) -> Bool in
-                    
-                     return item1.0.item < item2.0.item  //item1 - (NSIndexPath, Element), we are interested in sorting by indexPath
-                })
-                
-                //create array with subordinate layout characteristics
-                var lvSubordinatesInfo = [SubordinateItemLayoutWidth]()
-                for var i = 0; i < allValues.count; i++
-                {
-                    let value = allValues[i] //again tuple
-                    let lvElement = value.1
-                    if let _ = DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId, shouldIncludeArchived: false)
-                    {
-                        lvSubordinatesInfo.append(.Wide)
-                    }
-                    else
-                    {
-                        lvSubordinatesInfo.append(.Normal)
-                    }
-                }
-                if !lvSubordinatesInfo.isEmpty
-                {
-                    subordinatesInfo = lvSubordinatesInfo
-                }
-            }
-            
-            //finally
-            let targetStruct = ElementDetailsStruct(title: elementTitle!,
-                details: elementDetails,
-                messagesCell: messages, /* buttonsCell: buttons,*/
-                attachesCell: attaches,
-                subordinateItems: subordinatesInfo)
-            
-            return targetStruct
-        }
-        else
-        {
+        guard let options = self.currentCellsOptions, elementTitle = self.handledElement?.title else {
             return nil
         }
+        
+        //prepare easy values
+        
+        var elementDetails:String? = self.handledElement?.details //as? String
+        if elementDetails != nil
+        {
+            if elementDetails!.isEmpty
+            {
+                elementDetails = nil
+            }
+        }
+        let messages:Bool = options.cellTypes.contains(.Chat)
+        let attaches:Bool = options.cellTypes.contains(.Attaches)
+        //var buttons = options.cellTypes.contains(.Buttons)
+        
+        
+        var subordinatesInfo:[ElementItemLayoutWidth]?
+        //prepare subordinate cells values
+        if let subordinateStore = self.subordinatesByIndexPath
+        {
+            //get ordered array of indexPaths for subordinates
+            var allValues = Array(subordinateStore)
+            allValues.sortInPlace({ (item1, item2) -> Bool in
+                
+                 return item1.0.item < item2.0.item  //item1 - (NSIndexPath, Element), we are interested in sorting by indexPath
+            })
+            
+            //create array with subordinate layout characteristics
+            var lvSubordinatesInfo = [ElementItemLayoutWidth]()
+            for var i = 0; i < allValues.count; i++
+            {
+                let value = allValues[i] //again tuple
+                let lvElement = value.1
+                
+                if let elementId = lvElement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                {
+                    if subordinatesQueryResult.count > 0
+                    {
+                        lvSubordinatesInfo.append(ElementItemLayoutWidth.Wide)
+                        continue
+                    }
+                    
+                    lvSubordinatesInfo.append(ElementItemLayoutWidth.Normal)
+                    continue
+                }
+            }
+            if !lvSubordinatesInfo.isEmpty
+            {
+                subordinatesInfo = lvSubordinatesInfo
+            }
+        }
+        
+        //finally
+        
+        let targetStruct = ElementDetailsStruct(title: elementTitle,
+                                                details: elementDetails,
+                                                messagesCell: messages, /* buttonsCell: buttons,*/
+                                                attachesCell: attaches,
+                                                subordinateItems: subordinatesInfo)
+    
+        return targetStruct
     }
     
     private func calculateAllCellTypes()
@@ -267,7 +288,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             {
                 if let subordinates = getElementSubordinates()
                 {
-                    var lvSubordinateIndexPaths = [NSIndexPath : Element]()
+                    var lvSubordinateIndexPaths = [NSIndexPath : DBElement]()
                     for var i = 0; i < subordinates.count; i++
                     {
                         cellTypes.append(.Subordinates)
@@ -357,19 +378,29 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
                 
                 titleCell.labelDate.text = handledElement?.lastChangeDateReadableString()// changeDate?.dateFromServerDateString()?.timeDateStringShortStyle() as? String
-                if let isFavourite = self.handledElement?.isFavourite.boolValue
+                if let isFavourite = self.handledElement?.isFavourite?.boolValue
                 {
                     titleCell.favourite = isFavourite
                 }
-                titleCell.handledElement = self.handledElement
+                
+                let titleElement = Element()
+                titleElement.typeId = handledElement!.type!.integerValue
+                titleElement.finishState = handledElement!.finishState!.integerValue
+                titleElement.title = handledElement?.title
+                if let boolFav = handledElement?.isFavourite?.boolValue
+                {
+                    titleElement.isFavourite = boolFav
+                }
+                
+                titleCell.handledElement = titleElement
                 titleCell.setupActionButtons(elementIsOwned())
               
                 if let currentelement = self.handledElement
                 {
                     let avatarIconView = titleCell.responsiblePersonAvatarIcon
                     
-                    let responsibleIdInt = currentelement.responsible
-                    let creatorId = currentelement.creatorId
+                    let responsibleIdInt = currentelement.responsibleId!.integerValue
+                    let creatorId = currentelement.creatorId!.integerValue
                     
                     titleCell.responsiblePersonAvatarIcon?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
 
@@ -460,29 +491,55 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 let datesCell = collectionView.dequeueReusableCellWithReuseIdentifier("DateDetailsCell",
                     forIndexPath: indexPath) as! SingleElementDateDetailsCell
                 datesCell.displayMode = self.displayMode
-                datesCell.handledElement = self.handledElement
+                
+                let detailsElement = Element()
+                detailsElement.title = handledElement?.title
+                
+                var info = DateDetailsStruct()
+                info.dateFinished = handledElement?.dateFinished
+                info.dateChanged = handledElement?.dateChanged
+                info.dateCreated = handledElement?.dateCreated
+                info.dateArchived = handledElement?.dateArchived
+                
+                if let responsibleId = handledElement?.responsibleId?.integerValue, containerTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(responsibleId)
+                {
+                    if let user = containerTuple.memory
+                    {
+                        info.responsibleName = user.nameAndLastNameSpacedString()
+                    }
+                }
+                if let creatorId = handledElement?.creatorId?.integerValue, containerTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
+                {
+                    if let user = containerTuple.memory
+                    {
+                        info.creatorName = user.nameAndLastNameSpacedString()
+                    }
+                }
+                
+                datesCell.handledElementInfo = info
                 
                 var owned = elementIsOwned()
                 datesCell.setupActionButtons(owned)
-                if !owned
-                {
-                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement)
-                    {
-                        for anElement in parentElements
-                        {
-                            if anElement.creatorId == userIdInt
-                            {
-                                if !owned
-                                {
-                                    owned = true
-                                    datesCell.setupActionButtons(owned)
-                                }
-                                
-                                break
-                            }
-                        }
-                    }
-                }
+                
+//                if !owned
+//                {
+//                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement.rootElementId)
+//                    {
+//                        for anElement in parentElements
+//                        {
+//                            if anElement.creatorId == userIdInt
+//                            {
+//                                if !owned
+//                                {
+//                                    owned = true
+//                                    datesCell.setupActionButtons(owned)
+//                                }
+//                                
+//                                break
+//                            }
+//                        }
+//                    }
+//                }
                 
                 return datesCell
             }
@@ -491,12 +548,31 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             let chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell",
                                                                                 forIndexPath: indexPath) as! SingleElementLastMessagesCell
             chatCell.displayMode = self.displayMode
-            if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.handledElement!.elementId!)
+//            if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.handledElement!.elementId!)
+//            {
+//                chatCell.messages = messages
+//            }
+            
+            if let elementId = self.handledElement?.elementId?.integerValue
             {
-                chatCell.messages = messages
+                dispatch_async(getBackgroundQueue_CONCURRENT(), { () -> Void in
+                    DataSource.sharedInstance.localDatadaseHandler?.readLastMessagesForElementById(elementId, fetchSize: 3, completion: {[weak chatCell] (foundDBmessages, error) -> () in
+                        if let messages = foundDBmessages
+                        {
+                            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                                if let cell = chatCell, weakSelf = self
+                                {
+                                    cell.messages = messages
+                                    cell.cellMessageTapDelegate = weakSelf
+                                    cell.reloadTable()
+                                }
+                            })
+                        }
+                    })
+                })
+                
             }
-            chatCell.cellMessageTapDelegate = self
-            chatCell.reloadTable()
+          
             return chatCell
             
         case .Details:
@@ -552,12 +628,18 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 subordinateCell.descriptionLabel?.text = lvElement.details
                 subordinateCell.signalDetectorView?.hidden = true
                 
-                let signalFlag = lvElement.isSignal.boolValue
-                subordinateCell.signalDetectorView?.hidden = !signalFlag
+                if let signalFlag = lvElement.isSignal?.boolValue
+                {
+                    subordinateCell.signalDetectorView?.hidden = !signalFlag
+                }
                 
-                subordinateCell.currentElementType = lvElement.typeId // will set visibility for icons
+                if let typeId = lvElement.type?.integerValue
+                {
+                        subordinateCell.currentElementType = typeId // lvElement.typeId // will set visibility for icons
+                }
+            
                 
-                if let finishStateEnumValue = ElementFinishState(rawValue: lvElement.finishState)
+                if let finishState = lvElement.finishState?.integerValue, finishStateEnumValue = ElementFinishState(rawValue: finishState)
                 {
                     switch finishStateEnumValue
                     {
@@ -611,10 +693,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath)
     {
         if let
-            subordinatesStore = self.subordinatesByIndexPath,
-            lvElement = subordinatesStore[indexPath]
+            lvElement = subordinatesByIndexPath?[indexPath],
+            elementId = lvElement.elementId?.integerValue
         {
-            subordinateTapDelegate?.didTapOnElement(lvElement)
+            subordinateTapDelegate?.didTapOnElement(elementId)
             return
         }
         
@@ -678,7 +760,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     {
         if let foundAttach = attachAtIndexPath(indexPath)
         {
-            self.attachTapDelegate?.attachedFileTapped(foundAttach)
+            let attach = AttachFile()
+            attach.creatorID = foundAttach.creatorId!.integerValue
+            attach.attachID = foundAttach.attachId!.integerValue
+            attach.fileName = foundAttach.fileName
+            
+            self.attachTapDelegate?.attachedFileTapped(attach)
         }
         else
         {
@@ -713,14 +800,14 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             return nil
         }
         
-        if let previewImageDataDict = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(foundAttach), imageData =  previewImageDataDict[foundAttach]
-        {
-            return UIImage(data:imageData)
-        }
+//        if let previewImageDataDict = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(foundAttach), imageData =  previewImageDataDict[foundAttach]
+//        {
+//            return UIImage(data:imageData)
+//        }
         return kNoImageIcon
     }
     
-    private func attachAtIndexPath(indexPath:NSIndexPath) -> AttachFile?
+    private func attachAtIndexPath(indexPath:NSIndexPath) -> DBAttach?
     {
         if let foundAttach = self.currentAttaches?[indexPath.row]
         {

@@ -48,28 +48,39 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         
     }
     
-    var privSignals:Int = 0
-    var privFavourites:[Element]?
-    var privOther:[Element]?
-    init(signals:Int, favourites:[Element]?, other:[Element]?)
+//    var privSignals:Int = 0
+//    var privFavourites:[Element]?
+//    var privOther:[Element]?
+//    init(signals:Int, favourites:[Element]?, other:[Element]?)
+//    {
+//        super.init()
+//        
+//        self.scrollDirection = .Vertical
+////        self.minimumLineSpacing = 5.0
+////        self.minimumInteritemSpacing = 5.0
+//        self.itemSize = CGSizeMake(HomeCellNormalDimension, HomeCellNormalDimension)
+//        self.headerReferenceSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width, 30.0)
+//        self.privSignals = signals
+//        self.privFavourites = favourites
+//        self.privOther = other
+//        
+//        //print(" ------- Visible Layout initialized with \(self.privSignals) signals")
+//    }
+    
+    private var layoutInfoStruct:HomeLayoutStruct?
+    
+    convenience init(layoutInfoStruct:HomeLayoutStruct)
     {
-        super.init()
-        
+        self.init()
         self.scrollDirection = .Vertical
-//        self.minimumLineSpacing = 5.0
-//        self.minimumInteritemSpacing = 5.0
-        self.itemSize = CGSizeMake(HomeCellNormalDimension, HomeCellNormalDimension)
         self.headerReferenceSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width, 30.0)
-        self.privSignals = signals
-        self.privFavourites = favourites
-        self.privOther = other
-        
-        //print(" ------- Visible Layout initialized with \(self.privSignals) signals")
+        self.itemSize = CGSizeMake(HomeCellNormalDimension, HomeCellNormalDimension)
+        self.layoutInfoStruct = layoutInfoStruct
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+//    required init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//    }
     
     override func invalidateLayout()
     {
@@ -134,7 +145,8 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
         {
             //print("returning SUPER FOOTER attributes for indexPath: \(indexPath)")
             if let superAttrs = super.layoutAttributesForSupplementaryViewOfKind(elementKind, atIndexPath: indexPath){
-                return superAttrs}
+                return superAttrs
+            }
         }
         return nil
     }
@@ -205,9 +217,10 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
     
     func clearAllElements()
     {
-        privSignals = 0
-        privFavourites?.removeAll(keepCapacity: false)
-        privOther?.removeAll(keepCapacity: false)
+//        privSignals = 0
+//        privFavourites?.removeAll(keepCapacity: false)
+//        privOther?.removeAll(keepCapacity: false)
+        self.layoutInfoStruct = nil
     }
     
     func configureAttributes()
@@ -235,15 +248,48 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             }
             
             
-            var countOfSections = 1
-            if privFavourites!.count > 0
+//            var countOfSections = 1
+//            if privFavourites!.count > 0
+//            {
+//                countOfSections += 1
+//            }
+//            if privOther!.count > 0
+//            {
+//                countOfSections += 1
+//            }
+            
+            
+            
+            var countOfSections = 0
+            
+            var countOfSignals = 0
+            var countOfFavourites = 0
+            var countOfOther = 0
+            if let signalsInfo = layoutInfoStruct?.signals
             {
-                countOfSections += 1
+                countOfSignals = signalsInfo.count
+                if countOfSignals > 0
+                {
+                    countOfSections += 1
+                }
             }
-            if privOther!.count > 0
+            if let favs = layoutInfoStruct?.favourites
             {
-                countOfSections += 1
+                countOfFavourites = favs.count
+                if countOfFavourites > 0
+                {
+                    countOfSections += 1
+                }
             }
+            if let other = layoutInfoStruct?.other
+            {
+                countOfOther = other.count
+                if countOfOther > 0
+                {
+                    countOfSections += 1
+                }
+            }
+            
             
             for var section = 0; section < countOfSections; section++
             {
@@ -264,24 +310,27 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 switch section
                 {
                 case 0:
-                    numberOfItemsInSection = max(privSignals + 1, 1)
+                    numberOfItemsInSection = max(countOfSignals + 1, 1)
                 case 1:
                     if countOfSections == 2
                     {
-                       numberOfItemsInSection = privOther?.count ?? 0
+                       numberOfItemsInSection = countOfOther
                     }
                     else if countOfSections == 3
                     {
-                        numberOfItemsInSection = privFavourites?.count ?? 0
+                        numberOfItemsInSection = countOfFavourites
                     }
                 case 2:
-                    numberOfItemsInSection = privOther?.count ?? 0
+                    numberOfItemsInSection = countOfOther
                 default:
                     numberOfItemsInSection = 0
                 }
                 
                 for var currentItem = 0; currentItem < numberOfItemsInSection; currentItem++
                 {
+//                    print("section: \(section)")
+//                    print("cell: \(currentItem)")
+                    
                     let indexPathForItem = NSIndexPath(forItem: currentItem, inSection: section)
                     
                     let itemAttributes = UICollectionViewLayoutAttributes(forCellWithIndexPath: indexPathForItem)
@@ -292,16 +341,20 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                     {
                         if countOfSections < 3
                         {
-                            if let currentElement = privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false)
+                            if let currentElementWidth = layoutInfoStruct?.other?[currentItem]
                             {
-                                elementWidth = HomeCellWideDimension
+                                if currentElementWidth == .Wide{
+                                    elementWidth = HomeCellWideDimension
+                                }
                             }
                         }
                         else
                         {
-                            if let currentElement = (section == 1) ? privFavourites?[currentItem] : privOther?[currentItem], _ = DataSource.sharedInstance.getSubordinateElementsForElement(currentElement.elementId, shouldIncludeArchived:false)
+                            if let currentElementSize = (section == 1) ? layoutInfoStruct?.favourites?[currentItem] : layoutInfoStruct?.other?[currentItem]
                             {
-                                elementWidth = HomeCellWideDimension
+                                if currentElementSize == .Wide{
+                                    elementWidth = HomeCellWideDimension
+                                }
                             }
                         }
                     }
@@ -323,13 +376,13 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                             cellAttributes![indexPathForItem] = itemAttributes
                             offsetX += elementWidth + self.minimumInteritemSpacing
                         }
-                        else if indexPathForItem.item == 1 //MessagesHolderCell
-                        {
-                            let itemFrame = CGRectMake(viewWidth - elementWidth * 2 , offsetY, elementWidth * 2, self.itemSize.height)
-                            itemAttributes.frame = CGRectOffset(itemFrame, itemFrame.size.width * 2, 0)
-                            
-                            cellAttributes![indexPathForItem] = itemAttributes
-                        }
+//                        else if indexPathForItem.item == 1 //MessagesHolderCell
+//                        {
+//                            let itemFrame = CGRectMake(viewWidth - elementWidth * 2 , offsetY, elementWidth * 2, self.itemSize.height)
+//                            itemAttributes.frame = CGRectOffset(itemFrame, itemFrame.size.width * 2, 0)
+//                            
+//                            cellAttributes![indexPathForItem] = itemAttributes
+//                        }
                         else
                         {
                             let itemFrame = CGRectMake(offsetX, offsetY, elementWidth, self.itemSize.height)
@@ -367,6 +420,17 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             
             self.sizeOfContent = CGSizeMake(viewWidth, bottom)
         }
+        //debug
+//        if let cellAtts = self.cellAttributes
+//        {
+//            for (indexPath, aCellAttribute) in cellAtts
+//            {
+//                print("indexPath-> setion: \(indexPath.section), item: \(indexPath.item)")
+//                print("frame: \(aCellAttribute.frame)")
+//            }
+//        }
+        
+      
     }
     
     // fixing collection view jump up when switching to this Layout

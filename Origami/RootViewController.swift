@@ -10,7 +10,7 @@ import UIKit
 
 class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     
-    //var messagesLoader = MessagesLoader()
+    
     var dataRefresher:DataRefresher?
     var screenEdgePanRecognizer:UIScreenEdgePanGestureRecognizer = UIScreenEdgePanGestureRecognizer()
     var tapToDismissRecognizer:UITapGestureRecognizer = UITapGestureRecognizer()
@@ -42,16 +42,19 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         tapToDismissRecognizer.numberOfTapsRequired = 1;
         tapToDismissRecognizer.numberOfTouchesRequired = 1;
 
-       DataSource.sharedInstance.createLocalDatabaseHandler { (dbInitialization) -> () in
-            if dbInitialization == false
-            {
-                print("\n  Could not create or initialize local database....\n")
-            }
-            else
-            {
-                print("\n Did initialize local data base...\n")
+        dispatch_async(getBackgroundQueue_UTILITY()) { () -> Void in
+            DataSource.sharedInstance.createLocalDatabaseHandler { (dbInitialization) -> () in
+                if dbInitialization == false
+                {
+                    print("\n  Could not create or initialize local database....\n")
+                }
+                else
+                {
+                    print("\n Did initialize local data base...\n")
+                }
             }
         }
+     
         
         #if (arch(i386) || arch(x86_64)) && os(iOS)
         #else

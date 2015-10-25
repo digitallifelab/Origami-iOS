@@ -22,15 +22,11 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
 
         // Do any additional setup after loading the view.
         
-        if let contactLoginName = self.contact?.userName //as? String
+        if let contactLoginName = self.contact?.userName , contactId = contact?.contactId
         {
-            if let data = DataSource.sharedInstance.getAvatarDataForContactUserName(contactLoginName)
-            {
-                self.avatarImage = UIImage(data: data)
-            }
-            
+            self.avatarImage = DataSource.sharedInstance.userAvatarsHolder[contactId]//UIImage(data: data)
+
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 
                 DataSource.sharedInstance.loadAvatarFromDiscForLoginName(contactLoginName, completion: {[weak self] (image, error) -> () in
                     if let avatarImage = image, weakSelf = self
@@ -44,7 +40,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     {
                         print(" Did not load avatar for contact.")
                     }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+
                 })
             })
         }
