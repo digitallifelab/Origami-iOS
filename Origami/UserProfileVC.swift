@@ -57,7 +57,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
      
         if let userName = DataSource.sharedInstance.user?.userName, userId = DataSource.sharedInstance.user?.userId
         {
-            if let avatarPreview = DataSource.sharedInstance.userAvatarsHolder[userId]
+            if let avatarPreview = DataSource.sharedInstance.getAvatarForUserId(userId)
             {
                 self.currentAvatar = avatarPreview
             }

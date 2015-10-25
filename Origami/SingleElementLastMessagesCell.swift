@@ -150,7 +150,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             
             if let creatorId = message.creatorId?.integerValue
             {
-                if let avatarPreview = DataSource.sharedInstance.userAvatarsHolder[creatorId]
+                if let avatarPreview = DataSource.sharedInstance.getAvatarForUserId(creatorId)
                 {
                     chatCell.avatarView.image = avatarPreview
                 }

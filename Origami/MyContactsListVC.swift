@@ -299,7 +299,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             //avatar
             cell.avatar.tintColor = kDayCellBackgroundColor
            
-            if let avatarImage = DataSource.sharedInstance.userAvatarsHolder[contact.contactId]
+            if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(contact.contactId)
             {
                 cell.avatar?.image = avatarImage
             }

@@ -2354,7 +2354,17 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getAvatarForUserId(userIdInt:Int) -> UIImage?
     {
-        return DataSource.sharedInstance.userAvatarsHolder[userIdInt]
+        if let ramImage = DataSource.sharedInstance.userAvatarsHolder[userIdInt]{
+            return ramImage
+        }
+        
+        if let avatarData = DataSource.sharedInstance.localDatadaseHandler?.readAvatarPreviewForContactId(userIdInt), image = UIImage(data: avatarData)
+        {
+            DataSource.sharedInstance.userAvatarsHolder[userIdInt] = image
+            return self.getAvatarForUserId(userIdInt)
+        }
+        
+        return nil
     }
     
     func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
@@ -2374,59 +2384,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 completionBlock?(image: image, error: nil)
             }
         }
-        
-//            if let avatarBytes = avatarData
-//            {
-//                guard let image = UIImage(data: avatarBytes) else {
-//                    let imageCreatingError = NSError(domain: "Origami.ImageDataConvertingError", code: 509, userInfo: [NSLocalizedDescriptionKey:"Could not convert data object to image object"])
-//                    completionBlock?(image: nil, error: imageCreatingError)
-//                    
-//                    return
-//                }
-//                
-//                completionBlock?(image: image, error: nil) //return value  
-//                
-//                //and continue background work
-//                
-//                if let avatarData = DataSource.sharedInstance.avatarsHolder[loginName]
-//                {
-//                    if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)),  avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-//                    {
-//                        if avatarIconData != avatarData
-//                        {
-//                            DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
-//                        }
-//                    }
-//                    
-//                }
-//                else
-//                {
-//                    if let reducedImage = DataSource.sharedInstance.reduceImageSize(image, toSize: CGSizeMake(200, 200)), avatarIconData = UIImageJPEGRepresentation(reducedImage, 1.0)
-//                    {
-//                        DataSource.sharedInstance.addAvatarData(avatarIconData, forContactUserName: loginName)
-//                    }
-//                }
-//            }
-//            else if let anError = error
-//            {
-//                completionBlock?(image: nil, error: error)
-//                
-//                if anError.code == 406 //no file or directory
-//                {
-//                    //find contact ID
-//                    let allContacts = DataSource.sharedInstance.contacts.filter {(aContact) in return aContact.userName == loginName}
-//                    if allContacts.isEmpty
-//                    {
-//                        return
-//                    }
-//                    
-//                    
-//                    let foundContact = allContacts.first!
-//                    let passingParameter = (name:foundContact.userName, id:foundContact.contactId)
-//                    DataSource.sharedInstance.startLoadingAvatarForUserName(passingParameter)
-//                }
-//            }
-//        })
     }
     
     func startLoadingAvatarForUserName(info:(name:String, id:Int))

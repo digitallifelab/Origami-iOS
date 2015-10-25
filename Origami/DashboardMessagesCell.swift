@@ -109,9 +109,9 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                     }
                 }
                 
-                if let avatarPreview = DataSource.sharedInstance.localDatadaseHandler?.readAvatarPreviewForContactId(creatorId)
+                if let avatarPreview = DataSource.sharedInstance.getAvatarForUserId(creatorId)
                 {
-                    messageInfo.authorAvatar = UIImage(data: avatarPreview)
+                    messageInfo.authorAvatar = avatarPreview
                 }
             }
             

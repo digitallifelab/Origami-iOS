@@ -350,7 +350,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         if let lvContact = allContacts?[indexPath.row]
         {
-            if let avatarImage = DataSource.sharedInstance.userAvatarsHolder[lvContact.contactId]
+            if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(lvContact.contactId)
             {
                 cell.avatar?.image = avatarImage
             }

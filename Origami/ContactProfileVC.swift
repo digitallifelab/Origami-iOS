@@ -24,7 +24,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         
         if let contactLoginName = self.contact?.userName , contactId = contact?.contactId
         {
-            self.avatarImage = DataSource.sharedInstance.userAvatarsHolder[contactId]//UIImage(data: data)
+            self.avatarImage = DataSource.sharedInstance.getAvatarForUserId(contactId)
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                 

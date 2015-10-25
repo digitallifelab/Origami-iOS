@@ -62,7 +62,21 @@ class ServiceMessagesHandler {
             case .UserPhotoUpdated:
                 if let userIdInt = aMessage.getTargetUserIdFromMessageBody()
                 {
-                    contactAvatarChangeIDs.insert(userIdInt)
+                    if let lastSyncDateForContactAvatar = DataSource.sharedInstance.getLastAvatarSyncDateForContactId(userIdInt), messageDate = aMessage.dateCreated
+                    {
+                        if lastSyncDateForContactAvatar.compare(messageDate) != .OrderedDescending
+                        {
+                            contactAvatarChangeIDs.insert(userIdInt)
+                        }
+                        else
+                        {
+                            break
+                        }
+                    }
+                    else
+                    {
+                        contactAvatarChangeIDs.insert(userIdInt)
+                    }
                 }
             case .OnlineStatusChanged:
                 print("Recieved Service Message  User did change OnlineStatus: element:\(aMessage.elementId!), status = \(aMessage.textBody!)")
@@ -189,6 +203,8 @@ class ServiceMessagesHandler {
         isUpdatingContacts = true
         
         let currentDate = NSDate()
+        
+        
         for aContact in allCurrentContacts
         {
             let contactId = aContact.contactId
