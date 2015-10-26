@@ -10,12 +10,12 @@ import UIKit
 typealias dashboardDBElementsInfoTuple = (signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?)
 
 
-class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate/*, MessageObserver*/
+class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate/*, MessageObserver*/
 {
 
     @IBOutlet var collectionDashboard:UICollectionView!
     //@IBOutlet var bottomHomeToolBarButton:UIBarButtonItem!
-    
+    var newElementDetailsInfo:String?
     var collectionSource:HomeCollectionHandler?
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
     
@@ -43,8 +43,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
-        self.collectionSource = HomeCollectionHandler()
-        self.collectionDashboard.dataSource = self.collectionSource
+        //self.collectionSource = HomeCollectionHandler()
+        //self.collectionDashboard.dataSource = self.collectionSource
         
         
         configureRightBarButtonItem()
@@ -54,73 +54,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
 
 
         //print("\(self)  viewDidLoad")
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)
-        
-//        if DataSource.sharedInstance.dataRefresher == nil && DataSource.sharedInstance.user != nil && DataSource.sharedInstance.loadingAllElementsInProgress == false
-//        {
-//            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-//            print("-> Starting to load AllElementsInfo ....")
-//            DataSource.sharedInstance.loadAllElementsInfo {[weak self] (success, failure) -> () in
-//                if let wSelf = self
-//                {
-//                    if success
-//                    {
-//                        // wSelf.reloadDashboardView()
-//                        
-//                        if let wSelf = self
-//                        {
-//                            //print(" \(wSelf) Loaded elements")
-//                            wSelf.shouldReloadCollection = true
-//                            print("reloadDashboardView from viewDidLoad - success TRUE")
-//                            wSelf.reloadDashboardView()
-//                        }
-//                    }
-//                    else
-//                    {
-//                        
-//                        print("reloadDashboardView from viewDidLoad - success FALSE")
-//                        wSelf.reloadDashboardView()
-//                    }
-//                    //wSelf.loadingAllElementsInProgress = false
-//                    
-//                    let bgQueue = dispatch_queue_create("backgroundQueue", DISPATCH_QUEUE_CONCURRENT)
-//                    let time: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
-//                    dispatch_after(time, bgQueue, {/*[weak self]*/ () -> Void in
-//                        
-//                        if let _ = DataSource.sharedInstance.user?.userId
-//                        {
-//                            if DataSource.sharedInstance.isMessagesEmpty() && DataSource.sharedInstance.shouldLoadAllMessages
-//                            {
-//                                DataSource.sharedInstance.loadAllMessagesFromServer()
-//                                //TODO: get last message id from LocalDataBase
-////                                DataSource.sharedInstance.syncLastMessages(0)  { (success, error) -> () in
-////                                    
-////                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-////                                        NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
-////                                    })
-////                                    
-////                                
-////                                }
-//                            }
-//                        }
-//                    })
-//                }
-//                else
-//                {
-//                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                    if let wSelf = self
-//                    {
-//                        
-//                        // #if DEBUG
-//                        wSelf.showAlertWithTitle("Failed", message: " this is a non production error message. \n Did not load Elements for dashboard.", cancelButtonTitle: "Ok")
-//                        //#endif
-////                        wSelf.loadingAllElementsInProgress = false
-//                    }
-//                }
-//                
-//            }
-//        }
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)        
         
         if let refresher =  DataSource.sharedInstance.dataRefresher
         {
@@ -155,43 +89,25 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         }
         
         dispatch_async(getBackgroundQueue_DEFAULT()) { () -> Void in
-            
+            DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
+                
+                if let weakSelf = self
+                {
+                    if info.signals == nil && info.favourites == nil && info.other == nil
+                    {
+                        return
+                    }
+                
+                
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
+                    })
+                }
+            }
         }
-        DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true, completion: {[weak self] (info) -> () in
-            //debug
-//            if let signals = info.signals
-//            {
-//                print("Did read signals: \(signals.count)")
-//            }
-//            else{
-//                print("Did read signals:  nil")
-//            }
-//            if let favs = info.favourites
-//            {
-//                print("Did read favourites: \(favs.count)")
-//            }
-//            else{
-//                print("Did read favourites:  nil")
-//            }
-//            if let otherElements = info.other
-//            {
-//                print("Did read other: \(otherElements.count)")
-//            }
-//            else{
-//                print("Did read other:  nil")
-//            }
-            
-            
-            if info.signals == nil && info.favourites == nil && info.other == nil
-            {
-                return
-            }
-            
-            if let weakSelf = self
-            {
-                weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
-            }
-        })
+   
+        
+        DataSource.sharedInstance.addObserverForNewMessagesForElement(self, elementId: All_New_Messages_Observation_ElementId)
     }
     
     override func viewDidAppear(animated: Bool)
@@ -210,65 +126,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
             
             if !DataSource.sharedInstance.loadingAllElementsInProgress
             {
-                
-                
-                //if DataSource.sharedInstance.shouldReloadAfterElementChanged
-                //{
-//                    reloadDashboardView()
-                //}
+
             }
             
             if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
             {
                 self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
             }
-            
-            
-//            DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true, completion: {[weak self] (info) -> () in
-//                if let signals = info.signals
-//                {
-//                    print("Did read signals: \(signals.count)")
-//                }
-//                else{
-//                    print("Did read signals:  nil")
-//                }
-//                if let favs = info.favourites
-//                {
-//                    print("Did read favourites: \(favs.count)")
-//                }
-//                else{
-//                    print("Did read favourites:  nil")
-//                }
-//                if let otherElements = info.other
-//                {
-//                    print("Did read other: \(otherElements.count)")
-//                }
-//                else{
-//                    print("Did read other:  nil")
-//                }
-//                
-//                
-//                if info.signals == nil && info.favourites == nil && info.other == nil{
-//                    if let refresher =  DataSource.sharedInstance.dataRefresher
-//                    {
-//                        if !refresher.isCancelled && !refresher.isInProgress
-//                        {
-//                            refresher.startRefreshingElementsWithTimeoutInterval(30.0)
-//                        }
-//                    }
-//                    else{
-//                        DataSource.sharedInstance.dataRefresher = DataRefresher()
-//                        DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
-//                    }
-//                    return
-//                }
-//                
-//                if let weakSelf = self {
-//                    weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
-//                }
-//                })
-//
-            
         }
         else
         {
@@ -287,6 +151,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
+        
+        DataSource.sharedInstance.removeObserverForNewMessagesForElement(All_New_Messages_Observation_ElementId)
     }
 
     
@@ -395,21 +261,44 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
     {
         refreshMainDashboard {[weak sender] () -> () in
             
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            dispatch_async(dispatch_get_main_queue(), {() -> Void in
                 if let weakRefreshControl = sender
                 {
                     weakRefreshControl.endRefreshing()
                 }
+//                if let weakSelf = self
+//                {
+//                    weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
+//                }
             })
         }
     }
     
     private func refreshMainDashboard(completion:(()->())?)
     {
+        
+        DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
+            
+            if let weakSelf = self
+            {
+                if info.signals == nil && info.favourites == nil && info.other == nil
+                {
+                    return
+                }
+                
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
+                })
+            }
+        }
+        
         let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5))
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
             completion?()
         })
+        
+        
     }
     
     private func configureRefreshControl()
@@ -451,7 +340,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         {
             return
         }
-        
+
         self.collectionSource = HomeCollectionHandler(info: info)
         self.collectionSource?.elementSelectionDelegate = self
         let layoutInfoStruct = HomeSignalsHiddenFlowLayout.prepareLayoutStructWithInfo(info)
@@ -464,6 +353,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         self.collectionDashboard.reloadData()
         
         self.collectionDashboard.setCollectionViewLayout(hiddenSignalsLayout, animated: false)
+
+        
+//        DataSource.sharedInstance.localDatadaseHandler?.cleanMessagesWithoutElement({ () -> () in
+//            
+//        })
+
+      
     }
     
 //    func reloadDashboardView()
@@ -704,6 +600,22 @@ class HomeVC: UIViewController, ElementSelectionDelegate, ElementComposingDelega
         self.view.addSubview(tapView)
     }
     
+    //MARK: - MessageObserver
+    func newMessagesWereAdded()
+    {
+        if let currentDataSource = self.collectionSource
+        {
+            if !currentDataSource.isSignalsToggled
+            {
+                dispatch_async(dispatch_get_main_queue()){ [weak self] in
+                    if let weakSelf = self
+                    {
+                        weakSelf.collectionDashboard.reloadItemsAtIndexPaths([NSIndexPath(forItem: 1, inSection: 0)])
+                    }
+                }
+            }
+        }
+    }
     // MARK: - Navigation
     
     func menuButtonTapped(sender:AnyObject?)

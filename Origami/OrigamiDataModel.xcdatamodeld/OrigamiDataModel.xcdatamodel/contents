@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="15A284" minimumToolsVersion="Xcode 7.0">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Xcode 7.0">
     <entity name="DBAttach" representedClassName=".DBAttach" syncable="YES">
         <attribute name="attachId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="creatorId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -69,6 +69,7 @@
         <attribute name="language" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="lastName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="mood" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="phone" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sex" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="userName" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -85,7 +86,7 @@
         <element name="DBElement" positionX="-720" positionY="108" width="128" height="315"/>
         <element name="DBMessageChat" positionX="-522" positionY="-0" width="128" height="163"/>
         <element name="DBMessageService" positionX="-495" positionY="-162" width="128" height="118"/>
-        <element name="DBPerson" positionX="18" positionY="6" width="128" height="165"/>
+        <element name="DBPerson" positionX="18" positionY="6" width="128" height="180"/>
         <element name="DBUser" positionX="-252" positionY="-252" width="128" height="88"/>
     </elements>
 </model>

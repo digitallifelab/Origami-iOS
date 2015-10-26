@@ -21,7 +21,7 @@ class OptionsView: UIView, UITableViewDelegate, UITableViewDataSource {
     private var tableView:UITableView
     private var optionsSource:[[String:String]]?
     var delegate:TableItemPickerDelegate?
-    var message:Message?
+    var message:String?
     
     let displayMode:DisplayMode = (NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)) ? .Night : .Day
     

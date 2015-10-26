@@ -61,5 +61,15 @@ class DBPerson: NSManagedObject {
         }
         return nil
     }
+    
+    func birthdayString() -> String?
+    {
+        if let birthDateString = self.birthDay?.dateStringMediumStyle()
+        {
+            return birthDateString
+        }
+        
+        return nil
+    }
 
 }

@@ -67,9 +67,6 @@ class SingleElementDateDetailsCell: UICollectionViewCell, UITableViewDataSource 
         {
             responsibleNameLabel?.text = responsibleName
             responsibleLocalizedLabel?.text = "responsible".localizedWithComment("")
-       
-            responsibleNameLabel?.text = nil
-            responsibleLocalizedLabel?.text = nil
         }
         else
         {

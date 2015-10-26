@@ -42,6 +42,8 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         tapToDismissRecognizer.numberOfTapsRequired = 1;
         tapToDismissRecognizer.numberOfTouchesRequired = 1;
 
+        DataSource.sharedInstance
+        
         dispatch_async(getBackgroundQueue_UTILITY()) { () -> Void in
             DataSource.sharedInstance.createLocalDatabaseHandler { (dbInitialization) -> () in
                 if dbInitialization == false
@@ -78,6 +80,23 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
         #endif
+        
+        
+        dispatch_async(getBackgroundQueue_CONCURRENT()) { () -> Void in
+            DataSource.sharedInstance.getCountries({ (countries, error) -> () in
+                if let recievedCountries = countries
+                {
+                    DataSource.sharedInstance.countries = recievedCountries
+                }
+            })
+            
+            DataSource.sharedInstance.getLanguages({ (languages, error) -> () in
+                if let recievedLanguages = languages
+                {
+                    DataSource.sharedInstance.languages = recievedLanguages
+                }
+            })
+        }
         
     }
 

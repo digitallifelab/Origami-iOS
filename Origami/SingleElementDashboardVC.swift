@@ -14,7 +14,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     var currentElement:DBElement?
     var collectionDataSource:SingleElementCollectionViewDataSource?
     var currentShowingAttachName:String = ""
-    
+    var newElementDetailsInfo:String?
     var iOS7PopoverController:UIPopoverController?
     
     var displayMode:DisplayMode = .Day {
@@ -28,15 +28,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             if collectionDataSource != nil
             {
                 collectionDataSource?.displayMode = self.displayMode
-                do{
-                    try  self.prepareCollectionViewDataAndLayout()
-                }
-                catch let error as NSError{
-                    print(error)
-                }
-                catch{
-                    print("some unknown error was caught while switching displayMode in \(self)")
-                }
+                
+                self.prepareCollectionViewDataAndLayout()
+             
             }
         }
     }
@@ -65,28 +59,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         let nightMode = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightMode)
         self.displayMode = (nightMode) ? .Night : .Day
-       
-        
-        
-//        if let ourElementIdInt = self.currentElement?.elementId?.integerValue
-//        {
-//            DataSource.sharedInstance.loadPassWhomIdsForElement(ourElementIdInt, comlpetion: {[weak self] (finished) -> () in
-//                // background queue here
-//                if let aSelf = self
-//                {
-//                    if finished
-//                    {
-//                        print("Pass whom ids after. \(aSelf.currentElement?.passWhomIDs)")
-//                        aSelf.currentElement = DataSource.sharedInstance.getElementById(ourElementIdInt)
-//                        print("pass Whom IDs new: \(aSelf.currentElement?.passWhomIDs)")
-//                    }
-//                    else
-//                    {
-//                        
-//                    }
-//                }
-//            })
-//        }
         
         afterViewDidLoad = true
     }
@@ -98,6 +70,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     override func viewWillAppear(animated: Bool)
     {
+      
+       
         self.navigationController?.delegate = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
@@ -105,11 +79,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         super.viewWillAppear(animated)
         if afterViewDidLoad
         {
-            do{
-                try prepareCollectionViewDataAndLayout()}
-            catch{
-                 print("\n viewWillAppear in: \n\(self) \n -> Could not prepare layout for collectionView..\n")
+            if let elementId = self.currentElement?.elementId?.integerValue
+            {
+                self.refreshCurrentElementFromLocalDatabase(elementId)
+//                if let refreshedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+//                {
+//                    self.currentElement = refreshedElement
+//                }
             }
+            prepareCollectionViewDataAndLayout()
             afterViewDidLoad = false
         }
         
@@ -135,28 +113,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshCurrentElementAfterElementChangedNotification:", name: kElementWasChangedNotification, object: nil)
         
-//        let chatPath = NSIndexPath(forItem: 1, inSection: 0)
-//        let chatCell = self.collectionView.cellForItemAtIndexPath(chatPath) as? SingleElementLastMessagesCell
-//        if let elementId = self.currentElement?.elementId //?.integerValue
-//        {
-//            let currentLastMessages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(elementId) //Optional
-//            if chatCell == nil && currentLastMessages != nil
-//            {
-//                do{
-//                    try prepareCollectionViewDataAndLayout()}
-//                catch{
-//                    print("\n viewDidAppear in: \n\(self) \n -> Could not prepare layout for collectionView..\n")
-//                }
-//            }
-//            else if let cell = chatCell, messages = currentLastMessages
-//            {
-//                if messages.last !== cell.messages?.last
-//                {
-//                    chatCell!.messages = messages
-//                    self.collectionView.reloadItemsAtIndexPaths([chatPath])
-//                }
-//            }
-//        }
         
         //debug display root element id in title view
         if let rootElementId = self.currentElement?.rootElementId, elementId = self.currentElement?.elementId
@@ -212,7 +168,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         DataSource.sharedInstance.loadAttachFileDataForAttaches(attaches, completion:nil)
     }
     
-    
+    func refreshCurrentElementFromLocalDatabase(elementId:Int)
+    {
+        if let refreshedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+        {
+            self.currentElement = refreshedElement
+        }
+    }
     
     //MARK: Day/Night Mode
 
@@ -227,7 +189,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         - or dataSource for colelctionview could not be created
     
     */
-    func prepareCollectionViewDataAndLayout() throws
+    func prepareCollectionViewDataAndLayout()
     {
         if let messages = currentElement?.messages as? Set<DBMessageChat>
         {
@@ -387,7 +349,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementSignalToggled()
     {
-        if let theElement = currentElement, elementId = theElement.elementId, oldSignal = theElement.isSignal?.boolValue
+        if let theElement = currentElement, elementId = theElement.elementId?.integerValue, oldSignal = theElement.isSignal?.boolValue
         {
             if !theElement.isOwnedByCurrentUser()
             {
@@ -400,28 +362,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             
             let isSignal = !oldSignal
-//            let elementCopy = theElement.createCopy()
-//
-//            elementCopy.isSignal = isSignal
-//            
-//            DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
-//                if let aSelf = self
-//                {
-//                    if edited
-//                    {
-//                        DataSource.sharedInstance.localDatadaseHandler?.setSignal(isCurrentlySignal, elementId: elementId, completion: { () -> () in
-//                            
-//                        })
-//                        
-//                        aSelf.currentElement?.isSignal = isCurrentlySignal
-//                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-//                    }
-//                    else
-//                    {
-//                        aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
-//                    }
-//                }
-//            })
+            let elementCopy = theElement.createCopyForServer()
+
+            elementCopy.isSignal = isSignal
+            
+            DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
+                if let aSelf = self
+                {
+                    aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                    if edited
+                    {
+                        
+                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                    }
+                    else
+                    {
+                        aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+                    }
+                }
+            })
         }
     }
     
@@ -435,22 +394,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
         {
             newElementCreator.editingStyle = .AddNew
-            if let anElement = self.currentElement, anElementId = anElement.elementId?.integerValue
+            if let anElement = self.currentElement, rootId = anElement.elementId?.integerValue
             {
                 newElementCreator.composingDelegate = self
-//                newElementCreator.rootElementID = anElementId//.integerValue
-                
-//                let passwhomIDs = anElement.passWhomIDs
-                
-//                if !passwhomIDs.isEmpty
-//                {
-//                    var idInts = Set<Int>()
-//                    for number in passwhomIDs
-//                    {
-//                        idInts.insert(number)
-//                    }
-//                     newElementCreator.contactIDsToPass = idInts// subordinate elements should automaticaly inherit current element`s assignet contacts..  Creator can add or delete contacts later, when creating element.  But deleting will have no effect, because passwhomids are inherit wrom parent element.
-//                }
+                newElementCreator.rootElementID = rootId//.integerValue
                 
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
             }
@@ -505,16 +452,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func elementIdeaPressed()
     {
         print("Idea tapped.")
-        if let current = self.currentElement
+        if let current = self.currentElement, elementType = current.type?.integerValue
         {
             if !current.isArchived()
             {
-//                let anOptionsConverter = ElementOptionsConverter()
-//                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 1)
-//                let editingElement = current.createCopy() // Element(info: self.currentElement!.toDictionary())
-//                editingElement.typeId = newOptions
-//                print("new element type id: \(editingElement.typeId)")
-//                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+                let anOptionsConverter = ElementOptionsConverter()
+                let newOptions = anOptionsConverter.toggleOptionChange(elementType, selectedOption: 1)
+                let editingElement = current.createCopyForServer() // Element(info: self.currentElement!.toDictionary())
+                editingElement.typeId = newOptions
+                print("new element type id: \(editingElement.typeId)")
+                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
             else
             {
@@ -624,16 +571,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func elementDecisionPressed()
     {
         print("Decision tapped.")
-        if let current = self.currentElement
+        if let current = self.currentElement, type = current.type?.integerValue
         {
             if !current.isArchived()
             {
-//                let anOptionsConverter = ElementOptionsConverter()
-//                let newOptions = anOptionsConverter.toggleOptionChange(current.typeId, selectedOption: 3)
-//                let editingElement = current.createCopy()
-//                editingElement.typeId = newOptions
-//                print("new element type id: \(editingElement.typeId)")
-//                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
+                let anOptionsConverter = ElementOptionsConverter()
+                let newOptions = anOptionsConverter.toggleOptionChange(type, selectedOption: 3)
+                let editingElement = current.createCopyForServer()
+                editingElement.typeId = newOptions
+                print("new element type id: \(editingElement.typeId)")
+                self.handleEditingElementOptions(editingElement, newOptions: NSNumber(integer: newOptions))
             }
             else
             {
@@ -787,64 +734,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func handleAddingNewElement(element:Element)
     {
         // 1 - send new element to server
-        // 2 - send passWhomIDs, if present
         // 3 - if new element successfully added - reload dashboard collectionView
-        var passWhomIDs:[Int]?
-        let nsNumberArray = element.passWhomIDs
-        if !nsNumberArray.isEmpty
+      
+        let rootID = element.rootElementId
+        if rootID == 0
         {
-            passWhomIDs = [Int]()
-            for number in nsNumberArray
-            {
-                passWhomIDs!.append(number)
-            }
+            print("Some error occured.  Root elementId should be not ZERO")
+            return
         }
-        
         // 1
         DataSource.sharedInstance.submitNewElementToServer(element, completion: {[weak self] (newElementID, submitingError) -> () in
-            if let lvElementId = newElementID
+            if let _ = newElementID,  let refreshedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(rootID)
             {
-                if let passWhomIDsArray = passWhomIDs // 2
+                if let weakSelf = self
                 {
-                    let passWhomSet = Set(passWhomIDsArray)
-                    DataSource.sharedInstance.addSeveralContacts(passWhomSet, toElement: lvElementId, completion: { (succeededIDs, failedIDs) -> () in
-                        if !failedIDs.isEmpty
-                        {
-                            print(" added to \(succeededIDs)")
-                            print(" failed to add to \(failedIDs)")
-                            if let weakSelf = self
-                            {
-                                weakSelf.showAlertWithTitle("ERROR.", message: "Could not add contacts to new element.", cancelButtonTitle: "Ok")
-                            }
-                        }
-                        else
-                        {
-                            print(" added to \(succeededIDs)")
-                        }
-                    })
-                    
-                    if let weakSelf = self // 3
-                    {
-                        do{
-                            try  weakSelf.prepareCollectionViewDataAndLayout()
-                        }
-                        catch{
-                            
-                        }
-                      
-                    }
-                }
-                else // 3
-                {
-                    if let weakSelf = self
-                    {
-                        do{
-                            try  weakSelf.prepareCollectionViewDataAndLayout()
-                        }
-                        catch{
-                            
-                        }
-                    }
+                    weakSelf.currentElement = refreshedElement
+                    weakSelf.prepareCollectionViewDataAndLayout()
                 }
             }
             else
@@ -871,11 +776,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleEditingElementOptions(element:Element, newOptions:NSNumber)
     {
+        guard let elementId = element.elementId else
+        {
+            return
+        }
+        
         DataSource.sharedInstance.editElement(element, completionClosure: {[weak self] (edited) -> () in
             if let aSelf = self
             {
                 if edited
                 {
+                    aSelf.refreshCurrentElementFromLocalDatabase(elementId)
                     aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                 }
                 else
@@ -1068,23 +979,34 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         if let elementId = self.currentElement?.elementId?.integerValue
         {
             DataSource.sharedInstance.deleteElementFromServer(elementId, completion: { [weak self] (deleted, error) -> () in
-                if let weakSelf = self
-                {
-                    if deleted
+
+                DataSource.sharedInstance.localDatadaseHandler?.deleteElementById(elementId, completion: { (didSaveContext, error) -> () in
+                    if didSaveContext
                     {
-                        if let elementID = weakSelf.currentElement?.elementId?.integerValue
-                        {
-                            weakSelf.currentElement = nil//Element() //breaking our link to element in datasource
-                            DataSource.sharedInstance.deleteElementFromLocalStorage(elementID, shouldNotify:true)
-                            weakSelf.navigationController?.popViewControllerAnimated(true)
-                        }
+                        
                     }
                     else
                     {
-                        //show error alert
-                        weakSelf.showAlertWithTitle("Error".localizedWithComment(""), message: "Colud not delete current element".localizedWithComment(""), cancelButtonTitle: "Ok")
+                        
                     }
-                }
+                    
+                    dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+                        if let weakSelf = self
+                        {
+                            if let vcs = weakSelf.navigationController?.viewControllers
+                            {
+                                if vcs.count > 2
+                                {
+                                    if let previousElementVC = vcs[(vcs.count - 2)] as? SingleElementDashboardVC
+                                    {
+                                        previousElementVC.afterViewDidLoad = true
+                                    }
+                                }
+                            }
+                            weakSelf.navigationController?.popViewControllerAnimated(true)
+                        }
+                    })
+                })
             })
         }
     }
@@ -1093,14 +1015,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     {
         if let note = notification, userInfo = note.userInfo, _/*deletedElementId*/ = userInfo["elementId"] as? Int
         {
-            //FIXME: delete designated rows from layout and datasource
-            do{
-                try prepareCollectionViewDataAndLayout()
-            }
-            catch{
-                
-            }
-           //self.prepareCollectionViewDataAndLayout()
+            prepareCollectionViewDataAndLayout()
         }
     }
     
@@ -1112,12 +1027,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    do{
-                        try  weakSelf.prepareCollectionViewDataAndLayout()
-                    }
-                    catch{
-                        
-                    }
+                    weakSelf.prepareCollectionViewDataAndLayout()
                 }
             })
         }
@@ -1135,13 +1045,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     if attaches.count > 0
                     {
                         dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                            if let weakSelf = self{
-                                do{
-                                    try weakSelf.prepareCollectionViewDataAndLayout()
-                                }
-                                catch{
-                                    print(" Exception after singleAttachDataWasLoaded: ")
-                                }
+                            if let weakSelf = self
+                            {
+                                weakSelf.prepareCollectionViewDataAndLayout()
                             }
                         })
                     }

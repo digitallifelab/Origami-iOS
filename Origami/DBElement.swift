@@ -18,6 +18,7 @@ class DBElement: NSManagedObject {
         self.elementId      = NSNumber(integer: element.elementId!)
         self.rootElementId  = NSNumber(integer: element.rootElementId)
         self.responsibleId  = NSNumber(integer: element.responsible)
+        self.creatorId      = NSNumber(integer: element.creatorId)
         self.title          = element.title
         self.details        = element.details
         self.dateChanged    = element.changeDate?.dateFromServerDateString()
@@ -85,5 +86,34 @@ class DBElement: NSManagedObject {
             }
         }
         return false
+    }
+    
+    func addMessages(messages:Set<DBMessageChat>)
+    {
+        if let existingMessages = self.messages as? Set<DBMessageChat>
+        {
+            let newMessages = existingMessages.union(messages)
+            self.messages = newMessages
+            print("\n-> did add messages for \(self.elementId!)")
+        }
+        
+    }
+    
+    func createCopyForServer() -> Element
+    {
+        let lvElement = Element()
+        lvElement.elementId = self.elementId!.integerValue
+        lvElement.creatorId = self.creatorId!.integerValue
+        lvElement.responsible = self.responsibleId!.integerValue
+        lvElement.archiveDate = self.dateArchived?.dateForServer()
+        lvElement.typeId = self.type!.integerValue
+        lvElement.finishState = self.finishState!.integerValue
+        lvElement.finishDate = self.dateFinished
+        lvElement.isSignal = self.isSignal!.boolValue
+        lvElement.title = self.title
+        lvElement.details = self.details
+        lvElement.remindDate = self.dateRemind
+        
+        return lvElement
     }
 }

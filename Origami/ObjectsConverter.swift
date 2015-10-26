@@ -157,6 +157,21 @@ class ObjectsConverter {
             }
             
             let contact = Contact(info: newDict)
+            if let countryName = contact.country
+            {
+                if contact.countryId == nil , let country = DataSource.sharedInstance.countryByName(countryName)
+                {
+                    contact.countryId = country.countryId
+                }
+            }
+            
+            if let languageName = contact.language
+            {
+                if contact.languageId == nil , let language = DataSource.sharedInstance.languageByName(languageName)
+                {
+                    contact.languageId = language.languageId
+                }
+            }
             
             contacts.append(contact)
         }
@@ -171,7 +186,7 @@ class ObjectsConverter {
         
         var chatMessages = [Message]()
         var serviceMessages = [Message]()
-        
+        var lastPhotoUpdateMessagesForUserIDs = [Int:Message]()
         for lvDictionary in dictionaries
         {
             let lvNewMessage = Message(info: lvDictionary)
@@ -189,6 +204,8 @@ class ObjectsConverter {
             */
             //var shouldStoreMessage = true
             
+            
+            
             switch lvNewMessage.type
             {
                 case .Undefined:
@@ -205,8 +222,12 @@ class ObjectsConverter {
                     //print("\n changed user info. \" \(lvNewMessage.textBody) \"")
                     serviceMessages.append(lvNewMessage)
                 case .UserPhotoUpdated:
-                    print(" \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!)")
-                    serviceMessages.append(lvNewMessage)
+                    //print(" \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!)")
+                    if let integerUserId = Int(lvNewMessage.textBody!)
+                    {
+                        lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                    }
+                
                 case .UserBlocked:
                     //print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
                     serviceMessages.append(lvNewMessage)
@@ -215,6 +236,13 @@ class ObjectsConverter {
                     serviceMessages.append(lvNewMessage)
 
             }
+            
+        }
+        
+        for ( _ , aMessage) in lastPhotoUpdateMessagesForUserIDs
+        {
+            print(" \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
+            serviceMessages.append(aMessage)
         }
         
         chatMessages.sortInPlace { (message1, message2) -> Bool in

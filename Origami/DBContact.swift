@@ -50,42 +50,42 @@ class DBContact: DBPerson {
         if self.sex?.integerValue != contact.sex!.integerValue
         {
             self.sex = contact.sex
-            print("Did set new contact Sex value")
+            //print("Did set new contact Sex value")
         }
         
         if self.birthDay != contact.birthDay?.dateFromServerDateString()
         {
             self.birthDay = contact.birthDay?.dateFromServerDateString()
-            print("Did set new contact birth day")
+            //print("Did set new contact birth day")
         }
         
-        if let countryId = self.country?.integerValue
+        if let countryIdSelf = self.country?.integerValue, countryId = contact.countryId
         {
-            if countryId != contact.countryId
+            if countryIdSelf != countryId
             {
-                self.country = contact.countryId
+                self.country = NSNumber(integer:countryId)
                 print("Did set new contact Country Id")
             }
         }
-        else
+        else if let countryId = contact.countryId
         {
-            self.country = contact.countryId
+            self.country = NSNumber(integer:countryId)
             print("Did set new contact Country Id")
         }
         
         
-        if let langId = self.country?.integerValue
+        if let langIdSelf = self.language?.integerValue, let langId = contact.languageId
         {
-            if langId != contact.languageId
+            if langIdSelf != langId
             {
-                self.language = contact.languageId
-                print("Did set new contact birth Country Id")
+                self.language = NSNumber(integer:langId)
+                print("Did set new contact Country Id")
             }
         }
-        else
+        else if let langId = contact.languageId
         {
-            self.language = contact.languageId
-            print("Did set new contact birth Country Id")
+            self.language = NSNumber(integer:langId)
+            print("Did set new contact Country Id")
         }
         
     }

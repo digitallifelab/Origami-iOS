@@ -97,9 +97,10 @@ class MessagesLoader
             dispatch_source_cancel(source)
         }
     }
+    
     func cancelDispatchSource()
     {
-        if self.dispatchSource != nil
+        if let _ = self.dispatchSource
         {
             self.dispatchSource = nil
             print(" -> MessagesLoader -> removed dispatch source...")

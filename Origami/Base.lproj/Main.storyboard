@@ -752,11 +752,11 @@
                         <viewControllerLayoutGuide type="bottom" id="yD8-pd-zzj"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="XgA-qY-sW5">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="lwg-b4-rtA">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="1156"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="ta0-yn-MRa">
@@ -1592,6 +1592,8 @@
                             <constraint firstItem="lwg-b4-rtA" firstAttribute="top" secondItem="XgA-qY-sW5" secondAttribute="top" id="sk8-fd-JUw"/>
                         </constraints>
                     </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="600" height="1200"/>
                     <connections>
                         <outlet property="collectionView" destination="lwg-b4-rtA" id="i7Z-It-GDh"/>
                         <segue destination="mbh-4J-rdx" kind="show" identifier="ShowChatVC" id="ghb-Gn-sIb"/>
@@ -1807,11 +1809,11 @@
                         <viewControllerLayoutGuide type="bottom" id="1qn-l9-g7X"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="SgG-JJ-2ts">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="52" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4Ah-4v-u9l">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="556"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="1156"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -2087,7 +2089,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mkv-rG-TdJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2353" y="794"/>
+            <point key="canvasLocation" x="2354" y="935"/>
         </scene>
         <!--Contact Profile-->
         <scene sceneID="oaG-n5-5VX">
@@ -2876,7 +2878,7 @@
                         <viewControllerLayoutGuide type="bottom" id="Xik-ED-6be"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="zIQ-yH-gjU">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="1200"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ooG-3T-Yxh" userLabel="topNavigationBarBackgroundView">
@@ -2888,7 +2890,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="77" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="aoE-9g-R1b">
-                                <rect key="frame" x="0.0" y="64" width="600" height="443"/>
+                                <rect key="frame" x="0.0" y="64" width="600" height="1043"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -3078,7 +3080,7 @@
                                 </prototypes>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oGj-dc-QSj" customClass="ChatTextInputView" customModule="Origami_task_manager" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="507" width="600" height="49"/>
+                                <rect key="frame" x="0.0" y="1107" width="600" height="49"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ij3-eq-guf" userLabel="topDividerView">
                                         <rect key="frame" x="2" y="0.0" width="596" height="1"/>
@@ -3637,7 +3639,7 @@
         <image name="tile-task" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="W7P-5v-EqO"/>
         <segue reference="U7u-GC-E0t"/>
-        <segue reference="2Og-vg-MiQ"/>
     </inferredMetricsTieBreakers>
 </document>

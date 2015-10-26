@@ -65,6 +65,12 @@ class LocalDatabaseHandler{
     }
     
     
+    //MARK: - 
+    func getPrivateContext() -> NSManagedObjectContext
+    {
+        return self.privateContext
+    }
+    
     //MARK: - Work stuff
     //MARK: - Elements
     func readAllElements() -> Set<DBElement>? {
@@ -336,7 +342,7 @@ class LocalDatabaseHandler{
     
     func readHomeDashboardElements(shouldRefetch:Bool = true, completion:( ((signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?) )->() )?)
     {
-        let bgQueue = getBackgroundQueue_CONCURRENT()
+        let bgQueue = getBackgroundQueue_DEFAULT()
         dispatch_async(bgQueue) { () -> Void in
             var returningValue: (signals:[DBElement]?,favourites:[DBElement]?, other:[DBElement]?) = (signals:nil, favourites:nil, other:nil)
             
@@ -470,29 +476,38 @@ class LocalDatabaseHandler{
         let predicate = NSPredicate(format: "elementId = \(elementId)")
         fetchRequest.predicate = predicate
         
-        do{
-            if let elementsResult = try self.privateContext.executeFetchRequest(fetchRequest) as? [DBElement]
-            {
-                if elementsResult.count == 1
-                {
-                    return elementsResult.first!
+        var elementToReturn:DBElement?
+       
+            let context = self.privateContext
+            context.performBlockAndWait(){ _ in
+                
+                do{
+                    if let elementsResult = try self.privateContext.executeFetchRequest(fetchRequest) as? [DBElement]
+                    {
+                        if elementsResult.count == 1
+                        {
+                            elementToReturn = elementsResult.first!
+                        }
+                        else if elementsResult.count == 0
+                        {
+                            print("no element found for id: \(elementId)\n")
+                            
+                        }
+                        else if elementsResult.count > 1
+                        {
+                            assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
+                            //TODO: delete duplicate entries
+                        }
+                    }
                 }
-                else if elementsResult.count == 0
+                catch let error
                 {
-                    return nil
-                }
-                else if elementsResult.count > 1
-                {
-                    assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
-                    //TODO: delete duplicate entries
+                    print(error)
                 }
             }
-            return nil
-        }
-        catch let error {
-            print(error)
-            return nil
-        }
+        
+        return elementToReturn
+    
     }
     
     func readElementByIdAsync(elementId:Int, completion:((DBElement?)->())?)
@@ -509,7 +524,6 @@ class LocalDatabaseHandler{
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 completion?(foundElement)
             })
-            
         }
        
     }
@@ -570,6 +584,46 @@ class LocalDatabaseHandler{
         print(" ERROR while updating element SIGNAL: privateContextHasNoChanges")
     }
     
+    func deleteElementById(elementId:Int, completion:((Bool, error:NSError?)->())?)
+    {
+        let lvContext = self.privateContext
+        if let foundElementToDelete = self.readElementById(elementId)
+        {
+            let managedObjectId = foundElementToDelete.objectID
+            
+            lvContext.performBlock(){_ in
+                if let element = lvContext.objectWithID(managedObjectId) as? DBElement
+                {
+                    lvContext.deleteObject(element)
+                }
+                
+                if lvContext.hasChanges
+                {
+                    do{
+                        try lvContext.save()
+                        print("Private Context did save after deleting DBElement")
+                        completion?(true, error: nil)
+                    }
+                    catch let saveError as NSError {
+                        print("Private Context did NOT save after deleting DBElement:  Error")
+                        completion?(false, error : saveError)
+                    }
+                }
+                else
+                {
+                    print("Private Context did NOT save after deleting DBElement:  No Changes to Context")
+                    completion?(false, error: nil)
+                }
+            }
+        }
+        else
+        {
+            print("-> LocalDatabasehandler   DID NOT FIND ELEMEENT TO DELETE....")
+            completion?(false, error:nil)
+        }
+       
+    }
+    
     func deleteAllElements()
     {
         let allElementsRequest = NSFetchRequest(entityName: "DBElement")
@@ -608,7 +662,7 @@ class LocalDatabaseHandler{
         {
             do{
                 try self.privateContext.save()
-                print("Deleted all elements from local Database...")
+                print("Deleted all Elements from local Database...")
             }
             catch{
                 
@@ -617,21 +671,29 @@ class LocalDatabaseHandler{
     }
     
     //MARK: - Messages
+    
+    /**
+    During saving messages the method also tryes to find target element and associate given messages to it
+    
+    - error if empty messages
+    - error if privateContext throws while tryig to save changes to persistent store
+    - *true* only if context did save after changes
+    */
     func saveChatMessagesToLocalDataBase(messages:[Message], completion:((Bool, error:NSError?) -> ())?)
     {
         guard !messages.isEmpty else
         {
-            completion?(true, error:nil)
+            completion?(false, error:nil)
             return
         }
         
-        var mutableSet = Set<DBMessageChat>()
+//        var mutableSet = Set<DBMessageChat>()
         for aMessage in messages
         {
             if let existingMessage = self.readChatMessageById(aMessage.messageId)
             {
                 existingMessage.fillInfoFromMessageObject(aMessage)
-                mutableSet.insert(existingMessage)
+//                mutableSet.insert(existingMessage)
             }
             else
             {
@@ -640,49 +702,90 @@ class LocalDatabaseHandler{
                 if let message = NSEntityDescription.insertNewObjectForEntityForName("DBMessageChat", inManagedObjectContext: self.privateContext) as? DBMessageChat
                 {
                     message.fillInfoFromMessageObject(aMessage)
-                    mutableSet.insert(message)
+//                    mutableSet.insert(message)
                 }
             }
         }
         
-        if mutableSet.count > 0
-        {
-            if let anyMessage = mutableSet.first, elementId = anyMessage.elementId?.integerValue
-            {
-                //link message to existing element if found
-                if let existingElement = self.readElementById(elementId)
-                {
-                    if let existingSet = existingElement.messages as? Set<DBMessageChat>
-                    {
-                        let newMessagesSet = existingSet.union(mutableSet)
-                        existingElement.messages = newMessagesSet
-                    }
-                    else
-                    {
-                        existingElement.messages = mutableSet
-                    }
-                }
-            }
-        }
+//        if mutableSet.count > 0
+//        {
+//            if let anyMessage = mutableSet.first, elementId = anyMessage.elementId?.integerValue
+//            {
+//                //link message to existing element if found
+//                if let existingElement = self.readElementById(elementId)
+//                {
+//                    if let existingSet = existingElement.messages as? Set<DBMessageChat>
+//                    {
+//                        let newMessagesSet = existingSet.union(mutableSet)
+//                        existingElement.messages = newMessagesSet
+//                    }
+//                    else
+//                    {
+//                        existingElement.messages = mutableSet
+//                    }
+//                }
+//            }
+//        }
         
         if self.privateContext.hasChanges
         {
-            do{
-                try self.privateContext.save()
-                print("\n->did save Context after messages inserted or updated.")
-                completion?(true, error:nil)
-            }
-            catch let error as NSError{
-                print("\n->did NOT save Context after messages inserted or updated.")
-                print("Error: \n\(error)")
-                completion?(false, error:error)
-            }
-            
+            let lvContext = self.privateContext
+            lvContext.performBlock({ () -> Void in
+                do{
+                    try self.privateContext.save()
+                    print("\n->did <<<<< SAVE >>>>> Context after messages inserted or updated.")
+                   
+                    completion?(true, error:nil)
+                }
+                catch let error as NSError{
+                    print("\n->did NOT save Context after messages inserted or updated.")
+                    print("Error: \n\(error)")
+                    completion?(false, error:error)
+                }
+            })
+           
             return
         }
         print("\n->did NOT save Context after messages inserted or updated.")
         print("Reason: context has NO CHANGES\n")
         completion?(false, error:nil)
+    }
+    
+    func performMessagesAndElementsPairing(completion:(()->())?)
+    {
+        if let messagesWithoutTargetElement = self.getMessagesIdsForMessagesWithoutElement()
+        {
+            for (elementId, aMessages) in messagesWithoutTargetElement
+            {
+                if let element = self.readElementById(elementId.integerValue)
+                {
+                    element.addMessages(Set(aMessages))
+                }
+            }
+        }
+        
+        let context = self.privateContext
+        if context.hasChanges
+        {
+            context.performBlock() {
+                do{
+                    try context.save()
+                    print("Dis Save Context after PAIRING")
+                    completion?()
+                    
+                }
+                catch{
+                    print("Dis NOT Save Context after PAIRING")
+                    completion?()
+                }
+            }
+        }
+        else
+        {
+            print("Dis NOT Save Context after PAIRING - No Changes")
+            completion?()
+        }
+      
     }
     
     func readChatMessageById(messageId:Int) -> DBMessageChat?
@@ -722,7 +825,7 @@ class LocalDatabaseHandler{
         let sortById = NSSortDescriptor(key: "messageId", ascending: false)
         //let sortByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
         lastMessagesRequest.sortDescriptors = [sortById]
-        lastMessagesRequest.fetchLimit = 3
+        
         
         self.privateContext.performBlock { () -> Void in
             do{
@@ -733,13 +836,27 @@ class LocalDatabaseHandler{
                         let sortedMessages = messages.sort({ (message1, message2) -> Bool in
                             return message1.messageId!.integerValue < message2.messageId!.integerValue
                         })
-                        //debug
-                        for aDBMessage in sortedMessages
-                        {
-                            print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
-                        }
                         
-                        completion?(sortedMessages, error:nil)
+                        
+                        if sortedMessages.count < 4
+                        {
+//                            //debug
+//                            for aDBMessage in sortedMessages
+//                            {
+//                                print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+//                            }
+                            completion?(sortedMessages, error:nil)
+                        }
+                        else
+                        {
+                            let trimmedMessages = trimArray(sortedMessages, toLastItemsCount: 3)
+//                            //debug
+//                            for aDBMessage in trimmedMessages
+//                            {
+//                                print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+//                            }
+                            completion?(trimmedMessages, error:nil)
+                        }
                     }
                     else{
                         completion?(nil, error:nil)
@@ -751,6 +868,8 @@ class LocalDatabaseHandler{
             }
         }
     }
+    
+  
     /**
      - Returns: 
         - nil messages if no messages were found
@@ -762,10 +881,10 @@ class LocalDatabaseHandler{
         let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
         let sort = NSSortDescriptor(key: "dateCreated", ascending: true)
         let predicate = NSPredicate(format: "elementId = \(elementId)")
-        
+        print(predicate)
         lastMessagesRequest.predicate = predicate
         lastMessagesRequest.sortDescriptors = [sort]
-        lastMessagesRequest.fetchLimit = fetchSize
+        //lastMessagesRequest.fetchLimit = fetchSize
         
         self.privateContext.performBlock { () -> Void in
             do{
@@ -773,12 +892,27 @@ class LocalDatabaseHandler{
                 {
                     if !messages.isEmpty
                     {
-                        //debug
-                        for aDBMessage in messages
+                      
+                        
+                        if messages.count > fetchSize
                         {
-                            print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+                            let trimmed = trimArray(messages, toLastItemsCount: fetchSize)
+//                            //debug
+//                            for aDBMessage in trimmed
+//                            {
+//                                print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+//                            }
+                            completion?(trimmed, error:nil)
                         }
-                        completion?(messages, error:nil)
+                        else
+                        {
+//                            //debug
+//                            for aDBMessage in messages
+//                            {
+//                                print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+//                            }
+                            completion?(messages, error:nil)
+                        }
                     }
                     else
                     {
@@ -793,6 +927,235 @@ class LocalDatabaseHandler{
         }
     }
     
+    func readChatMessagesForElementById(elementId:Int, fetchSize:Int, lastMessageId:Int = 0, completion:(([DBMessageChat]?, error:NSError?) -> ())?)
+    {
+        if lastMessageId == 0 //load last messages to show in ChatVC (after "viewDidLoad")
+        {
+            self.readLastMessagesForElementById(elementId, fetchSize: fetchSize, completion: completion)
+        }
+        else
+        {
+            // preform actual work
+            let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
+            let sort = NSSortDescriptor(key: "dateCreated", ascending: true)
+            let predicate = NSPredicate(format: "elementId = \(elementId) AND messageId < \(lastMessageId)")
+            print(predicate)
+            lastMessagesRequest.predicate = predicate
+            lastMessagesRequest.sortDescriptors = [sort]
+            lastMessagesRequest.fetchLimit = fetchSize
+            
+            self.privateContext.performBlock { () -> Void in
+                do{
+                    if let messages = try self.privateContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                    {
+                        if !messages.isEmpty
+                        {
+//                            //debug
+//                            for aDBMessage in messages
+//                            {
+//                                print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+//                            }
+                            completion?(messages, error:nil)
+                        }
+                        else
+                        {
+                            completion?(nil, error:nil)
+                        }
+                    }
+                }
+                catch let error as NSError
+                {
+                    completion?(nil, error:error)
+                }
+            }
+        }
+    }
+    
+    func readNewMsessagesForElementById(elementId:Int, lastMessageId:Int, completion:(([DBMessageChat]?, error:NSError?) -> ())?)
+    {
+        let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
+        let sort = NSSortDescriptor(key: "dateCreated", ascending: true)
+        let predicate = NSPredicate(format: "elementId = \(elementId) AND messageId > \(lastMessageId)")
+        print(predicate)
+        lastMessagesRequest.predicate = predicate
+        lastMessagesRequest.sortDescriptors = [sort]
+        let lvContext = self.privateContext
+        lvContext.performBlock { () -> Void in
+            do{
+                if let messages = try lvContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                {
+                    if !messages.isEmpty
+                    {
+//                        //debug
+//                        for aDBMessage in messages
+//                        {
+//                            print("returnedMessage: \(aDBMessage.messageId!), date:\(aDBMessage.dateCreated!.timeDateString())")
+//                        }
+                        completion?(messages, error:nil)
+                    }
+                    else
+                    {
+                        completion?(nil, error:nil)
+                    }
+                }
+            }
+            catch let error as NSError
+            {
+                completion?(nil, error:error)
+            }
+        }
+
+    }
+    
+    
+    func getLatestMessageId() -> Int
+    {
+        let chatMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
+        chatMessagesRequest.fetchLimit = 1
+        chatMessagesRequest.propertiesToFetch = ["messageId"]
+        
+        chatMessagesRequest.sortDescriptors = [NSSortDescriptor(key: "messageId", ascending: false)]
+        
+        
+        var lastMessageId = 0
+        let context = self.privateContext
+        context.performBlockAndWait { () -> Void in
+            do{
+                if let results = try context.executeFetchRequest(chatMessagesRequest) as? [DBMessageChat]
+                {
+                    if !results.isEmpty
+                    {
+                        let lastMessage = results.first
+                        if let messageId = lastMessage?.messageId?.integerValue
+                        {
+                            lastMessageId = messageId
+                        }
+                    }
+                }
+            }
+            catch{
+                
+            }
+        }
+        
+        
+        return lastMessageId
+    }
+    
+    func getManagedObjectIDsForMessagesWithoutElement() -> [NSManagedObjectID]?
+    {
+        let fetchRequest = NSFetchRequest(entityName: "DBMessageChat")
+        let predicate = NSPredicate(format: "targetElement = nil")
+        fetchRequest.predicate = predicate
+        fetchRequest.resultType = .ManagedObjectIDResultType
+        let context = self.privateContext
+        
+        var messagesToReturn:[NSManagedObjectID]?
+        context.performBlockAndWait { _ in
+            do{
+                if let messagesWithoutElement = try context.executeFetchRequest(fetchRequest) as? [NSManagedObjectID]
+                {
+                    if !messagesWithoutElement.isEmpty
+                    {
+                        messagesToReturn = messagesWithoutElement
+                    }
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+        
+        return messagesToReturn
+    }
+    
+    
+    
+    func getMessagesIdsForMessagesWithoutElement() -> [NSNumber:[DBMessageChat]]?
+    {
+        let fetchRequest = NSFetchRequest(entityName: "DBMessageChat")
+        let predicate = NSPredicate(format: "targetElement = nil")
+        fetchRequest.predicate = predicate
+        fetchRequest.propertiesToFetch = ["messageId", "elementId"]
+        
+        let context = self.privateContext
+        
+        var messagesToReturn:[NSNumber:[DBMessageChat]]?
+        context.performBlockAndWait { _ in
+            do{
+                if let messagesWithoutElement = try context.executeFetchRequest(fetchRequest) as? [DBMessageChat]
+                {
+                    if !messagesWithoutElement.isEmpty
+                    {
+                        //initialize local value to be returned
+                        var lvMessagesToReturn = [NSNumber:[DBMessageChat]]()
+                        
+                        var elementIdNum = NSNumber(integer: 0)
+                        
+                        for aMessage in messagesWithoutElement
+                        {
+                            elementIdNum = aMessage.elementId!
+                            
+                            if let existingMessageIds = lvMessagesToReturn[elementIdNum]
+                            {
+                                var toReplace = existingMessageIds
+                                toReplace.append(aMessage)
+                                lvMessagesToReturn[elementIdNum] = toReplace
+                            }
+                            else
+                            {
+                                lvMessagesToReturn[elementIdNum] = [aMessage]
+                            }
+                        }
+                        
+                        //assign local value to returned value
+                        messagesToReturn = lvMessagesToReturn
+                    }
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+        
+        return messagesToReturn
+    }
+    
+    func cleanMessagesWithoutElement(completion:(()->())?)
+    {
+        dispatch_async(getBackgroundQueue_DEFAULT()) {[weak self] in
+            if let weakSelf = self
+            {
+                guard let messagesToBeDeletedIDs = weakSelf.getManagedObjectIDsForMessagesWithoutElement() else
+                {
+                    completion?()
+                    return
+                }
+                
+                let privContext = weakSelf.privateContext
+                privContext.performBlockAndWait() { _ in
+                    for anObjectId in messagesToBeDeletedIDs
+                    {
+                        let objectMessage = privContext.objectWithID(anObjectId)
+                        privContext.deleteObject(objectMessage)
+                    }
+                    if privContext.hasChanges
+                    {
+                        do{
+                            try privContext.save()
+                        }
+                        catch{
+                            
+                        }
+                    }
+                }
+                
+                completion?()
+            }
+        }
+    }
     
     func deleteAllChatMessages()
     {
@@ -838,8 +1201,8 @@ class LocalDatabaseHandler{
                 
             }
         }
-
     }
+    
     //MARK: - avatar previews
     
     /**
@@ -1015,7 +1378,7 @@ class LocalDatabaseHandler{
     func findPersonByUserName(userName:String) -> DBPerson?
     {
         let personFetshRequest = NSFetchRequest(entityName: "DBContact")
-        let predicate = NSPredicate(format: "userName == \(userName)")
+        let predicate = NSPredicate(format: "userName like %@", userName)
         personFetshRequest.predicate = predicate
         
         do{
@@ -1178,6 +1541,137 @@ class LocalDatabaseHandler{
         }
     }
     
+    func readContactByManagedObjectID(managedId:NSManagedObjectID, completion:((DBContact?, error:NSError?) -> ())?)
+    {
+        if #available(iOS 8.3, *) {
+            self.privateContext.refreshAllObjects()
+        } else {
+            // Fallback on earlier versions
+        }
+        
+        let localContext = self.privateContext
+        localContext.performBlock() { _ in
+            if let foundContact = localContext.objectWithID(managedId) as? DBContact
+            {
+                completion?(foundContact, error:nil)
+            }
+            else
+            {
+                completion?(nil, error:nil)
+            }
+        }
+    }
+    
+    func readAllMyContacts(completion:([DBContact]? -> ())?)
+    {
+        let contactsRequest = NSFetchRequest(entityName: "DBContact")
+        let sortDescriptor = NSSortDescriptor(key: "lastName", ascending: true)
+        contactsRequest.sortDescriptors = [sortDescriptor]
+        
+        let context = self.privateContext
+        
+        context.performBlock { () -> Void in
+            do
+            {
+                if let contacts = try context.executeFetchRequest(contactsRequest) as? [DBContact]
+                {
+                    completion?(contacts)
+                }
+            }
+            catch
+            {
+                completion?(nil)
+            }
+        }
+    }
+    
+    func deleContactById(contactId:Int, completion:((Bool, error:NSError?)->())?)
+    {
+        if let existingContact = self.findPersonById(contactId).db
+        {
+            let context = self.privateContext
+            context.performBlock({ () -> Void in
+                
+                context.deleteObject(existingContact)
+                
+                if context.hasChanges
+                {
+                    do
+                    {
+                        try context.save()
+                        print("-> Deleted Contact From Private Context")
+                        completion?(true, error:nil)
+                    }
+                    catch let error as NSError
+                    {
+                        print("failed to delete contact from private context:")
+                        print(error)
+                        completion?(true, error:error)
+                    }
+//                    catch  let error {
+//                        print("failed to delete contact from private context:")
+//                        print(error)
+//                        completion?(true, error:nil)
+//                    }
+                }
+            })
+        }
+    }
+    
+    func deleteAllContacts()
+    {
+        let allElementsRequest = NSFetchRequest(entityName: "DBContact")
+        allElementsRequest.includesPropertyValues = false
+        if #available (iOS 9.0, *)
+        {
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: allElementsRequest)
+            do
+            {
+                if let result = try self.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.privateContext) as? [DBContact]
+                {
+                    print("will delete contacts: \(result)")
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+        else //pre iOS 9
+        {
+            let lvContext = self.privateContext
+            lvContext.performBlock(){ () -> Void in
+                do
+                {
+                    if let allContacts = try lvContext.executeFetchRequest(allElementsRequest) as? [DBContact]
+                    {
+                        for aContact in allContacts
+                        {
+                            lvContext.deleteObject(aContact)
+                        }
+                    }
+                    
+                    if lvContext.hasChanges
+                    {
+                        do
+                        {
+                            try lvContext.save()
+                            print("Deleted all Contacts from local Database...")
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                }
+                catch
+                {
+                    
+                }
+                
+            }
+        }
+    }
     
     
     

@@ -7,19 +7,23 @@
 //
 
 import UIKit
-
-class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource,UIViewControllerTransitioningDelegate, AllContactsDelegate {
+import CoreData
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate, AllContactsDelegate, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var myContactsTable:UITableView?
     
-    var myContacts:[Contact]?
+    var myContacts:[DBContact]?
     var favContacts:[Contact] = [Contact]()
     var allContacts:[Contact]?
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
     var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
+    var allContactsFetchController:NSFetchedResultsController?
+    var favContactsFetchController:NSFetchedResultsController?
+    var localMainContext:NSManagedObjectContext?
     
+    var currentFetchController:NSFetchedResultsController?
     //MARK:----
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,9 +33,28 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         configureNavigationItems()
         configureNavigationControllerToolbarItems()
         
-        myContacts = DataSource.sharedInstance.getMyContacts()
+        if let dbHandler = DataSource.sharedInstance.localDatadaseHandler
+        {
+            self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+            self.localMainContext!.parentContext = dbHandler.getPrivateContext()
+            
+            let allContactsRequest = NSFetchRequest(entityName: "DBContact")
+            let lastNameSort = NSSortDescriptor(key: "lastName", ascending: true)
+            allContactsRequest.sortDescriptors = [lastNameSort]
+            self.allContactsFetchController = NSFetchedResultsController(fetchRequest: allContactsRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
+            
+            let favContactsRequest = NSFetchRequest(entityName: "DBContact")
+            favContactsRequest.sortDescriptors = [lastNameSort]
+            favContactsRequest.predicate = NSPredicate(format: "favorite =  true")
+            
+            self.favContactsFetchController = NSFetchedResultsController(fetchRequest: favContactsRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
+            
+            self.currentFetchController = self.allContactsFetchController
+            self.currentFetchController?.delegate = self
+            
+        }
         
-        //#if SHEVCHENKO
+        #if SHEVCHENKO
         DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
             
             if let weakSelf = self
@@ -45,7 +68,9 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 }
             }
         }
-        //#endif
+        #endif
+        
+        
         myContactsTable?.estimatedRowHeight = 60
         myContactsTable?.rowHeight = UITableViewAutomaticDimension
     }
@@ -57,18 +82,16 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     override func viewWillAppear(animated: Bool)
     {
-        self.calculateFavouriteContacts { (favouriteContacts) -> () in
-            if let fav = favouriteContacts
-            {
-                self.favContacts = fav
-            }
+        do {
+            try self.currentFetchController?.performFetch()
+        }
+        catch{
+            
         }
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contactFavouriteToggledNotification:", name: kContactFavouriteButtonTappedNotification, object: nil)
         
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
@@ -78,7 +101,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: kContactFavouriteButtonTappedNotification, object: nil)
+
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
@@ -151,57 +174,34 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             self.navigationController?.pushViewController(allContactsVC, animated: true)
         }
     }
-    //MARK: current VC
-    func calculateFavouriteContacts( completion:((favouriteContacts:[Contact]?)->())? )
-    {
-        if let myCONTACTS = self.myContacts
-        {
-            var localFavContacts = [Contact]()
-            for aContact in myCONTACTS
-            {
-                if aContact.isFavourite.boolValue
-                {
-                    localFavContacts.append(aContact)
-                }
-            }
-            
-            if let completionBlock = completion
-            {
-                if localFavContacts.isEmpty
-                {
-                    completionBlock(favouriteContacts: nil)
-                }
-                else
-                {
-                    //sort favourite contacts my lastName
-                    localFavContacts.sortInPlace({ (contact1, contact2) -> Bool in
-                        if let
-                            lastName1 = contact1.lastName,// as? String,
-                            lastName2 = contact2.lastName //as? String
-                        {
-                            return (lastName1.caseInsensitiveCompare(lastName2) == .OrderedAscending)
-                        }
-                        return false
-                    })
-                    completionBlock(favouriteContacts: localFavContacts)
-                }
-            }
-            
-        }
-        else
-        {
-            if let completionBlock = completion
-            {
-                completionBlock(favouriteContacts: nil)
-            }
-        }
-    }
     
+    //MARK: current VC
+
     func contactsFilterDidChange(sender:UISegmentedControl)
     {
         currentSelectedContactsIndex = sender.selectedSegmentIndex
+        switch currentSelectedContactsIndex{
+        case 0:
+            self.currentFetchController = self.allContactsFetchController
+        case 1:
+            self.currentFetchController = self.favContactsFetchController
+        default:
+            break
+        }
         
+        
+        self.currentFetchController?.delegate = self
+        
+        do
+        {
+            try self.currentFetchController?.performFetch()
+        }
+        catch
+        {
+            
+        }
         self.myContactsTable?.reloadData()
+        
     }
     
     
@@ -210,7 +210,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let contactProfileVC = self.storyboard?.instantiateViewControllerWithIdentifier("ContactProfileVC") as? ContactProfileVC
         {
-            contactProfileVC.contact = self.contactForIndexPath(indexPath)
+            if let contact = self.contactForIndexPath(indexPath)
+            {
+                contactProfileVC.contactManagedId = contact.objectID
+            }
             self.navigationController?.pushViewController(contactProfileVC, animated: true)
         }
     }
@@ -222,7 +225,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if let contact = contactForIndexPath(indexPath)
         {
-            let contactName = contactNameStringFromContact(contact)
+            let contactName = contact.nameAndLastNameSpacedString()!
             
             let mainFrameWidth = UIScreen.mainScreen().bounds.size.width
             let nameFrame = contactName.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX) ), options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 17.0)!], context: nil)
@@ -230,11 +233,13 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             var moodFrame = CGRectZero
             if let contactMood = contact.mood
             {
-                 moodFrame = contactMood.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX)), options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!], context: nil)
+                moodFrame = contactMood.boundingRectWithSize(CGSizeMake(mainFrameWidth - (8 + 40 + 8 + 40), CGFloat(FLT_MAX)), options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!], context: nil)
             }
             
             let verticalConstraints:CGFloat = 8 + 1 + 16
             let labelFrameHeights = nameFrame.size.height + moodFrame.size.height
+            
+           
             
             let toReturnHeight = ceil( labelFrameHeights + verticalConstraints )
             if toReturnHeight > 67.0
@@ -251,19 +256,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        switch currentSelectedContactsIndex
+      
+        if let currentFetchController = self.currentFetchController, objects = currentFetchController.fetchedObjects
         {
-        case 0:
-            if myContacts != nil
-            {
-                return myContacts!.count
-            }
-        case 1:
-            return favContacts.count
-        default:
-            break
+            return objects.count
         }
-        
         return 0
     }
     
@@ -280,13 +277,13 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         if let contact = contactForIndexPath(indexPath)
         {
             //name field
-            cell.nameLabel.text = contactNameStringFromContact(contact)
+            cell.nameLabel.text = contact.nameAndLastNameSpacedString()
             
             // mood field
-            cell.moodLabel?.text = contact.mood// as? String
+            cell.moodLabel?.text = contact.mood
             
             //favourite
-            if contact.isFavourite.boolValue
+            if contact.favorite!.boolValue
             {
                 cell.favouriteButton.tintColor = kDaySignalColor
             }
@@ -299,7 +296,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             //avatar
             cell.avatar.tintColor = kDayCellBackgroundColor
            
-            if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(contact.contactId)
+            if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(contact.contactId!.integerValue)
             {
                 cell.avatar?.image = avatarImage
             }
@@ -311,74 +308,14 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
     }
     
-    private func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
+    private func contactForIndexPath(indexPath:NSIndexPath) -> DBContact?
     {
         let row = indexPath.row
-        switch currentSelectedContactsIndex
+        if let currentFetchController = self.currentFetchController, objects = currentFetchController.fetchedObjects as? [DBContact]
         {
-        case 0:
-            if myContacts!.count > row
-            {
-                let lvContact = myContacts![row]
-                return lvContact
-            }
-        case 1:
-            if favContacts.count > row
-            {
-                return favContacts[row]
-            }
-        default:
-            break
+            return objects[row]
         }
         
-        return nil
-    }
-    
-    private func indexPathForContact(contact:Contact) -> NSIndexPath?
-    {
-        switch currentSelectedContactsIndex
-        {
-        case 0:
-            if let contacts = myContacts
-            {
-                var count = -1
-                for var i = 0; i < contacts.count; i++
-                {
-                    let aContact = contacts[i]
-                    if aContact.userName == contact.userName
-                    {
-                        count = i
-                        break
-                    }
-                }
-                
-                if count >= 0
-                {
-                    return NSIndexPath(forRow: count, inSection: 0)
-                }
-            }
-        case 1:
-            var count = -1
-            for var i = 0; i < favContacts.count; i++
-            {
-                let aContact = favContacts[i]
-                if aContact.userName == contact.userName
-                {
-                    count = i
-                    break
-                }
-            }
-            
-            if count >= 0
-            {
-                return NSIndexPath(forRow: count, inSection: 0)
-            }
-
-        default:
-            break
-        }
-       
-      
         return nil
     }
     
@@ -411,66 +348,35 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             userIndex = notification?.userInfo?["index"] as? Int,
             contact = self.contactForIndexPath(NSIndexPath(forRow: userIndex, inSection: 0))
         {
-            let contactIdInt = contact.contactId
+            let contactIdInt = contact.contactId!.integerValue
             guard contactIdInt > 0 else
             {
                 print("\n WIll not try to update \"Favourite\" contact - 0(zero) contact id passed.\n")
                 return
             }
-            
-            DataSource.sharedInstance.updateContactIsFavourite(contactIdInt, completion: {[weak self] (success, error) -> () in
-                if success
-                {
-                    var favourite = contact.isFavourite.boolValue
-                    favourite = !favourite
-                    DataSource.sharedInstance.getContactsByIds(Set([contactIdInt]))!.first!.isFavourite = NSNumber(bool: favourite)
-                    
-                    if let weakSelf = self, indexPath = weakSelf.indexPathForContact(contact)
-                    {
-                        weakSelf.calculateFavouriteContacts({ (favouriteContacts) -> () in
-                           
-                            weakSelf.favContacts.removeAll(keepCapacity: false)
-                            if let favs = favouriteContacts
-                            {
-                                weakSelf.favContacts += favs
-                            }
-                            switch weakSelf.currentSelectedContactsIndex
-                            {
-                            case 0:
-                                  weakSelf.myContactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                            case 1:
-                                if favourite == false
-                                {
-                                    weakSelf.myContactsTable?.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Left)
-                                    
-                                    //this is needed to reassign favButton.tag s
-                                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3)), dispatch_get_main_queue(), { [weak self]() -> Void in
-                                        if let weakSelf = self
-                                        {
-                                            weakSelf.myContactsTable?.reloadData()
-                                        }
-                                    })
-                                    
-                                }
-                            default:
-                                break
-                            }
-                          
-                        })
-                    }
-                }
-                else if let responseError = error
-                {
-                    print(" Some error while changing contact IsFavourite: \n\(responseError) ")
-                }
-            })
         }
     }
     
     //MARK: - AllContactsDelegate
     func reloadUserContactsSender(sender: UIViewController?) {
-        self.myContacts = DataSource.sharedInstance.getMyContacts()
+        //self.myContacts = DataSource.sharedInstance.getMyContacts()
+        do{
+            try self.currentFetchController?.performFetch()
+        }
+        catch{
+            
+        }
         
+        //self.myContactsTable?.reloadData()
+    }
+    
+    //MARK: - NSFetchedResultsControllerDelegate
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+            self.myContactsTable?.dataSource = nil
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        self.myContactsTable?.dataSource = self
         self.myContactsTable?.reloadData()
     }
 

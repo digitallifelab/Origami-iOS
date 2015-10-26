@@ -275,7 +275,15 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
                     if success
                     {
                         weakSelf.contactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                        weakSelf.delegate?.reloadUserContactsSender(weakSelf)
+                        DataSource.sharedInstance.localDatadaseHandler?.deleContactById(contact.contactId) {[weak self] _ in
+                            if let weakSelf = self
+                            {
+                                dispatch_async(dispatch_get_main_queue())
+                                {
+                                    weakSelf.delegate?.reloadUserContactsSender(weakSelf) //MyContactsVC will try to refetch contacts
+                                }
+                            }
+                        }
                     }
                     else
                     {
@@ -289,14 +297,17 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             DataSource.sharedInstance.addNewContactToMyContacts(contact, completion: { [weak self] (success, error) -> () in
                 if let weakSelf = self
                 {
-                    if success
+                    dispatch_async(dispatch_get_main_queue())
                     {
-                        weakSelf.contactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
-                        weakSelf.delegate?.reloadUserContactsSender(weakSelf)
-                    }
-                    else
-                    {
-                        weakSelf.showAlertWithTitle("Warning", message: "Could not add contact", cancelButtonTitle: "Close")
+                        if success
+                        {
+                            weakSelf.contactsTable?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
+                            weakSelf.delegate?.reloadUserContactsSender(weakSelf) //MyContactsVC will try to refetch contacts
+                        }
+                        else
+                        {
+                            weakSelf.showAlertWithTitle("Warning", message: "Could not add contact", cancelButtonTitle: "Close")
+                        }
                     }
                 }
             })

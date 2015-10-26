@@ -106,7 +106,6 @@ class ServiceMessagesHandler {
     if current user is not blocked the currently existing contacts start to update *`state`* property
     - Note: This method is Synchronous -> Don`t call it on Main Thread
     */
-    
     private func startUpdatingUsersStatuses()
     {
         if isUpdatingContacts {

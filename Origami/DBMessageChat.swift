@@ -74,9 +74,5 @@ class DBMessageChat: NSManagedObject {
         {
             self.firstName = message.firstName
         }
-//        if let targetElement = self.readElementById(message.elementId!)
-//        {
-//            self.targetElement = targetElement
-//        }
     }
 }

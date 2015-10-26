@@ -20,7 +20,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     var rootElementID:Int = 0
         {
         didSet{
-            print("\(self),  rootElementId: \(rootElementID)")
+            print("\n ->NewElementComposerViewController,  rootElementId: \(rootElementID)")
         }
     }
     var composingDelegate:ElementComposingDelegate?
@@ -76,12 +76,19 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 //self.newElement = Element()
                 elementNew.rootElementId = self.rootElementID
                 elementNew.passWhomIDs = Array(self.contactIDsToPass)
-                self.newElement = elementNew
+                
+                
                 if self.currentElementType != .None
                 {
-                    self.newElement?.title = self.composingDelegate?.newElementComposerTitleForNewElement(self)
-                    self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement(self)
+                    if let delegate = self.composingDelegate
+                    {
+                        elementNew.title = delegate.newElementComposerTitleForNewElement(self)
+                        elementNew.details = delegate.newElementComposerDetailsForNewElement(self)
+                    }
+                    //self.newElement?.title = self.composingDelegate?.newElementComposerTitleForNewElement(self)
+                    //self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement(self)
                 }
+                self.newElement = elementNew
             }
             
            configureBottomToolbar()

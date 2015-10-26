@@ -81,19 +81,14 @@ class DataRefresher
                 {
                     var sortedElements = recievedElements
                     ObjectsConverter.sortElementsByDate(&sortedElements)
-                    
-//                    if let _ = DataSource.sharedInstance.getAllElementsLocked()
-//                    {
-//                        DataSource.sharedInstance.replaceAllElementsToNew(sortedElements)
-//                        
-//                        NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
-//                    }
-//                    else{
-                       // DataSource.sharedInstance.replaceAllElementsToNew(sortedElements)
+
                         DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(sortedElements, completion: { (didSave, error) -> () in
-                            NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                         
+                            DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
+                                   NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                            })
                         })
-//                    }
+
                 }
                 
                 if let weakSelf = self

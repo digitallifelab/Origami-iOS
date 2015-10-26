@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, MessageObserver // to simplify development, I don`t divide simple table delegate logic to separate classes
+class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate // to simplify development, I don`t divide simple table delegate logic to separate classes
 {
     var displayMode:DisplayMode = .Day
     var messagesDatasource:ElementChatPreviewTableHandler?
@@ -34,10 +34,6 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
         {
              NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:elementId, userInfo: nil)
         }
-//        if let messageTapped = self.messagesDatasource?.messageForIndexPath(indexPath)
-//        {
-//            NSNotificationCenter.defaultCenter().postNotificationName(kHomeScreenMessageTappedNotification, object:, userInfo: nil)
-//        }
     }
     
     
@@ -62,7 +58,6 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                         weakSelf.reloadChatTableWithNewMessages(weakSelf.messages)
                     })
                 }
-                
             }
         }
     }
@@ -97,15 +92,19 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
            
             if let creatorId = aChatMessage.creatorId?.integerValue
             {
+                var lvUserName:String?
+                
                 if let messageCreatorTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
                 {
                     if let dbPerson = messageCreatorTuple.db
                     {
                         messageInfo.authorName = dbPerson.initialsString()
+                        lvUserName = dbPerson.userName
                     }
                     else if let  memoryPerson = messageCreatorTuple.memory // should be only current user
                     {
                         messageInfo.authorName = memoryPerson.initialsString()
+                        lvUserName = memoryPerson.userName
                     }
                 }
                 
@@ -113,6 +112,11 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
                 {
                     messageInfo.authorAvatar = avatarPreview
                 }
+                else if let userName = lvUserName
+                {
+                    DataSource.sharedInstance.startLoadingAvatarForUserName((name:userName,id:creatorId))
+                }
+                
             }
             
             messageInfosForDataSource.append(messageInfo)
@@ -131,15 +135,4 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate, Message
         getLastMessages()
     }
     
-    //MARK: MessageObserver
-    func newMessagesAdded(messages:[Message])
-    {
-//        let mainQueue = NSOperationQueue.mainQueue()
-//        
-//        mainQueue.addOperationWithBlock
-//            {
-//                [unowned self] () -> Void in
-//                self.reloadChatTableWithNewMessages(messages)
-//        }
-    }
 }

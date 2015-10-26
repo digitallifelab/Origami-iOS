@@ -563,6 +563,16 @@
     return nil;
 }
 
-
+- (nullable NSArray<NSString *> *)getAllExistingAvatarsPreviewFileNames
+{
+    NSString *pathToAvatarsFolder = [self pathToAvatarFolder];
+    NSError *lvError;
+    NSArray *contains = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:pathToAvatarsFolder error:&lvError];
+    if (contains && contains.count > 0)
+    {
+        return contains;
+    }
+    return nil;
+}
 
 @end

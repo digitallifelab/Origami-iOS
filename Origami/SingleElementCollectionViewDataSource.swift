@@ -140,24 +140,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         return nil
     }
     
-    func getElementLastMessages() -> [Message]?
-    {
-        if let currentElement = handledElement, messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(currentElement.elementId!)// DataSource.sharedInstance.getMessagesQuantyty(3, forElementId: handledElement?.elementId, lastMessageId: nil)
-        {
-            return messages
-        }
-        return nil
-    }
-    
-//    func getElementAttaches() -> [AttachFile]?
-//    {
-//        if let attaches =  DataSource.sharedInstance.getAttachesForElementById(handledElement?.elementId)
-//        {
-//            return  attaches
-//        }
-//        return nil
-//    }
-    
     func getElementSubordinates() -> [DBElement]?
     {
 //        guard let elementId = handledElement?.elementId, subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived: false) else {
@@ -391,14 +373,22 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     titleElement.isFavourite = boolFav
                 }
+                if let signalValue = handledElement?.isSignal?.boolValue
+                {
+                    titleElement.isSignal = signalValue
+                }
+                titleElement.responsible = handledElement!.responsibleId!.integerValue
+                titleElement.creatorId = handledElement!.creatorId!.integerValue
                 
                 titleCell.handledElement = titleElement
-                titleCell.setupActionButtons(elementIsOwned())
+                
+                let elementIsOwnedBool = elementIsOwned()
+                print("currentElement is Owned: \(elementIsOwnedBool)")
+                print("currentElement Responsible: \(handledElement?.responsibleId?.integerValue)")
+                titleCell.setupActionButtons(elementIsOwnedBool)
               
                 if let currentelement = self.handledElement
                 {
-                    let avatarIconView = titleCell.responsiblePersonAvatarIcon
-                    
                     let responsibleIdInt = currentelement.responsibleId!.integerValue
                     let creatorId = currentelement.creatorId!.integerValue
                     
@@ -416,11 +406,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                                 }
                                 else //contact`s element in which this contact is responsible
                                 {
-                                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt])), aContact = contacts.first //as? Contact
+                                    if let contactsTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
                                     {
-                                        if let contactName = aContact.nameAndLastNameSpacedString()
+                                        if let currentUser = contactsTuple.memory
                                         {
-                                            titleCell.responsibleNameLabel?.text = contactName
+                                            titleCell.responsibleNameLabel?.text = currentUser.initialsString()
+                                        }
+                                        else if let foundContact = contactsTuple.db
+                                        {
+                                            titleCell.responsibleNameLabel?.text = foundContact.initialsString()
                                         }
                                     }
                                 }
@@ -443,14 +437,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                                 }
                             }
                             
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak avatarIconView]() -> Void in
-                                if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(responsibleIdInt), imageView = avatarIconView
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        imageView.image = ownerAvatar
-                                    })
-                                }
-                            })
+                            
+                            if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(responsibleIdInt)
+                            {
+                                 titleCell.responsiblePersonAvatarIcon?.image = ownerAvatar
+                            }
                         }
                         else
                         {
@@ -461,25 +452,30 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             }
                             else //contact`s data
                             {
-                                if let contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), aContact = contacts.first //as? Contact
+                                if let creatorTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
                                 {
-                                    if let contactName = aContact.nameAndLastNameSpacedString()
+                                    if let memoryUser = creatorTuple.memory
                                     {
-                                        titleCell.responsibleNameLabel?.text = contactName
+                                        titleCell.responsibleNameLabel?.text = memoryUser.initialsString()
+                                    }
+                                    else if let aContact = creatorTuple.db
+                                    {
+                                        titleCell.responsibleNameLabel?.text = aContact.initialsString()
                                     }
                                 }
+                                else
+                                {
+                                    titleCell.responsibleNameLabel?.text = " _ "
+                                }
+                                
                             }
                             //load avatar by element`s creator id
-                            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { [weak avatarIconView]() -> Void in
-                                if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorId), weakAvatarIcon = avatarIconView
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        weakAvatarIcon.image = ownerAvatar
-                                    })
-                                }
-                            })                            
+                          
+                            if let ownerAvatar = DataSource.sharedInstance.getAvatarForUserId(creatorId)
+                            {
+                                titleCell.responsiblePersonAvatarIcon?.image = ownerAvatar
+                            }
                         }
-                       
                     }
                    
                 }
@@ -507,12 +503,20 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     {
                         info.responsibleName = user.nameAndLastNameSpacedString()
                     }
+                    else if let contact = containerTuple.db
+                    {
+                        info.responsibleName = contact.nameAndLastNameSpacedString()
+                    }
                 }
                 if let creatorId = handledElement?.creatorId?.integerValue, containerTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
                 {
                     if let user = containerTuple.memory
                     {
                         info.creatorName = user.nameAndLastNameSpacedString()
+                    }
+                    else if let contact = containerTuple.db
+                    {
+                        info.creatorName = contact.nameAndLastNameSpacedString()
                     }
                 }
                 
@@ -521,25 +525,25 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 var owned = elementIsOwned()
                 datesCell.setupActionButtons(owned)
                 
-//                if !owned
-//                {
-//                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId, parentElements = DataSource.sharedInstance.getRootElementTreeForElement(currentElement.rootElementId)
-//                    {
-//                        for anElement in parentElements
-//                        {
-//                            if anElement.creatorId == userIdInt
-//                            {
-//                                if !owned
-//                                {
-//                                    owned = true
-//                                    datesCell.setupActionButtons(owned)
-//                                }
-//                                
-//                                break
-//                            }
-//                        }
-//                    }
-//                }
+                if !owned
+                {
+                    if  let currentElement = self.handledElement, userIdInt = DataSource.sharedInstance.user?.userId, parentElements = DataSource.sharedInstance.localDatadaseHandler?.readRootElementTreeForElementManagedObjectId(currentElement.objectID)
+                    {
+                        for anElement in parentElements
+                        {
+                            if anElement.creatorId!.integerValue == userIdInt
+                            {
+                                if !owned
+                                {
+                                    owned = true
+                                    datesCell.setupActionButtons(owned)
+                                }
+                                
+                                break
+                            }
+                        }
+                    }
+                }
                 
                 return datesCell
             }
@@ -548,10 +552,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             let chatCell = collectionView.dequeueReusableCellWithReuseIdentifier("ElementChatPreviewCell",
                                                                                 forIndexPath: indexPath) as! SingleElementLastMessagesCell
             chatCell.displayMode = self.displayMode
-//            if let messages = DataSource.sharedInstance.getChatPreviewMessagesForElementId(self.handledElement!.elementId!)
-//            {
-//                chatCell.messages = messages
-//            }
             
             if let elementId = self.handledElement?.elementId?.integerValue
             {
@@ -630,12 +630,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 
                 if let signalFlag = lvElement.isSignal?.boolValue
                 {
-                    subordinateCell.signalDetectorView?.hidden = !signalFlag
+                    if let signalIcon = subordinateCell.signalDetectorView
+                    {
+                        signalIcon.hidden = !signalFlag
+                    }
+                    //subordinateCell.signalDetectorView?.hidden = !signalFlag
                 }
                 
                 if let typeId = lvElement.type?.integerValue
                 {
-                        subordinateCell.currentElementType = typeId // lvElement.typeId // will set visibility for icons
+                    subordinateCell.currentElementType = typeId // lvElement.typeId // will set visibility for icons
                 }
             
                 

@@ -88,6 +88,12 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     func userDidLogin(user:User)
     {
+        guard let loggedUserID = user.userId else
+        {
+            print("No User Id Found After Login ..............\n ...............")
+            return
+        }
+        
         DataSource.sharedInstance.user = user
         NSUserDefaults.standardUserDefaults().setObject(nameField.text, forKey: loginNameKey)
         NSUserDefaults.standardUserDefaults().setObject(passwordField.text, forKey: passwordKey)
@@ -96,6 +102,43 @@ class LoginVC: UIViewController , UITextFieldDelegate
         self.dismissViewControllerAnimated(true, completion: nil)
         NSOperationQueue().addOperationWithBlock { _ in
             
+            let userName = user.userName
+            if userName == ""
+            {
+                print("No User Email Found in Current User..........\n..........")
+                return
+            }
+            
+            DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
+            if let lastMessageId = DataSource.sharedInstance.localDatadaseHandler?.getLatestMessageId()
+            {
+                DataSource.sharedInstance.syncLastMessages(lastMessageId, completion: { (finished, error) -> () in
+                    if let _ = DataSource.sharedInstance.messagesLoader
+                    {
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                    else
+                    {
+                        DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                })
+            }
+            else
+            {
+                DataSource.sharedInstance.syncLastMessages(completion: { (finished, error) -> () in
+                    if let _ = DataSource.sharedInstance.messagesLoader
+                    {
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                    else
+                    {
+                        DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                })
+            }
+            
             DataSource.sharedInstance.localDatadaseHandler?.preloadSavedAvatarPreviewsToDataSource { (imagesDict, error) -> () in
                 if let imagesInfo = imagesDict
                 {
@@ -103,14 +146,67 @@ class LoginVC: UIViewController , UITextFieldDelegate
                     print(" __ Did read avatars from database into memory: ")
                     print(" avatars: \(imagesInfo.count)")
                 }
-                
             }
             
-            DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
-            DataSource.sharedInstance.syncLastMessages(completion: { (finished, error) -> () in
-                
-            })
-            
+            let fileHandle = FileHandler()
+            if let fileNames = fileHandle.getAllExistingAvatarsPreviewFileNames()
+            {
+                for userName in fileNames
+                {
+                    let fixedUserName = userName.stringByReplacingOccurrencesOfString(".jpg", withString: "")
+                    if fixedUserName == userName
+                    {
+                        fileHandle.loadAvatarDataForLoginName(fixedUserName) { (fullImageData, fileError) -> () in
+                            if let error = fileError
+                            {
+                                print("\n -> Could not find requested user avatar... : ")
+                                print(error)
+                            }
+                            else if let fullData = fullImageData, fullImage = UIImage(data: fullData), reducedImage = fullImage.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0))
+                            {
+                                DataSource.sharedInstance.userAvatarsHolder[loggedUserID] = reducedImage // to ram
+                                
+                                // and to local database for next time launch readiness
+                                if let reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                                {
+                                    DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: loggedUserID, fileName: fixedUserName)
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if let foundPerson = DataSource.sharedInstance.localDatadaseHandler?.findPersonByUserName(fixedUserName) as? DBContact , userId = foundPerson.contactId?.integerValue
+                        {
+                            if let avatarPreviewData = DataSource.sharedInstance.localDatadaseHandler?.readAvatarPreviewForContactId(userId), previewImage = UIImage(data: avatarPreviewData)
+                            {
+                                DataSource.sharedInstance.userAvatarsHolder[userId] = previewImage
+                            }
+                            else
+                            {
+                                fileHandle.loadAvatarDataForLoginName(fixedUserName) { (fullImageData, fileError) -> () in
+                                    if let error = fileError
+                                    {
+                                        print("\n -> Could not find requested user avatar... : ")
+                                        print(error)
+                                    }
+                                    else if let fullData = fullImageData, fullImage = UIImage(data: fullData), reducedImage = fullImage.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0))
+                                    {
+                                        DataSource.sharedInstance.userAvatarsHolder[userId] = reducedImage // to ram
+                                        
+                                        // and to local database for next time launch readiness
+                                        if let reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                                        {
+                                            DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: userId, fileName: fixedUserName)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
         }
     }
     

@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc class HomeCollectionHandler: NSObject, UICollectionViewDataSource, UICollectionViewDelegate // UICollectionViewDelegateFlowLayout
+@objc class HomeCollectionHandler: NSObject, UICollectionViewDataSource, UICollectionViewDelegate
 {
     var signals:[DBElement]?
     var favourites:[DBElement]?

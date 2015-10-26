@@ -11,7 +11,24 @@ import UIKit
 
 protocol MessageObserver
 {
-    func newMessagesAdded(messages:[Message])
+    func newMessagesWereAdded()
+    
+
+}
+
+extension MessageObserver
+{
+    func newMessagesAddedForElementId(elementId:Int) {
+        
+    }
+    
+    func newMessagesWereAdded(){
+        
+    }
+    
+    func newMessagesAdded(messages:[Message]){
+        
+    }
 }
 
 protocol ElementSelectionDelegate
@@ -65,13 +82,35 @@ protocol ElementComposingDelegate
 //    func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
 //    func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String?// { return nil }
 //    func newElementForComposer(composer:NewElementComposerViewController) -> Element?// { return nil }
+    var newElementDetailsInfo:String? { get set }
 }
 
 extension ElementComposingDelegate
 {
-    func newElementComposerTitleForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
-    func newElementComposerDetailsForNewElement(composer:NewElementComposerViewController) -> String? { return nil }
-    func newElementForComposer(composer:NewElementComposerViewController) -> Element? { return nil }
+    func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
+        if let fullInfo = self.newElementDetailsInfo
+        {
+            let countChars = fullInfo.characters.count
+            
+            if countChars > 40
+            {
+                let startIndex = fullInfo.startIndex
+                let toIndex = startIndex.advancedBy(40)
+                let cutString = fullInfo.substringToIndex(toIndex)
+                return cutString
+            }
+            return fullInfo
+        }
+        return nil
+    }
+    
+    func newElementComposerDetailsForNewElement(composer: NewElementComposerViewController) -> String? {
+        
+        return self.newElementDetailsInfo
+    }
+    func newElementForComposer(composer:NewElementComposerViewController) -> Element? {
+        return nil
+    }
 }
 
 

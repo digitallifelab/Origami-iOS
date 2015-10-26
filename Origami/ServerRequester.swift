@@ -327,16 +327,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 }
             }
         }
-        var targetQueue:dispatch_queue_t?
-        if #available(iOS 8.0, *)
-        {
-            targetQueue = dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0)
-        }
-        else
-        {
-            targetQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        }
         
+        let targetQueue = getBackgroundQueue_DEFAULT()
         
         self.performGETqueryWithURL(requestURL, onQueue: targetQueue, completion: completionHandler)
         
@@ -783,14 +775,18 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         httpManager.requestSerializer = AFJSONRequestSerializer()
         
         let messagePostTask = httpManager.POST(postUrlString,
-            parameters: ["token":tokenString, "elementId":elementId, "msg":message],
+            parameters: ["msg":message],
             success: { (task, responseObject) in
             
-            print(responseObject)
-            completion?(responseObject, nil)
+                dispatch_async(getBackgroundQueue_DEFAULT()) { () -> Void in
+                    print(responseObject)
+                    completion?(responseObject, nil)
+                }
+            
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }) /*failure block -> */ { (task, responseError) in
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 completion?(nil, responseError)
         }
         
@@ -1253,7 +1249,11 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                         {
                             if let response = jsonObject["GetPhotoResult"] as? [Int]
                             {
-                                if let aData = NSData.dataFromIntegersArray(response)
+                                if response.isEmpty
+                                {
+                                    completion?(avatarData: nil, error: nil)
+                                }
+                                else if let aData = NSData.dataFromIntegersArray(response)
                                 {
                                     completion?(avatarData: aData, error: nil)
                                 }
@@ -1261,6 +1261,10 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                                 {
                                     completion?(avatarData: nil, error: nil)
                                 }
+                            }
+                            else{
+                                print("Avatar Request Response: \(jsonObject)")
+                                completion?(avatarData: nil, error: nil)
                             }
                         }
                         else
@@ -1377,8 +1381,12 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     */
     func downloadMyContacts(completion completionClosure:((contacts:[Contact]?, error:NSError?) -> () )? = nil )
     {
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
+        guard let userToken = DataSource.sharedInstance.user?.token else
         {
+            completionClosure?(contacts: nil, error: noUserTokenError)
+            return
+        }
+        
             let requestString = serverURL + myContactsURLPart + "?token=" + userToken
             
             let contactsRequestOp = httpManager.GET(requestString,
@@ -1404,23 +1412,11 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             }, failure: { (operation, requestError) -> Void in
                 if let completion = completionClosure
                 {
-//                    if let responseString = operation.responseString
-//                    {
-//                        let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
-//                        completion(contacts: nil, error: lvError)
-//                    }
-//                    else
-//                    {
-                        completion(contacts:nil, error:requestError)
-//                    }
+                    completion(contacts:nil, error:requestError)
                 }
             })
             
             contactsRequestOp?.resume()
-            return
-        }
-        
-        completionClosure?(contacts: nil, error: noUserTokenError)
         
     }
     

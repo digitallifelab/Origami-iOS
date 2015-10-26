@@ -55,6 +55,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     private lazy var attaches = [Int:[AttachFile]]()
     
+    var languages = [Language]()
+    var countries = [Country]()
     //private lazy var avatarsHolder = [String:NSData]()
     
     lazy var userAvatarsHolder = [Int:UIImage]()
@@ -93,8 +95,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var loadingAllElementsInProgress = false
     
     private lazy var dataCache:NSCache = NSCache()
-    lazy var pendingAttachFileDataDownloads = [Int:Bool]()
-    lazy var pendingUserAvatarsDownolads = [String:Int]()
+    private var pendingAttachFileDataDownloads = [Int:Bool]()
+    private var pendingUserAvatarsDownolads = [String:Int]()
     //private stuff
     private func getMessagesObserverForElementId(elementId:NSNumber) -> MessageObserver?
     {
@@ -120,6 +122,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         dispatch_async(bgQueue, { _ in
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllElements()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllChatMessages()
+            DataSource.sharedInstance.localDatadaseHandler?.deleteAllContacts()
             DataSource.sharedInstance.user = nil
             DataSource.sharedInstance.cleanDataCache()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
@@ -283,7 +286,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         var lvMessagesHolder = [NSNumber:[Message]]()
         for lvMessage in messagesTupleHolder.messagesTuple.chat
         {
-            print(" ->handleRecievedMessagesTuple: >>> \(lvMessage.textBody!)))")
             if lvMessagesHolder[lvMessage.elementId!] != nil
             {
                 lvMessagesHolder[lvMessage.elementId!]?.append(lvMessage)
@@ -296,40 +298,45 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         if !lvMessagesHolder.isEmpty
         {
+            var messagesForFoundElements = [Message]()
+            var messagesForNotFoundElements = [Message]()
             for (keyElementId, messages) in lvMessagesHolder
             {
-                //DataSource.sharedInstance.addMessages(messages, forElementId: keyElementId, completion: nil)
+                if let _ = DataSource.sharedInstance.localDatadaseHandler?.readElementById(keyElementId.integerValue)
+                {
+                    print("Saving Messages \(messages.count) for element: \(keyElementId)")
+                    messagesForFoundElements += messages
+                }
+                else
+                {
+                    print("Saving messages with currently missing element : \(keyElementId)")
+                    messagesForNotFoundElements += messages
+                }
+              
+            }
+            
+            DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesForFoundElements, completion: { (saved, error) -> () in
+                if let messageSaveError = error
+                {
+                    print("Message Save Error: \n \(messageSaveError)")
+                }
                 
-                print("Saving Messages for element: \(keyElementId)")
-                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messages, completion: { (saved, error) -> () in
-                    print("SaveFor Element: \(keyElementId) -> \(saved)")
+                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesForNotFoundElements, completion: { (saved, error) -> () in
                     if let messageSaveError = error
                     {
                         print("Message Save Error: \n \(messageSaveError)")
                     }
-                    if saved
-                    {
-                        // link messages to elements in database
+                    
+                    DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(){ _ in
+                        print("\n -> DataSource did finish PAIRING messages and elemnts..")
+                        if let observerHomeVC = DataSource.sharedInstance.getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
+                        {
+                            observerHomeVC.newMessagesWereAdded()
+                        }
                     }
+                    
                 })
-            }
-            
-//
-//            
-//            if let observerForHomeScreen = DataSource.sharedInstance.messagesObservers[All_New_Messages_Observation_ElementId]
-//            {
-//                DataSource.sharedInstance.getLastMessagesForDashboardCount(MaximumLastMessagesCount, completion: { (lastMessages) -> () in
-//                    
-//                    if let lastMessagesReal = lastMessages
-//                    {
-//                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                            observerForHomeScreen.newMessagesAdded(lastMessagesReal)
-//                        })
-//                    }
-//                })
-//            }
-            
-            
+            })
         }
         
         let serviceMessages = messagesTupleHolder.messagesTuple.service
@@ -366,25 +373,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     messageToInsert.dateCreated = NSDate()
                     messageToInsert.messageId = messageId
                 }
-                DataSource.sharedInstance.addMessages([messageToInsert], forElementId: message.elementId!, completion: nil)
-                //return callback to ChatVC
-                completion?(nil)
                 
-                if let existingElement = DataSource.sharedInstance.getElementById(messageElementId)
-                {
-                    if let currentStringDate = NSDate().dateForServer()
+                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase([messageToInsert], completion: { (saved, error) -> () in
+                    if let saveError = error
                     {
-                        existingElement.changeDate = currentStringDate
-                        if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement.rootElementId)
-                        {
-                            for aParent in rootTree
-                            {
-                                aParent.changeDate = existingElement.changeDate
-                            }
-                        }
-                        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+                        completion?(saveError)
+                        return
                     }
-                }
+//                    if saved
+//                    {
+//                        print("DataSource did save new Message to local database")
+//                        
+//                    }
+                    completion?(nil)
+                })
             }
         }
     }
@@ -514,37 +516,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             return nil
         }
     }
-    
-    func getChatPreviewMessagesForElementId(elementId:NSNumber) -> [Message]?
-    {
-        let messagesQuantity:Int = 3
-        guard let existingMessagesForElementId = DataSource.sharedInstance.getAllMessagesForElementId(elementId) else
-        {
-            return nil
-        }
-        
-        let sorted = existingMessagesForElementId.sort { (message1, message2) -> Bool in
-            return message1 < message2 //(message1.dateCreated!.compare(message2.dateCreated!) == NSComparisonResult.OrderedAscending)
-        }
-        let count = sorted.count
-        if count <= messagesQuantity
-        {
-            return sorted
-        }
-        else
-        {
-            var messagesToReturn = [Message]()
-            for var i = count - 1; i > count - (messagesQuantity + 1); i--
-            {
-                let lastMessage = sorted[i]
-                messagesToReturn.insert(lastMessage, atIndex: 0)
-                //print(" i = \(i)")
-            }
-            
-            return messagesToReturn
-        }
-        
-    }
+
     
     func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
     {
@@ -633,6 +605,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return response
     }
     
+    func removeObserverForNewMessagesForElement(elementId:NSNumber)
+    {
+        if let _ = DataSource.sharedInstance.messagesObservers[elementId]
+        {
+            DataSource.sharedInstance.messagesObservers[elementId] = nil
+        }
+    }
+    
     
     
     func removeMessagesForDeletedElements(elementIDs:Set<Int>)
@@ -668,19 +648,34 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
         - Returns: new created Element or NSError if fails
     */
-    func submitNewElementToServer(newElement:Element, completion closure:(newElementId:Int?, error:NSError?) ->())
+    func submitNewElementToServer(newElement:Element, completion closure:((newElementId:Int?, error:NSError?) ->())?)
     {
         DataSource.sharedInstance.serverRequester.submitNewElement(newElement, completion: { (result, error) -> () in
             if let successElement = result as? Element
             {
-                DataSource.sharedInstance.addNewElements([successElement], completion: { () -> () in
-                    closure(newElementId: successElement.elementId, error: nil)
-                })
+                let elementId = successElement.elementId
+                if elementId <= 0
+                {
+                    closure?(newElementId: nil, error: NSError(domain: "com.origami.newElementCreationError.", code: -10500, userInfo: [NSLocalizedDescriptionKey:"Wrong New Element Id Recieved"]))
+    
+                    return
+                }
                 
+                DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase([successElement], completion: { (didSave, error) -> () in
+                    if didSave
+                    {
+                          closure?(newElementId: elementId, error: nil)
+                    }
+                    else
+                    {
+                        closure?(newElementId: nil, error: error)
+                    }
+                  
+                })
             }
             else
             {
-                closure(newElementId: nil, error: error)
+                closure?(newElementId: nil, error: error)
             }
             
         })
@@ -966,6 +961,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             print(insertError)
                         }
                     }
+                    
+                    DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
+                        print("\n -> loadAllElementsInfo:   -   Did finish PAIRING elements and messages.")
+                    })
                 })
                 
                 let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
@@ -1086,30 +1085,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
     }
-//    func getRootElementTitlesFor(element:Element) -> [String]
-//    {
-//        var lvTitles = [String]()
-//        var currentElement = element
-//        while getRootElementTitle(currentElement) != nil
-//        {
-//            let lvStringTitle = getRootElementTitle(currentElement)
-//            lvTitles.append(lvStringTitle!)
-//            if let rootElementId = currentElement.rootElementId, let rootElement = getElementById(rootElementId)
-//            {
-//                currentElement = rootElement
-//            }
-//        }
-//        
-//        return lvTitles
-//    }
-//    private func getRootElementTitle(element:Element) -> String?
-//    {
-//        if element.rootElementId != nil, let lvRootElement = getElementById(element.rootElementId!), let lvTitle = lvRootElement.title as? String
-//        {
-//            return lvTitle
-//        }
-//        return nil
-//    }
     
     func editElement(element:Element, completionClosure completion:(edited:Bool) -> () )
     {
@@ -1120,37 +1095,34 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     
                     if success
                     {
-                        if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                        if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
                         {
                             existingElement.title = element.title
                             existingElement.details = element.details
-                            existingElement.isFavourite = element.isFavourite
-                            existingElement.isSignal = element.isSignal
-                            existingElement.typeId = element.typeId
+                            existingElement.isFavourite = NSNumber(bool:element.isFavourite)
+                            existingElement.isSignal = NSNumber(bool:element.isSignal)
+                            existingElement.type = NSNumber(integer:element.typeId)
                             
-                            let currentDate = NSDate()
-                            if let dateForServer = currentDate.dateForServer()
-                            {
-                                existingElement.changeDate = dateForServer
-                            }
+                            existingElement.dateChanged = NSDate()
                             
-                            existingElement.responsible = element.responsible
-                            existingElement.finishState = element.finishState
-                            
+                            existingElement.responsibleId = NSNumber(integer:element.responsible)
+                            existingElement.finishState = NSNumber(integer:element.finishState)
+                            existingElement.isSignal = NSNumber(bool:element.isSignal)
                             if let remindDate = element.remindDate
                             {
-                                existingElement.remindDate = remindDate
+                                existingElement.dateRemind = remindDate
                             }
                             
-                            if let rootTree = DataSource.sharedInstance.getRootElementTreeForElement(existingElement.rootElementId)
+                            if let rootTree = DataSource.sharedInstance.localDatadaseHandler?.readRootElementTreeForElementManagedObjectId(existingElement.objectID)
                             {
                                 for aParent in rootTree
                                 {
-                                    aParent.changeDate = existingElement.changeDate
+                                    aParent.dateChanged = existingElement.dateChanged
                                 }
                             }
                             
-                            existingElement.archiveDate = element.archiveDate
+                            existingElement.dateArchived = element.archiveDate?.dateFromServerDateString()
+                            
                             if existingElement.isArchived()
                             {
                                 if let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
@@ -1976,7 +1948,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 print(saveError)
                             }
                         })
-                        DataSource.sharedInstance.contacts = aContacts
+                        //DataSource.sharedInstance.contacts = aContacts
                     }
                 }
             })
@@ -2317,35 +2289,23 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         DataSource.sharedInstance.serverRequester.addToMyContacts(contact.contactId, completion: { (success, error) -> () in
             if success
-            {
-                var currentContacts = Set(DataSource.sharedInstance.contacts)
-                let countBefore = currentContacts.count
-                currentContacts.insert(contact)
-                let countAfter = currentContacts.count
-                if countAfter == countBefore
-                {
-                    print("\n Warning!! DataSource did NOT ADD contact from myContacts\n")
-                }
-                
-                let sorted = Array(currentContacts).sort({ (contact1, contact2) -> Bool in
-                    if let
-                        firstName1 = contact1.firstName,// as? String,
-                        firstName2 = contact2.firstName //as? String
-                    {
-                        return firstName1.caseInsensitiveCompare(firstName2) == .OrderedAscending
+            {                
+                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase([contact], completion: { (saved, error) -> () in
+                    if saved{
+                        completion?(success:true, error: nil)
                     }
-                    
-                    return true
+                    else if let saveError = error
+                    {
+                        completion?(success:false, error:saveError)
+                    }
+                    else{
+                        completion?(success:saved, error:nil)
+                    }
                 })
-                
-                DataSource.sharedInstance.contacts = sorted
+                return
             }
             
-            //return from function
-            if let completionBlock = completion
-            {
-                completionBlock(success: success, error: error)
-            }
+            completion?(success:success, error:error)
         })
     }
     
@@ -2382,6 +2342,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     return
                 }
                 completionBlock?(image: image, error: nil)
+            }
+            else if let fileError = error
+            {
+                completionBlock?(image:nil, error: fileError)
             }
         }
     }
@@ -2589,9 +2553,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         dispatch_async(bgQueue, { () -> Void in
             
             let aFileHandler = FileHandler()
-            if let countriesDictsArray = aFileHandler.getLanguagesFromDisk() as? [[String:AnyObject]]
+            if let languageDictsArray = aFileHandler.getLanguagesFromDisk() as? [[String:AnyObject]]
             {
-                if let langArray = ObjectsConverter.convertToLanguages(countriesDictsArray)
+                if let langArray = ObjectsConverter.convertToLanguages(languageDictsArray)
                 {
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     completion?(languages:langArray, error:nil)
@@ -2614,7 +2578,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     })
                         UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 }
-                
             }
             else
             {
@@ -2635,5 +2598,41 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }
         }) //end of dispatch queue block
+    }
+    
+    func countryByName(countryName:String?) -> Country?
+    {
+        guard let name = countryName else
+        {
+            return nil
+        }
+        
+        for aCountry in DataSource.sharedInstance.countries
+        {
+            if aCountry.countryName == name
+            {
+                return aCountry
+            }
+        }
+        
+        return nil
+    }
+    
+    func languageByName(languageName:String?) -> Language?
+    {
+        guard let name = languageName else
+        {
+            return nil
+        }
+        
+        for aLanguage in DataSource.sharedInstance.languages
+        {
+            if aLanguage.languageName == name
+            {
+                return aLanguage
+            }
+        }
+        
+        return nil
     }
 }

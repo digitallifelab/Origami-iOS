@@ -44,5 +44,5 @@
 -(void) deleteAttachedImages;
 
 -(nullable NSDictionary *) getAllExistingAvatarsPreviews;
-
+-(nullable NSArray <NSString *> *) getAllExistingAvatarsPreviewFileNames;
 @end

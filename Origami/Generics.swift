@@ -65,3 +65,22 @@ func < <T where T:CreateDateComparable> (lhs:T, rhs:T) -> Bool
         return false
     }
 }
+
+func trimArray<T>(array:[T], toLastItemsCount:Int) -> [T]
+{
+    if Int(array.count) > toLastItemsCount
+    {
+        var mutableArray = array
+        var trimmedArray = [T]()
+        for var i = 0; i < toLastItemsCount; i++
+        {
+            let lastObjct = mutableArray.removeLast()
+            trimmedArray.insert(lastObjct, atIndex: 0)
+        }
+        return trimmedArray
+    }
+    else
+    {
+        return array
+    }
+}
