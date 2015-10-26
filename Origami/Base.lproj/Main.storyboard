@@ -2089,7 +2089,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mkv-rG-TdJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2354" y="935"/>
+            <point key="canvasLocation" x="1961" y="1235"/>
         </scene>
         <!--Contact Profile-->
         <scene sceneID="oaG-n5-5VX">
@@ -3286,27 +3286,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9On-ND-kI9">
-                                <rect key="frame" x="0.0" y="64" width="600" height="44"/>
-                                <animations/>
-                                <items>
-                                    <barButtonItem tag="4" image="icon-flag" id="rtq-OF-q4o"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="bi5-H8-q8P"/>
-                                    <barButtonItem tag="6" image="icon-idea" id="ZIW-MJ-89Z"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="d2i-b4-0zq"/>
-                                    <barButtonItem tag="5" image="icon-okey" id="n1e-ni-ty0"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="1yW-nE-CbD"/>
-                                    <barButtonItem tag="7" image="icon-solution" id="1ow-Xp-k7J"/>
-                                </items>
-                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </toolbar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="101" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="01A-7P-eGn">
-                                <rect key="frame" x="0.0" y="108" width="600" height="448"/>
+                                <rect key="frame" x="0.0" y="139" width="600" height="417"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="ElementTableCell" rowHeight="100" id="Wtr-1E-OiI" userLabel="RecentActivityTableCell" customClass="RecentActivityTableCell" customModule="Origami_task_manager" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="22" width="600" height="100"/>
+                                        <rect key="frame" x="0.0" y="86" width="600" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Wtr-1E-OiI" id="zLe-iH-2rQ">
                                             <rect key="frame" x="0.0" y="0.0" width="567" height="99"/>
@@ -3457,18 +3443,43 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p59-K5-LmX">
+                                <rect key="frame" x="0.0" y="78" width="600" height="44"/>
+                                <animations/>
+                                <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Qxh-f1-h14"/>
+                                    <barButtonItem width="314" style="plain" id="iBf-El-sIr">
+                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bordered" selectedSegmentIndex="0" id="TCo-kg-hh0">
+                                            <rect key="frame" x="143" y="7" width="314" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <animations/>
+                                            <segments>
+                                                <segment title="All"/>
+                                                <segment title="Signals"/>
+                                                <segment title="Ideas"/>
+                                                <segment title="Tasks"/>
+                                                <segment title="Decisions"/>
+                                            </segments>
+                                            <connections>
+                                                <action selector="segmentedControlDidChange:" destination="C5Y-Ay-Vc7" eventType="valueChanged" id="lNJ-Gm-f3e"/>
+                                            </connections>
+                                        </segmentedControl>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="3ll-Kk-wjg"/>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="01A-7P-eGn" firstAttribute="top" secondItem="rsN-Dm-FAF" secondAttribute="top" id="2Ba-oK-3w4"/>
-                            <constraint firstItem="01A-7P-eGn" firstAttribute="top" secondItem="9On-ND-kI9" secondAttribute="bottom" id="2a6-yt-Khh"/>
-                            <constraint firstItem="9On-ND-kI9" firstAttribute="top" secondItem="6AM-X7-xbC" secondAttribute="bottom" id="9lb-ik-Kzu"/>
+                            <constraint firstItem="p59-K5-LmX" firstAttribute="top" secondItem="6AM-X7-xbC" secondAttribute="bottom" constant="14" id="G8X-4g-MBB"/>
                             <constraint firstAttribute="trailing" secondItem="01A-7P-eGn" secondAttribute="trailing" id="LeP-PE-5Hn"/>
                             <constraint firstItem="01A-7P-eGn" firstAttribute="leading" secondItem="rsN-Dm-FAF" secondAttribute="leading" id="OKR-aR-e2b"/>
-                            <constraint firstItem="9On-ND-kI9" firstAttribute="trailing" secondItem="01A-7P-eGn" secondAttribute="trailing" id="ZII-GN-wlH"/>
+                            <constraint firstItem="p59-K5-LmX" firstAttribute="leading" secondItem="rsN-Dm-FAF" secondAttribute="leading" id="Oej-8u-ovT"/>
+                            <constraint firstItem="01A-7P-eGn" firstAttribute="top" secondItem="p59-K5-LmX" secondAttribute="bottom" constant="17" id="Qgu-ah-Iak"/>
+                            <constraint firstAttribute="trailing" secondItem="p59-K5-LmX" secondAttribute="trailing" id="dOg-ms-LQ2"/>
                             <constraint firstItem="01A-7P-eGn" firstAttribute="bottom" secondItem="jLo-Kg-eUM" secondAttribute="top" id="k2s-65-9Cn"/>
-                            <constraint firstItem="9On-ND-kI9" firstAttribute="leading" secondItem="01A-7P-eGn" secondAttribute="leading" id="qOA-rE-PcV"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -3492,14 +3503,15 @@
                         </segmentedControl>
                     </navigationItem>
                     <connections>
+                        <outlet property="filterSegmentedControl" destination="TCo-kg-hh0" id="Usp-Uz-TKU"/>
                         <outlet property="segmentedControl" destination="MHy-Gy-Yry" id="7d6-dS-ibv"/>
                         <outlet property="tableView" destination="01A-7P-eGn" id="n6m-5R-GUF"/>
-                        <outlet property="topToolbar" destination="9On-ND-kI9" id="k4L-Wg-gVr"/>
+                        <outlet property="topToolbar" destination="p59-K5-LmX" id="ndN-o7-dPL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CKv-dd-3Yu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3346" y="2166"/>
+            <point key="canvasLocation" x="3269" y="2166"/>
         </scene>
         <!--Contacts PickerVC-->
         <scene sceneID="Bri-FW-TSM">
@@ -3627,7 +3639,6 @@
         <image name="icon-flag" width="50" height="50"/>
         <image name="icon-home-SH" width="55" height="55"/>
         <image name="icon-idea" width="50" height="50"/>
-        <image name="icon-okey" width="50" height="50"/>
         <image name="icon-send" width="50" height="50"/>
         <image name="icon-signal" width="50" height="50"/>
         <image name="icon-solution" width="50" height="50"/>

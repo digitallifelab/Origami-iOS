@@ -55,11 +55,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     private lazy var attaches = [Int:[AttachFile]]()
     
+    
     var languages = [Language]()
     var countries = [Country]()
     //private lazy var avatarsHolder = [String:NSData]()
     
     lazy var userAvatarsHolder = [Int:UIImage]()
+    lazy var participantIDsForElement = [Int:Set<Int>]()
     
     private let serverRequester = ServerRequester()
  
@@ -1008,6 +1010,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 }
                             })
                         }
+                        DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
                     }
                 }
             }
@@ -1086,13 +1089,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
     }
     
-    func editElement(element:Element, completionClosure completion:(edited:Bool) -> () )
+    func editElement(element:Element, completionClosure completion:((edited:Bool) -> ())? )
     {
         if let elementId = element.elementId //?.integerValue
         {
-            DataSource.sharedInstance.serverRequester.editElement(element, completion: { (success, error) -> () in
-                NSOperationQueue().addOperationWithBlock({ () -> Void in
-                    
+            DataSource.sharedInstance.serverRequester.editElement(element) { (success, error) -> () in
+                
                     if success
                     {
                         if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
@@ -1125,37 +1127,43 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             
                             if existingElement.isArchived()
                             {
-                                if let subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
+                                if let info =  DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId, shouldReturnObjects: true)
                                 {
-                                    for aSubElement in subordinates
+                                    if info.count > 0
                                     {
-                                        aSubElement.archiveDate = element.archiveDate
+                                        if let elements = info.elements
+                                        {
+                                            for anElementDb in elements
+                                            {
+                                                anElementDb.dateArchived = existingElement.dateArchived
+                                            }
+                                        }
                                     }
                                 }
+                                
+                                DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (saveError) -> () in
+                                    if let error = saveError
+                                    {
+                                        print("did not save context because of Error:")
+                                        print(error)
+                                        completion?(edited: false)
+                                    }
+                                    else
+                                    {
+                                       completion?(edited: true)
+                                    }
+                                })
+                            }
+                            else
+                            {
+                                completion?(edited: success)
                             }
                             
                             DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                         }
                     }
-                    
-                    NSOperationQueue.mainQueue().addOperationWithBlock()
-                        { () -> Void in
-                            if success
-                            {
-                                completion(edited: true)
-                            }
-                            else
-                            {
-                                print("! Warning ! Could not edit element.")
-                                if let errorDict = error?.userInfo
-                                {
-                                    print("Reason : \(errorDict[NSLocalizedDescriptionKey])")
-                                }
-                                completion(edited: false)
-                            }
-                    }
-                })
-            })
+                
+            }
         }
     }
     
@@ -1225,16 +1233,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadPassWhomIdsForElementID(elementIdInt, completion: { (passWhomIds, error) -> () in
             if let recievedIDs = passWhomIds
             {
-                //print(" -->DataSource -> Recieved passWhomIds: \(recievedIDs)")
-                if let elementFromDataSource = DataSource.sharedInstance.getElementById(elementIdInt)
-                {
-                    var ordered = Array(recievedIDs)
-                    
-                    ordered.sortInPlace {$0 < $1}
-                    
-                    elementFromDataSource.passWhomIDs = ordered
-                }
-                //element.passWhomIDs = recievedIDs
+                DataSource.sharedInstance.participantIDsForElement[elementIdInt] = Set(recievedIDs)
                 completionClosure?(finished: true)
             }
             else
@@ -2312,7 +2311,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func getAvatarForUserId(userIdInt:Int) -> UIImage?
     {
-        if let ramImage = DataSource.sharedInstance.userAvatarsHolder[userIdInt]{
+        if let ramImage = DataSource.sharedInstance.userAvatarsHolder[userIdInt]
+        {
             return ramImage
         }
         

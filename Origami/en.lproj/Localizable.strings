@@ -69,8 +69,10 @@
 "Display Mode" = "Display Mode";
 "Sorting" = "Sorting";
 "Me" = "Me";
+
 "creator" = "Creator";
 "responsible" = "Responsible";
+"participant" = "Participant";
 
 "Created" = "Created";
 "Changed" = "Changed";

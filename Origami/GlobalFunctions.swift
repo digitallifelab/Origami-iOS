@@ -38,3 +38,8 @@ func getBackgroundQueue_CONCURRENT() -> dispatch_queue_t
 {
         return dispatch_queue_create("com.Origami.ConcurrentQueue", DISPATCH_QUEUE_CONCURRENT)
 }
+
+func getBackgroundQueue_SERIAL() -> dispatch_queue_t
+{
+    return dispatch_queue_create("com.Origami.SerialBackgroundQueue", DISPATCH_QUEUE_SERIAL)
+}

@@ -13,12 +13,12 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     @IBOutlet weak var tableView:UITableView?
     
     let kContactCellIdentifier = "SelectableContactCell"
-    var contactsToSelectFrom:[Contact]?
+    var contactsToSelectFrom:[DBContact]?
     var delegate:TableItemPickerDelegate?
     var avatarsHolder:[NSIndexPath:UIImage] = [NSIndexPath:UIImage]()
     var datePicker:UIDatePicker?
     var shouldShowDatePicker = false
-    var selectedContact:Contact?
+    var selectedContact:DBContact?
 
     
     override func viewDidLoad() {
@@ -26,32 +26,6 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         
-        let bgOpQueue = NSOperationQueue()
-        bgOpQueue.addOperationWithBlock({[weak self] () -> Void in
-            if let weakSelf = self, contacts = weakSelf.contactsToSelectFrom
-            {
-                var i = 0
-                for aContact in contacts
-                {
-                    let indexPath = NSIndexPath(forRow: i, inSection: 1)
-                    
-                    i++
-                    let userId = aContact.contactId
-                    if userId > 0
-                    {
-                        if let avatar = DataSource.sharedInstance.getAvatarForUserId(userId)
-                        {
-                            weakSelf.avatarsHolder[indexPath] = avatar
-                        }
-                    }
-                }
-                
-                if let userIdInt = DataSource.sharedInstance.user?.userId, image = DataSource.sharedInstance.getAvatarForUserId(userIdInt)
-                {
-                    weakSelf.avatarsHolder[NSIndexPath(forRow: 0, inSection: 0)] = (image.copy() as! UIImage)
-                }
-            }
-        })
     }
     
     override func didReceiveMemoryWarning() {
@@ -161,7 +135,7 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         return cell
     }
     
-    func contactForIndexPath(indexPath:NSIndexPath) -> Contact?
+    func contactForIndexPath(indexPath:NSIndexPath) -> DBContact?
     {
         if indexPath.section == 0
         {
@@ -203,10 +177,10 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             }
             else
             {
-                if let currentUserId = DataSource.sharedInstance.user?.userId
-                {
-                     self.selectedContact = Contact(info: ["ContactId":currentUserId])
-                }
+//                if let currentUserId = DataSource.sharedInstance.user?.userId
+//                {
+//                     self.selectedContact = Contact(info: ["ContactId":currentUserId])
+//                }
             }
         }
     }

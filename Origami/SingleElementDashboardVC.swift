@@ -368,21 +368,23 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
 
             elementCopy.isSignal = isSignal
             
-            DataSource.sharedInstance.editElement(elementCopy, completionClosure: {[weak self] (edited) -> () in
+            DataSource.sharedInstance.editElement(elementCopy) {[weak self] (edited) -> () in
                 if let aSelf = self
                 {
-                    aSelf.refreshCurrentElementFromLocalDatabase(elementId)
-                    if edited
-                    {
-                        aSelf.setParentElementNeedsUpdateIfPresent()
-                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                    }
-                    else
-                    {
-                        aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+                    dispatch_async(dispatch_get_main_queue()) { _ in
+                        aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                        if edited
+                        {
+                            aSelf.setParentElementNeedsUpdateIfPresent()
+                            aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                        }
+                        else
+                        {
+                            aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
+                        }
                     }
                 }
-            })
+            }
         }
     }
     
@@ -410,39 +412,46 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     {
         print("Archive element tapped.")
         
-//        if let element = self.currentElement
-//        {
-//            let copyElement = element.createCopy()
-//            let currentDate = NSDate()
-//            if let string = currentDate.dateForServer()
-//            {
-//                let elementId = copyElement.elementId//?.integerValue
-//                if element.isArchived()
-//                {
-//                    //will unarchve
-//                    copyElement.archiveDate = NSDate.dummyDate()
-//                }
-//                else
-//                {
-//                    //will archive
-//                    copyElement.archiveDate = string
-//                }
-//                DataSource.sharedInstance.editElement(copyElement,
-//                    completionClosure:{[weak self] (edited) -> () in
-//                    if edited
-//                    {
-//                        if let weakSelf = self
-//                        {
-//                            weakSelf.navigationController?.popViewControllerAnimated(true)
-//                            if let int = elementId
-//                            {
-//                                NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
-//                            }
-//                        }
-//                    }
-//                })
-//            }
-//        }
+        if let element = self.currentElement
+        {
+            let copyElement = element.createCopyForServer()
+            
+            let currentDate = NSDate()
+            if let string = currentDate.dateForServer()
+            {
+                let elementId = copyElement.elementId//?.integerValue
+                if element.isArchived()
+                {
+                    //will unarchve
+                    copyElement.archiveDate = NSDate.dummyDate()
+                }
+                else
+                {
+                    //will archive
+                    copyElement.archiveDate = string
+                }
+                
+                DataSource.sharedInstance.editElement(copyElement) {[weak self] (edited) -> () in
+                    if edited
+                    {
+                        if let weakSelf = self
+                        {
+                            dispatch_async(dispatch_get_main_queue()){ _ in
+                                
+                                weakSelf.setParentElementNeedsUpdateIfPresent()
+                                
+                                weakSelf.navigationController?.popViewControllerAnimated(true)
+                                if let int = elementId
+                                {
+                                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
+                                }
+                            }
+                           
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func elementDeletePressed()
@@ -783,51 +792,50 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             return
         }
         
-        DataSource.sharedInstance.editElement(element, completionClosure: {[weak self] (edited) -> () in
+        DataSource.sharedInstance.editElement(element) {[weak self] (edited) -> () in
             if let aSelf = self
             {
-                if edited
-                {
-                    aSelf.refreshCurrentElementFromLocalDatabase(elementId)
-                    aSelf.setParentElementNeedsUpdateIfPresent()
-                    aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                dispatch_async(dispatch_get_main_queue()) { _ in
+                    if edited
+                    {
+                        aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                        aSelf.setParentElementNeedsUpdateIfPresent()
+                        aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                    }
+                    else
+                    {
+                        aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
+                    }
                 }
-                else
-                {
-                    aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
-                }
+               
             }
-        })
+        }
     }
     
     func handleEditingElement(editingElement:Element)
     {
-        DataSource.sharedInstance.editElement(editingElement, completionClosure: {[weak self] (edited) -> () in
+        DataSource.sharedInstance.editElement(editingElement) {[weak self] (edited) -> () in
             if let aSelf = self
             {
-                if edited
-                {
-                    aSelf.currentElement?.title = editingElement.title
-                    aSelf.currentElement?.details = editingElement.details
+                dispatch_async(dispatch_get_main_queue()) { _ in
                     
-                    aSelf.collectionDataSource?.handledElement = aSelf.currentElement
-                   
-                    //aSelf.collectionView.collectionViewLayout.invalidateLayout()
-                   // if let layout = aSelf.prepareCollectionLayoutForElement(aSelf.currentElement)
-                    //{
-                   //     aSelf.collectionView.setCollectionViewLayout(layout, animated: false)
-                   // }
-                    aSelf.collectionView.performBatchUpdates({ () -> Void in
-                        aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
-                    }, completion: { ( _ ) -> Void in
+                    if edited
+                    {
+                        aSelf.currentElement?.title = editingElement.title
+                        aSelf.currentElement?.details = editingElement.details
                         
-                    })
-                    
-                    
-                }
-                else
-                {
-                    aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
+                        aSelf.collectionDataSource?.handledElement = aSelf.currentElement
+                      
+                        aSelf.collectionView.performBatchUpdates({ () -> Void in
+                            aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
+                            }, completion: { ( _ ) -> Void in
+                                
+                        })
+                    }
+                    else
+                    {
+                        aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
+                    }
                 }
             }
             if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled
@@ -840,7 +848,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     })
                 }
             }
-        })
+        }
         
         
         
@@ -1532,17 +1540,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         // when current user is owner of currentElement
         if let _ = self.currentElement
         {
-            if let contactsPicker = self.storyboard?.instantiateViewControllerWithIdentifier("ContactsPickerVC") as? ContactsPickerVC
-            {
-        
-                contactsPicker.delegate = self
-            
-                contactsPicker.shouldShowDatePicker = true
-                
-                contactsPicker.contactsToSelectFrom = DataSource.sharedInstance.getMyContacts()
-                
-                self.navigationController?.pushViewController(contactsPicker, animated: true)
-            }
+            DataSource.sharedInstance.localDatadaseHandler?.readAllMyContacts({[weak self] (myContacts) -> () in
+                if let weakSelf = self, myContactsPresent = myContacts
+                {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        if let contactsPicker = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("ContactsPickerVC") as? ContactsPickerVC
+                        {
+                            
+                            contactsPicker.delegate = weakSelf
+                            
+                            contactsPicker.shouldShowDatePicker = true
+                            
+                            contactsPicker.contactsToSelectFrom = myContactsPresent
+                            
+                            weakSelf.navigationController?.pushViewController(contactsPicker, animated: true)
+                        }
+                    })
+                }
+            })
+       
         }
     }
     

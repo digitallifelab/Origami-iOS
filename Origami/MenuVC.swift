@@ -103,7 +103,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
 
     //@IBOutlet var visialEffectBackgroundView:UIVisualEffectView!
     @IBOutlet weak var menuTable:UITableView?
-    var menuItemsTitles = ["Home", "Sorting".localizedWithComment(""), "Profile".localizedWithComment(""), "Contacts".localizedWithComment(""), "Display Mode".localizedWithComment("")]
+    var menuItemsTitles = ["Home".localizedWithComment(""), "Sorting".localizedWithComment(""), "Profile".localizedWithComment(""), "Contacts".localizedWithComment(""), "Display Mode".localizedWithComment("")]
     
     var displayMode:DisplayMode = .Day
         {

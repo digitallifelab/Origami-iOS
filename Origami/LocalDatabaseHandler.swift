@@ -9,8 +9,8 @@
 import Foundation
 import CoreData
 
-class LocalDatabaseHandler{
-    
+class LocalDatabaseHandler
+{    
     private let privateContext:NSManagedObjectContext
     //private let mainQueueContext:NSManagedObjectContext
     private let persistentStoreCoordinator:NSPersistentStoreCoordinator
@@ -71,6 +71,28 @@ class LocalDatabaseHandler{
         return self.privateContext
     }
     
+    func savePrivateContext(completion:(NSError? ->())?)
+    {
+        let lvContext = self.privateContext
+        
+        if lvContext.hasChanges
+        {
+            do
+            {
+                try lvContext.save()
+                completion?(nil)
+            }
+            catch let saveError as NSError
+            {
+                completion?(saveError)
+            }
+        }
+        else
+        {
+            completion?(nil)
+        }
+    }
+    
     //MARK: - Work stuff
     //MARK: - Elements
     func readAllElements() -> Set<DBElement>? {
@@ -104,9 +126,11 @@ class LocalDatabaseHandler{
         request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
         
         var elementsToReturn:[DBElement]?
-        self.privateContext.performBlockAndWait {[unowned self] () -> Void in
+        let lvContext = self.privateContext
+        
+        lvContext.performBlockAndWait { _ in
             do{
-                if let elements = try self.privateContext.executeFetchRequest(request) as? [DBElement]
+                if let elements = try lvContext.executeFetchRequest(request) as? [DBElement]
                 {
                     if !elements.isEmpty
                     {
@@ -114,7 +138,8 @@ class LocalDatabaseHandler{
                     }
                 }
             }
-            catch let error {
+            catch let error
+            {
                 print("\nError while fetching archived elements:")
                 print(error)
                 return
@@ -127,13 +152,14 @@ class LocalDatabaseHandler{
     func readRecentNonArchivedElements() -> [DBElement]?
     {
         let request = NSFetchRequest(entityName: "DBElement")
-        request.predicate = NSPredicate(format: "dateArchived == nil")
+        request.predicate = NSPredicate(format: "dateArchived = nil")
         request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
         
         var elementsToReturn:[DBElement]?
-        self.privateContext.performBlockAndWait {[unowned self] () -> Void in
+        let lvContext = self.privateContext
+        lvContext.performBlockAndWait { _ in
             do{
-                if let elements = try self.privateContext.executeFetchRequest(request) as? [DBElement]
+                if let elements = try lvContext.executeFetchRequest(request) as? [DBElement]
                 {
                     if !elements.isEmpty
                     {
@@ -141,7 +167,8 @@ class LocalDatabaseHandler{
                     }
                 }
             }
-            catch let error {
+            catch let error
+            {
                 print("\nError while fetching archived elements:")
                 print(error)
                 return
@@ -151,6 +178,116 @@ class LocalDatabaseHandler{
         return elementsToReturn
     }
     
+    //MARK: ---
+    
+    func readElementsByUserId(userId:Int, archived:Bool, elementType:ElementOptions, completion:((result: (owned:[DBElement]?, participating:[DBElement]?)) -> ())?)
+    {
+        let optionsConverter = ElementOptionsConverter()
+        
+        let context = self.privateContext
+        let sortByDateChanged = NSSortDescriptor(key: "dateChanged", ascending: true)
+        let ownedElementsRequest = NSFetchRequest(entityName: "DBElement")
+        
+        let userIdFilterPredicateString = (elementType == .Task) ? "responsibleId = \(userId)" : "creatorId = \(userId)"
+        let creatorIdPredicate = NSPredicate(format: "\(userIdFilterPredicateString)")
+       
+        let archivedString = (archived) ? "dateArchived != nil" : "dateArchived = nil"
+        let archivedPredicate = NSPredicate(format: archivedString)
+        
+        let predicate = NSCompoundPredicate(type: NSCompoundPredicateType.AndPredicateType, subpredicates: [creatorIdPredicate, archivedPredicate])
+        ownedElementsRequest.predicate = predicate
+        ownedElementsRequest.sortDescriptors = [sortByDateChanged]
+        
+        let participatingRequest = NSFetchRequest(entityName: "DBElement")
+        
+        let userIdFilterUnownedPredicateString = (elementType == .Task) ? "responsibleId != \(userId) AND creatorId = \(userId)" : "creatorId != \(userId)"
+        let participatingPredicate = NSPredicate(format:"\(userIdFilterUnownedPredicateString)")
+        
+        let predicateParticipating = NSCompoundPredicate(type: .AndPredicateType, subpredicates: [participatingPredicate, archivedPredicate])
+        participatingRequest.predicate = predicateParticipating
+        participatingRequest.sortDescriptors = [sortByDateChanged]
+        
+        var ownedElements:[DBElement]?
+        var participatingElements:[DBElement]?
+        
+        
+        context.performBlockAndWait { _ in
+            do
+            {
+                if let foundOwnedElements = try context.executeFetchRequest(ownedElementsRequest) as? [DBElement]
+                {
+                    if elementType == .ReservedValue1
+                    {
+                        ownedElements = foundOwnedElements
+                        return
+                    }
+                    else if elementType == .ReservedValue2
+                    {
+                        ownedElements = foundOwnedElements.filter() { (anElement) in
+                            return anElement.isSignal!.boolValue
+                        }
+                        return
+                    }
+                    
+                    ownedElements = foundOwnedElements.filter(){ (anElement) in
+                        
+                        if let currentElementType = anElement.type?.integerValue
+                        {
+                            if optionsConverter.isOptionEnabled(elementType, forCurrentOptions: currentElementType)
+                            {
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                }
+            }
+            catch
+            {
+                return
+            }
+        }
+        
+        context.performBlockAndWait { _ in
+            do
+            {
+                if let foundElements = try context.executeFetchRequest(participatingRequest) as? [DBElement]
+                {
+                    if elementType == .ReservedValue1
+                    {
+                        participatingElements = foundElements
+                        return
+                    }
+                    else if elementType == .ReservedValue2
+                    {
+                        participatingElements = foundElements.filter() { (anElement) in
+                            return anElement.isSignal!.boolValue
+                        }
+                        return
+                    }
+                    
+                    participatingElements = foundElements.filter() { (anElement) in
+                        if let currentElementType = anElement.type?.integerValue
+                        {
+                            if optionsConverter.isOptionEnabled(elementType, forCurrentOptions: currentElementType)
+                            {
+                                return true
+                            }
+                        }
+                        return false
+                    }
+                }
+            }
+            catch
+            {
+                return
+            }
+        }
+        
+        completion?(result: (owned: ownedElements, participating: participatingElements))
+        
+        
+    }
     //MARK: ---
     func readRootElementTreeForElementManagedObjectId(managedId:NSManagedObjectID) -> [DBElement]?
     {
@@ -349,7 +486,7 @@ class LocalDatabaseHandler{
             let signalsRequest = NSFetchRequest(entityName: "DBElement")
             signalsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal"]
             signalsRequest.shouldRefreshRefetchedObjects = shouldRefetch
-            signalsRequest.predicate = NSPredicate(format: "isSignal == true")
+            signalsRequest.predicate = NSPredicate(format: "isSignal = true AND dateArchived = nil")
             signalsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
             
             self.privateContext.performBlockAndWait { _ in
@@ -371,7 +508,7 @@ class LocalDatabaseHandler{
             let favouritesRequest = signalsRequest
             favouritesRequest.shouldRefreshRefetchedObjects = shouldRefetch
             favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
-            favouritesRequest.predicate = NSPredicate(format: "isFavourite == true")
+            favouritesRequest.predicate = NSPredicate(format: "isFavourite = true AND dateArchived = nil")
             self.privateContext.performBlockAndWait { _ in
                 do{
                     if let favouriteElements = try self.privateContext.executeFetchRequest(favouritesRequest) as? [DBElement]
@@ -391,7 +528,7 @@ class LocalDatabaseHandler{
             let otherDashboardElementsRequest = signalsRequest
             otherDashboardElementsRequest.shouldRefreshRefetchedObjects = shouldRefetch
             otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
-            otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId == 0")
+            otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId = 0 AND dateArchived = nil")
             
             self.privateContext.performBlockAndWait { _ in
                 do{
