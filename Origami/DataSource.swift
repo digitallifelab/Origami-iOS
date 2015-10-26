@@ -1099,7 +1099,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         {
                             existingElement.title = element.title
                             existingElement.details = element.details
-                            existingElement.isFavourite = NSNumber(bool:element.isFavourite)
+                            //existingElement.isFavourite = NSNumber(bool:element.isFavourite)
                             existingElement.isSignal = NSNumber(bool:element.isSignal)
                             existingElement.type = NSNumber(integer:element.typeId)
                             
@@ -1196,15 +1196,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
        
         DataSource.sharedInstance.serverRequester.setElementWithId(anElementId, favourite: favourite) { (success, error) -> () in
             
-            if success{
+            if success
+            {
                 dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
                     
-                    DataSource.sharedInstance.localDatadaseHandler?.setFavourite(favourite, elementId: anElementId, completion: { () -> () in
-                        
-                    })
-                    if let existingElement = DataSource.sharedInstance.getElementById(anElementId)
+                    if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(anElementId)
                     {
-                        existingElement.isFavourite = favourite
+                        existingElement.isFavourite = NSNumber(bool:favourite)
                         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
                 })

@@ -301,15 +301,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
 
             DataSource.sharedInstance.updateElement(elementId, isFavourite: isFavourite) { [weak self] (edited) -> () in
                 
-                DataSource.sharedInstance.localDatadaseHandler?.setFavourite(isFavourite, elementId: elementId, completion: nil)
-                
                 if let weakSelf = self
                 {
                     if edited
                     {
+                        weakSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                        weakSelf.setParentElementNeedsUpdateIfPresent()
                         weakSelf.collectionView?.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                 }
+                
+                
             }
         }
     }
@@ -372,7 +374,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     aSelf.refreshCurrentElementFromLocalDatabase(elementId)
                     if edited
                     {
-                        
+                        aSelf.setParentElementNeedsUpdateIfPresent()
                         aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                     else
@@ -787,6 +789,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 if edited
                 {
                     aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                    aSelf.setParentElementNeedsUpdateIfPresent()
                     aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                 }
                 else
@@ -993,22 +996,28 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
-                            if let vcs = weakSelf.navigationController?.viewControllers
-                            {
-                                if vcs.count > 2
-                                {
-                                    if let previousElementVC = vcs[(vcs.count - 2)] as? SingleElementDashboardVC
-                                    {
-                                        previousElementVC.afterViewDidLoad = true
-                                    }
-                                }
-                            }
+                            weakSelf.setParentElementNeedsUpdateIfPresent()
                             weakSelf.navigationController?.popViewControllerAnimated(true)
                         }
                     })
                 })
             })
         }
+    }
+    
+    private func setParentElementNeedsUpdateIfPresent()
+    {
+        if let vcs = self.navigationController?.viewControllers
+        {
+            if vcs.count > 2
+            {
+                if let previousElementVC = vcs[(vcs.count - 2)] as? SingleElementDashboardVC
+                {
+                    previousElementVC.afterViewDidLoad = true
+                }
+            }
+        }
+
     }
     //MARK: handling notifications
     func elementWasDeleted(notification:NSNotification?)
