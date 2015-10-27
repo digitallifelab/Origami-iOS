@@ -20,7 +20,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     var rootElementID:Int = 0
         {
         didSet{
-            print("\n ->NewElementComposerViewController,  rootElementId: \(rootElementID)")
+            print("\n ->NewElementComposerViewController,  rootElementId: \(rootElementID)\n")
         }
     }
     var composingDelegate:ElementComposingDelegate?

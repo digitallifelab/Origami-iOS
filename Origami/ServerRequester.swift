@@ -23,6 +23,9 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     let objectsConverter = ObjectsConverter()
     
+    
+    lazy var datatasksForPassElementRequest = [Int:NSURLSessionDataTask]()
+    
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
@@ -839,13 +842,13 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                         {
                             if let messagesArrayTuple = ObjectsConverter.convertToMessages(newMessageInfos)
                             {
-                                print(" -> loaded new Messages")
+                                print("\n -> loaded new Messages")
                                 
                                 completion?(messages: TypeAliasMessagesTuple(messagesTuple:messagesArrayTuple), error: nil)
                             }
                             else
                             {
-                                print("loaded empty messages: \(newMessageInfos)")
+                                //print("loaded empty messages: \(newMessageInfos)")
                                 completion?(messages: nil, error: nil)
                             }
                             return
@@ -1540,7 +1543,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 request.setValue("application/json", forHTTPHeaderField: "Accept")
                 
                 
-                let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: {(responseData, urlResponse, responseError) -> Void in
+                let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: {[weak self](responseData, urlResponse, responseError) -> Void in
+                    
                     if let _ = responseError
                     {
                         failedIDs.append(lvUserID)
@@ -1571,13 +1575,24 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                         }
                     }
                     
-                    if completedRequestsCount == contactIDsCount
+                    
+                    print(" -> completed requests count = \(completedRequestsCount)")
+                    print(" -> for ContactIDs count     = \(contactIDsCount)")
+                    
+                    if let weakSelf = self, let _ = weakSelf.datatasksForPassElementRequest[elementId]
                     {
-                        completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
+                        weakSelf.datatasksForPassElementRequest[elementId] = nil
+                        
+                        if weakSelf.datatasksForPassElementRequest.isEmpty
+                        {
+                            weakSelf.performPassElementsCompletionClosure(completionClosure, withInfo: (failed: failedIDs, succeeded: succededIDs))
+                        }
                     }
 
                 })
                 
+                self.datatasksForPassElementRequest[elementId] = dataTask
+
                 dataTask.resume()
             }
             else
@@ -1591,6 +1606,11 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             print("succeeded contact ids: \(succededIDs)")
             completionClosure?(succeededIDs: succededIDs, failedIDs: failedIDs)
         }
+    }
+    
+    private func performPassElementsCompletionClosure(closure:((succeededIDs:[Int], failedIDs:[Int])->())?, withInfo info:(failed:[Int], succeeded:[Int]))
+    {
+        closure?(succeededIDs: info.succeeded, failedIDs: info.failed)
     }
     
     func unPassElement(elementId :Int, fromSeveralContacts contactIDs:Set<Int>, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())?)

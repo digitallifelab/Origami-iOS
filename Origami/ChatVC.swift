@@ -28,7 +28,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     var displayMode:DisplayMode = .Day
     
-    var refreshControl:UIRefreshControl?
+    //var refreshControl:UIRefreshControl?
     
     var newElementOptionsView:OptionsView?
     var newElementDetailsInfo:String?
@@ -47,11 +47,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         // Do any additional setup after loading the view.    
         
         setupNavigationBar()
-        refreshControl = UIRefreshControl()
-        refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
-        refreshControl?.tintColor = kDayCellBackgroundColor
-        refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
-        self.chatTable.addSubview(refreshControl!)
+//        refreshControl = UIRefreshControl()
+//        refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
+//        refreshControl?.tintColor = kDayCellBackgroundColor
+//        refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
+//        self.chatTable.addSubview(refreshControl!)
         
         chatTable.rowHeight = UITableViewAutomaticDimension
         chatTable.estimatedRowHeight = 100.0
@@ -320,6 +320,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
             }
         })
         
+        self.setParentElementNeedsUpdateIfPresent()
+        
     }
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)
@@ -340,6 +342,14 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
                 }
                 case .Move:
                 print("did Move message: \n -date:\(messageObject.dateCreated!) \n -text:  \(messageObject.textBody!)")
+                if let inPath = indexPath
+                {
+                    print("path: \(inPath)")
+                }
+                if let newPath = newIndexPath
+                {
+                    print("path: \(newPath)")
+                }
                 case .Update:
                 print("did Update message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
                 case .Delete:
@@ -525,19 +535,19 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         bottomControlsContainerView.endEditing(true)
     }
     //MARK: UIRefreshControl
-    func startRefreshing(sender:UIRefreshControl)
-    {
-        loadPreviousMessages {[weak sender] () -> () in
-     
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                if let weakRefreshControl = sender
-                {
-                    weakRefreshControl.endRefreshing()
-                }
-            })
-            
-        }
-    }
+//    func startRefreshing(sender:UIRefreshControl)
+//    {
+//        loadPreviousMessages {[weak sender] () -> () in
+//     
+//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                if let weakRefreshControl = sender
+//                {
+//                    weakRefreshControl.endRefreshing()
+//                }
+//            })
+//            
+//        }
+//    }
     
     func loadPreviousMessages(completion:(()->())?)
     {

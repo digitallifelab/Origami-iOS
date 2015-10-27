@@ -2100,42 +2100,49 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func addSeveralContacts(contactIDs:Set<Int>?, toElement elementId:Int, completion completionClosure:((succeededIDs:[Int], failedIDs:[Int])->())? )
     {
-        if let contactNumbers = contactIDs
+        guard let contactNumbers = contactIDs else
         {
-            if contactNumbers.isEmpty
-            {
-                completionClosure?(succeededIDs: [], failedIDs: [])
-                return
-            }
+            completionClosure?(succeededIDs: [], failedIDs: [])
+            return
+        }
+        
+        if contactNumbers.isEmpty
+        {
+            completionClosure?(succeededIDs: [], failedIDs: [])
+            return
+        }
+        
+        let backgroundQueue = NSOperationQueue()
+        
+        backgroundQueue.maxConcurrentOperationCount = 2
+        
+        backgroundQueue.addOperationWithBlock(){ () -> Void in
             
-            let backgroundQueue = NSOperationQueue()
-            backgroundQueue.addOperationWithBlock({ () -> Void in
-                
-                DataSource.sharedInstance.serverRequester.passElement(elementId, toSeveratContacts: contactNumbers, completion: { (succeededIDs, failedIDs) -> () in
+            DataSource.sharedInstance.serverRequester.passElement(elementId, toSeveratContacts: contactNumbers) { (succeededIDs, failedIDs) -> () in
 
                 if !succeededIDs.isEmpty
                 {
-                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
-                    {
-                        var alreadyExistIDsSet = Set<Int>()
-                        for number in existingElement.passWhomIDs
-                        {
-                            alreadyExistIDsSet.insert(number)
-                        }
-                        
-                        let succseededIDsSet = Set(succeededIDs)
-                        
-                        let commonValuesSet = alreadyExistIDsSet.union(succseededIDsSet)
-                        
-                        var idsArray = [Int]()
-                        for integer in commonValuesSet
-                        {
-                            idsArray.append(integer)
-                        }
-                        
-                        existingElement.passWhomIDs = idsArray
-                        
-                    }
+//                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+//                    {
+//                        var alreadyExistIDsSet = Set<Int>()
+//                        for number in existingElement.passWhomIDs
+//                        {
+//                            alreadyExistIDsSet.insert(number)
+//                        }
+//                        
+//                        let succseededIDsSet = Set(succeededIDs)
+//                        
+//                        let commonValuesSet = alreadyExistIDsSet.union(succseededIDsSet)
+//                        
+//                        var idsArray = [Int]()
+//                        for integer in commonValuesSet
+//                        {
+//                            idsArray.append(integer)
+//                        }
+//                        
+//                        existingElement.passWhomIDs = idsArray
+//                        
+//                    }
                 }
                 else
                 {
@@ -2145,17 +2152,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     }
                 }
 
-                    completionClosure?(succeededIDs: succeededIDs, failedIDs: failedIDs)
-                })
-                
-            })//end of operationQueue Block
+                completionClosure?(succeededIDs: succeededIDs, failedIDs: failedIDs)
+            }
+            
+        }//end of operationQueue Block
             
 
-        }
-        else
-        {
-            completionClosure?(succeededIDs: [], failedIDs: [])
-        }
+        
+        
     }
     
     func removeSeveralContacts(contactsIDsSet:Set<Int>, fromElement elementId:Int, completion completionBlock:((succeededIDs:[Int]?, failedIDs:[Int]?)->())?)
