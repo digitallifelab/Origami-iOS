@@ -827,46 +827,56 @@ class LocalDatabaseHandler
             return
         }
         
-        for aMessage in messages
-        {
-            if let existingMessage = self.readChatMessageById(aMessage.messageId)
-            {
-                existingMessage.fillInfoFromMessageObject(aMessage)
-            }
-            else
-            {
-                print("inserting new message into database")
-             
-                if let message = NSEntityDescription.insertNewObjectForEntityForName("DBMessageChat", inManagedObjectContext: self.privateContext) as? DBMessageChat
-                {
-                    message.fillInfoFromMessageObject(aMessage)
-                }
-            }
-        }
-
+        let lvContext = self.privateContext
         
-        if self.privateContext.hasChanges
-        {
-            let lvContext = self.privateContext
-            lvContext.performBlock({ () -> Void in
-                do{
-                    try lvContext.save()
-                    print("\n->did <<<<< SAVE >>>>> Context after messages inserted or updated.")
-                   
-                    completion?(true, error:nil)
+        lvContext.performBlockAndWait { _ in
+            for aMessage in messages
+            {
+                if let existingMessage = self.readChatMessageById(aMessage.messageId)
+                {
+                    existingMessage.fillInfoFromMessageObject(aMessage)
                 }
-                catch let error as NSError{
-                    print("\n->did NOT save Context after messages inserted or updated.")
-                    print("Error: \n\(error)")
-                    completion?(false, error:error)
+                else
+                {
+                    print("inserting new message into database")
+                    
+                    if let message = NSEntityDescription.insertNewObjectForEntityForName("DBMessageChat", inManagedObjectContext: self.privateContext) as? DBMessageChat
+                    {
+                        message.fillInfoFromMessageObject(aMessage)
+                    }
                 }
-            })
-           
-            return
+            }
         }
-        print("\n->did NOT save Context after messages inserted or updated.")
-        print("Reason: context has NO CHANGES\n")
-        completion?(false, error:nil)
+        
+        if lvContext.hasChanges
+        {
+            do{
+                
+                try lvContext.save()
+                print("\n->did <<<<< SAVE >>>>> Context after messages inserted or updated.")
+                
+                completion?(true, error:nil)
+            }
+            catch let error as NSError{
+                print("\n->did NOT save Context after messages inserted or updated.")
+                print("Error: \n\(error)")
+                completion?(false, error:error)
+            }
+            catch{
+                print("UnknownError while saving privateContext")
+                completion?(false, error:unKnownExceptionError)
+            }
+            
+            
+        }
+        else
+        {
+            print("\n->did NOT save Context after messages inserted or updated.")
+            print("Reason: context has NO CHANGES\n")
+            completion?(false, error:nil)
+        }
+        
+  
     }
     
     func performMessagesAndElementsPairing(completion:(()->())?)

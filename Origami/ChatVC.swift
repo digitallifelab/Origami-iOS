@@ -24,7 +24,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     var messagesFetchController:NSFetchedResultsController?
     
-    let mainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+    var mainContext:NSManagedObjectContext?
     
     var displayMode:DisplayMode = .Day
     
@@ -36,7 +36,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     deinit{
         
-        NSNotificationCenter.defaultCenter().removeObserver(self.mainContext, name: NSManagedObjectContextDidSaveNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self.mainContext!, name: NSManagedObjectContextDidSaveNotification, object: nil)
+        mainContext = nil
     }
     
     override func viewDidLoad() {
@@ -47,32 +48,34 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         // Do any additional setup after loading the view.    
         
         setupNavigationBar()
-//        refreshControl = UIRefreshControl()
-//        refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
-//        refreshControl?.tintColor = kDayCellBackgroundColor
-//        refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
-//        self.chatTable.addSubview(refreshControl!)
         
         chatTable.rowHeight = UITableViewAutomaticDimension
         chatTable.estimatedRowHeight = 100.0
         chatTable.delegate = self
         chatTable.dataSource = self
-        
-        if let elementId = currentElement?.elementId?.integerValue
+        if let existContext = self.mainContext
         {
-            mainContext.parentContext = DataSource.sharedInstance.localDatadaseHandler?.getPrivateContext()
+            NSNotificationCenter.defaultCenter().removeObserver(existContext)
+        }
+        mainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        
+        if let elementId = currentElement?.elementId?.integerValue, context = self.mainContext
+        {
+            context.parentContext = DataSource.sharedInstance.localDatadaseHandler?.getPrivateContext()
             let messagesForElementFetchRequest = NSFetchRequest(entityName: "DBMessageChat")
             messagesForElementFetchRequest.fetchBatchSize = 20
             messagesForElementFetchRequest.predicate = NSPredicate(format: "elementId = \(elementId)")
             messagesForElementFetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
-            print(mainContext.parentContext?.description)
-            messagesFetchController = NSFetchedResultsController(fetchRequest: messagesForElementFetchRequest, managedObjectContext: mainContext, sectionNameKeyPath: nil, cacheName: nil)
+            print(context.parentContext?.description)
+            messagesFetchController = NSFetchedResultsController(fetchRequest: messagesForElementFetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
             
             messagesFetchController?.delegate = self
+            
+            NSNotificationCenter.defaultCenter().addObserver(context, selector: "mergeChangesFromContextDidSaveNotification:", name: NSManagedObjectContextDidSaveNotification, object: DataSource.sharedInstance.localDatadaseHandler!.getPrivateContext())
            
         }
         
-        NSNotificationCenter.defaultCenter().addObserver(self.mainContext, selector: "mergeChangesFromContextDidSaveNotification:", name: NSManagedObjectContextDidSaveNotification, object: DataSource.sharedInstance.localDatadaseHandler!.getPrivateContext())
+
         
         
         do{
