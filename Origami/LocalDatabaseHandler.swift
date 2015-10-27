@@ -566,7 +566,7 @@ class LocalDatabaseHandler
         {
            if let existingElement = self.readElementById(anElement.elementId!)
            {
-                print("2 - changingFoundElement in database")
+                //print("2 - changingFoundElement in database")
                
                 existingElement.fillInfoFromInMemoryElement(anElement)
                // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
@@ -627,7 +627,7 @@ class LocalDatabaseHandler
                         }
                         else if elementsResult.count == 0
                         {
-                            print("no element found for id: \(elementId)\n")
+                            //print("no element found for id: \(elementId)\n")
                             
                         }
                         else if elementsResult.count > 1

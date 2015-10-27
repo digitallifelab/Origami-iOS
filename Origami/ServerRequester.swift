@@ -12,6 +12,9 @@ typealias messagesTuple = (chat:[Message], service:[Message])
 
 class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDelegate
 {
+    
+    static let urlCreatingError = NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."])
+    
     typealias networkResult = (AnyObject?,NSError?) -> ()
     typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
     
@@ -155,7 +158,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                     }
                     else
                     {
-                        completion?(nil, NSError(domain: "com.Origami.DataError", code: -1032, userInfo: [NSLocalizedDescriptionKey:"Could not parse logged user user."]))
+                        completion?(nil, NSError(domain: "com.Origami.DataError", code: -1032, userInfo: [NSLocalizedDescriptionKey:"Could not parse logged user data."]))
                     }
                 }
                 catch let jsonError as NSError{
@@ -483,7 +486,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         let requestString = "\(serverURL)" + "\(passWhomelementUrlPart)" + "?elementId=" + "\(elementId)" + "&token=" + "\(userToken)"
         
         guard let urlForRequest = NSURL(string: requestString) else {
-            completionClosure?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
+            completionClosure?(nil, ServerRequester.urlCreatingError)
             return
         }
     
@@ -796,63 +799,100 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     func loadNewMessages(completion:messagesCompletionBlock?)
     {
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
+        guard let userToken = DataSource.sharedInstance.user?.token else
         {
-            let newMessagesURLString = serverURL + getNewMessagesUrlPart + "?token=" + userToken
-            
-            let lastMessagesOperation = httpManager.GET(
-                newMessagesURLString,
-                parameters: nil,
-                success: { (operation, response) -> Void in
-                    
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                        if let aResponse = response as? [NSObject:AnyObject], newMessageInfos = aResponse["GetNewMessagesResult"] as? [[String:AnyObject]]
-                        {
-                            if let completionBlock = completion
-                            {
-                                if let messagesArrayTuple = ObjectsConverter.convertToMessages(newMessageInfos)
-                                {
-                                    print("loaded new Messages")
-                                    
-                                    completionBlock(messages: TypeAliasMessagesTuple(messagesTuple:messagesArrayTuple), error: nil)
-                                }
-                                else
-                                {
-                                    //print("loaded empty messages")
-                                    completionBlock(messages: nil, error: nil)
-                                }
-                                
-                            }
-                            return
-                        }
-                        
-                        if let completionBlock = completion
-                        {
-                            completionBlock(messages: nil, error: nil)
-                        }
-                    })
-                  
-                    
-            }, failure: { (operation, error) -> Void in
-                
-                if let completionBlock = completion
-                {
-                    completionBlock(messages: nil, error: error)
-                }
-                print("-> Error while loading last messages:\(error)")
-                
-            })
-            
-            lastMessagesOperation?.resume()
+            if let completionBlock = completion
+            {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                completionBlock(messages:nil, error:noUserTokenError)
+            }
             return
         }
         
-        if let completionBlock = completion
-        {
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            completionBlock(messages:nil, error:noUserTokenError)
+        let newMessagesURLString = serverURL + getNewMessagesUrlPart + "?token=" + userToken
+        
+        guard let lastMessagesRequestURL = NSURL(string: newMessagesURLString) else {
+            completion?(messages: nil, error:ServerRequester.urlCreatingError)
+            return
         }
+        
+        let messagesRequest = NSMutableURLRequest(URL: lastMessagesRequestURL)
+        
+        let messagesTask = NSURLSession.sharedSession().dataTaskWithRequest(messagesRequest) { (responseData, urlResponse, responseError)  in
+            
+            if let error = responseError
+            {
+                completion?(messages:nil, error:error)
+                return
+            }
+            
+            //else
+            if let recievedData = responseData
+            {
+                do
+                {
+                    if let messagesInfo = try NSJSONSerialization.JSONObjectWithData(recievedData, options: .MutableLeaves) as? [String:[[String:AnyObject]]]
+                    {
+                        //convert to messages and return completion block
+                        
+                        if let newMessageInfos = messagesInfo["GetNewMessagesResult"]
+                        {
+                            if let messagesArrayTuple = ObjectsConverter.convertToMessages(newMessageInfos)
+                            {
+                                print(" -> loaded new Messages")
+                                
+                                completion?(messages: TypeAliasMessagesTuple(messagesTuple:messagesArrayTuple), error: nil)
+                            }
+                            else
+                            {
+                                print("loaded empty messages: \(newMessageInfos)")
+                                completion?(messages: nil, error: nil)
+                            }
+                            return
+                        }
+                        completion?(messages:nil, error:nil)
+                        return
+                    }
+                    else
+                    {
+                        //return completion with failed convertation error
+                        completion?(messages:nil, error:nil)
+                    }
+                }
+                catch let jsonParsingError as NSError
+                {
+                    
+                    guard let responseString = NSString(data: recievedData, encoding: NSUTF8StringEncoding) else
+                    {
+                        completion?(messages: nil, error: jsonParsingError)
+                       return
+                    }
+                    print(" ERROR WHILE LOADING LAST MESSAGES: \n \(responseString)")
+                    
+                    if responseString == "\"You are not valid user! Sorry!\""
+                    {
+                        DataSource.sharedInstance.user?.token = nil
+                        completion?(messages: nil, error: noUserTokenError)
+                        return
+                    }
+                    
+                    completion?(messages:nil, error:NSError(domain: "com.Origami.LastMessagesQueryError", code: -201, userInfo: [NSLocalizedDescriptionKey:responseString]))
+                }
+                catch{
+                    
+                }
+            }
+            else
+            {
+                completion?(messages:nil, error:nil)
+            }
+            
+        }
+        
+        
+        messagesTask.resume()
     }
+    
     /**
     Loads all messages, which are new to current device
     - Parameter messageId: last(highest) message id stored on device
@@ -869,7 +909,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         let requestString = serverURL + getMessagesToSyncUrlPart + "?token=" + userToken + "&messageId=" + "\(messageId)"
         
         guard let requestURL = NSURL(string: requestString) else {
-            completion?(nil, error: NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]) )
+            completion?(nil, error:ServerRequester.urlCreatingError )
             return
         }
         
@@ -1009,7 +1049,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 return
             }
        
-            completion?(nil, NSError(domain: "URL-Error", code: -102, userInfo: [NSLocalizedDescriptionKey:"Could not create valid URL for request."]))
+            completion?(nil, ServerRequester.urlCreatingError)
             return
             
         }
@@ -1441,30 +1481,24 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             let requestOp = httpManager.POST(requestString,
                 parameters: nil,
                 success: { (operation, result) -> Void in
-                    
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                if let resultDict = result as? [String:AnyObject]
-                {
-                    print("\n ->passElement Response from server: \(resultDict)")
-                    completionClosure(success: true, error: nil)
-                    return
+                 
+                dispatch_async(getBackgroundQueue_SERIAL()) {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    if let resultDict = result as? [String:AnyObject]
+                    {
+                        print("\n ->passElement Response from server: \(resultDict)")
+                        completionClosure(success: true, error: nil)
+                        return
+                    }
+                    let parsingError = NSError(domain: "Request reading error", code: -503, userInfo: [NSLocalizedDescriptionKey:"Failed to parse response from server."])
+                    completionClosure(success: false, error: parsingError)
                 }
-                let parsingError = NSError(domain: "Request reading error", code: -503, userInfo: [NSLocalizedDescriptionKey:"Failed to parse response from server."])
-                completionClosure(success: false, error: parsingError)
-                
+            
             },
                 failure: { (operation, requestError) -> Void in
-                
-//                if let responseString = operation.responseString
-//                {
-//                    let responseError = NSError(domain: "Pass Element request Error", code: -504, userInfo: [NSLocalizedDescriptionKey:responseString])
-//                    completionClosure(success: false, error: responseError)
-//                }
-//                else
-//                {
+
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     completionClosure(success: false, error: requestError)
-//                }
             })
             
             requestOp?.resume()
@@ -1583,8 +1617,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                         }
                         else
                         {
-                            let error = NSError(domain: "Contacts Reading Error.", code: -501, userInfo: [NSLocalizedDescriptionKey:"Could not read contacts raw info from response."])
-                            completion?(contacts:nil, error:error)
+                            completion?(contacts:nil, error:ServerRequester.urlCreatingError)
                         }
                     }
                     

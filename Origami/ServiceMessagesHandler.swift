@@ -161,7 +161,7 @@ class ServiceMessagesHandler {
             {
                 aContact.state = contactStatus
                 shouldPostContactsUpdateNotification = true
-                print("->ServiceMessagesHandler  did update status for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
+                //print("->ServiceMessagesHandler  did update status for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
             }
         }
         

@@ -134,12 +134,25 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             //print("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             //DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
             //print("AvatarsHolder After cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
-            DataSource.sharedInstance.stopRefreshingNewMessages()
-            DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
+            //DataSource.sharedInstance.stopRefreshingNewMessages()
+            
+            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
+            dispatch_after(timeout, getBackgroundQueue_DEFAULT(), { () -> Void in
+                DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
+                print("stopRefreshingLastMessages")
+                sleep(2)
+                
+                DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
+                print("cancelDispatchSource")
+                sleep(2)
+                
+                DataSource.sharedInstance.messagesLoader = nil
+                print("messagesLoader = nil")
+            })
+            
             
             DataSource.sharedInstance.removeAllObserversForNewMessages()
-            
-            DataSource.sharedInstance.messagesLoader = nil
+         
             
             NSUserDefaults.standardUserDefaults().removeObjectForKey(passwordKey)
             NSUserDefaults.standardUserDefaults().synchronize()
@@ -2066,25 +2079,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
            
             if requestSuccess
             {
-                if let element = DataSource.sharedInstance.getElementById(elementId)
-                {
-                    let passWhomIDs = element.passWhomIDs
-                    if !passWhomIDs.isEmpty
-                    {
-                        
-                    }
-                    var passWhomSet = Set(passWhomIDs)
-                    let preInsertCount = passWhomSet.count
-                    passWhomSet.insert(contactId)
-                    let postInsertCount = passWhomSet.count
-                    if preInsertCount < postInsertCount
-                    {
-                        // successfully removed contact id from element`s pass whom ids
-                        print("Added contact to chat Locally also.")
-                    }
-                    let newPassWhomIDs = Array(passWhomSet)
-                    element.passWhomIDs = newPassWhomIDs
-                }
+                DataSource.sharedInstance.participantIDsForElement[elementId]?.insert(contactId)
             }
             completionClosure(success: requestSuccess, error: resuertError)
         }
@@ -2096,21 +2091,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             if requestSuccess
             {
-                if let element = DataSource.sharedInstance.getElementById(elementId)
-                {
-                    let passWhomIDs = element.passWhomIDs
-                    if !passWhomIDs.isEmpty
-                    {
-                        var passWhomSet = Set(passWhomIDs)
-                        if let _ = passWhomSet.remove(contactId)
-                        {
-                            // successfully removed contact id from element`s pass whom ids
-                            print("Removed contact from chat Locally also.")
-                        }
-                        let newPassWhomIDs = Array(passWhomSet)
-                        element.passWhomIDs = newPassWhomIDs
-                    }
-                }
+                DataSource.sharedInstance.participantIDsForElement[elementId]?.remove(contactId)
             }
             
             completionClosure(success:requestSuccess, error: resuertError)

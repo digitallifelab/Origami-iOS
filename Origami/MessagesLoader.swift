@@ -48,7 +48,25 @@ class MessagesLoader
                         
                         if let anError = error
                         {
-                            print("\n -> MessagesLoader. Error loading last messages:\(anError)\n")
+                            print("\n -> MessagesLoader. Error loading last messages:\n\(anError)\n")
+                            if anError.code == -55 //(no user token error because token has expired and thus deleted locally)
+                            {
+                                DataSource.sharedInstance.user = nil
+                                DataSource.sharedInstance.performLogout(nil)
+                                if let rootVC = UIApplication.sharedApplication().windows.first!.rootViewController as? RootViewController
+                                {
+                                  
+//                                    if let weakSelf = self
+//                                    {
+//                                        weakSelf.stopRefreshingLastMessages()
+//                                    }
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                         rootVC.showLoginScreenWithReloginPrompt(true)
+                                    })
+                                    return
+                                    
+                                }
+                            }
                         }
                         if let weakerSelf = self
                         {

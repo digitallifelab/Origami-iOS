@@ -6,12 +6,14 @@
 //  Copyright (c) 2015 CloudCraft. All rights reserved.
 //
 
-/*
-ImagePickingViewController is used for adding attaches to element and to select user`s profile avatar
-*/
 
 import UIKit
 
+/**
+ ImagePickingViewController is used for:
+ - adding attaches to element
+ - to select user`s profile avatar
+*/
 class ImagePickingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     private var imagePickerController:UIImagePickerController = UIImagePickerController()

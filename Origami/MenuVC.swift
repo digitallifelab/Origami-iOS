@@ -265,13 +265,7 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
             default: break
             }
         case 1: //logout tapped
-            NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self, userInfo: ["tapped":0] as [NSObject:AnyObject])
-            let logoutNotification = NSNotification(name: kLogoutNotificationName, object: nil)
-            
-            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
-            dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                 NSNotificationCenter.defaultCenter().postNotification(logoutNotification)
-            })
+            handleLogoutTapped()
            
         default: break
         }
@@ -306,5 +300,16 @@ class MenuVC: UIViewController , UITableViewDelegate, UITableViewDataSource, Swi
         
     }
     
+    
+    func handleLogoutTapped()
+    {
+        NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: self, userInfo: ["tapped":0] as [NSObject:AnyObject])
+        let logoutNotification = NSNotification(name: kLogoutNotificationName, object: nil)
+        
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
+        dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotification(logoutNotification)
+        })
+    }
 
 }

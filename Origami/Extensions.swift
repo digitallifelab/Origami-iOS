@@ -477,6 +477,22 @@ extension UIViewController
             }
         }
     }
+    
+    /**
+     Set flag in navigationcontroller`s previous VC if prefious is SingleElementDashboardVC - to refresh collection view in *viewWillAppear*
+     */
+    func setParentElementNeedsUpdateIfPresent()
+    {
+        if let vcs = self.navigationController?.viewControllers
+        {
+            var i = vcs.count - 2
+            while let parentVC = vcs[i] as? SingleElementDashboardVC
+            {
+                i--
+                parentVC.afterViewDidLoad = true
+            }
+        }
+    }
 }
 
 

@@ -14,20 +14,23 @@ class ContactCheckerCell: UITableViewCell {
     @IBOutlet weak var nameLabel:UILabel?
     @IBOutlet weak var avatar:UIImageView?
     
+    var cellTintColor = kDayCellBackgroundColor
+    
     var displayMode:DisplayMode = .Day{
         didSet{
             if displayMode == .Day
             {
                 nameLabel?.textColor = UIColor.blackColor()
-                checkBox?.tintColor = kDayCellBackgroundColor
+                cellTintColor = kDayCellBackgroundColor
                 avatar?.tintColor = kDayCellBackgroundColor
             }
             else
             {
                 nameLabel?.textColor = UIColor.lightGrayColor()
-                checkBox?.tintColor = kWhiteColor
+                cellTintColor = kWhiteColor
                 avatar?.tintColor = kWhiteColor
             }
+            checkBox?.tintColor = cellTintColor
         }
     }
     
@@ -41,6 +44,18 @@ class ContactCheckerCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func setDisabled(disabled:Bool)
+    {
+        if disabled
+        {
+            checkBox?.tintColor = cellTintColor.colorWithAlphaComponent(0.7)
+        }
+        else
+        {
+            checkBox?.tintColor = cellTintColor
+        }
     }
 
 }

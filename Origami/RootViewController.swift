@@ -196,6 +196,31 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         return self.currentNavigationController
     }
+ 
+    func showLoginScreenWithReloginPrompt(showAlert:Bool)
+    {
+        if let menu = self.leftMenuVC
+        {
+            menu.view.removeFromSuperview()
+            self.leftMenuVC = nil
+        }
+        if let navigationVC = self.currentNavigationController
+        {
+            navigationVC.view.removeFromSuperview()
+            self.currentNavigationController = nil
+        }
+        
+        if showAlert
+        {
+            let alertInfo = ["title":"Warning", "message":"Your session token is invalid, please login again"]
+            self.performSegueWithIdentifier("ShowLoginScreen", sender: alertInfo)
+        }
+        else
+        {
+             self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+        }
+       
+    }
 
     func processMenuDisplaying(notification:NSNotification?)
     {
@@ -362,5 +387,19 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         return false
     }
     
+    //MARK: - Segue
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)
+    {
+        if segue.identifier == "ShowLoginScreen"
+        {
+            if let destinationVC = segue.destinationViewController as? LoginVC
+            {
+                if let needAlertInfo = sender as? [String:String]
+                {
+                    destinationVC.alertInfoToShowAfterAppearance = needAlertInfo
+                }
+            }
+        }
+    }
     
 }

@@ -8,7 +8,9 @@
 
 import UIKit
 
-class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableViewDataSource, UITableViewDelegate, TableItemPickerDelegate, ElementComposingDelegate {
+import CoreData
+
+class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UITableViewDelegate, TableItemPickerDelegate, ElementComposingDelegate , NSFetchedResultsControllerDelegate{
 
     var currentElement:DBElement?
     
@@ -18,14 +20,13 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
     @IBOutlet weak var textHolderHeightConstraint: NSLayoutConstraint!
     var defaultTextInputViewHeight:CGFloat?
-    var currentChatMessages = [DBMessageChat]()
-    var avatarsHolder:[Int:UIImage] = [Int:UIImage]()
+    //var currentChatMessages = [DBMessageChat]()
     
-    var displayMode:DisplayMode = .Day{
-        didSet{
-            
-        }
-    }
+    var messagesFetchController:NSFetchedResultsController?
+    
+    let mainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+    
+    var displayMode:DisplayMode = .Day
     
     var refreshControl:UIRefreshControl?
     
@@ -33,38 +34,54 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
     var newElementDetailsInfo:String?
     var newCreatedElement:Element?
     
+    deinit{
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self.mainContext, name: NSManagedObjectContextDidSaveNotification, object: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.navigationController?.toolbarHidden = true
         bottomControlsContainerView.delegate = self
-        // Do any additional setup after loading the view.
-        if let elementIdInt = self.currentElement?.elementId?.integerValue
-        {
-            DataSource.sharedInstance.localDatadaseHandler?.readLastMessagesForElementById(elementIdInt, fetchSize: 20, completion: {[weak self] (lastMessages, error) -> () in
-                if let queryError = error
-                {
-                    print("ChatVC ViewDidLoad: lastMEssagesQueryError:")
-                    print(queryError)
-                }
-                else if let messages = lastMessages, weakSelf = self
-                {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.currentChatMessages = messages
-                        weakSelf.chatTable.reloadData()//newMessagesAdded(weakSelf.currentChatMessages)
-                    })
-                }
-            })
-        }
-    
+        // Do any additional setup after loading the view.    
         
         setupNavigationBar()
         refreshControl = UIRefreshControl()
         refreshControl?.attributedTitle = NSAttributedString(string: "refreshing".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
-        refreshControl?.tintColor = kDaySignalColor
+        refreshControl?.tintColor = kDayCellBackgroundColor
         refreshControl?.addTarget(self, action: "startRefreshing:", forControlEvents: .ValueChanged)
         self.chatTable.addSubview(refreshControl!)
         
+        chatTable.rowHeight = UITableViewAutomaticDimension
+        chatTable.estimatedRowHeight = 100.0
+        chatTable.delegate = self
+        chatTable.dataSource = self
+        
+        if let elementId = currentElement?.elementId?.integerValue
+        {
+            mainContext.parentContext = DataSource.sharedInstance.localDatadaseHandler?.getPrivateContext()
+            let messagesForElementFetchRequest = NSFetchRequest(entityName: "DBMessageChat")
+            messagesForElementFetchRequest.fetchBatchSize = 20
+            messagesForElementFetchRequest.predicate = NSPredicate(format: "elementId = \(elementId)")
+            messagesForElementFetchRequest.sortDescriptors = [NSSortDescriptor(key: "dateCreated", ascending: true)]
+            print(mainContext.parentContext?.description)
+            messagesFetchController = NSFetchedResultsController(fetchRequest: messagesForElementFetchRequest, managedObjectContext: mainContext, sectionNameKeyPath: nil, cacheName: nil)
+            
+            messagesFetchController?.delegate = self
+           
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self.mainContext, selector: "mergeChangesFromContextDidSaveNotification:", name: NSManagedObjectContextDidSaveNotification, object: DataSource.sharedInstance.localDatadaseHandler!.getPrivateContext())
+        
+        
+        do{
+            try messagesFetchController?.performFetch()
+        }
+        catch let error as NSError {
+            print("messagesFetchController fetch messages error:\n \(error)")
+        }
+       
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,20 +89,6 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        setupNavigationTitleView() // we can appear after editing contacts for this chat - to reload and display proper participants quantity.
-        
-        defaultTextInputViewHeight = textHolderHeightConstraint.constant
-        
-        addObserversForKeyboard()
-        
-        reloadChatTable()
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "cellWasLongPressedNotification:", name: kLongPressMessageNotification, object: nil)
-        
-    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -94,7 +97,28 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
         setAppearanceForNightModeToggled(nightModeOn)
         turnNightModeOn(nightModeOn)
         bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
+        
+        //chatTable.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Bottom)
+        
+        
     }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        
+        setupNavigationTitleView() // we can appear after editing contacts for this chat - to reload and display proper participants quantity.
+        
+        defaultTextInputViewHeight = textHolderHeightConstraint.constant
+        
+        addObserversForKeyboard()
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "cellWasLongPressedNotification:", name: kLongPressMessageNotification, object: nil)
+        
+        scrollToLastMessage(false)
+    }
+ 
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -104,7 +128,7 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
         
         bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
         self.navigationController?.toolbarHidden = false
-        
+        //NSNotificationCenter.defaultCenter().removeObserver(self.mainContext, name: NSManagedObjectContextDidSaveNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kLongPressMessageNotification, object: nil)
     }
     
@@ -144,97 +168,68 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
     
     func chatInputView(inputView:ChatTextInputView, sendButtonTapped button:UIButton)
     {
-        if let textToSend = inputView.textView.text, userId = DataSource.sharedInstance.user?.userId, currentElementId = currentElement?.elementId
+        guard let textToSend = inputView.textView.text, userId = DataSource.sharedInstance.user?.userId, currentElementId = currentElement?.elementId else
         {
-            if !textToSend.isEmpty
+            inputView.endTyping(clearText: true) //to set default attributed text
+            return
+        }
+        
+        if !textToSend.isEmpty
+        {
+            let currentDate = NSDate()
+            let currentDateString = currentDate.dateForServer() ?? NSDate.dummyDate()
+            
+            let nsDict = NSDictionary(
+                objects:
+                [inputView.textView.text!,
+                    NSNumber(integer: 0),
+                    "Ivan",
+                    currentElementId,
+                    userId,
+                    currentDateString],
+                forKeys:
+                ["Msg",
+                    "TypeId",
+                    "FirstName",
+                    "ElementId",
+                    "CreatorId",
+                    "CreateDate"])
+            
+            
+            
+            guard let messageInfo = nsDict as? [String : AnyObject] else
             {
-                let currentDate = NSDate()
-                let currentDateString = currentDate.dateForServer() ?? NSDate.dummyDate()
-                
-                let nsDict = NSDictionary(
-                    objects:
-                    [inputView.textView.text!,
-                        NSNumber(integer: 0),
-                        "Ivan",
-                        currentElementId,
-                        userId,
-                        currentDateString],
-                    forKeys:
-                    ["Msg",
-                        "TypeId",
-                        "FirstName",
-                        "ElementId",
-                        "CreatorId",
-                        "CreateDate"])
-                NSLog("%@", nsDict.description);
-                
-                if let messageInfo = nsDict as? [String : AnyObject]
+                return
+            }
+            
+            let newMessage = Message(info: messageInfo)
+            newMessage.dateCreated = currentDate
+            print("newMessage date: \(newMessage.dateCreated!)")
+            dispatch_async(dispatch_get_main_queue()){[weak self] _ in
+                if let aSelf = self
                 {
-                    let newMessage = Message(info: messageInfo)
-                    newMessage.dateCreated = currentDate
-                    print("newMessage date: \(newMessage.dateCreated!)")
-                    dispatch_async(dispatch_get_main_queue()){[weak self] _ in
-                        if let aSelf = self
-                        {
-                            aSelf.bottomControlsContainerView.endTyping(clearText:true)
-                            aSelf.textHolderHeightConstraint.constant = aSelf.defaultTextInputViewHeight!
-                        }
-                    }
-                    
-                    let bgQueue = NSOperationQueue()
-                    bgQueue.addOperationWithBlock({ () -> Void in
-                        DataSource.sharedInstance.sendNewMessage(newMessage, completion: { [weak self](error) -> () in
-                            if let messageError =  error
-                            {
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    if let aSelf = self
-                                    {
-                                        aSelf.showAlertWithTitle("Message Send Error", message: messageError.localizedDescription, cancelButtonTitle: "close".localizedWithComment(""))
-                                    }
-                                })
-                            }
-                            else
-                            {
-                                //TODO: read fresh messages from local db and display in table
-                                if let weakSelf = self
-                                {
-                                    if let currentLastMessage = weakSelf.currentChatMessages.last, lastMessageId = currentLastMessage.messageId?.integerValue, elementId = currentLastMessage.elementId?.integerValue
-                                    {
-                                        DataSource.sharedInstance.localDatadaseHandler?.readNewMsessagesForElementById(elementId, lastMessageId: lastMessageId, completion: { [weak self](newMessages, error) -> () in
-                                            if let newMessagesFound = newMessages
-                                            {
-                                                if let weakSelf = self
-                                                {
-                                                    //dispatch_async(dispatch_get_main_queue()) {
-                                                        weakSelf.newMessagesAdded(newMessagesFound)
-                                                    //}
-                                                }
-                                            }
-                                        })
-                                    }
-                                    else //after sent the very first message to current element chat
-                                    {
-                                        if let elementId = weakSelf.currentElement?.elementId?.integerValue
-                                        {
-                                            DataSource.sharedInstance.localDatadaseHandler?.readLastMessagesForElementById(elementId, fetchSize: 10) {[weak self] (messages, error) -> () in
-                                                if let weakerSelf = self, newMessages = messages
-                                                {
-                                                    weakerSelf.newMessagesAdded(newMessages)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    })
+                    aSelf.bottomControlsContainerView.endTyping(clearText:true)
+                    aSelf.textHolderHeightConstraint.constant = aSelf.defaultTextInputViewHeight!
                 }
             }
-            else
-            {
-                inputView.endTyping(clearText: true) //to set default attributed text
+            
+           
+            dispatch_async(getBackgroundQueue_DEFAULT() ) { _ in
+                
+                DataSource.sharedInstance.sendNewMessage(newMessage) { [weak self] (error) -> () in
+                    if let messageError = error, aSelf = self
+                    {
+                        dispatch_async(dispatch_get_main_queue()) { _ in
+                            
+                            aSelf.showAlertWithTitle("Message Send Error",
+                                message: messageError.localizedDescription,
+                                cancelButtonTitle: "close".localizedWithComment(""))
+                        }
+                    }
+                }
             }
         }
+        
     }
     
     func chatInputView(inputView:ChatTextInputView, attachButtonTapped button:UIButton)
@@ -309,39 +304,50 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
             })
         }
     }
+        
+    //MARK: - NSFetchedResultsControllerDelegate
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        self.chatTable.beginUpdates()
+    }
     
-    //MARK: MessageObserver ( almost KVO )
-    func newMessagesAdded(messages: [DBMessageChat]) {
-        if messages.count > 0
-        {
-            var indexPaths = [NSIndexPath]()
-            for message in messages
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        self.chatTable.endUpdates()
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
+        dispatch_after(timeout, dispatch_get_main_queue(), {[weak self] () -> Void in
+            if let weakSelf = self
             {
-                let lvIndexPath = NSIndexPath(forRow: self.currentChatMessages.count, inSection: 0)
-                indexPaths.append(lvIndexPath)
-                self.currentChatMessages.append(message)
+                weakSelf.scrollToLastMessage(true)
             }
-            
-            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
-                if let weakSelf = self
+        })
+        
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)
+    {
+        if let messageObject = anObject as? DBMessageChat
+        {
+            switch type
+            {
+                case .Insert:
+                print("did Insert message: \n -date:\(messageObject.dateCreated!) \n -text:\n\(messageObject.textBody!)")
+                if let inPath = indexPath
                 {
-                    weakSelf.chatTable.insertRowsAtIndexPaths(indexPaths, withRowAnimation: .Top)
-                    
-                   // weakSelf.chatTable.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-                    
-                    weakSelf.scrollToLastMessage(true)
+                    self.chatTable.insertRowsAtIndexPaths([inPath], withRowAnimation: .None)
                 }
-            })
+                else if let newPath = newIndexPath
+                {
+                     self.chatTable.insertRowsAtIndexPaths([newPath], withRowAnimation: .None)
+                }
+                case .Move:
+                print("did Move message: \n -date:\(messageObject.dateCreated!) \n -text:  \(messageObject.textBody!)")
+                case .Update:
+                print("did Update message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
+                case .Delete:
+                print("did Delete message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
+            }
         }
     }
     
-    func newMessagesAdded(messages: [Message]) {
-        
-    }
-    func newMessagesAddedForElementId(elementId:Int)
-    {
-        
-    }
 
     //MARK: MISCELANEOUS
     
@@ -390,6 +396,8 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
         performSegueWithIdentifier("ShowContactsChecker", sender: self)
     }
     
+    
+    
     func reloadChatTable() {
         chatTable.rowHeight = UITableViewAutomaticDimension
         chatTable.estimatedRowHeight = 100.0
@@ -405,104 +413,92 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
     
     func scrollToLastMessage(animated:Bool = false)
     {
-        if self.currentChatMessages.count > 1
+        if let count = self.messagesFetchController?.fetchedObjects?.count
         {
-            let lastMessagePath = NSIndexPath(forRow: self.currentChatMessages.count - 1, inSection: 0)
-           
-            chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Middle, animated: animated)
+            if count > 1
+            {
+                let lastMessagePath = NSIndexPath(forRow: (count - 1), inSection: 0)
+                
+                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Bottom, animated: animated)
+            }
         }
+        
     }
     
     //MARK: UITableViewDataSource
     func messageForIndexPath(indexPath:NSIndexPath) -> DBMessageChat?
     {
-        if currentChatMessages.count > indexPath.row {
-            return currentChatMessages[indexPath.row]
+        if let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
+        {
+            if fetchedObjects.count > indexPath.row
+            {
+                return fetchedObjects[indexPath.row]
+            }
         }
+//        if currentChatMessages.count > indexPath.row {
+//            return currentChatMessages[indexPath.row]
+//        }
         return nil
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return currentChatMessages.count
+        if let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
+        {
+            let countMessages = fetchedObjects.count
+            print(" fetched Messages: \(countMessages)")
+            return countMessages
+        }
+         print(" fetched Messages: 0")
+        return 0
+//        return currentChatMessages.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
-        if let
-            existingMessage = messageForIndexPath(indexPath),
-            creatorIdInt = existingMessage.creatorId?.integerValue,
-            currentUserID = DataSource.sharedInstance.user?.userId
+        guard let existingMessage = messageForIndexPath(indexPath),  creatorIdInt = existingMessage.creatorId?.integerValue, currentUserID = DataSource.sharedInstance.user?.userId else
         {
-            if creatorIdInt == currentUserID
-            {
-                let sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
-                sentCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
-                sentCell.message = existingMessage.textBody
-                sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
-                sentCell.backgroundColor = UIColor.clearColor()
-                
-                return sentCell
-            }
-            else
-            {
-                let recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
-                recievedCell.message = existingMessage.textBody
-                recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
-                recievedCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
-                recievedCell.avatar?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
-                recievedCell.backgroundColor = UIColor.clearColor()
-                
-                if let anImage = avatarsHolder[creatorIdInt]
-                {
-                    recievedCell.avatar?.image = anImage
-                }
-                else
-                {
-                    let currentRow = indexPath.row
-                    var globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-                    
-                    if #available(iOS 8.0, *)
-                    {
-                        globalQueue = dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0)
-                    }
-                 
-                    dispatch_async(globalQueue) {[weak self] () -> Void in
-                        if let anImage = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt), aSelf = self
-                        {
-                            aSelf.avatarsHolder[creatorIdInt] = anImage
-                            print(" -> Chat Loaded avatar for contact Id. : \(creatorIdInt)")
-                            dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                                if let weakSelf = self, indexPathsVisible = weakSelf.chatTable.indexPathsForVisibleRows
-                                {
-                                    for anIndexPath in indexPathsVisible
-                                    {
-                                        if anIndexPath.row == currentRow
-                                        {
-                                            weakSelf.chatTable.reloadRowsAtIndexPaths([anIndexPath], withRowAnimation: .None)
-                                            break
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                return recievedCell
-            }
+            return UITableViewCell(style: .Default, reuseIdentifier: "EmptyCell")
+        }
+        
+       
+        if creatorIdInt == currentUserID
+        {
+            let sentCell = tableView.dequeueReusableCellWithIdentifier("MyMessageCell", forIndexPath: indexPath) as! ChatMessageSentCell
+            sentCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
+            sentCell.message = existingMessage.textBody
+            sentCell.messageLabel.textColor = (self.displayMode == .Day) ? kWhiteColor : UIColor.blackColor()
+            sentCell.backgroundColor = UIColor.clearColor()
+            
+            return sentCell
         }
         else
         {
-            let tableViewDefaultCell = UITableViewCell(style: .Default, reuseIdentifier: "EmptyCell")
-            return tableViewDefaultCell
+            let recievedCell = tableView.dequeueReusableCellWithIdentifier("OthersMessageCell", forIndexPath: indexPath) as! ChatMessageRecievedCell
+            recievedCell.message = existingMessage.textBody
+            recievedCell.messageLabel.textColor = (self.displayMode == .Day) ? UIColor.blackColor() : kWhiteColor
+            recievedCell.dateLabel.text = existingMessage.dateCreated?.timeDateString()
+            recievedCell.avatar?.tintColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kWhiteColor
+            recievedCell.backgroundColor = UIColor.clearColor()
+            
+            if let anImage = DataSource.sharedInstance.getAvatarForUserId(creatorIdInt)
+            {
+                recievedCell.avatar?.image = anImage.imageWithRenderingMode(.AlwaysOriginal)
+            }
+            else
+            {
+                recievedCell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            }
+            
+            return recievedCell
         }
+        
     }
     
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        return 70.0
+        return 100.0
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
@@ -546,90 +542,48 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
     func loadPreviousMessages(completion:(()->())?)
     {
         //stop refreshing last messages from server
-        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
-        
-        guard let topMessage = self.currentChatMessages.first, messageElementId = topMessage.elementId?.integerValue , messageId = topMessage.messageId?.integerValue else
-        {
-            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1))
-            dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                completion?()
-            })
-            return
-        }
-        
-        
-        DataSource.sharedInstance.localDatadaseHandler?.readChatMessagesForElementById(messageElementId, fetchSize: 20, lastMessageId: messageId, completion: {[weak self] (foundMessages, error) -> () in
-            
-            if let messagesError = error
-            {
-                print("Error while querying previous messages for ChatVC...:")
-                print(messagesError)
-            }
-            else if let previousMessagesPortion = foundMessages
-            {
-                if let weakSelf = self
-                {
-                    let currentMessages = weakSelf.currentChatMessages
-                    let newMessages = previousMessagesPortion + currentMessages
-                    weakSelf.currentChatMessages = newMessages
-                    
-                    dispatch_async( dispatch_get_main_queue()) {
-                        weakSelf.chatTable.reloadData()
-                    }
-                    completion?()
-                }
-            }
-            
-            //resume refreshing last messages from server
-            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
-            dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
-                DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
-            })
-            
-            completion?()
-        })
-        
-//        let bgMessageQueue = dispatch_queue_create("com.Origami.ChatMessages.Queue", DISPATCH_QUEUE_SERIAL)
-//        dispatch_async(bgMessageQueue) { [weak self]() -> Void in
-//            
-//            let theVeryFirstMessageIdInMessages = topMessage.messageId
-//            if let previousMessagesPortion = DataSource.sharedInstance.getMessagesQuantyty(10, elementId: messageElementId, lastMessageId:theVeryFirstMessageIdInMessages), weakSelf = self
-//            {
-//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                    
-//                    let existingMessages = weakSelf.currentChatMessages
-//                    weakSelf.currentChatMessages = previousMessagesPortion + existingMessages
-//                    weakSelf.chatTable.reloadData()
-//                   
-//                    completion?()
-//                })
-//                
-//                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
-//                let bgQueue:dispatch_queue_t?
-//                if #available (iOS 8.0, *)
-//                {
-//                    bgQueue = dispatch_get_global_queue(QOS_CLASS_UTILITY, 0)
-//                }
-//                else
-//                {
-//                    bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)
-//                }
-//                dispatch_after(timeout, bgQueue!, { () -> Void in
-//                    DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
-//                })
-//             
-//            }
-//            else
-//            {
-//                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
-//                dispatch_after(timeout, bgMessageQueue, { () -> Void in
-//                     completion?()
-//                    DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
-//                })
-//               
-//            }
+//        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
+//        
+//        guard let topMessage = self.currentChatMessages.first, messageElementId = topMessage.elementId?.integerValue , messageId = topMessage.messageId?.integerValue else
+//        {
+//            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1))
+//            dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+//                completion?()
+//            })
+//            return
 //        }
-      
+//        
+//        
+//        DataSource.sharedInstance.localDatadaseHandler?.readChatMessagesForElementById(messageElementId, fetchSize: 20, lastMessageId: messageId, completion: {[weak self] (foundMessages, error) -> () in
+//            
+//            if let messagesError = error
+//            {
+//                print("Error while querying previous messages for ChatVC...:")
+//                print(messagesError)
+//            }
+//            else if let previousMessagesPortion = foundMessages
+//            {
+//                if let weakSelf = self
+//                {
+//                    let currentMessages = weakSelf.currentChatMessages
+//                    let newMessages = previousMessagesPortion + currentMessages
+//                    weakSelf.currentChatMessages = newMessages
+//                    
+//                    dispatch_async( dispatch_get_main_queue()) {
+//                        weakSelf.chatTable.reloadData()
+//                    }
+//                    completion?()
+//                }
+//            }
+//            
+//            //resume refreshing last messages from server
+//            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
+//            dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
+//                DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
+//            })
+//            
+//            completion?()
+//        })
         
     }
     
@@ -677,7 +631,11 @@ class ChatVC: UIViewController, MessageObserver, ChatInputViewDelegate, UITableV
         {
             if let toVC = segue.destinationViewController as? ParticipantsVC
             {
-               // toVC.currentElement = currentElement
+                if let anElement = currentElement, elementId = anElement.elementId?.integerValue
+                {
+                    toVC.currentElementId = elementId
+                    toVC.setElementOwned(anElement.isOwnedByCurrentUser())
+                }
             }
         }
     }

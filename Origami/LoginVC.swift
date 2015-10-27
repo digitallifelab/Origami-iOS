@@ -13,6 +13,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
     @IBOutlet var nameField:UITextField!
     @IBOutlet var passwordField:UITextField!
     @IBOutlet var loginButton:UIButton!
+    var alertInfoToShowAfterAppearance:[String:String]?
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,13 +51,26 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        if let name = nameField.text, password = passwordField.text
+       
+        
+        
+        if let alertInfo = alertInfoToShowAfterAppearance, title = alertInfo["title"], message = alertInfo["message"]
         {
-            if !name.characters.isEmpty && !password.characters.isEmpty
+            loginButton.enabled = true
+            showAlertWithTitle(title, message: message, cancelButtonTitle: "Ok")
+            DataSource.sharedInstance.stopRefreshingNewMessages()
+        }
+        else
+        {
+            if let name = nameField.text, password = passwordField.text
             {
-                loginButtonPress(self.loginButton)
+                if !name.characters.isEmpty && !password.characters.isEmpty
+                {
+                    loginButtonPress(self.loginButton)
+                }
             }
         }
+    
     }
     
     @IBAction func loginButtonPress(sender:UIButton)

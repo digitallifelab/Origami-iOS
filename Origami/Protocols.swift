@@ -12,15 +12,10 @@ import UIKit
 protocol MessageObserver
 {
     func newMessagesWereAdded()
-    
-
 }
 
 extension MessageObserver
 {
-    func newMessagesAddedForElementId(elementId:Int) {
-        
-    }
     
     func newMessagesWereAdded(){
         

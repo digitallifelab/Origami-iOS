@@ -1012,21 +1012,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             })
         }
     }
-    
-    private func setParentElementNeedsUpdateIfPresent()
-    {
-        if let vcs = self.navigationController?.viewControllers
-        {
-            if vcs.count > 2
-            {
-                if let previousElementVC = vcs[(vcs.count - 2)] as? SingleElementDashboardVC
-                {
-                    previousElementVC.afterViewDidLoad = true
-                }
-            }
-        }
-
-    }
+    //MARK: - 
+ 
     //MARK: handling notifications
     func elementWasDeleted(notification:NSNotification?)
     {
