@@ -55,16 +55,10 @@ class MessagesLoader
                                 DataSource.sharedInstance.performLogout(nil)
                                 if let rootVC = UIApplication.sharedApplication().windows.first!.rootViewController as? RootViewController
                                 {
-                                  
-//                                    if let weakSelf = self
-//                                    {
-//                                        weakSelf.stopRefreshingLastMessages()
-//                                    }
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                          rootVC.showLoginScreenWithReloginPrompt(true)
                                     })
                                     return
-                                    
                                 }
                             }
                         }
@@ -86,7 +80,7 @@ class MessagesLoader
                 if let weakSelf = self
                 {
                     weakSelf.dispatchSource = nil
-                    print("deleted dispatch source by cancel_handler...")
+                    print("\n deleted dispatch source by cancel_handler...")
                 }
             })
             // Start the timer
@@ -120,7 +114,14 @@ class MessagesLoader
     {
         if let _ = self.dispatchSource
         {
-            self.dispatchSource = nil
+            let performSafe = {[weak self] in
+                if let weakSelf = self
+                {
+                    weakSelf.dispatchSource = nil
+                }
+            }
+            
+            performSafe()
             print(" -> MessagesLoader -> removed dispatch source...")
         }
     }

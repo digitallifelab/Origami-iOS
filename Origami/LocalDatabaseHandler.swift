@@ -585,19 +585,22 @@ class LocalDatabaseHandler
         
         if self.privateContext.hasChanges
         {
-            do
-            {
-                try self.privateContext.save()
-                completion?(didSave: true, error: nil)
-            }
-            catch let error as NSError
-            {
-                completion?(didSave: false, error: error)
-            }
-            catch
-            {
-                abort()
-            }
+            let context = self.privateContext
+            context.performBlock({ () -> Void in
+                do
+                {
+                    try context.save()
+                    completion?(didSave: true, error: nil)
+                }
+                catch let error as NSError
+                {
+                    completion?(didSave: false, error: error)
+                }
+            })
+        }
+        else
+        {
+            completion?(didSave: false, error: nil)
         }
     }
 
@@ -824,13 +827,11 @@ class LocalDatabaseHandler
             return
         }
         
-//        var mutableSet = Set<DBMessageChat>()
         for aMessage in messages
         {
             if let existingMessage = self.readChatMessageById(aMessage.messageId)
             {
                 existingMessage.fillInfoFromMessageObject(aMessage)
-//                mutableSet.insert(existingMessage)
             }
             else
             {
@@ -839,37 +840,17 @@ class LocalDatabaseHandler
                 if let message = NSEntityDescription.insertNewObjectForEntityForName("DBMessageChat", inManagedObjectContext: self.privateContext) as? DBMessageChat
                 {
                     message.fillInfoFromMessageObject(aMessage)
-//                    mutableSet.insert(message)
                 }
             }
         }
-        
-//        if mutableSet.count > 0
-//        {
-//            if let anyMessage = mutableSet.first, elementId = anyMessage.elementId?.integerValue
-//            {
-//                //link message to existing element if found
-//                if let existingElement = self.readElementById(elementId)
-//                {
-//                    if let existingSet = existingElement.messages as? Set<DBMessageChat>
-//                    {
-//                        let newMessagesSet = existingSet.union(mutableSet)
-//                        existingElement.messages = newMessagesSet
-//                    }
-//                    else
-//                    {
-//                        existingElement.messages = mutableSet
-//                    }
-//                }
-//            }
-//        }
+
         
         if self.privateContext.hasChanges
         {
             let lvContext = self.privateContext
             lvContext.performBlock({ () -> Void in
                 do{
-                    try self.privateContext.save()
+                    try lvContext.save()
                     print("\n->did <<<<< SAVE >>>>> Context after messages inserted or updated.")
                    
                     completion?(true, error:nil)
@@ -1614,20 +1595,24 @@ class LocalDatabaseHandler
             }
         }
         
+        let context = self.privateContext
         if self.privateContext.hasChanges
         {
-            do
-            {
-                try self.privateContext.save()
-                print(" Did save context after SavingContacts...")
-                completion?(true, error: nil)
-            }
-            catch let contextSaveError as NSError
-            {
-                print(" --- !!!!  Did NOT context after SavingContacts : ")
-                print(contextSaveError)
-                completion?(false, error: contextSaveError)
-            }
+            context.performBlock({ () -> Void in
+                do
+                {
+                    try context.save()
+                    print(" Did save context after SavingContacts...")
+                    completion?(true, error: nil)
+                }
+                catch let contextSaveError as NSError
+                {
+                    print(" --- !!!!  Did NOT context after SavingContacts : ")
+                    print(contextSaveError)
+                    completion?(false, error: contextSaveError)
+                }
+            })
+           
         }
         else
         {
