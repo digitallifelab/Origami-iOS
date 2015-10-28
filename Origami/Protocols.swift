@@ -142,3 +142,9 @@ protocol CreateDateComparable {
     var dateCreated:NSDate?{ get set }
 }
 
+enum OrigamiError: ErrorType
+{
+    case PreconditionFailure(message:String?)
+    case UnknownError
+}
+

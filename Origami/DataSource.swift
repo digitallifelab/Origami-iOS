@@ -1113,15 +1113,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
                         {
+                            print(" ----> for elementID: \(elementId)")
                             existingElement.title = element.title
                             existingElement.details = element.details
                             //existingElement.isFavourite = NSNumber(bool:element.isFavourite)
                             existingElement.isSignal = NSNumber(bool:element.isSignal)
+                            print("Saving new Type Id :\(element.typeId)")
                             existingElement.type = NSNumber(integer:element.typeId)
                             
                             existingElement.dateChanged = NSDate()
-                            
+                            print("Saving new Responsible Id: \(element.responsible) ")
                             existingElement.responsibleId = NSNumber(integer:element.responsible)
+                            
+                            print("Saving new FinishState: \(element.finishState)")
+                            
                             existingElement.finishState = NSNumber(integer:element.finishState)
                             existingElement.isSignal = NSNumber(bool:element.isSignal)
                             if let remindDate = element.remindDate

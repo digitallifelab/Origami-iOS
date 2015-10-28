@@ -852,14 +852,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         
                         if edited
                         {
-                            aSelf.currentElement?.title = editingElement.title
-                            aSelf.currentElement?.details = editingElement.details
-                            
-                            aSelf.collectionDataSource?.handledElement = aSelf.currentElement
-                            
-                            let lvBatchUpdates = { () -> () in aSelf.collectionView.reloadSections(NSIndexSet(index: 0))}
-                            
-                            aSelf.collectionView.performBatchUpdates(lvBatchUpdates, completion: nil)
+                            if let updatedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(currentElementId)
+                            {
+                                aSelf.currentElement = updatedElement
+                                aSelf.prepareCollectionViewDataAndLayout()
+                                aSelf.setParentElementNeedsUpdateIfPresent()
+                            }
                         }
                         else
                         {
@@ -1566,96 +1564,149 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func itemPickerDidCancel(itemPicker: AnyObject) {
         //did
         
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, finishDate = contactsPickerVC.finishDate
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  userId = DataSource.sharedInstance.user?.userId, finishDate = contactsPickerVC.finishDate
         {
-            sendElementTaskNewResponsiblePerson(aNumber, finishDate:finishDate)
+            do
+            {
+                try sendElementTaskNewResponsiblePerson(userId, finishDate:finishDate)
+            }
+            catch let error
+            {
+                print(error)
+            }
         }
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
         if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? DBContact, contactId = contactPicked.contactId?.integerValue, finishDate = contactsPickerVC.finishDate
-        {           
-            sendElementTaskNewResponsiblePerson(contactId, finishDate:finishDate)
+        {
+            do
+            {
+                try sendElementTaskNewResponsiblePerson(contactId, finishDate:finishDate)
+            }
+            catch let error
+            {
+                print(error)
+            }
         }
        
         self.navigationController?.popViewControllerAnimated(true)
         
     }
     /**
-    - Sends "*editElement*" to server with updated "*responsible*" value and "*typeId*" value.
+     Sends "*editElement*" to server with updated "*responsible*" value and "*typeId*" value.
         - if successfull sends "*setElementFinishState*" if previous query for editing element was successfull
-            - if successfull sends "*setElementFinishDate*" to server
+        - if successfull sends "*setElementFinishDate*" to server
+     
+     - Precondition: `responsiblePersonId` shoild be more than zero
+
     */
-    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate)
+    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate) throws
     {
-        if let element = self.currentElement
+        guard responsiblePersonId > 0 else
         {
-//            let copy = element.createCopy()
-//            copy.responsible =  responsiblePersonId
-//            
-//            copy.finishDate = finishDate
-//            let optionsConverter = ElementOptionsConverter()
-//            if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
-//            {
-//                let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
-//                copy.typeId = newOptions
-//            }
-//            
-//            if let elementIdInt = copy.elementId
-//            {
-//                let newState = ElementFinishState.InProcess.rawValue
-//                
-//                DataSource.sharedInstance.editElement(copy, completionClosure: {[weak self] (edited) -> () in
-//                    if edited
-//                    {
-//                        DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: newState, completion: {[weak self] (success) -> () in
-//                            if success
-//                            {
-//                                if let weakSelf = self
-//                                {
-//                                    dispatch_async(dispatch_get_main_queue(), { [weak weakSelf]() -> Void in
-//                                       
-//                                        if let weakerSelf = weakSelf
-//                                        {
-//                                            weakerSelf.collectionDataSource?.handledElement?.finishState = newState
-//                                            weakerSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-//                                            weakerSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
-//                                        }
-//                                    })
-//                                }
-//                                
-//                                if let dateString = copy.finishDate?.dateForRequestURL() //.dateForServer()
-//                                {
-//                                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: { [weak self](success) -> () in
-//                                        
-//                                        if let weakSelf = self
-//                                        {
-//                                            if success
-//                                            {
-//                                                print("\n -> Element finish date WAS updated.\n")
-//                                                if let existElement = DataSource.sharedInstance.getElementById(elementIdInt)
-//                                                {
-//                                                    print("\n exist element finish date : \(existElement.finishDate)")
-//                                                    print(" current element finish date : \(weakSelf.currentElement?.finishDate)")
-//                                                    print(" current element in collectionDataSource finish date: \(weakSelf.collectionDataSource?.handledElement?.finishDate)")
-//                                                }
-//                                            }
-//                                            else
-//                                            {
-//                                                print("\n -> Element finish date WAS NOT updated.\n")
-//                                            }
-//                                        }
-//                                    })
-//                                }
-//                                
-//                            }
-//                        })
-//                    }
-//                })
-//            
-//            }
+            let error:ErrorType = OrigamiError.PreconditionFailure(message: "responsiblePersonId is not more than zero.")
+            throw error
         }
+        
+        guard let element = self.currentElement else
+        {
+            let error = OrigamiError.PreconditionFailure(message: "Curent element not found.")
+            throw error
+        }
+        
+        guard let elementId = element.elementId?.integerValue else
+        {
+            let error = OrigamiError.PreconditionFailure(message: "Current Element Id not found.")
+            throw error
+        }
+        
+        let copy = element.createCopyForServer()
+        copy.responsible =  responsiblePersonId
+        copy.finishDate = finishDate
+        let optionsConverter = ElementOptionsConverter()
+        
+        if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
+        {
+            let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
+            copy.typeId = newOptions
+        }
+
+        let newState = ElementFinishState.InProcess.rawValue
+        copy.finishState = newState
+        
+        var operations = [NSBlockOperation]()
+        
+        let editingOp = NSBlockOperation() { _ in
+            
+            print(" -> sendElementTaskNewResponsiblePerson    Setting New Element Responsible AND Task Type ...")
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            let editingSemaphore = dispatch_semaphore_create(0)
+            
+            DataSource.sharedInstance.editElement(copy) {[weak self] (edited) -> () in
+                if edited
+                {
+                    if let weakSelf = self
+                    {
+                        dispatch_async(dispatch_get_main_queue()) { _ in
+                            if let editedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+                            {
+                                weakSelf.currentElement = editedElement
+                                
+                                weakSelf.prepareCollectionViewDataAndLayout()
+//                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                            }
+                            weakSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
+                        }
+                    }
+                }
+                
+                dispatch_semaphore_signal(editingSemaphore)
+            }
+            
+            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+            
+            dispatch_semaphore_wait(editingSemaphore, timeout)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        }
+        
+        operations.append(editingOp)
+        
+        if let lvFinishDateToSet = copy.finishDate?.dateForRequestURL()
+        {
+            let setFinishDateOp = NSBlockOperation() { _ in
+                
+                print(" -> sendElementTaskNewResponsiblePerson    Setting New Element Finish Date ...")
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                DataSource.sharedInstance.setElementFinishDate(elementId, date: lvFinishDateToSet) { [weak self] (success) -> () in
+                    
+                    if let _ = self
+                    {
+                        if success
+                        {
+                            print(" -> sendElementTaskNewResponsiblePerson -> Element finish date WAS UPDATED.\n")
+                        }
+                        else
+                        {
+                            print(" -> sendElementTaskNewResponsiblePerson -> Element finish date WAS NOT updated.\n")
+                        }
+                    }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+                
+            }
+            
+            setFinishDateOp.addDependency(editingOp)
+            
+            operations.append(setFinishDateOp)
+        }
+        
+        let bgQueue = NSOperationQueue()
+        bgQueue.maxConcurrentOperationCount = 2
+        
+        bgQueue.addOperations(operations, waitUntilFinished: false)
+       
     }
     
     //MARK: Element Task workflow FINISH -

@@ -428,6 +428,9 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             parameters: params,
             success: { (task, resultObject) -> Void in
                 // afnetworking returns here in main thread
+                
+                print(" edit element response:\n \(resultObject)")
+                
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                completonClosure(success: true, error: nil)
             },

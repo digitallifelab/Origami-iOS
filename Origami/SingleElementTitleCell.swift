@@ -40,7 +40,12 @@ class SingleElementTitleCell: UICollectionViewCell {
     }
     var optionsConverter = ElementOptionsConverter()
     
-    var handledElement:Element?
+    var handledElement:Element? {
+        didSet{
+            print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
+            print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
+        }
+    }
     var buttonTrueColor = UIColor.whiteColor()
     var buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
     
