@@ -718,10 +718,6 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
-                                <connections>
-                                    <outlet property="dataSource" destination="yHW-Sj-GlT" id="a7L-R8-e6c"/>
-                                    <outlet property="delegate" destination="yHW-Sj-GlT" id="gF2-KH-NIx"/>
-                                </connections>
                             </tableView>
                         </subviews>
                         <animations/>

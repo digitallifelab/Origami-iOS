@@ -349,49 +349,49 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             return
         }
         
-            let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
-            dispatch_async(bgQueue) { [unowned self] () -> Void in
+        let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
+        dispatch_async(bgQueue) { [unowned self] () -> Void in
+            
+        let elementDict = element.toDictionary()
+        print(" Submitting new element to server: \n")
+        print(elementDict)
+        print("\n<--")
+        let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
+        let params = ["element":elementDict]
+        
+        let requestSerializer = AFJSONRequestSerializer()
+        requestSerializer.timeoutInterval = 15.0 as NSTimeInterval
+        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
+        requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        self.httpManager.requestSerializer = requestSerializer
+        
+        let postOperation = self.httpManager.POST(
+            postString,
+            parameters: params,
+            success:
+            { (operation, result) -> Void in
                 
-            let elementDict = element.toDictionary()
-            print(" Submitting new element to server: \n")
-            print(elementDict)
-            print("\n<--")
-            let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
-            let params = ["element":elementDict]
-            
-            let requestSerializer = AFJSONRequestSerializer()
-            requestSerializer.timeoutInterval = 15.0 as NSTimeInterval
-            requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-            requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            self.httpManager.requestSerializer = requestSerializer
-            
-            let postOperation = self.httpManager.POST(
-                postString,
-                parameters: params,
-                success:
-                { (operation, result) -> Void in
-                    
-                    if let
-                        resultDict = result as? Dictionary<String, AnyObject>,
-                        newElementDict = resultDict["AddElementResult"] as? Dictionary<String, AnyObject>
-                    {
-                        let newUploadedElement = Element(info: newElementDict)
-                        completion(newUploadedElement, nil)
-                    }
-                    else
-                    {
-                        let lvError = NSError(domain: "com.DictionaryConversion.Failure", code: -801, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response to dictionary"])
-                        completion(nil, lvError)
-                    }
-                    
-                },
-                failure:
-                { (operation, error) -> Void in
-                        completion(nil, error)
+                if let
+                    resultDict = result as? Dictionary<String, AnyObject>,
+                    newElementDict = resultDict["AddElementResult"] as? Dictionary<String, AnyObject>
+                {
+                    let newUploadedElement = Element(info: newElementDict)
+                    completion(newUploadedElement, nil)
+                }
+                else
+                {
+                    let lvError = NSError(domain: "com.DictionaryConversion.Failure", code: -801, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response to dictionary"])
+                    completion(nil, lvError)
+                }
+                
+            },
+            failure:
+            { (operation, error) -> Void in
+                    completion(nil, error)
 
-            })
-            
-            postOperation?.resume()
+        })
+        
+        postOperation?.resume()
         }//end of bg queue
     }
     

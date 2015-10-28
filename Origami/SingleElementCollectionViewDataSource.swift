@@ -611,7 +611,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             else
             {
-                assert(false, "")
+                assert(false, "Requested attaches cell for current attaches, when no attaches present")
+                return UICollectionViewCell()
             }
             
         case .Subordinates:

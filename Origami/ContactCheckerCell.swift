@@ -50,7 +50,7 @@ class ContactCheckerCell: UITableViewCell {
     {
         if disabled
         {
-            checkBox?.tintColor = cellTintColor.colorWithAlphaComponent(0.7)
+            checkBox?.tintColor = cellTintColor.colorWithAlphaComponent(0.5)
         }
         else
         {

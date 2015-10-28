@@ -661,39 +661,40 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     /**
         submitNewElementToServer completion : Sends POST request to server to create new Element.
     
-        - Returns: new created Element or NSError if fails
+        - Parameter completion: returnClosure withnewElementId in case of success and error in case of error
+    
     */
-    func submitNewElementToServer(newElement:Element, completion closure:((newElementId:Int?, error:NSError?) ->())?)
+    func submitNewElementToServer(newElement:Element, completion:((newElementId:Int?, error:NSError?) ->())?)
     {
-        DataSource.sharedInstance.serverRequester.submitNewElement(newElement, completion: { (result, error) -> () in
+        DataSource.sharedInstance.serverRequester.submitNewElement(newElement){ (result, error) -> () in
             if let successElement = result as? Element
             {
                 let elementId = successElement.elementId
                 if elementId <= 0
                 {
-                    closure?(newElementId: nil, error: NSError(domain: "com.origami.newElementCreationError.", code: -10500, userInfo: [NSLocalizedDescriptionKey:"Wrong New Element Id Recieved"]))
+                    completion?(newElementId: nil, error: NSError(domain: "com.origami.newElementCreationError.", code: -10500, userInfo: [NSLocalizedDescriptionKey:"Wrong New Element Id Recieved"]))
     
                     return
                 }
                 
-                DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase([successElement], completion: { (didSave, error) -> () in
-                    if didSave
-                    {
-                          closure?(newElementId: elementId, error: nil)
+                NSOperationQueue().addOperationWithBlock(){_ in
+                    DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase([successElement]) { (didSave, error) -> () in
+                        if didSave
+                        {
+                            completion?(newElementId: elementId, error: nil)
+                        }
+                        else
+                        {
+                            completion?(newElementId: nil, error: error)
+                        }
                     }
-                    else
-                    {
-                        closure?(newElementId: nil, error: error)
-                    }
-                  
-                })
+                }
             }
             else
             {
-                closure?(newElementId: nil, error: error)
+                completion?(newElementId: nil, error: error)
             }
-            
-        })
+        }
     }
     
     func addNewElements(elements:[Element], completion:voidClosure?)

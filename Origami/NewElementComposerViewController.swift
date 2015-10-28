@@ -15,32 +15,29 @@ enum CurrentEditingConfiguration:Int
     case None
 }
 
-class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ButtonTapDelegate, UITextViewDelegate, UIAlertViewDelegate {
+struct ContactInfo
+{
+    var contactName:String = ""
+    var contactId:Int = 0
+}
 
+class NewElementComposerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, UIAlertViewDelegate {
+
+    var currentElementId:Int = 0
     var rootElementID:Int = 0
         {
         didSet{
-            print("\n ->NewElementComposerViewController,  rootElementId: \(rootElementID)\n")
+            print("\n -> NewElementComposerViewController,  rootElementId: \(rootElementID)\n")
         }
     }
+    var currentElementParticipants:Set<Int> = Set<Int>()
+    
     var composingDelegate:ElementComposingDelegate?
-    lazy var contactIDsToPass:Set<Int> = Set([Int]())
-    var newElement:Element? {
-        didSet{
-            if let passIDs = newElement?.passWhomIDs
-            {
-                for number in passIDs
-                {
-                    contactIDsToPass.insert(number)
-                }
-            }
-            self.table?.reloadData()
-        }
-    }
     
-    //var contactImages = [String:UIImage]()
+    var inMemoryElement:Element?
     
-    var allContacts = DataSource.sharedInstance.getMyContacts()
+    var contactInfos:[ContactInfo]?
+    private let bgQueue = NSOperationQueue()
     
     private var editingConfuguration:CurrentEditingConfiguration = .None{
         didSet{
@@ -68,32 +65,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
     }
     
-    var editingStyle:ElementEditingStyle = .AddNew {
-        didSet{
-            if editingStyle == .AddNew
-            {
-                let elementNew = Element()
-                //self.newElement = Element()
-                elementNew.rootElementId = self.rootElementID
-                elementNew.passWhomIDs = Array(self.contactIDsToPass)
-                
-                
-                if self.currentElementType != .None
-                {
-                    if let delegate = self.composingDelegate
-                    {
-                        elementNew.title = delegate.newElementComposerTitleForNewElement(self)
-                        elementNew.details = delegate.newElementComposerDetailsForNewElement(self)
-                    }
-                    //self.newElement?.title = self.composingDelegate?.newElementComposerTitleForNewElement(self)
-                    //self.newElement?.details = self.composingDelegate?.newElementComposerDetailsForNewElement(self)
-                }
-                self.newElement = elementNew
-            }
-            
-           configureBottomToolbar()
-        }
-    }
+    var editingStyle:ElementEditingStyle = .AddNew
     
     var currentElementType:NewElementCreationType = .None
     
@@ -118,7 +90,126 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             self.displayMode = .Day
         }
    
-        print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
+        print("---- viewDidLoad :->  \n ContactIdsToPass: \(currentElementParticipants)")
+        
+        
+        let contactsBlockOp = NSBlockOperation() { _ in
+            DataSource.sharedInstance.localDatadaseHandler?.readAllMyContacts() { [weak self] (dbContacts) -> () in
+                if let foundContacts = dbContacts, weakSelf = self
+                {
+                    var contactInfos = [ContactInfo]()
+                    for aDbContact in foundContacts
+                    {
+                        guard let contactId = aDbContact.contactId?.integerValue else
+                        {
+                            continue
+                        }
+                        
+                        var lvInfo = ContactInfo(contactName: "", contactId: contactId)
+                        
+                        if let name = aDbContact.nameAndLastNameSpacedString()
+                        {
+                            lvInfo.contactName = name
+                        }
+                        contactInfos.append(lvInfo)
+                    }
+                    
+                    if !contactInfos.isEmpty
+                    {
+                        weakSelf.contactInfos = contactInfos
+                    }
+                }
+            }
+        }
+        
+        let passWhomIdsForElementOp = NSBlockOperation() { [weak self] _ in
+            
+            if let weakSelf = self
+            {
+                let dispatchGroup = dispatch_group_create()
+                
+                if weakSelf.currentElementId > 0
+                {
+                    dispatch_group_enter(dispatchGroup)
+                    
+                    DataSource.sharedInstance.loadPassWhomIdsForElement(weakSelf.currentElementId, comlpetion: {[weak self] (finished) -> () in
+                        if let weakSelf = self, participantsForElement = DataSource.sharedInstance.participantIDsForElement[weakSelf.currentElementId]
+                        {
+                            weakSelf.currentElementParticipants = participantsForElement
+                        }
+                        dispatch_group_leave(dispatchGroup)
+                    })
+                }
+                
+                if weakSelf.rootElementID > 0
+                {
+                    dispatch_group_enter(dispatchGroup)
+                    let rootId = weakSelf.rootElementID
+                    DataSource.sharedInstance.loadPassWhomIdsForElement(rootId) { [weak self] (finished) -> () in
+                        if let weakSelf = self, rootParticipants = DataSource.sharedInstance.participantIDsForElement[rootId]
+                        {
+                            print(" \(weakSelf.editingStyle) found participants for root element: \(rootParticipants)")
+                        }
+                        dispatch_group_leave(dispatchGroup)
+                    }
+                }
+                
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 10.0))
+                
+                dispatch_group_wait(dispatchGroup, timeout)
+                print(" -> finished passWhomIdsForElementOp \n")
+            }
+        }
+        
+        let afterPassWhomIdsForElementOp = NSBlockOperation() {[weak self] _ in
+            print(" -> Strated afterPassWhomIdsForElementOp\n")
+            guard let weakSelf = self else
+            {
+                return
+            }
+            
+            if weakSelf.editingStyle == .AddNew
+            {
+                weakSelf.inMemoryElement = Element()
+                weakSelf.inMemoryElement?.rootElementId = weakSelf.rootElementID
+                
+                dispatch_async(dispatch_get_main_queue()){ _ in
+                    weakSelf.configureBottomToolbar()
+                    weakSelf.setupDelegateAndReloadTable()
+                }
+            }
+            else
+            {
+                DataSource.sharedInstance.localDatadaseHandler?.readElementByIdAsync(weakSelf.currentElementId) { [weak self] (foundDBelement) -> () in
+                    
+                    guard let weakSelf = self , bdElement = foundDBelement else
+                    {
+                        return
+                    }
+                    
+                    weakSelf.inMemoryElement = bdElement.createCopyForServer()
+                    
+                    let mainQueue = dispatch_get_main_queue()
+                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
+                    dispatch_async(mainQueue) { () -> Void in
+                        weakSelf.configureBottomToolbar()
+                        
+                        dispatch_after(timeout, mainQueue) { () -> Void in
+                            weakSelf.setupDelegateAndReloadTable()
+                        }
+                    }
+                }
+            }
+        }
+        
+        passWhomIdsForElementOp.addDependency(contactsBlockOp)
+        afterPassWhomIdsForElementOp.addDependency(passWhomIdsForElementOp)
+        
+        
+        bgQueue.maxConcurrentOperationCount = 1
+        
+        bgQueue.addOperations([contactsBlockOp, passWhomIdsForElementOp, afterPassWhomIdsForElementOp], waitUntilFinished: false)
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -128,52 +219,40 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
+        print("---- viewWillAppear :->  \n ContactIdsToPass: \(currentElementParticipants)")
     }
     
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
         
-        table?.reloadData()
+        print("---- viewDidAppear :->  \n ContactIdsToPass: \(currentElementParticipants)")
+        
+        //table?.reloadData()
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "reloadTableViewUpdates:", name: "UpdateTextiewCell", object: nil)
         addObserversForKeyboard()
         
-        print("\(self) :->  \n ContactIdsToPass: \(contactIDsToPass)")
-        
-        if let anElement = self.newElement, elementId = anElement.elementId //workaround for empty participants array, if after refreshing AllElements, current element has no passwhomids.
-        {
-            if elementId > 0
-            {
-                if self.contactIDsToPass.isEmpty && self.editingStyle == .EditCurrent
-                {
-                    print("\n-> NewElementConposer:  starting refreshing Pass WHom IDs.. \n")
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-                    NSOperationQueue().addOperationWithBlock({ [weak self] in
-                        DataSource.sharedInstance.loadPassWhomIdsForElement(elementId, comlpetion: { (finished) -> () in
-                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                            if finished
-                            {
-                                if let weakSelf = self
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), { _ in
-                                       weakSelf.newElement = DataSource.sharedInstance.getElementById(elementId)
-                                    })
-                                }
-                            }
-                        })
-                    })
-                }
-            }
-        }
     }
     
     override func viewWillDisappear(animated: Bool)
     {
+        if bgQueue.operationCount > 0
+        {
+            bgQueue.cancelAllOperations()
+        }
+        
+        print("---- viewWillDisappear :->  \n ContactIdsToPass: \(currentElementParticipants)")
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
+    //MARK: - 
+    func setupDelegateAndReloadTable()
+    {
+        self.table?.delegate = self
+        self.table?.dataSource = self
+        self.table?.reloadData()
+    }
     
     func configureBottomToolbar()
     {
@@ -193,14 +272,17 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 fixedSpace.width = 40.0
             }
+            
             var archiveButtonTitle = "Archive".localizedWithComment("")
-            if let element = self.newElement
+            
+            if let element = self.inMemoryElement
             {
                 if element.isArchived()
                 {
                     archiveButtonTitle = "Unarchive".localizedWithComment("")
                 }
             }
+            
             let archiveBarButton = UIBarButtonItem(title: archiveButtonTitle , style: UIBarButtonItemStyle.Plain, target: self, action: "archiveElementToolBarButtonTapped:")
             let flexibleSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
             let deleteBarButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: "deleteElementToolBarButtonTapped:")
@@ -208,8 +290,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Done, target: self, action: "doneButtonTap:")
             self.navigationItem.setLeftBarButtonItems([ cancelBarButton, flexibleSpace, archiveBarButton, flexibleSpace, deleteBarButton, flexibleSpace, doneBarButtonItem], animated: true)
             self.navigationItem.rightBarButtonItem = nil
-          //  self.navigationItem.setRightBarButtonItems([], animated: true)
-   
         }
     }
     
@@ -271,7 +351,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         }
         else
         {
-            return allContacts?.count ?? 0
+            return contactInfos?.count ?? 0
         }
     }
     
@@ -318,7 +398,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             cell.isTitleCell = true
             
-            if let title = newElement?.title// as? String
+            if let title = inMemoryElement?.title// as? String
             {
                 let titleAttributes = [NSFontAttributeName:UIFont(name: "Segoe UI", size: 25)!, NSForegroundColorAttributeName:attributedTextColor]
                 cell.attributedText = NSAttributedString(string: title, attributes: titleAttributes)
@@ -334,7 +414,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             cell.isTitleCell = false
             cell.backgroundColor = cellColor
-            if let description = newElement?.details //as? String
+            if let description = inMemoryElement?.details //as? String
             {
                 if description != ""
                 {
@@ -355,9 +435,9 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func configureContactCell(cell:ContactCheckerCell, forIndexPath indexPath:NSIndexPath)
     {
-        if let lvContact = allContacts?[indexPath.row]
+        if let lvContact = contactInfos?[indexPath.row]
         {
-            if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(lvContact.contactId)
+            if let avatarImage = DataSource.sharedInstance.userAvatarsHolder[lvContact.contactId]
             {
                 cell.avatar?.image = avatarImage
             }
@@ -366,34 +446,47 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 cell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
             //set name text
-            var nameLabelText = ""
-            if let firstName = lvContact.firstName //as? String
-            {
-                nameLabelText += firstName
-                if let lastName = lvContact.lastName// as? String
-                {
-                    nameLabelText += " " + lastName
-                }
-            }
-            else  if let lastName = lvContact.lastName// as? String
-            {
-                nameLabelText += lastName
-            }
             
-            cell.nameLabel?.text = nameLabelText
+            cell.nameLabel?.text = lvContact.contactName
             
             //set proper checkbox image
-             let contactIdInt = lvContact.contactId
+            let contactIdInt = lvContact.contactId
             
-            if contactIdInt > 0 {
-                if contactIDsToPass.contains(contactIdInt)
+            cell.displayMode = self.displayMode
+            
+            cell.setDisabled(false)
+            
+            if contactIdInt > 0
+            {
+                if let participantsForRoot = DataSource.sharedInstance.participantIDsForElement[self.rootElementID]
                 {
-                    cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
-                    print("checkbox checked for contact id : \(contactIdInt)")
+                    if participantsForRoot.contains(contactIdInt)
+                    {
+                        cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                        cell.setDisabled(true)
+                    }
+                    else
+                    {
+                        if currentElementParticipants.contains(contactIdInt)
+                        {
+                            cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                        }
+                        else
+                        {
+                            cell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                        }
+                    }
                 }
                 else
                 {
-                    cell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                    if currentElementParticipants.contains(contactIdInt)
+                    {
+                        cell.checkBox?.image = checkedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                    }
+                    else
+                    {
+                        cell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
+                    }
                 }
             }
             else
@@ -401,7 +494,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 cell.checkBox?.image = unCheckedCheckboxImage?.imageWithRenderingMode(.AlwaysTemplate)
             }
             
-            cell.displayMode = self.displayMode
+         
         }
     }
     
@@ -492,9 +585,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
         
-        if self.newElement == nil // we are creating new element
+        guard let _ = self.inMemoryElement else
         {
             return
         }
@@ -544,33 +638,38 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     
     func contactTappedAtIndexPath(indexPath: NSIndexPath)
     {
-        if let lvContact = allContacts?[indexPath.row]
+        if let lvContact = contactInfos?[indexPath.row]
         {
             let lvContactIDInt = lvContact.contactId
-            if self.contactIDsToPass.contains(lvContactIDInt)
+            
+            if let participantsForRoot = DataSource.sharedInstance.participantIDsForElement[self.rootElementID]
             {
-                self.contactIDsToPass.remove(lvContactIDInt)
+                if participantsForRoot.contains(lvContactIDInt)
+                {
+                    return
+                }
+            }
+            
+            if self.currentElementParticipants.contains(lvContactIDInt)
+            {
+                self.currentElementParticipants.remove(lvContactIDInt)
             }
             else
             {
-                self.contactIDsToPass.insert(lvContactIDInt)
+                self.currentElementParticipants.insert(lvContactIDInt)
             }
         }
         
-        self.table?.reloadData()
+        self.table?.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
     
-    //MARK: UIScrollViewDelegate
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+    //MARK: - UIScrollViewDelegate
+    func scrollViewWillBeginDragging(scrollView: UIScrollView)
+    {
         self.table?.endEditing(false)
     }
     
-    //MARK: ButtonTapDelegate
-    func didTapOnButton(button: UIButton) {
-        
-    }
-    
-    //MARK: NSNotificationCenter
+    //MARK: - NSNotificationCenter
     func reloadTableViewUpdates(notification:NSNotification?) // this needed to make table view cell grow automatically.
     {
         if let notif = notification
@@ -668,18 +767,23 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         
         return true
     }
-    func textViewShouldEndEditing(textView: UITextView) -> Bool {
+    
+    func textViewShouldEndEditing(textView: UITextView) -> Bool
+    {
         if detectTextView_isTitleCell_TextView(textView)
         {
-            self.newElement?.title = textView.text
+            self.inMemoryElement?.title = textView.text
         }
         else
         {
-            self.newElement?.details = textView.text
+            self.inMemoryElement?.details = textView.text
         }
+        
         return true
     }
-    func textViewDidEndEditing(textView: UITextView) {
+    
+    func textViewDidEndEditing(textView: UITextView)
+    {
         if detectTextView_isTitleCell_TextView(textView)
         {
             print(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = TRUE")
@@ -688,8 +792,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             print(" Cutrrent editing config = \(editingConfuguration)  , current textView isTitle = FALSE")
         }
-        
-        
     }
     
     func detectTextView_isTitleCell_TextView(textView:UITextView) -> Bool
@@ -719,7 +821,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     {
         self.table?.endEditing(false)
         
-        if let anElement = self.newElement, let currentTitle = newElement?.title //as? String
+        if let anElement = self.inMemoryElement, let currentTitle = anElement.title //as? String
         {
             if currentTitle.characters.count < 1
             {
@@ -733,17 +835,17 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 anElement.details = ""
             }
            
-            if !contactIDsToPass.isEmpty
+            if !currentElementParticipants.isEmpty
             {
                 if self.editingStyle == .AddNew
                 {
-                    var contactIDs = Array(contactIDsToPass)
+                    var contactIDs = Array(currentElementParticipants)
                     contactIDs.sortInPlace(>)
                     anElement.passWhomIDs = contactIDs
                 }
                 else //EditCurrent
                 {
-                    var contactIDs = Array(contactIDsToPass)
+                    var contactIDs = Array(currentElementParticipants)
                     contactIDs.sortInPlace(>)
                     anElement.passWhomIDs = contactIDs
                 }
@@ -753,10 +855,13 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 anElement.passWhomIDs.removeAll(keepCapacity: false)
             }
             
-            anElement.rootElementId =  self.rootElementID
+            if anElement.rootElementId == 0
+            {
+                anElement.rootElementId =  self.rootElementID
+            }
             
             
-            if self.currentElementType != .None
+            if self.currentElementType != .None // when creating new element from chat
             {
                 let optionsConverter = ElementOptionsConverter()
                 var selectedOption = 0
@@ -796,7 +901,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         let deleteTitle = "delete".localizedWithComment("")
         let cancelTitle = "cancel".localizedWithComment("")
         
-        
         if #available(iOS 8.0, *)
         {
             let alertController = UIAlertController(title: warningTitle, message: warningMessage, preferredStyle: .Alert)
@@ -805,7 +909,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                 {
                     weakSelf.dismissSelfWithElementDeletedNotification()
                 }
-                
             }
             
             let cancelAction = UIAlertAction(title: cancelTitle, style: .Cancel) { (alertAction) -> Void in
@@ -823,8 +926,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             alertDelete.tag = 0xde1e7e
             alertDelete.show()
         }
-      
-    
     }
     
     func archiveElementToolBarButtonTapped(sender:UIButton?)
@@ -847,7 +948,6 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         {
             if buttonIndex != alertView.cancelButtonIndex
             {
-               
                 dismissSelfWithElementDeletedNotification()
             }
         }
@@ -863,6 +963,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: nil, userInfo: ["actionButtonIndex" : ActionButtonCellType.Delete.rawValue])
         })
     }
+    
+    
 }// class end
 
 

@@ -610,7 +610,7 @@ class LocalDatabaseHandler
         - found DBElement object  
         - *nil* if error occured or if element with given ID was not found.
     */
-    func readElementById(elementId:Int) -> DBElement?
+    @warn_unused_result func readElementById(elementId:Int) -> DBElement?
     {
         let fetchRequest = NSFetchRequest(entityName: "DBElement")
         let predicate = NSPredicate(format: "elementId = \(elementId)")
@@ -875,8 +875,6 @@ class LocalDatabaseHandler
             print("Reason: context has NO CHANGES\n")
             completion?(false, error:nil)
         }
-        
-  
     }
     
     func performMessagesAndElementsPairing(completion:(()->())?)

@@ -22,23 +22,22 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     var displayMode:DisplayMode = .Day
     
     var participantIDsForElement:Set<Int> = Set<Int>()
-    //MARK: -
-   
     
     //MARK: -
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         
-        if let currentElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(currentElementId), elementId = currentElement.rootElementId?.integerValue
+        if let currentElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(currentElementId), lvRootElementId = currentElement.rootElementId?.integerValue
         {
-            self.rootElementId = elementId
+            self.rootElementId = lvRootElementId
             
-            DataSource.sharedInstance.loadPassWhomIdsForElement(elementId, comlpetion: nil)
+            DataSource.sharedInstance.loadPassWhomIdsForElement(lvRootElementId, comlpetion: nil) //to read passWhomIds for room element later if present
         }
         
-        DataSource.sharedInstance.loadPassWhomIdsForElement(currentElementId) { (finished) -> () in
-            DataSource.sharedInstance.localDatadaseHandler?.readAllMyContacts({[weak self] (dbContacts) -> () in
+        DataSource.sharedInstance.loadPassWhomIdsForElement(currentElementId) { (finished) in
+            DataSource.sharedInstance.localDatadaseHandler?.readAllMyContacts() { [weak self] (dbContacts) -> () in
                 
                 if let weakSelf = self
                 {
@@ -47,11 +46,8 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
                         weakSelf.setUpInitialArrays()
                     }
                 }
-                })
+            }
         }
-    
-        
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -120,33 +116,6 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         contactsTable.delegate = self
         contactsTable.dataSource = self
         contactsTable.reloadData()
-    }
-    
-//    func sortContactsAlphabeticaly(inout contactArray:[DBContact])
-//    {
-//        contactArray.sortInPlace({ (contact1, contact2) -> Bool in
-//            if let
-//                firstName1 = contact1.firstName,// as? String,
-//                firstName2 = contact2.firstName //as? String
-//            {
-//                return firstName1 >= firstName2
-//            }
-//            
-//            if let
-//                lastName1 = contact1.lastName, //as? String,
-//                lastName2 = contact2.lastName //as? String
-//            {
-//                return lastName1 > lastName2
-//            }
-//            
-//            
-//            return contact1.userName >= contact2.userName
-//        })
-//    }
-
-    func dismissSelf()
-    {
-        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func contactForIndexPath(indexPath:NSIndexPath) -> DBContact?
@@ -248,6 +217,7 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         let contactCell = tableView.dequeueReusableCellWithIdentifier("ContactCheckerCell", forIndexPath: indexPath) as! ContactCheckerCell
         contactCell.nameLabel?.text = nameLabelText
         contactCell.displayMode = self.displayMode
+        
         contactCell.selectionStyle = UITableViewCellSelectionStyle.None
         contactCell.avatar?.image = currentAvatar
         switch indexPath.section
@@ -269,6 +239,10 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
+        defer {
+            tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        }
+        
         if !elementIsOwned
         {
             // current user is not creator of current element. We can`t assign or delete contacts.
@@ -276,84 +250,85 @@ class ParticipantsVC: UIViewController, UITableViewDataSource, UITableViewDelega
         }
         
         
-        if let selectedContact = contactForIndexPath(indexPath), let contactId = selectedContact.contactId?.integerValue
+        guard let selectedContact = contactForIndexPath(indexPath), let contactId = selectedContact.contactId?.integerValue else
         {
-            guard contactId > 0 && currentElementId > 0 else
-            {
-                tableView.deselectRowAtIndexPath(indexPath, animated: false)
-                return
-            }
+            return
+        }
+        
+        guard contactId > 0 && currentElementId > 0 else
+        {
             
-            switch indexPath.section
-            {
-                case 0:
-                    
-                    let completionBlockForRemovingContact = { [weak self] (success:Bool, error:NSError?) -> () in
-                        if let weakSelf = self
-                        {
-                            dispatch_async(dispatch_get_main_queue()) { _ in
-                                if success
-                                {
-                                    weakSelf.checkedContacts.removeAtIndex(indexPath.row)
-                                    weakSelf.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
-                                    
-                                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3))
-                                    dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                                        weakSelf.setUpInitialArrays()
-                                    })
-                                }
-                                else
-                                {
-                                    weakSelf.showAlertWithTitle("Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
-                                }
-                            }
-                            
-                        }
-                    }
-                        
-                        
-                    // we cannot remove contacts from element if they are present in parent element
-                    if let contactIDsForParentElement = DataSource.sharedInstance.participantIDsForElement[rootElementId]
+            return
+        }
+        
+        switch indexPath.section
+        {
+            case 0:
+                
+                let completionBlockForRemovingContact = { [weak self] (success:Bool, error:NSError?) -> () in
+                    if let weakSelf = self
                     {
-                        if !contactIDsForParentElement.contains(contactId)
-                        {
-                            DataSource.sharedInstance.removeContact(contactId, fromElement: currentElementId, completion: completionBlockForRemovingContact)
+                        dispatch_async(dispatch_get_main_queue()) { _ in
+                            if success
+                            {
+                                weakSelf.checkedContacts.removeAtIndex(indexPath.row)
+                                weakSelf.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                                
+                                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3))
+                                dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+                                    weakSelf.setUpInitialArrays()
+                                })
+                            }
+                            else
+                            {
+                                weakSelf.showAlertWithTitle("Error", message: error?.localizedDescription ?? "", cancelButtonTitle: "Ok")
+                            }
                         }
                     }
-                    else
+                }
+                    
+                // we cannot remove contacts from element if they are present in parent element
+                if let contactIDsForParentElement = DataSource.sharedInstance.participantIDsForElement[rootElementId]
+                {
+                    if !contactIDsForParentElement.contains(contactId)
                     {
                         DataSource.sharedInstance.removeContact(contactId, fromElement: currentElementId, completion: completionBlockForRemovingContact)
                     }
-                
-                case 1:
-                
-                    let completionBlockForAddingContact = { [weak self] (success:Bool, error:NSError?) -> () in
-                        if let weakSelf = self
-                        {
-                            dispatch_async(dispatch_get_main_queue()) { _ in
-                                if success
-                                {
-                                    weakSelf.uncheckedContacts.removeAtIndex(indexPath.row)
-                                    weakSelf.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
-                                    
-                                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3))
-                                    dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                                        weakSelf.setUpInitialArrays()
-                                    })
-                                }
-                                else
-                                {
-                                    self!.showAlertWithTitle("Error", message: error!.localizedDescription, cancelButtonTitle: "Ok")
-                                }
+                }
+                else
+                {
+                    DataSource.sharedInstance.removeContact(contactId, fromElement: currentElementId, completion: completionBlockForRemovingContact)
+                }
+            
+            case 1:
+            
+                let completionBlockForAddingContact = { [weak self] (success:Bool, error:NSError?) -> () in
+                    if let weakSelf = self
+                    {
+                        dispatch_async(dispatch_get_main_queue()) { _ in
+                            if success
+                            {
+                                weakSelf.uncheckedContacts.removeAtIndex(indexPath.row)
+                                weakSelf.contactsTable.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Right)
+                                
+                                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.3))
+                                dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+                                    weakSelf.setUpInitialArrays()
+                                })
+                            }
+                            else
+                            {
+                                weakSelf.showAlertWithTitle("Error", message: error?.localizedDescription ?? "", cancelButtonTitle: "Ok")
                             }
                         }
                     }
-                    
-                    DataSource.sharedInstance.addContact(contactId, toElement:currentElementId, completion: completionBlockForAddingContact)
+                }
                 
-                default: break
-            }//end of SWITCH statement
-        }
+                DataSource.sharedInstance.addContact(contactId, toElement:currentElementId, completion: completionBlockForAddingContact)
+            
+            default: break
+        }//end of SWITCH statement
+        
     }
     
 }

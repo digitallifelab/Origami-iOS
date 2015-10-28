@@ -67,26 +67,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     override func viewDidLayoutSubviews() {
         addImageHolder()
     }
-    
-//    
-//    @IBAction func closeBarButtonTapped(sender:UIBarButtonItem)
-//    {
-//        dismissSelf()
-//    }
-//    
-//    
-//
-//    func dismissSelf()
-//    {
-//        if let navController = self.navigationController
-//        {
-//            self.navigationController?.popViewControllerAnimated(true)
-//        }
-//        else
-//        {
-//            self.dismissViewControllerAnimated(true, completion: nil)
-//        }
-//    }
+
     
     private func setupDeleteButton()
     {

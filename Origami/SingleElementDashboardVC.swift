@@ -249,15 +249,20 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     //MARK: Handling buttons and other elements tap in collection view
     func startEditingElement(notification:NSNotification?)
     {
+        self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
+        
         if let
             editingVC = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController ,
             currentEl = self.currentElement,
+            elementId = currentEl.elementId?.integerValue,
+            rootId = currentElement?.rootElementId?.integerValue,
             selfNav = self.navigationController
         {
-            editingVC.rootElementID = currentEl.rootElementId!.integerValue
+            editingVC.editingStyle = .EditCurrent
+            editingVC.currentElementId = elementId
+            editingVC.rootElementID = rootId
             editingVC.composingDelegate = self
-            self.collectionView.selectItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), animated: false, scrollPosition: .Top)
-              editingVC.editingStyle = .EditCurrent
+            
             selfNav.pushViewController(editingVC, animated: true)
         }
     }
@@ -755,28 +760,32 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         }
         // 1
         DataSource.sharedInstance.submitNewElementToServer(element, completion: {[weak self] (newElementID, submitingError) -> () in
-            if let _ = newElementID,  let refreshedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(rootID)
-            {
-                if let weakSelf = self
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                if let _ = newElementID,  let refreshedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(rootID)
                 {
-                    weakSelf.currentElement = refreshedElement
-                    weakSelf.prepareCollectionViewDataAndLayout()
+                    if let weakSelf = self
+                    {
+                        weakSelf.currentElement = refreshedElement
+                        weakSelf.prepareCollectionViewDataAndLayout()
+                    }
                 }
-            }
-            else
-            {
-                if let weakSelf = self
+                else
                 {
-                    weakSelf.showAlertWithTitle("ERROR.", message: "Could not create new element.", cancelButtonTitle: "Ok")
+                    if let weakSelf = self
+                    {
+                        weakSelf.showAlertWithTitle("ERROR.", message: "Could not create new element.", cancelButtonTitle: "Ok")
+                    }
                 }
             }
             
-            if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled
+            
+            if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled where cancelledValue == true
             {
-                if cancelledValue == true
-                {
+//                if cancelledValue == true
+//                {
                     DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
-                }
+//                }
             }
             else
             {
@@ -807,182 +816,123 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
                     }
                 }
-               
+
             }
         }
     }
     
     func handleEditingElement(editingElement:Element)
     {
-        DataSource.sharedInstance.editElement(editingElement) {[weak self] (edited) -> () in
-            if let aSelf = self
-            {
-                dispatch_async(dispatch_get_main_queue()) { _ in
-                    
-                    if edited
-                    {
-                        aSelf.currentElement?.title = editingElement.title
-                        aSelf.currentElement?.details = editingElement.details
-                        
-                        aSelf.collectionDataSource?.handledElement = aSelf.currentElement
-                      
-                        aSelf.collectionView.performBatchUpdates({ () -> Void in
-                            aSelf.collectionView.reloadSections(NSIndexSet(index: 0))
-                            }, completion: { ( _ ) -> Void in
-                                
-                        })
-                    }
-                    else
-                    {
-                        aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
-                    }
-                }
-            }
-            if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled
-            {
-                if cancelledValue
-                {
-                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
-                    dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-                        DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
-                    })
-                }
-            }
-        }
         
-        
-        
-        let newPassWhomIDs = editingElement.passWhomIDs
-        let existingPassWhonIDs = Set<Int>() //TODO: --- - -  pass whom IDs logic 
-            //self.currentElement!.passWhomIDs
-        guard let editingElementId = editingElement.elementId else {
+        guard let currentTitle = editingElement.title ,  editedTitle = self.currentElement?.title, currentElementId = self.currentElement?.elementId?.integerValue, editingElementId = editingElement.elementId else
+        {
             return
         }
+        
+        if currentElementId != editingElementId
+        {
+            return
+        }
+        
+        var shouldEditWholeElement = true
+        
+        if let details = self.currentElement?.details, editingDetails = editingElement.details
+        {
+            if currentTitle == editedTitle && details == editingDetails
+            {
+                //do ton edit the whole element
+                shouldEditWholeElement = false
+                // perform step 2: edit passWhomIDs if changed
+            }
+        }
+        
+        if shouldEditWholeElement
+        {
+            DataSource.sharedInstance.editElement(editingElement) {[weak self] (edited) -> () in
+                if let aSelf = self
+                {
+                    dispatch_async(dispatch_get_main_queue()) { _ in
+                        
+                        if edited
+                        {
+                            aSelf.currentElement?.title = editingElement.title
+                            aSelf.currentElement?.details = editingElement.details
+                            
+                            aSelf.collectionDataSource?.handledElement = aSelf.currentElement
+                            
+                            let lvBatchUpdates = { () -> () in aSelf.collectionView.reloadSections(NSIndexSet(index: 0))}
+                            
+                            aSelf.collectionView.performBatchUpdates(lvBatchUpdates, completion: nil)
+                        }
+                        else
+                        {
+                            aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
+                        }
+                    }
+                }
+                
+                if let cancelledValue = DataSource.sharedInstance.dataRefresher?.isCancelled
+                {
+                    if cancelledValue
+                    {
+                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
+                        dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                        })
+                    }
+                }
+            }
+        }
+
+        
+        let newPassWhomIDs = Set(editingElement.passWhomIDs)
+        guard let existingPassWhonIDs = DataSource.sharedInstance.participantIDsForElement[currentElementId] else
+        {
+            if newPassWhomIDs.isEmpty
+            {
+                return
+            }
+            
+            print(" -> handleEditingElement  adding ALL NEW contacts to EDITING element")
+            DataSource.sharedInstance.addSeveralContacts(newPassWhomIDs, toElement: editingElementId, completion: nil)
+            
+            return
+        }
+        
         
         if newPassWhomIDs.isEmpty && existingPassWhonIDs.isEmpty
         {
             return
         }
-        
-        //prepare sets for later use
-        var newIDsSet = Set<Int>()
-        for aNumber in newPassWhomIDs
-        {
-            newIDsSet.insert(aNumber)
-        }
-        
-        var existingIDsSet = Set<Int>()
-        for aNumber in existingPassWhonIDs
-        {
-            existingIDsSet.insert(aNumber)
-        }
-        
-        if existingPassWhonIDs.isEmpty && !newPassWhomIDs.isEmpty
-        {
-            // add contacts to element
-            DataSource.sharedInstance.addSeveralContacts(newIDsSet, toElement: editingElementId, completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
-                if let aSelf = self
-                {
-                    //aSelf.currentElement?.passWhomIDs = Array(newPassWhomIDs)
-                }
-                
-            })
-        }
-        else if !existingPassWhonIDs.isEmpty && newPassWhomIDs.isEmpty
-        {
-            //remove all contacts from element
-            DataSource.sharedInstance.removeSeveralContacts(existingIDsSet, fromElement: editingElementId, completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
-                if let aSelf = self
-                {
-                   // aSelf.currentElement?.passWhomIDs.removeAll(keepCapacity: false)
-                }
-            })
-        }
         else
         {
-            let allContactIDsSet = existingIDsSet.union(newIDsSet)
-            let contactIDsToRemoveSet = allContactIDsSet.subtract(newIDsSet)
+            let idsToAdd = newPassWhomIDs.subtract(existingPassWhonIDs)
+            let idsToRemove = existingPassWhonIDs.subtract(newPassWhomIDs)
             
-            if !contactIDsToRemoveSet.isEmpty
-            {
-                //remove all contacts from element
-                DataSource.sharedInstance.removeSeveralContacts(contactIDsToRemoveSet,
-                                                                        fromElement: editingElementId,
-                                                                         completion: { [weak self](succeededIDs, failedIDs) -> () in
-                                                                            
-                    print("\n----->ContactIDs REMOVED: \n \(succeededIDs)\n failed to REMOVE:\(failedIDs)")
-                                                                            
-                    if let aSelf = self
-                    {
-                        var numbersSet = Set<Int>()
-                        for anInt in contactIDsToRemoveSet
-                        {
-                            numbersSet.insert(anInt)
-                        }
-                        let newSet = Set(existingPassWhonIDs).subtract(numbersSet)
-                        
-                        //aSelf.currentElement?.passWhomIDs = Array(newSet)
-                    }
-                })
-            }
             
-         
+            let bgOpQueue = NSOperationQueue()
+            bgOpQueue.maxConcurrentOperationCount = 2
             
-            if !newIDsSet.isEmpty && newIDsSet.isDisjointWith(existingIDsSet)
+            if !idsToAdd.isEmpty
             {
-                // add contacts to element
-                DataSource.sharedInstance.addSeveralContacts(newIDsSet,
-                                                            toElement: editingElementId,
-                                                           completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                        
-                    print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
-                    
-                    if let aSelf = self
-                    {
-                        var numbersSet = Set<Int>()
-                        for anInt in newIDsSet
-                        {
-                            numbersSet.insert(anInt)
-                        }
-                        let newSet = Set(existingPassWhonIDs).union(numbersSet)
-                        
-                        //aSelf.currentElement?.passWhomIDs = Array(newSet)
-                    }
-                })
-            }
-            else
-            {
-                let contactIDsToAdd = newIDsSet.subtract(existingIDsSet)
-                if !contactIDsToAdd.isEmpty
-                {
-                    
-                    // add contacts to element
-                    DataSource.sharedInstance.addSeveralContacts(contactIDsToAdd,
-                        toElement: editingElementId,
-                        completion: {[weak self] (succeededIDs, failedIDs) -> () in
-                            
-                        print("\n----->ContactIDs ADDED: \n \(succeededIDs)\n failed to ADD:\(failedIDs)")
-                        
-                        if let aSelf = self
-                        {
-                            var numbersSet = Set<Int>()
-                            for anInt in newIDsSet
-                            {
-                                numbersSet.insert(anInt)
-                            }
-                            let newSet = Set(existingPassWhonIDs).union(numbersSet)
-                            
-                           // aSelf.currentElement?.passWhomIDs = Array(newSet)
-                        }
-                    })
-
+                print(" handleEditingElement -> Adding new contacts to element: \(idsToAdd)")
+                let addOperation = NSBlockOperation() { _ in
+                    DataSource.sharedInstance.addSeveralContacts(idsToAdd, toElement: editingElementId, completion: nil)
                 }
+                
+                bgOpQueue.addOperation(addOperation)
             }
-            
+            if !idsToRemove.isEmpty
+            {
+                print(" handleEditingElement -> Removing contacts from element: \(idsToRemove)")
+                
+                let removeOperation = NSBlockOperation() {_ in
+                    DataSource.sharedInstance.removeSeveralContacts(idsToRemove, fromElement: editingElementId, completion: nil)
+                }
+                
+                bgOpQueue.addOperation(removeOperation)
+            }
         }
-        
     }
     
     func handleDeletingCurrentElement()

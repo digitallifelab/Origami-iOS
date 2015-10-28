@@ -399,29 +399,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         }
     }
     
-    func dismissSelf()
-    {
-        self.navigationController?.popViewControllerAnimated(true)
-    }
-    
     func showContactsChecker()
     {
         performSegueWithIdentifier("ShowContactsChecker", sender: self)
-    }
-    
-    
-    
-    func reloadChatTable() {
-        chatTable.rowHeight = UITableViewAutomaticDimension
-        chatTable.estimatedRowHeight = 100.0
-        chatTable.dataSource = self
-        chatTable.delegate = self
-        chatTable.reloadSections(NSIndexSet(index: 0), withRowAnimation: UITableViewRowAnimation.None)
-        
-        //chatTable.reloadData()
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.25)), dispatch_get_main_queue(), { [unowned self]() -> Void in
-            self.scrollToLastMessage(true)
-        })
     }
     
     func scrollToLastMessage(animated:Bool = false)
@@ -435,36 +415,32 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
                 chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Bottom, animated: animated)
             }
         }
-        
     }
     
     //MARK: UITableViewDataSource
     func messageForIndexPath(indexPath:NSIndexPath) -> DBMessageChat?
     {
-        if let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
+        guard
+            let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
+            where fetchedObjects.count > indexPath.row
+            else
         {
-            if fetchedObjects.count > indexPath.row
-            {
-                return fetchedObjects[indexPath.row]
-            }
+            return nil
         }
-//        if currentChatMessages.count > indexPath.row {
-//            return currentChatMessages[indexPath.row]
-//        }
-        return nil
+        
+        return fetchedObjects[indexPath.row]
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
         {
-            let countMessages = fetchedObjects.count
-            print(" fetched Messages: \(countMessages)")
-            return countMessages
+            //let countMessages = fetchedObjects.count
+            //print(" fetched Messages: \(countMessages)")
+            return fetchedObjects.count
         }
-         print(" fetched Messages: 0")
+        
         return 0
-//        return currentChatMessages.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
@@ -537,105 +513,45 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         bottomControlsContainerView.endEditing(true)
     }
-    //MARK: UIRefreshControl
-//    func startRefreshing(sender:UIRefreshControl)
-//    {
-//        loadPreviousMessages {[weak sender] () -> () in
-//     
-//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                if let weakRefreshControl = sender
-//                {
-//                    weakRefreshControl.endRefreshing()
-//                }
-//            })
-//            
-//        }
-//    }
-    
-    func loadPreviousMessages(completion:(()->())?)
-    {
-        //stop refreshing last messages from server
-//        DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
-//        
-//        guard let topMessage = self.currentChatMessages.first, messageElementId = topMessage.elementId?.integerValue , messageId = topMessage.messageId?.integerValue else
-//        {
-//            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1))
-//            dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
-//                completion?()
-//            })
-//            return
-//        }
-//        
-//        
-//        DataSource.sharedInstance.localDatadaseHandler?.readChatMessagesForElementById(messageElementId, fetchSize: 20, lastMessageId: messageId, completion: {[weak self] (foundMessages, error) -> () in
-//            
-//            if let messagesError = error
-//            {
-//                print("Error while querying previous messages for ChatVC...:")
-//                print(messagesError)
-//            }
-//            else if let previousMessagesPortion = foundMessages
-//            {
-//                if let weakSelf = self
-//                {
-//                    let currentMessages = weakSelf.currentChatMessages
-//                    let newMessages = previousMessagesPortion + currentMessages
-//                    weakSelf.currentChatMessages = newMessages
-//                    
-//                    dispatch_async( dispatch_get_main_queue()) {
-//                        weakSelf.chatTable.reloadData()
-//                    }
-//                    completion?()
-//                }
-//            }
-//            
-//            //resume refreshing last messages from server
-//            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 2.0))
-//            dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
-//                DataSource.sharedInstance.messagesLoader?.startRefreshingLastMessages()
-//            })
-//            
-//            completion?()
-//        })
-        
-    }
     
     //MARK: TableItemPickerDelegate
-    func itemPickerDidCancel(itemPicker: AnyObject) {
+    func itemPickerDidCancel(itemPicker: AnyObject)
+    {
         if let picker = itemPicker as? OptionsView
         {
             hideOptionsView(picker, completion: nil)
         }
     }
     
-    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
-        if let picker = itemPicker as? OptionsView
+    func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject)
+    {
+        guard let picker = itemPicker as? OptionsView, indexPath = item as? NSIndexPath
+            else
         {
-            let indexpath = item as? NSIndexPath
-            hideOptionsView(picker, completion: {[weak self] () -> () in
-                
-                if let indexPath = indexpath
-                {
-                    let row = indexPath.row
-                    if let weakSelf = self
-                    {
-                        switch row
-                        {
-                        case 0: //Signal
-                            weakSelf.startNewSubordinateWithType(.Signal, message:picker.message)
-                        case 1: //Idea
-                            weakSelf.startNewSubordinateWithType(.Idea, message:picker.message)
-                        case 2: //Task
-                            weakSelf.startNewSubordinateWithType(.Task, message:picker.message)
-                        case 3: //Solution
-                            weakSelf.startNewSubordinateWithType(.Decision, message:picker.message)
-                        default:
-                            break
-                        }
-                    }
-                }
-            })
+            return
         }
+        
+        hideOptionsView(picker) {[weak self] () -> () in
+            
+            let row = indexPath.row
+            if let weakSelf = self
+            {
+                switch row
+                {
+                case 0: //Signal
+                    weakSelf.startNewSubordinateWithType(.Signal, message:picker.message)
+                case 1: //Idea
+                    weakSelf.startNewSubordinateWithType(.Idea, message:picker.message)
+                case 2: //Task
+                    weakSelf.startNewSubordinateWithType(.Task, message:picker.message)
+                case 3: //Solution
+                    weakSelf.startNewSubordinateWithType(.Decision, message:picker.message)
+                default:
+                    break
+                }
+            }
+        }
+
     }
     
     //MARK: Segue
@@ -658,16 +574,13 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     func cellWasLongPressedNotification(note:NSNotification)
     {
         var currentMessage:String?
-        if let cell = note.object as? UITableViewCell
+        if let
+            cell = note.object as? UITableViewCell,
+            targetIndexPath = self.chatTable.indexPathForCell(cell),
+            message = messageForIndexPath(targetIndexPath),
+            text = message.textBody
         {
-            if let targetIndexPath = self.chatTable.indexPathForCell(cell)
-            {
-                if let message = messageForIndexPath(targetIndexPath), text = message.textBody
-                {
-                    currentMessage = text
-                }
-            }
-            
+            currentMessage = text
         }
         
         
