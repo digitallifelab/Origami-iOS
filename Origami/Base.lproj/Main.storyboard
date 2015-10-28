@@ -1891,6 +1891,7 @@
                     </view>
                     <connections>
                         <outlet property="contactsTable" destination="4Ah-4v-u9l" id="qN8-oe-deu"/>
+                        <segue destination="QA0-FO-w1W" kind="show" identifier="ShowDatePicker" id="g23-e8-qwj"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="b0z-nd-3vq" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2862,6 +2863,42 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LpZ-ia-ReM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3426" y="1345"/>
+        </scene>
+        <!--Date PickerVC-->
+        <scene sceneID="9J4-JC-BbE">
+            <objects>
+                <viewController storyboardIdentifier="DatePickerVC" id="QA0-FO-w1W" customClass="DatePickerVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="eZI-Dl-bA4"/>
+                        <viewControllerLayoutGuide type="bottom" id="pfc-m0-Lwa"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="oIx-nF-BSF">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="IRw-Xl-lvw">
+                                <rect key="frame" x="140" y="192" width="320" height="216"/>
+                                <animations/>
+                                <date key="date" timeIntervalSinceReferenceDate="467734111.40022099">
+                                    <!--2015-10-28 14:08:31 +0000-->
+                                </date>
+                            </datePicker>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="IRw-Xl-lvw" firstAttribute="centerX" secondItem="oIx-nF-BSF" secondAttribute="centerX" id="7sZ-6y-2nD"/>
+                            <constraint firstItem="IRw-Xl-lvw" firstAttribute="centerY" secondItem="oIx-nF-BSF" secondAttribute="centerY" id="fRE-kR-dmj"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <connections>
+                        <outlet property="datePicker" destination="IRw-Xl-lvw" id="WZU-kc-cBC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a6V-hn-TJ3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4134" y="-579"/>
         </scene>
         <!--ChatVC-->
         <scene sceneID="Pxg-Zo-KNI">

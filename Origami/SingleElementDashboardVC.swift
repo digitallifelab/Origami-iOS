@@ -489,99 +489,100 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementTaskPressed()
     {
-        print("CheckMark tapped.")
+        print(" -> TASK tapped.")
         
         let anOptionsConverter = ElementOptionsConverter()
-//       
-//        if let element = self.currentElement
-//        {
-//            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: element.typeId)
-//            {
-//                
-//                //1 - detect if element is owned
-//                //2 - if owned prompt owner to be sure to uncheck TASK
-//                //3 - if is not owned, but current user is responsible for this TASK
-//                //4- prompt to mark this TASK as finished with some result, or dismiss
-//                //5 - if now owned and current user is not responsible - do nothing
-//                if !element.isArchived()
-//                {
-//                    if element.isOwnedByCurrentUser()
-//                    {
-//                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
-//                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
-//                        {
-//                            switch currentFinishState
-//                            {
-//                            case .Default:
-//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-//                            case .FinishedBad, .FinishedGood:
-//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
-//                            case .InProcess:
-//                                print(" Element is in process..\n")
-//                                showFinishTaskPrompt()
-//                            }
-//                        } 
-//                    }
-//                    else if element.isTaskForCurrentUser()
-//                    {
-//                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
-//                        {
-//                            switch currentFinishState
-//                            {
-//                            case .Default:
-//                                print("element is not owned. current user cannot assign task.")
-//                            case .FinishedBad , .FinishedGood:
-//                                print("element is already finished. current user cannot update task.")
-//                            case .InProcess:
-//                                showFinishTaskPrompt()
-//                            }
-//                        }
-//                    }
-//                }
-//                else
-//                {
-//                    if element.isOwnedByCurrentUser()
-//                    {
-//                        self.showAlertWithTitle("Unauthorized.", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
-//                    }
-//                }
-//            }
-//            else
-//            {
-//                if !element.isArchived()
-//                {
-//                    //1 - detect if element is owned
-//                    if element.isOwnedByCurrentUser()
-//                    {
-//                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
-//                        if let currentFinishState = ElementFinishState(rawValue: element.finishState)
-//                        {
-//                            switch currentFinishState
-//                            {
-//                            case .Default:
-//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-//                            case .FinishedBad , .FinishedGood :
-//                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
-//                            case .InProcess:
-//                                print(" Element is in process..")
-//                                showFinishTaskPrompt()
-//                            }
-//                        }
-//                        
-//                        return
-//                    }
-//                    print("\n Error: Element is not owned by current user.")
-//                }
-//                else
-//                {
-//                    if element.isOwnedByCurrentUser()
-//                    {
-//                         self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
-//                    }
-//                }
-//            }
-//        }
-//     
+       
+        if let element = self.currentElement
+        {
+            guard let typeId = element.type?.integerValue, finishState = element.finishState?.integerValue else  { return }
+            
+            if anOptionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: typeId)
+            {
+                
+                //1 - detect if element is owned
+                //2 - if owned prompt owner to be sure to uncheck TASK
+                //3 - if is not owned, but current user is responsible for this TASK
+                //4- prompt to mark this TASK as finished with some result, or dismiss
+                //5 - if now owned and current user is not responsible - do nothing
+                if !element.isArchived()
+                {
+                    if element.isOwnedByCurrentUser()
+                    {
+                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
+                        if let currentFinishState = ElementFinishState(rawValue: finishState)
+                        {
+                            switch currentFinishState
+                            {
+                            case .Default:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
+                            case .FinishedBad, .FinishedGood:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
+                            case .InProcess:
+                                print(" Element is in process..\n")
+                                showFinishTaskPrompt()
+                            }
+                        } 
+                    }
+                    else if element.isTaskForCurrentUser()
+                    {
+                        if let currentFinishState = ElementFinishState(rawValue: finishState)
+                        {
+                            switch currentFinishState
+                            {
+                            case .Default:
+                                print("element is not owned. current user cannot assign task.")
+                            case .FinishedBad , .FinishedGood:
+                                print("element is already finished. current user cannot update task.")
+                            case .InProcess:
+                                showFinishTaskPrompt()
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if element.isOwnedByCurrentUser()
+                    {
+                        self.showAlertWithTitle("Unauthorized.", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+                    }
+                }
+            }
+            else
+            {
+                if !element.isArchived()
+                {
+                    //1 - detect if element is owned
+                    if element.isOwnedByCurrentUser()
+                    {
+                        //2 - if is owned prompt user to start creating TASK with responsible user and remind date
+                        if let currentFinishState = ElementFinishState(rawValue: finishState)
+                        {
+                            switch currentFinishState
+                            {
+                            case .Default:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
+                            case .FinishedBad , .FinishedGood :
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
+                            case .InProcess:
+                                print(" Element is in process..")
+                                showFinishTaskPrompt()
+                            }
+                        }
+                        
+                        return
+                    }
+                    print("\n Error: Element is not owned by current user.")
+                }
+                else
+                {
+                    if element.isOwnedByCurrentUser()
+                    {
+                         self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
+                    }
+                }
+            }
+        }
     }
     
     func elementDecisionPressed()
@@ -603,7 +604,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "cancel".localizedWithComment(""))
             }
         }
-        
     }
     
     func toggleMoreDetails(notification:NSNotification?)
@@ -625,16 +625,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 
                 leftTopMenuPopupVC.modalPresentationStyle = UIModalPresentationStyle.Popover
-                leftTopMenuPopupVC.modalInPopover = false//true // true disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
+                leftTopMenuPopupVC.modalInPopover = false // `true` disables dismissing popover menu by tapping outside - in faded out parent VC`s view.
                 
-                
-                //var aPopover:UIPopoverController = UIPopoverController(contentViewController: leftTopMenuPopupVC)
                 let popoverObject = leftTopMenuPopupVC.popoverPresentationController
                 popoverObject?.permittedArrowDirections = .Any
                 popoverObject?.barButtonItem = self.navigationItem.rightBarButtonItem
                 popoverObject?.delegate = self
                 
-                //leftTopMenuPopupVC.popoverPresentationController?.sourceRect = CGRectMake(0, 0, 200, 160.0)
                 leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 180.0)
                 self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
                     
@@ -1483,10 +1480,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         if let contactsPicker = weakSelf.storyboard?.instantiateViewControllerWithIdentifier("ContactsPickerVC") as? ContactsPickerVC
                         {
-                            
                             contactsPicker.delegate = weakSelf
                             
-                            contactsPicker.shouldShowDatePicker = true
+                            contactsPicker.ableToPickFinishDate = true
                             
                             contactsPicker.contactsToSelectFrom = myContactsPresent
                             
@@ -1495,7 +1491,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     })
                 }
             })
-       
         }
     }
     
@@ -1571,7 +1566,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func itemPickerDidCancel(itemPicker: AnyObject) {
         //did
         
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, finishDate = contactsPickerVC.datePicker?.date
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC,  aNumber = DataSource.sharedInstance.user?.userId, finishDate = contactsPickerVC.finishDate
         {
             sendElementTaskNewResponsiblePerson(aNumber, finishDate:finishDate)
         }
@@ -1579,9 +1574,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     }
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? Contact, finishDate = contactsPickerVC.datePicker?.date
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? DBContact, contactId = contactPicked.contactId?.integerValue, finishDate = contactsPickerVC.finishDate
         {           
-            sendElementTaskNewResponsiblePerson(contactPicked.contactId, finishDate:finishDate)
+            sendElementTaskNewResponsiblePerson(contactId, finishDate:finishDate)
         }
        
         self.navigationController?.popViewControllerAnimated(true)

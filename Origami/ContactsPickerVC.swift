@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSource, DatePickerDelegate {
 
     @IBOutlet weak var tableView:UITableView?
     
@@ -16,13 +16,19 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     var contactsToSelectFrom:[DBContact]?
     var delegate:TableItemPickerDelegate?
     var avatarsHolder:[NSIndexPath:UIImage] = [NSIndexPath:UIImage]()
-    var datePicker:UIDatePicker?
-    var shouldShowDatePicker = false
+ 
+    var finishDate:NSDate?
+ 
+    var ableToPickFinishDate = false
+    
     var selectedContact:DBContact?
-
+    var selectedIndexPath:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView?.allowsMultipleSelection = false
         self.tableView?.delegate = self
         self.tableView?.dataSource = self
         
@@ -34,45 +40,36 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
 
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        if self.shouldShowDatePicker
-        {
-            let datePicker = UIDatePicker(frame: CGRectMake(0, CGRectGetHeight(self.view.bounds) - 220.0, 300.0, 220.0))
-            datePicker.center.x = self.view.center.x
-            datePicker.autoresizingMask = [UIViewAutoresizing.FlexibleTopMargin, .FlexibleLeftMargin, .FlexibleRightMargin]
-            datePicker.datePickerMode = UIDatePickerMode.DateAndTime
-            datePicker.minimumDate = NSDate()
-            //set one day ahead
-            
-            datePicker.date = NSDate(timeInterval: 1.days, sinceDate: NSDate())
-            
-            let currentCalendar = NSCalendar.currentCalendar()
-            let calendarConponentsFlags:NSCalendarUnit = [NSCalendarUnit.Year, .Month, .Day, .Hour, .Minute]
-            let components = currentCalendar.components(calendarConponentsFlags, fromDate: datePicker.date)
-            components.hour = 9
-            components.minute = 0
-            
-            if let fixedDate = currentCalendar.dateFromComponents(components)
-            {
-                datePicker.setDate(fixedDate, animated: true)// date = fixedDate
-            }
-            
-            datePicker.backgroundColor = kWhiteColor.colorWithAlphaComponent(0.8)
-            self.view.addSubview(datePicker)
-            self.datePicker = datePicker
-            UIView.animateWithDuration(0.3, animations: { [unowned self]() -> Void in
-                self.tableView?.contentInset = UIEdgeInsetsMake(0, 0, datePicker.bounds.size.height, 0)
-                })
-            let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed:")
-            self.navigationItem.rightBarButtonItem = doneBarButtonItem
-            
-        }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         
         self.tableView?.reloadData()
-        self.tableView?.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: .Top)
+        tableView?.selectRowAtIndexPath(selectedIndexPath, animated: false, scrollPosition: .Middle)
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed:")
+        self.navigationItem.rightBarButtonItem = doneBarButtonItem
+        
+       
+        //self.tableView?.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: .Top)
+        if ableToPickFinishDate
+        {
+        
+            configureToolbarDateButton()
+        }
+    }
+    
+    // MARK: -
+    func configureToolbarDateButton()
+    {
+        let rightToolBarItem = UIBarButtonItem(title: "setFinishDate".localizedWithComment(""), style: UIBarButtonItemStyle.Bordered, target: self, action: "showDatePickerVC:")
+        let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .FlexibleSpace, target: nil, action: nil)
+        
+        self.toolbarItems = [flexibleSpace, rightToolBarItem]
+    }
   
     // MARK: - Table view data source
     
@@ -104,6 +101,8 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         let cell = tableView.dequeueReusableCellWithIdentifier(kContactCellIdentifier, forIndexPath: indexPath) as! SelectableContactCell
         cell.selectionStyle = .None
         
+        var contact_id = -1
+        
         if indexPath.section == 1
         {
             if let contact = contactForIndexPath(indexPath)
@@ -112,17 +111,19 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                 {
                     cell.contactNameLabel?.text = contactFullname
                 }
+                if let contactId = contact.contactId?.integerValue
+                {
+                    contact_id = contactId
+                }
             }
         }
-        else
+        else if let _ = DataSource.sharedInstance.user, userId = DataSource.sharedInstance.user?.userId
         {
-            if let _ = DataSource.sharedInstance.user
-            {
-                cell.contactNameLabel?.text = "Me".localizedWithComment("")
-            }
+            cell.contactNameLabel?.text = "Me".localizedWithComment("")
+            contact_id = userId
         }
         
-        if let avatar = avatarsHolder[indexPath]
+        if let avatar = DataSource.sharedInstance.userAvatarsHolder[contact_id]
         {
             cell.avatarImageView?.image = avatar
         }
@@ -155,9 +156,11 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     //MARK: UITableViewDelegate
      func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if !shouldShowDatePicker
+        
+        selectedIndexPath = indexPath
+        
+        if !ableToPickFinishDate
         {
-            tableView.deselectRowAtIndexPath(indexPath, animated: true)
             if let aContact = contactForIndexPath(indexPath)
             {
                 self.selectedContact = aContact
@@ -174,13 +177,6 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
             if let aContact = contactForIndexPath(indexPath)
             {
                 self.selectedContact = aContact
-            }
-            else
-            {
-//                if let currentUserId = DataSource.sharedInstance.user?.userId
-//                {
-//                     self.selectedContact = Contact(info: ["ContactId":currentUserId])
-//                }
             }
         }
     }
@@ -202,8 +198,20 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
     }
     
+    // MARK: -
+    func showDatePickerVC(sender:UIBarButtonItem)
+    {
+        if let datesPickerVc = self.storyboard?.instantiateViewControllerWithIdentifier("DatePickerVC") as? DatePickerVC
+        {
+            finishDate = nil
+            datesPickerVc.delegate = self
+            self.navigationController?.pushViewController(datesPickerVc, animated: true)
+        }
+    }
+    //MARK: DatePickerDelegate
+    func datePickerViewController(vc: DatePickerVC, didSetDate date: NSDate?) {
+        self.finishDate = date
+        self.navigationController?.popViewControllerAnimated(true)
+    }
     
-    
-
-
 }

@@ -73,6 +73,8 @@
 "creator" = "Creator";
 "responsible" = "Responsible";
 "participant" = "Participant";
+"setFinishDate" = "Finish date";
+
 
 "Created" = "Created";
 "Changed" = "Changed";

@@ -69,6 +69,8 @@
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
 		F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
 		F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */; };
+		F87AEE551BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87AEE541BE10F7900A0BFB2 /* DatePickerVC.swift */; };
+		F87AEE561BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87AEE541BE10F7900A0BFB2 /* DatePickerVC.swift */; };
 		F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
 		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
 		F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D17A1B2583CE00E702D3 /* Extensions.swift */; };
@@ -335,6 +337,7 @@
 		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
 		F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableItemPickerVC.swift; sourceTree = "<group>"; };
+		F87AEE541BE10F7900A0BFB2 /* DatePickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerVC.swift; sourceTree = "<group>"; };
 		F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardMessagesCell.swift; sourceTree = "<group>"; };
 		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
 		F880D17A1B2583CE00E702D3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -698,6 +701,7 @@
 				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
 				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
 				F86F74261B56835E00E48E13 /* UserProfile */,
+				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
 				F86F74251B56834E00E48E13 /* Contacts */,
 				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
 				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
@@ -712,6 +716,14 @@
 				F882328B1B6B702E00990A4E /* Right top options popup menu */,
 			);
 			name = Menu;
+			sourceTree = "<group>";
+		};
+		F87AEE531BE10F3300A0BFB2 /* DatesSetup */ = {
+			isa = PBXGroup;
+			children = (
+				F87AEE541BE10F7900A0BFB2 /* DatePickerVC.swift */,
+			);
+			name = DatesSetup;
 			sourceTree = "<group>";
 		};
 		F87E9BF31B79E41C00D8E07B /* Model */ = {
@@ -1142,6 +1154,7 @@
 				F8C93B101B861B94009D890E /* Structs.swift in Sources */,
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
+				F87AEE561BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
 				F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
@@ -1264,6 +1277,7 @@
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
+				F87AEE551BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
 				F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */,
 				F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,

@@ -26,6 +26,11 @@ extension MessageObserver
     }
 }
 
+protocol DatePickerDelegate
+{
+    func datePickerViewController(vc:DatePickerVC, didSetDate date:NSDate?)
+}
+
 protocol ElementSelectionDelegate
 {
     func didTapOnElement(elementId:Int)

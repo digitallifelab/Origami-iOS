@@ -74,6 +74,7 @@
 "creator" = "Создатель";
 "responsible" = "Ответственный";
 "participant" = "Участник";
+"setFinishDate" = "Дата кончания";
 
 "Created" = "Создан";
 "Changed" = "Изменён";
