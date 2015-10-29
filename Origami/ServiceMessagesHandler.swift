@@ -147,32 +147,40 @@ class ServiceMessagesHandler {
             }
         }
         
-        guard let allCurrentContacts = DataSource.sharedInstance.getMyContacts() else
+        
+        
+        do{
+             let allCurrentContacts = try DataSource.sharedInstance.getMyContacts()
+                var shouldPostContactsUpdateNotification = false
+                
+                for aContact in allCurrentContacts
+                {
+                    if let statusInt = aContact.contactId?.integerValue, let contactStatus:PersonAuthorisationState = changedUsersStatuses[statusInt]
+                    {
+                        aContact.state = NSNumber(integer:contactStatus.rawValue)
+                        shouldPostContactsUpdateNotification = true
+                        //print("->ServiceMessagesHandler  did update status for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
+                    }
+                }
+                
+                if shouldPostContactsUpdateNotification
+                {
+                    NSNotificationCenter.defaultCenter().postNotificationName(kContactsStatusDidChangeNotification, object: self)
+                }
+                
+                changedUsersStatuses.removeAll()
+                
+                isUpdatingContacts = false
+        }
+        catch
         {
+            
             isUpdatingContacts = false
             return
         }
+
         
-        var shouldPostContactsUpdateNotification = false
         
-        for aContact in allCurrentContacts
-        {
-            if let contactStatus = changedUsersStatuses[aContact.contactId]
-            {
-                aContact.state = contactStatus
-                shouldPostContactsUpdateNotification = true
-                //print("->ServiceMessagesHandler  did update status for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
-            }
-        }
-        
-        if shouldPostContactsUpdateNotification
-        {
-            NSNotificationCenter.defaultCenter().postNotificationName(kContactsStatusDidChangeNotification, object: self)
-        }
-        
-        changedUsersStatuses.removeAll()
-        
-        isUpdatingContacts = false
     }
     
     private func startUpdatingChangedUserAvatars()
@@ -192,32 +200,41 @@ class ServiceMessagesHandler {
 
         isUpdatingContacts = true
         
-        guard let allCurrentContacts = DataSource.sharedInstance.getMyContacts() else
+        do
+        {
+            let allCurrentContacts = try DataSource.sharedInstance.getMyContacts()
+            isUpdatingContacts = true
+            
+            let currentDate = NSDate()
+            
+            
+            for aContact in allCurrentContacts
+            {
+                guard let contactId = aContact.contactId?.integerValue, userName = aContact.userName else
+                {
+                    continue
+                }
+                
+                if contactAvatarChangeIDs.contains(contactId)
+                {
+                    DataSource.sharedInstance.cleanAvatarDataForUserName(userName, userId: contactId)
+                    print("->ServiceMessagesHandler  did CLEAN AVATAR for contact:  ID:\(contactId)  LoginName:\(userName)\n")
+                    DataSource.sharedInstance.setLastAvatarSyncDate(currentDate, forContactId: contactId)
+                }
+            }
+            
+            contactAvatarChangeIDs.removeAll()
+            
+            isUpdatingContacts = false
+        }
+        catch
         {
             isUpdatingContacts = false
             return
         }
         
 
-        isUpdatingContacts = true
         
-        let currentDate = NSDate()
-        
-        
-        for aContact in allCurrentContacts
-        {
-            let contactId = aContact.contactId
-            if contactAvatarChangeIDs.contains(contactId)
-            {
-                DataSource.sharedInstance.cleanAvatarDataForUserName(aContact.userName, userId: contactId)
-                print("->ServiceMessagesHandler  did CLEAN AVATAR for contact:  ID:\(aContact.contactId)  LoginName:\(aContact.userName)\n")
-                DataSource.sharedInstance.setLastAvatarSyncDate(currentDate, forContactId: contactId)
-            }
-        }
-
-        contactAvatarChangeIDs.removeAll()
-        
-        isUpdatingContacts = false
     }
     
     

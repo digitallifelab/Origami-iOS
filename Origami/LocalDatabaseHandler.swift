@@ -1501,7 +1501,7 @@ class LocalDatabaseHandler
     }
     
     //MARK: - Person
-    func findPersonByUserName(userName:String) -> DBPerson?
+    func findPersonByUserName(userName:String) throws -> DBPerson
     {
         let personFetshRequest = NSFetchRequest(entityName: "DBContact")
         let predicate = NSPredicate(format: "userName like %@", userName)
@@ -1532,12 +1532,26 @@ class LocalDatabaseHandler
                             }
                             else if currentUsers.count == 0
                             {
-                                return nil
+                                throw OrigamiError.NotFoundError(message: "Person with userName \" userName \" was not found.")
                             }
                             else if currentUsers.count > 1
                             {
                                 //TODO: delete all users except currently logged in
-                                return nil
+                                let toReturn =  currentUsers.first!
+                                var toDelete = currentUsers
+                                
+                                toDelete.removeAtIndex(0)
+                                
+                                let context = self.privateContext
+                                
+                                context.performBlock(){_ in
+                                    for aDBuser in toDelete
+                                    {
+                                        context.deleteObject(aDBuser)
+                                    }
+                                }
+                                
+                                return toReturn
                             }
                         }
                     }
@@ -1545,18 +1559,18 @@ class LocalDatabaseHandler
                     {
                         print("-> ERROR while querying a person:")
                         print(errorUser)
-                        return nil
+                        throw errorUser
                     }
                 }
             }
             print("...some weird stuff happens...")
-            return nil
+            throw OrigamiError.NotFoundError(message: "User was not found: Could not execute fetch request.")
         }
         catch let errorContact
         {
             print("-> ERROR while querying a person:")
             print(errorContact)
-            return nil
+            throw errorContact
         }
     }
     
@@ -1692,6 +1706,9 @@ class LocalDatabaseHandler
         }
     }
     
+    /**
+     if contacts array is empty, completion block will contain *nil*
+     */
     func readAllMyContacts(completion:([DBContact]? -> ())?)
     {
         let contactsRequest = NSFetchRequest(entityName: "DBContact")
@@ -1705,7 +1722,14 @@ class LocalDatabaseHandler
             {
                 if let contacts = try context.executeFetchRequest(contactsRequest) as? [DBContact]
                 {
-                    completion?(contacts)
+                    if !contacts.isEmpty
+                    {
+                        completion?(contacts)
+                    }
+                    else
+                    {
+                        completion?(nil)
+                    }
                 }
             }
             catch

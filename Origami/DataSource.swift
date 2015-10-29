@@ -1616,48 +1616,53 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             completion!()
         }
     }
-    
-    func getMyContacts() -> [Contact]?
+    /**
+     - TODO: get rid of dispatch_semaphore with delay of 3 seconds
+     */
+    func getMyContacts() throws -> [DBContact]
     {
-        if DataSource.sharedInstance.contacts.isEmpty
+        var contactsToReturn:[DBContact]?
+        let dbReadingSemaphore = dispatch_semaphore_create(0)
+        DataSource.sharedInstance.localDatadaseHandler?.readAllMyContacts({ (presentContacts) -> () in
+            if let foundContacts = presentContacts
+            {
+                contactsToReturn = foundContacts
+            }
+            dispatch_semaphore_signal(dbReadingSemaphore)
+        })
+       
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 3.0)) //3 seconds should be enough to read all contacts from sqLite database
+       
+        dispatch_semaphore_wait(dbReadingSemaphore, timeout)
+        
+        if let contacts = contactsToReturn
         {
-            DataSource.sharedInstance.serverRequester.downloadMyContacts(completion: { (contacts, error) -> () in
-                if error != nil
-                {
-                    print("Contacts loading failed: \n \(error!.localizedDescription)")
-                }
-                else if let aContacts = contacts
-                {
-                    if aContacts.isEmpty
-                    {
-                        print("WARNING!: Loaded empty contacts!!!!!")
-                    }
-                    else
-                    {
-                        print(" -> Loaded contacts: \(aContacts.count)")
-                        DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(aContacts, completion: { (saved, error) -> () in
-                            if saved
-                            {
-                                print("DataSource Saved Contacts to local Database")
-                            }
-                            else if let saveError = error
-                            {
-                                print("DataSource Saved Contacts to local Database: ")
-                                print(saveError)
-                            }
-                        })
-                        //DataSource.sharedInstance.contacts = aContacts
-                    }
-                }
-            })
-            
-            return nil
+            let counter = contacts.count
+            print("returning existing contacts (\(counter))")
+            return contacts
         }
         
-        let counter = DataSource.sharedInstance.contacts.count
-        print("returning existing contacts (\(counter))")
-        
-        return DataSource.sharedInstance.contacts
+        throw OrigamiError.NotFoundError(message: " -> getMyContacts() -> No contacts found in local database.")
+    }
+    
+    /**
+     starts downloading user`s contacts from server and saving them to local database if loaded any contacts
+     - completion contains SAVE value of localDatabaseHandler and error from it, or error from server request prompt
+     */
+    func downloadMyContactsFromServer(completion:((didSaveToLocalDatabase:Bool, error:NSError?)->())?)
+    {
+        DataSource.sharedInstance.serverRequester.downloadMyContacts { (contacts, error) -> () in
+            if let recievedContacts = contacts
+            {
+                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
+                    completion?(didSaveToLocalDatabase: saved, error: error)
+                }
+            }
+            else
+            {
+                completion?(didSaveToLocalDatabase: false, error: error)
+            }
+        }
     }
     
     func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)

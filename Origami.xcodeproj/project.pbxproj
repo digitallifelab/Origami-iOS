@@ -312,6 +312,7 @@
 		F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ElementOptionsConverter.m; sourceTree = "<group>"; };
 		F84E84541BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAttach+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F84E84551BE21BFF001B1B87 /* DBAttach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAttach.swift; sourceTree = "<group>"; };
+		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F8521FF31B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		F8521FF41B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1553,9 +1554,10 @@
 		F8F58D761BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */,
 				F8F58D771BD796B0008F54F5 /* OrigamiDataModel.xcdatamodel */,
 			);
-			currentVersion = F8F58D771BD796B0008F54F5 /* OrigamiDataModel.xcdatamodel */;
+			currentVersion = F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */;
 			path = OrigamiDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

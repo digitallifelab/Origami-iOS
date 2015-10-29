@@ -359,15 +359,12 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     //MARK: - AllContactsDelegate
     func reloadUserContactsSender(sender: UIViewController?) {
-        //self.myContacts = DataSource.sharedInstance.getMyContacts()
         do{
             try self.currentFetchController?.performFetch()
         }
         catch{
             
         }
-        
-        //self.myContactsTable?.reloadData()
     }
     
     //MARK: - NSFetchedResultsControllerDelegate

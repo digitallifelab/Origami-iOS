@@ -23,5 +23,6 @@ extension DBPerson {
     @NSManaged var sex: NSNumber?
     @NSManaged var userName: String?
     @NSManaged var phone: String?
+    @NSManaged var state: NSNumber?
 
 }

@@ -685,7 +685,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             else
             {
-                self.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
+                
+                self.parentViewController?.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
             }
         }
         
@@ -703,13 +704,22 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 {
                     target = destinationTitle
                 }
-                if let popover = iOS7PopoverController
+                
+                if #available (iOS 8.0, *)
                 {
-                    popover.dismissPopoverAnimated(true)
-                    self.iOS7PopoverController = nil
-                    if target != nil
+                    if let popover = iOS7PopoverController //iPad
                     {
-                        switch target!
+                        popover.dismissPopoverAnimated(false)
+                        self.iOS7PopoverController = nil
+                    }
+                    else //iPhone with iOS 7
+                    {
+                        self.parentViewController?.dismissViewControllerAnimated(false, completion: nil)
+                    }
+                    
+                    if let targetString = target
+                    {
+                        switch targetString
                         {
                         case "Add Element":
                             self.elementAddNewSubordinatePressed()
@@ -724,25 +734,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 }
                 else
                 {
-                    self.dismissViewControllerAnimated(false) { [weak self] in
-                        if let _ = self
-                        {
-//                            if target != nil
-//                            {
-//                                switch target!
-//                                {
-//                                case "Add Element":
-//                                    weakSelf.elementAddNewSubordinatePressed()
-//                                case "Add Attachment":
-//                                    weakSelf.startAddingNewAttachFile(nil)
-//                                case "Chat":
-//                                    weakSelf.showChatForCurrentElement()
-//                                default:
-//                                    break
-//                                }
-//                            }
-                        }
-                    }
+                    self.dismissViewControllerAnimated(false,completion: nil)
                     
                     if target != nil
                     {
@@ -1231,9 +1223,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             return
         }
-        
-        let attachIdLocal = currentAttachInfo.id
-        
+                
         let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
             DataSource.sharedInstance.deleteAttachedFileNamed(currentAttachInfo, fromElement: elementIdInt, completion:{[weak self] (success, error) in
