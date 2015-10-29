@@ -110,19 +110,19 @@ class MessagesLoader
         }
     }
     
-    func cancelDispatchSource()
-    {
-        if let _ = self.dispatchSource
-        {
-            let performSafe = {[weak self] in
-                if let weakSelf = self
-                {
-                    weakSelf.dispatchSource = nil
-                }
-            }
-            
-            performSafe()
-            print(" -> MessagesLoader -> removed dispatch source...")
-        }
-    }
+//    func cancelDispatchSource()
+//    {
+//        if let source = self.dispatchSource
+//        {
+//            let performSafe = {[weak self] in
+//                if let weakSelf = self
+//                {
+//                    weakSelf.dispatchSource = nil
+//                }
+//            }
+//            
+//            performSafe()
+//            print(" -> MessagesLoader -> cancelDispatchSource()...")
+//        }
+//    }
 }

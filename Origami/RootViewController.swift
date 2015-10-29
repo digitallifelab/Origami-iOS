@@ -104,7 +104,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        DataSource.sharedInstance.cleanDataCache()
     }
     
     override func viewDidAppear(animated: Bool)
@@ -118,7 +117,11 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
             
             if let navController = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavigationController") as? HomeNavigationController
             {
-                self.currentNavigationController = navController
+                //self.currentNavigationController = navController
+                
+                self.addChildViewController(navController)
+               
+                
                 if let _ = navController.viewControllers.first as? HomeVC
                 {
                     
@@ -129,12 +132,17 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                     
                     navController.setViewControllers([homeVC], animated: true)
                 }
+                
                 self.view.addSubview(navController.view)
+                navController.didMoveToParentViewController(self)
+                self.currentNavigationController = navController
                 
                 if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
                 {
+                    self.addChildViewController(menuVC)
                     self.leftMenuVC = menuVC
                     self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
+                    self.leftMenuVC?.didMoveToParentViewController(self)
                 }
             }
             
@@ -157,15 +165,20 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
         DataSource.sharedInstance.performLogout {[weak self] () -> () in
             if let weakSelf = self
             {
-                //weakSelf.dismissViewControllerAnimated(true, completion: nil)
+                weakSelf.currentNavigationController?.willMoveToParentViewController(nil)
+                weakSelf.currentNavigationController?.removeFromParentViewController()
                 weakSelf.currentNavigationController?.view.removeFromSuperview()
-                weakSelf.leftMenuVC?.view.removeFromSuperview()
+                weakSelf.currentNavigationController?.didMoveToParentViewController(nil)
                 weakSelf.currentNavigationController = nil
+                
+                weakSelf.leftMenuVC?.willMoveToParentViewController(nil)
+                weakSelf.leftMenuVC?.removeFromParentViewController()
+                weakSelf.leftMenuVC?.view.removeFromSuperview()
+                weakSelf.leftMenuVC?.didMoveToParentViewController(nil)
                 weakSelf.leftMenuVC = nil
                 
                 weakSelf.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
             }
-            
         }
     }
     

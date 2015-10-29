@@ -2,7 +2,7 @@
 //  DBAttach+CoreDataProperties.swift
 //  Origami
 //
-//  Created by CloudCraft on 22.10.15.
+//  Created by CloudCraft on 29.10.15.
 //  Copyright © 2015 CloudCraft. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -12,7 +12,7 @@
 import Foundation
 import CoreData
 
-extension DBAttach {
+extension DBAttach : CreateDateComparable{
 
     @NSManaged var attachId: NSNumber?
     @NSManaged var creatorId: NSNumber?
@@ -20,7 +20,7 @@ extension DBAttach {
     @NSManaged var fileName: String?
     @NSManaged var fileSize: NSNumber?
     @NSManaged var fileType: String?
-    @NSManaged var preview: NSSet?
+    @NSManaged var preview: DBAttachImagePreview?
     @NSManaged var targetElement: DBElement?
 
 }

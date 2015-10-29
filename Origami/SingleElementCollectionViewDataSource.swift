@@ -19,9 +19,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var titleCell:SingleElementTitleCell?
     var detailsCell:SingleElementDetailsCell?
+    
     var currentCellsOptions:ElementCellsOptions?
     
-    //var attachesHandler:ElementAttachedFilesCollectionHandler?
     var subordinatesByIndexPath:[NSIndexPath : DBElement]?
     var taskUserAvatar:UIImage?
     var currentAttaches:[DBAttach]?
@@ -59,26 +59,32 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 
             }
             
-            //self.attachesHandler = nil
+            defer
+            {
+                self.currentCellsOptions = ElementCellsOptions(types: Set(options))
+                
+                calculateAllCellTypes()
+            }
             
-//            if let attachesForElement = getElementAttaches()//let attachesCollectionHandler = getElementAttachesHandler()
-//            {
-//                print("\n -> Current Attaches : \(attachesForElement.count)")
-//                self.currentAttaches = attachesForElement
-//                
-//                options.append(.Attaches)
-//            }           
+            guard let elementId = handledElement?.elementId?.integerValue else
+            {
+                return
+            }
+            
             if let attachesBool = self.handledElement?.hasAttaches?.boolValue
             {
                 if attachesBool == true
                 {
                     options.append(.Attaches)
+                    
+                    if let foundAttaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
+                    {
+                        self.currentAttaches = foundAttaches
+                    }
                 }
             }
             
-            if let
-                elementId = handledElement?.elementId?.integerValue,
-                result = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+            if let result = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
             {
                 if result.count > 0
                 {
@@ -86,40 +92,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 }
             }
             
-            self.currentCellsOptions = ElementCellsOptions(types: Set(options))
-            
-            calculateAllCellTypes()
+        
             
         }
     }
-    
- 
-
-    override init() {
-        //self.handledElement = Element()
-        super.init()
-        
-    }
-    
-//    convenience init?(element:Element?)
-//    {
-//        self.init()
-//        
-//        if element == nil
-//        {
-//            return nil
-//        }
-//        else if element!.elementId == nil
-//        {
-//            return nil
-//        }
-//        else if element!.elementId! <= 0
-//        {
-//            return nil
-//        }
-//        
-//        //self.handledElement = element!
-//    }
     
     func getElementTitle() -> String?
     {
@@ -142,14 +118,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func getElementSubordinates() -> [DBElement]?
     {
-//        guard let elementId = handledElement?.elementId, subordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived: false) else {
-//            return nil
-//        }
-//        
-//        guard let unarchivedSubordinates = ObjectsConverter.filterArchiveElements(false, elements: subordinates) else {
-//            return nil
-//        }
-        
         guard let elementId = self.handledElement?.elementId?.integerValue else{
             return nil
         }
@@ -288,7 +256,6 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int
     {
-        
         return 1
     }
 
@@ -601,7 +568,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         case .Attaches:
             
             let aCell:AnyObject = collectionView.dequeueReusableCellWithReuseIdentifier("AttachesHolderCell", forIndexPath: indexPath)
-            if let attachesHolderCell = aCell as? SingleElementAttachesCollectionHolderCell,  _ = self.currentAttaches
+            if let attachesHolderCell = aCell as? SingleElementAttachesCollectionHolderCell//,  _ = self.currentAttaches
             {
                 attachesHolderCell.attachesCollectionView?.delegate = attachesHolderCell
                 attachesHolderCell.delegate = self
@@ -611,7 +578,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             else
             {
-                assert(false, "Requested attaches cell for current attaches, when no attaches present")
+                //assert(false, "Requested attaches cell for current attaches, when no attaches present")
                 return UICollectionViewCell()
             }
             
@@ -802,14 +769,16 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     func imageForAttachmentAtIndexPath(indexPath:NSIndexPath) -> UIImage?
     {
         guard let foundAttach = attachAtIndexPath(indexPath) else {
+            
             return nil
         }
         
-//        if let previewImageDataDict = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(foundAttach), imageData =  previewImageDataDict[foundAttach]
-//        {
-//            return UIImage(data:imageData)
-//        }
-        return kNoImageIcon
+        guard let imageData = foundAttach.preview?.imagePreviewData else
+        {
+            return kNoImageIcon
+        }
+        
+        return UIImage(data: imageData)
     }
     
     private func attachAtIndexPath(indexPath:NSIndexPath) -> DBAttach?
@@ -855,6 +824,41 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 return
             }
             print(" ---- -- - - - - - -\n -_ --_ -")
+        }
+    }
+    
+    func deleteAttachByAttachId(attachId:Int)
+    {
+        guard let attaches = self.currentAttaches else
+        {
+            return
+        }
+        var lvIndexPath:NSIndexPath?
+        var currentItem = 0
+        for anAttach in attaches
+        {
+            guard let anId = anAttach.attachId?.integerValue else
+            {
+                currentItem += 1
+                continue
+            }
+            if anId == attachId
+            {
+                lvIndexPath = NSIndexPath(forItem: currentItem, inSection: 0)
+                break
+            }
+            currentItem += 1
+        }
+        
+        if let pathToRemove = lvIndexPath
+        {
+            self.currentAttaches?.removeAtIndex(pathToRemove.item)
+            if let collectionView = self.handledCollectionView
+            {
+                collectionView.reloadSections(NSIndexSet(index:0))
+                return
+            }
+            print(" ---- -- - - - - - -\n -_ --_ - Did not delete attach by Id: \(attachId)")
         }
     }
 }

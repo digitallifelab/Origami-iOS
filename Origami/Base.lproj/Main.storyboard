@@ -1231,6 +1231,7 @@
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
                                         <animations/>
+                                        <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="bottomMargin" secondItem="vpX-j8-nMT" secondAttribute="bottom" constant="-8" id="GkX-5U-ons"/>
                                             <constraint firstItem="vpX-j8-nMT" firstAttribute="leading" secondItem="qZF-hQ-yGa" secondAttribute="leadingMargin" constant="-8" id="UjC-8c-RC7"/>

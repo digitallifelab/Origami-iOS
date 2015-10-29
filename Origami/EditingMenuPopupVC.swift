@@ -44,7 +44,7 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
         // 1-  post notification about menu item was pressed
         
         // 2-  dismiss self
-        NSNotificationCenter.defaultCenter().postNotificationName("PopupMenuItemPressed", object: self, userInfo: ["title":menuItems[indexPath.row]])
+        NSNotificationCenter.defaultCenter().postNotificationName(kPopupMenuItemPressedNotification, object: self, userInfo: ["title":menuItems[indexPath.row]])
         
     }
     

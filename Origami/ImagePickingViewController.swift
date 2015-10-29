@@ -93,12 +93,12 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             }
         }
         
-        
-        
-        
         proceedWithSelectedImage(selectedImage)
         
-        self.dismissViewControllerAnimated(true, completion:nil)
+        imagePickerController.willMoveToParentViewController(nil)
+        imagePickerController.view.removeFromSuperview()
+        imagePickerController.removeFromParentViewController()
+        imagePickerController.didMoveToParentViewController(nil)
         
     }
     
@@ -131,7 +131,11 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             imagePickerController.allowsEditing = allowEditingResult
         }
         
-        self.presentViewController(imagePickerController, animated: true, completion: nil)
+        self.addChildViewController(imagePickerController)
+        imagePickerController.willMoveToParentViewController(self)
+        self.view.addSubview(imagePickerController.view)
+        imagePickerController.didMoveToParentViewController(self)
+        
     }
     
     func proceedWithSelectedImage(image:UIImage)

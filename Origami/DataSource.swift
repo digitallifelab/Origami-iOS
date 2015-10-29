@@ -28,17 +28,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         case Replaced = 2
         case Denied = 3
     }
-    
-    override init() {
-        super.init()
         
-        self.dataCache.countLimit = 50
-        
-//        self.databaseHandler = DatabaseHandler(completionCallBack: {[weak self] () -> Void in
-//            print("Finished initializing CoreData handler in DataSource.");
-//        })
-    }
-    
     //singletone
     static let sharedInstance = DataSource()
     
@@ -52,9 +42,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     private lazy var contacts = [Contact]()
     
     private lazy var elements = [Element]()
-    
-    private lazy var attaches = [Int:[AttachFile]]()
-    
     
     var languages = [Language]()
     var countries = [Country]()
@@ -96,7 +83,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     var loadingAllElementsInProgress = false
     
-    private lazy var dataCache:NSCache = NSCache()
+    //private lazy var dataCache:NSCache = NSCache()
     private var pendingAttachFileDataDownloads = [Int:Bool]()
     private var pendingUserAvatarsDownolads = [String:Int]()
     //private stuff
@@ -126,10 +113,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllChatMessages()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllContacts()
             DataSource.sharedInstance.user = nil
-            DataSource.sharedInstance.cleanDataCache()
+            //DataSource.sharedInstance.cleanDataCache()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
             DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
-            DataSource.sharedInstance.attaches.removeAll(keepCapacity: false)
             DataSource.sharedInstance.userAvatarsHolder.removeAll()
             //print("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             //DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
@@ -142,9 +128,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 print("stopRefreshingLastMessages")
                 sleep(2)
                 
-                DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
-                print("cancelDispatchSource")
-                sleep(2)
+                //DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
+                //print("cancelDispatchSource")
+                //sleep(2)
                 
                 DataSource.sharedInstance.messagesLoader = nil
                 print("messagesLoader = nil")
@@ -171,12 +157,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         })
     }
     
-    func cleanDataCache()
-    {
-        print("..Datasource is clearing Data Cache...")
-        
-        DataSource.sharedInstance.dataCache.removeAllObjects()
-    }
     //MARK: - User
     func tryToGetUser(completion:(user:User?, error:NSError?)->())
     {
@@ -1370,43 +1350,33 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
    
     }
-    /** 
-    Calls `eraseFileFromDiscForAttach` on every attach found for anElementId, then assigs nil to in-memory stored attchInfo array for element by Id
-    - Parameter elementId: An integer value of element`s elementId property
-    */
-    func cleanAttachesForElement(elementId:Int)
-    {
-        if  let attaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
-        {
-            for lvAttach in attaches
-            {
-                DataSource.sharedInstance.eraseFileFromDiscForAttach(lvAttach) //delete files from disk
-            }
-        }
-        DataSource.sharedInstance.attaches[elementId] = nil // delete attachFile from memory
-    }
     
     //MARK: - Attaches
-    /** 
+    
+    /**
     Queries attach info from the RAM
     - Returns: **nil** if no attaches info was found or if attaches info is empty
     */
-    func getAttachesForElementById(elementId:Int?) -> [AttachFile]?
+    func getAttachesForElementById(elementId:Int?) -> [DBAttach]?
     {
         guard let lvElementId = elementId else
         {
             return nil
         }
         
-        if let foundAttaches = DataSource.sharedInstance.attaches[lvElementId]
+        do
         {
-            if !foundAttaches.isEmpty
+            if let foundAttaches = try DataSource.sharedInstance.localDatadaseHandler?.readAttachesForElementById(lvElementId)
             {
-                return foundAttaches
+               return foundAttaches
             }
+            return nil
         }
-        
-        return nil
+        catch
+        {
+             return nil
+        }
+       
     }
     
     func loadAttachesInfoForElement(elementIdInt:Int, completion:attachesArrayClosure?)
@@ -1421,12 +1391,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             if let attachesArray = result as? [AttachFile]
             {
-                DataSource.sharedInstance.attaches[localInt] = nil
-                DataSource.sharedInstance.attaches[localInt] = attachesArray
-                if let aReturnBlock = completion
-                {
-                    aReturnBlock(DataSource.sharedInstance.attaches[localInt]!)
-                }
+                completion?(attachesArray)
             }
             else
             {
@@ -1443,9 +1408,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             - elementIdInt: integerValue of element to request attaches for
             - completion: block returns AttachFile array stored in memory or nil
     */
-    func refreshAttachesForElement(elementIdInt:Int, completion:attachesArrayClosure?)
+    func refreshAttachesForElement(elementIdInt:Int, completion:((info:(loaded:Int, saved:Int))->())?)
     {
-    
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
         DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(elementIdInt,
@@ -1456,44 +1420,72 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let attachesArray = result as? [AttachFile]
                 {
-                    DataSource.sharedInstance.attaches[elementIdInt] = attachesArray
-                    if let existAttaches = DataSource.sharedInstance.attaches[elementIdInt]
+                    var dbAttaches = [DBAttach]()
+                    for attach in attachesArray
                     {
-                        completion?(existAttaches)
-                        return
+                        do{
+                            if let newAttach = try DataSource.sharedInstance.localDatadaseHandler?.saveAttachToLocalDatabase(attach)
+                            {
+                                dbAttaches.append(newAttach)
+                            }
+                        }
+                        catch let attachInsertError{
+                            print(attachInsertError)
+                        }
                     }
-                    completion?(nil)
+                    
+                    //if new attaches recieved, pair them to existing element if found
+                    var returnInfo = (loaded:attachesArray.count, saved:0)
+                    
+                    if !dbAttaches.isEmpty
+                    {
+                        do{
+                            try DataSource.sharedInstance.localDatadaseHandler?.addAttaches(dbAttaches, toElementById: elementIdInt)
+                            returnInfo.saved = dbAttaches.count
+                        }
+                        catch let pairingError
+                        {
+                            print("")
+                            print(pairingError)
+                        }
+                    }
+                    
+                    completion?(info:returnInfo)
                 }
                 else
                 {
-                    completion?(nil)
+                    completion?(info: (loaded: 0, saved: 0))
                 }
         })
     }
     
-    func attachFile(file:MediaFile, toElementId elementId:NSNumber?, completion completionClosure:(success:Bool, error: NSError?)->() ) {
+    func attachFile(file:MediaFile, toElementId elementId:Int, completion completionClosure:(success:Bool, error: ErrorType?)->() ) {
         
-        if elementId == nil || (elementId!.integerValue <= 0)
+        guard elementId > 0 else
         {
             let errorId = NSError(domain: "Element id error", code: -65, userInfo: [NSLocalizedDescriptionKey:"Colud not start attaching file. Reason: wrong element id format."])
             completionClosure(success: false, error: errorId)
             return
         }
         
-        DataSource.sharedInstance.serverRequester.attachFile(file, toElement: elementId!) { (successAttached, attachId ,errorAttached) -> () in
+        DataSource.sharedInstance.serverRequester.attachFile(file, toElement: elementId) { (successAttached, attachId ,errorAttached) -> () in
             
-            if successAttached {
-                
+            if successAttached
+            {
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                print(" - upload succeeded. saving fileDataToDisc... ")
                 let lvFileHandle = FileHandler()
                 lvFileHandle.saveFileToDisc(file.data, fileName: file.name, completion: { (filePath, saveError) -> Void in
                     if filePath != nil
                     {
+                        print(" - saved fila to disc...")
                         completionClosure(success: true, error: nil)
                     }
                     else
                     {
-                        completionClosure(success: true, error: NSError(domain: "FileSavingError", code: -61, userInfo: [NSLocalizedDescriptionKey:"Could not save file to disc."]) )
+                        completionClosure(success: true, error: NSError(domain: "FileSavingError", code: -61, userInfo: [NSLocalizedDescriptionKey:"Could not save file to disc. \n Wanted path: \(filePath)"]) )
                     }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 })
             }
             else
@@ -1503,65 +1495,43 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func deleteAttachedFileNamed(fileName:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? ) {
+    func deleteAttachedFileNamed(file:(fileName:String, id:Int), fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? ) {
         
         //response key "RemoveFileFromElementResult"
-        DataSource.sharedInstance.serverRequester.unAttachFile(fileName, fromElement: elementId) { (success, fromServerError) -> () in
+        do{
+            if let attach = try DataSource.sharedInstance.localDatadaseHandler?.readAttachById(file.id)
+            {
+                do
+                {
+                    try DataSource.sharedInstance.localDatadaseHandler?.deleteAttach(attach, shouldSave: true)
+                    print(" deleteAttachedFileNamed -> Deleted local database ATTACH... ")
+                }
+                catch let deletingError
+                {
+                    //deleting error
+                    print(" deleteAttachedFileNamed ERROR: -> \(deletingError)")
+                }
+            }
+        }
+        catch let findingError
+        {
+            //attach finding eror
+            print(" deleteAttachedFileNamed ERROR: -> \(findingError)")
+        }
+       
+        
+        print(" deleteAttachedFileNamed -> Sending Deleting attach from element query to server... ")
+        
+        DataSource.sharedInstance.serverRequester.unAttachFile(file.fileName, fromElement: elementId) { (success, fromServerError) -> () in
             let backgroundQueue = NSOperationQueue()
             backgroundQueue.maxConcurrentOperationCount = 1
             if success
             {
-                //remove attachesPreview also
-                DataSource.sharedInstance.dataCache.removeObjectForKey(fileName)
-                
-                var attachesToEdit = [AttachFile]()
-                if let attachesForElement = DataSource.sharedInstance.attaches.removeValueForKey(elementId) // DataSource.sharedInstance.attaches[NSNumber(integer:elementId)]
-                {
-                    for anAttach in attachesForElement
-                    {
-                        if let attachName = anAttach.fileName
-                        {
-                            if attachName != fileName
-                            {
-                                attachesToEdit.append(anAttach)
-                            }
-                        }
-                    }
-                }
-                
-                if !attachesToEdit.isEmpty
-                {
-                    print("\n _> Remaining attaches count: \(attachesToEdit.count)")
-                    DataSource.sharedInstance.attaches[elementId] = attachesToEdit
-                }
-//                else
-//                {
-//                    DataSource.sharedInstance.attaches[elementId] = nil
-//                }
-                
-               
-                backgroundQueue.addOperationWithBlock({ () -> Void in
-                    let fileHandler = FileHandler()
-                    fileHandler.eraseFileNamed(fileName, completion: { (erased, eraseError) -> Void in
-                        //return to main queue to return from function
-                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                            if erased
-                            {
-                                //we don`t care - if file was erased or simply not found - anyway file does not exist at Documents folder
-                                completionClosure?(success:erased, error:nil)
-                            }
-                            else
-                            {
-                                print("Could not erase file from disc: \n Error: \n\(fromServerError)")
-                                completionClosure?(success: false, error: eraseError)
-                            }
-                        })
-                    })
-                })
+                print(" deleteAttachedFileNamed -> Deleted from server.")
             }
             else
             {
-                print("\n ->Could not deAttach file on server: \n Error: \n\(fromServerError)")
+                print("\n deleteAttachedFileNamed -> Could not deAttach file on server: \n Error: \n\(fromServerError)")
                 completionClosure?(success: success, error: fromServerError)
             }
         }
@@ -1570,183 +1540,85 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     Function creates an instance of FileHandler and tries to erase file by file name, stored in AttachFile
     - Parameter attach: attach file that shoud be cleaned from user device`s disc
     */
-    func eraseFileFromDiscForAttach(attach:AttachFile)
+    func eraseFileFromDiscForAttach(attachFileName:String)
     {
-        if let fileName = attach.fileName
-        {
-            let fileHandler = FileHandler()
-            fileHandler.eraseFileNamed(fileName, completion: nil)
-        }
+        let fileHandler = FileHandler()
+        fileHandler.eraseFileNamed(attachFileName, completion: nil)
     }
     
-    /**
-    Founds elementIDs for every attach, then looping through elementIDs searches for AttachFile arrays and in found arrays deletes supplied AttachFiles
-    - Note: it is not desirable to feed attaches from several elements to this method(function)
-    - Parameter attaches: an array of AttachFile.
-    */
-    func eraseFileInfoFromMemoryForAttaches(attaches:[AttachFile])
-    {
-        if attaches.isEmpty
-        {
-            return
-        }
-        
-        var elementIDs = Set<Int>()
-        
-        for anAttachFile in attaches
-        {
-            if anAttachFile.elementID > 0
-            {
-                elementIDs.insert(anAttachFile.elementID)
-            }
-        }
-        
-        if elementIDs.isEmpty
-        {
-            return
-        }
-        
-        let setOfAttachesToDelete = Set(attaches)
-        var toReplaceDictValues = [Int:[AttachFile]]()
-        for anElementIdIntKey in elementIDs
-        {
-            if let attaches = DataSource.sharedInstance.attaches[anElementIdIntKey]
-            {
-                print("attach count before loop: \(attaches.count)")
-                var valueAtachesArray = [AttachFile]()
-                for anExistingAttach in attaches
-                {
-                    if setOfAttachesToDelete.contains(anExistingAttach)
-                    {
-                        continue
-                    }
-                    valueAtachesArray.append(anExistingAttach)
-                }
-                if valueAtachesArray.isEmpty
-                {
-                    continue
-                }
-                
-                ObjectsConverter.sortAttachesByAttachId(&valueAtachesArray)
-                print("new attach count after loop: \(valueAtachesArray.count)")
-                toReplaceDictValues[anElementIdIntKey] = valueAtachesArray
-            }
-        }
-        
-        if toReplaceDictValues.isEmpty
-        {
-            return
-        }
-        
-        for (keyNum, valueArray) in toReplaceDictValues //insert new decreased arrays of attach files
-        {
-            if let _ = DataSource.sharedInstance.attaches.removeValueForKey(keyNum)
-            {
-                DataSource.sharedInstance.attaches[keyNum] = valueArray
-            }
-        }
-    }
     
-    func getSnapshotsArrayForAttaches(attaches:[AttachFile]) -> [[AttachFile:NSData]]?
+    func getAttachPreviewForFileNamed(fileName:String) throws -> NSData
     {
-        if attaches.isEmpty
+        guard fileName.characters.count > 0 else
         {
-            return nil
+            throw OrigamiError.PreconditionFailure(message: "File with empty file name requested.")
         }
         
-        var toReturnArray = [[AttachFile:NSData]]()
-        for anAttach in attaches
-        {
-            if let existingSnapshot = DataSource.sharedInstance.getSnapshotImageDataForAttachFile(anAttach)
-            {
-                toReturnArray.append(existingSnapshot)
-            }
-        }
-        
-        if toReturnArray.isEmpty
-        {
-            print(" empty snapshots array. returning nil.")
-            return nil
-        }
-        
-        print("  -> returning \(toReturnArray.count) snapshotDatas for \(attaches.count) AttacFiles\n")
-        return toReturnArray
-    }
-    
-    func getSnapshotImageDataForAttachFile(file:AttachFile) -> [AttachFile:NSData]?
-    {
-        
-        if let cachedData = DataSource.sharedInstance.getAttachFileDataFromCache(file.fileName)
-        {
-            print(" ->returning attach snapshot from cache..")
-            return [file:cachedData]
-        }
-        else
-        {
-            if let fileSystemData = DataSource.sharedInstance.getAttachFilePreviewImageDataFromFileSystem(file)
-            {
-                print(" ->returning attach snapshot from disc..")
-                return [file:fileSystemData]
-            }
-            print(" ->returning nil attach snapshot")
-            return nil
-        }
-    }
-    
-    /**
-    Tries to read file by name from disc
-    If file data was found, the previewImage is stored in cache
-    - Returns: created previewImage JPEG NSData object, which is also stored to cache
-    - Note: Method is synchronous. *Do not* call this method on main thread.
-    */
-    private func getAttachFilePreviewImageDataFromFileSystem(attachFile:AttachFile) -> NSData?
-    {
+        var error:ErrorType?
         let lvFileHandler = FileHandler()
-        var outerFileData:NSData? = nil
+      
+        var returnPreviewData:NSData?
         
-            lvFileHandler.loadFileNamed(attachFile.fileName!, completion: {
-                (fileData, readingError) -> Void in
-                if let attachData = fileData
+        let currentQueue = getBackgroundQueue_SERIAL()
+        
+        dispatch_sync(currentQueue) { _ in
+            
+            lvFileHandler.loadFileNamed(fileName) { (imageFullData, fileReadingError) -> Void in
+                if let lvData = imageFullData
                 {
-                    //reduce image size, and insert into cache already reduced image data
+                    let scale = UIScreen.mainScreen().scale
+                    let size = CGSizeMake(90.0 * scale, 70.0 * scale)
+                    guard let
+                        fullImage = UIImage(data: lvData), scaledToSizeImage = DataSource.sharedInstance.reduceImageSize(fullImage, toSize: size),
+                        imagePreviewData = UIImageJPEGRepresentation(scaledToSizeImage, 1.0)
+                        else
+                    {
+                        error = OrigamiError.UnknownError
+                        return
+                    }
                     
-                    if let fullImage = UIImage(data: attachData), scaledToSizeImage = DataSource.sharedInstance.reduceImageSize( fullImage, toSize: CGSizeMake(180, 140)), imagePreviewData = UIImageJPEGRepresentation(scaledToSizeImage, 1.0)
-                    {
-                            //print("\n--- Inserting imagePreview data \(imagePreviewData.length) bytes to cache...")
-                            DataSource.sharedInstance.dataCache.setObject(imagePreviewData, forKey: attachFile.fileName!)
-                            outerFileData = imagePreviewData
-                    }
-                    else
-                    {
-                        assert(false, "Check image preview data.")
-                    }
+                    returnPreviewData = imagePreviewData
                 }
-                else if let error = readingError
+                else if let readError = fileReadingError as? ErrorType
                 {
-                    print(" ->FileReadingError: \n\(error.localizedDescription)")
+                    error = readError
                 }
-            })
+            }
+        }
         
-        return outerFileData
+        if let anError = error
+        {
+            throw anError
+        }
+        
+        if let data = returnPreviewData
+        {
+            return data
+        }
+        
+        throw OrigamiError.UnknownError
     }
     
     /**
-    Reads attach previewData from local cache by file name
-    - Parameter fileName: fileName of AttachFile
-    - Returns:
-        - an image preview NSData object.
-        - nil if fileName is nil or if requested data was not found in cache
-    - Note: this method is synchronous.
-        - Do not call it on main thread.
-    */
-    private func getAttachFileDataFromCache(fileName:String?) -> NSData?
+     Calls `eraseFileFromDiscForAttach` on every attach found for anElementId, then assigs nil to in-memory stored attchInfo array for element by Id
+     - Parameter elementId: An integer value of element`s elementId property
+     */
+    func cleanAttachesForElement(elementId:Int)
     {
-        if let aName = fileName
+        if  let attaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
         {
-            return DataSource.sharedInstance.dataCache.objectForKey(aName) as? NSData
+            for lvAttach in attaches
+            {
+                if let fileName = lvAttach.fileName
+                {
+                    DataSource.sharedInstance.eraseFileFromDiscForAttach(fileName) //delete files from disk
+                }
+            }
         }
-        return nil
     }
+
+    
+    
     
     private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage?
     {
@@ -1776,154 +1648,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     
     
-    func loadAttachFileDataForAttaches(attaches:[AttachFile], completion completionClosure:(()->())? = nil )
-    {
-        if attaches.isEmpty
-        {
-            completionClosure?()
-            return
-        }
-        
-     
-        let recievedAttachesCount = attaches.count
-        print("\n -> Starting to filter pending attaches..")
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-     
-        var localAttaches = [AttachFile]()
-        
-        for lvAttachFileLoading in attaches
-        {
-            if let pending = DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttachFileLoading.attachID]
-            {
-                if pending
-                {
-                    print("is pending")
-                    continue
-                }
-                else
-                {
-                    print("pending is waiting to be cleared")
-                    continue
-                }
-            }
-            else
-            {
-                DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttachFileLoading.attachID] = true
-                localAttaches.append(lvAttachFileLoading)
-            }
-        }
-        
-        if !localAttaches.isEmpty
-        {
-            let dispatchGroup = dispatch_group_create()
-            let fileManager = FileHandler()
-            
-            let localAttachesCount = localAttaches.count
-            
-            print("\n -> Processing \(localAttachesCount) out of \(recievedAttachesCount) atatches...")
-            
-            let operationQueue = NSOperationQueue()
-            operationQueue.maxConcurrentOperationCount = 2
-            
-            
-            let lvQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
-            dispatch_apply(localAttachesCount, lvQueue) { (currentIteration) -> Void in
-                
-                dispatch_group_enter(dispatchGroup)
-                let lvAttach = localAttaches[currentIteration]
-                
-                if let name = lvAttach.fileName, _ = fileManager.synchronouslyLoadFileNamed(name)
-                {
-                    print("\n -> DataSource Will not load existing attach file several times. Attach File: \(lvAttach.fileName!)\n")
-                    
-                    if let name = lvAttach.fileName
-                    {
-                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
-                        dispatch_after(timeout, lvQueue, { () -> Void in
-                            
-                            NSNotificationCenter.defaultCenter().postNotificationName(kAttachDataDidFinishLoadingNotification, object: nil, userInfo: ["fileName" : name])
-                        })
-                    }
-                    DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttach.attachID] = false
-                    
-                    dispatch_group_leave(dispatchGroup)
-                }
-                else
-                {
-                    let attachFileName = lvAttach.fileName
-                    let attachId = lvAttach.attachID
-                    print("\n -> Starting to load AttachFile Data from server... . Attach File: \(lvAttach.fileName!)\n")
-                    DataSource.sharedInstance.serverRequester.loadDataForAttach(attachId, completion: { (attachFileData, error) -> () in
-                        if let attachData = attachFileData, aFileName = attachFileName
-                        {
-                            fileManager.saveFileToDisc(attachData, fileName: aFileName , completion: { (path, saveError) -> Void in
-                                if let _ = path
-                                {
-                                    //print("\n -> Saved a file")
-                                    
-                                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.1))
-                                    dispatch_after(timeout, lvQueue, { () -> Void in
-                                        
-                                        NSNotificationCenter.defaultCenter().postNotificationName(kAttachDataDidFinishLoadingNotification, object: nil, userInfo: ["fileName" : aFileName])
-                                    })
-                                    
-                                }
-                                
-                                if let savedError = saveError
-                                {
-                                    print("\n ->Failed to save data to disc: \n \(savedError.localizedDescription)")
-                                }
-                                DataSource.sharedInstance.pendingAttachFileDataDownloads[attachId] = false
-                                dispatch_group_leave(dispatchGroup)
-                            })
-                        }
-                        else
-                        {
-                            print(" \n ->Failed to load attach file data: \n \(error?.localizedDescription)")
-                            DataSource.sharedInstance.pendingAttachFileDataDownloads[attachId] = false
-                            dispatch_group_leave(dispatchGroup)
-                        }
-                    })
-                }
-            }
-            
-            dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), { () -> Void in
-                print("\n ....finished loading all \(recievedAttachesCount) attachment file datas. >>>>>\n")
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                if let completionBlock = completionClosure
-                {
-                    completionBlock()
-                }
-                
-                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.2))
-                dispatch_after(timeout, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
-                    
-                    for anAttach in localAttaches
-                    {
-                        let lvAttachId = anAttach.attachID
-                        if lvAttachId > 0 {
-                            DataSource.sharedInstance.pendingAttachFileDataDownloads[lvAttachId] = nil
-                            print("\n Cleared pending \(lvAttachId)\n")
-                        }
-                        else {
-                            print("\n Wrong (zero) attach id found.. Breaking up")
-                            assert(false, "loadAttachFileDataForAttaches ->  AttachId = 0")
-                        }
-                    }
-                })
-            })
-        }
-        else
-        {
-            print("\n -> Will not process queried attach files - all are currently pending..")
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            if let completionBlock = completionClosure
-            {
-                completionBlock()
-            }
-        }
-    }
     
     //MARK: - Contact
     func addNewContacts(contacts:[Contact], completion:voidClosure?)

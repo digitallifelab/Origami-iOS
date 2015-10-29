@@ -1803,7 +1803,351 @@ class LocalDatabaseHandler
         }
     }
     
+    //MARK: - Attaches
+    func readAttachesForElementById(elementId:Int) throws -> [DBAttach]?
+    {
+        if elementId < 1
+        {
+            let error = OrigamiError.PreconditionFailure(message: "Wrong element id parameter.")
+            throw error
+        }
+        
+        guard let lvElement = self.readElementById(elementId) else
+        {
+            return nil
+        }
+        
+        guard let lvAttaches = lvElement.attaches as? Set<DBAttach> where lvAttaches.count > 0 else
+        {
+            return nil
+        }
+        
+        let attachesSorted = lvAttaches.sort( < )
+        
+        return attachesSorted
+    }
     
+    func readAttachById(attachId:Int) throws -> DBAttach
+    {
+        if attachId < 1
+        {
+            let error = OrigamiError.PreconditionFailure(message: "Wrong attach id parameter.")
+            throw error
+        }
+        
+        let attachFetchRequest = NSFetchRequest(entityName: "DBAttach")
+        attachFetchRequest.predicate = NSPredicate(format: "attachId = \(attachId)")
+        let context = self.privateContext
+        
+        var errorToThrow:ErrorType?
+        var attachToReturn:DBAttach?
+        
+        context.performBlockAndWait { _ in
+            do
+            {
+                if let foundAttaches = try context.executeFetchRequest(attachFetchRequest) as? [DBAttach]
+                {
+                    let count = foundAttaches.count
+                    
+                    if count == 1
+                    {
+                        attachToReturn = foundAttaches.first!
+                    }
+                    else if count < 1
+                    {
+                        errorToThrow = OrigamiError.NotFoundError(message: "Attach was not found by id: \(attachId)")
+                    }
+                    else if count > 1
+                    {
+                        print(" -> context  is cleating repeating attaches for requested attach id: \(attachId)  ....")
+                        var manyAttaches = foundAttaches
+                        var attachesToErase = [DBAttach]()
+                        repeat{
+                            let attachToRemove = manyAttaches.removeLast()
+                            attachesToErase.append(attachToRemove)
+                        } while manyAttaches.count > 1
+                        
+                        for anAttach in attachesToErase
+                        {
+                            context.deleteObject(anAttach)
+                        }
+                        
+                        print("deleted \(attachesToErase.count) repeating attaches....")
+                        
+                    }
+                }
+            }
+            catch let error
+            {
+                errorToThrow = error
+            }
+        }
+        
+        if let error = errorToThrow
+        {
+            throw error
+        }
+        
+        if let attach = attachToReturn
+        {
+            return attach
+        }
+        else
+        {
+            let notFoundError = OrigamiError.NotFoundError(message: "Attach was not found by id: \(attachId)")
+            throw notFoundError
+        }
+    }
+    /**
+     - Parameter shouldSaveContext: default value is *false*
+     - Note: consider saving managed object context at some point if passing false to *shouldSaveContext* or ommitting this parameter
+     - Returns: newly created DBAttach entity
+     */
+    func saveAttachToLocalDatabase(attach:AttachFile, shouldSaveContext:Bool = false) throws -> DBAttach
+    {
+        
+        guard let newAttach = NSEntityDescription.insertNewObjectForEntityForName("DBAttach", inManagedObjectContext: self.privateContext) as? DBAttach else
+        {
+            let insertError = OrigamiError.UnknownError
+            throw insertError
+        }
+        
+        var noAttachError:ErrorType?
+        do
+        {
+            try self.readAttachById(attach.attachID)
+        }
+        catch let error
+        {
+            noAttachError = error
+        }
+        
+        guard let _ = noAttachError else
+        {
+            let existingAttachError = OrigamiError.PreconditionFailure(message: "target DBAttach already exists in local database")
+            throw existingAttachError
+        }
+        
+        //perform actual data saving work
+        newAttach.fillInfoFromInMemoryAttach(attach)
+        
+        do
+        {
+            let previewImageData = try DataSource.sharedInstance.getAttachPreviewForFileNamed(newAttach.fileName!)
+            if let  newImagePreview = NSEntityDescription.insertNewObjectForEntityForName("DBAttachImagePreview", inManagedObjectContext: self.privateContext) as? DBAttachImagePreview
+            {
+                newImagePreview.imagePreviewData = previewImageData
+                newImagePreview.attachId = newAttach.attachId
+                newAttach.preview = newImagePreview
+            }
+        }
+        catch let previewImageError
+        {
+            print(" saveAttachToLocalDatabase -> Could not get attachPreviewImageData:")
+            print(previewImageError)
+        }
+        
+        
+        //save context immediately if needed
+        if shouldSaveContext && self.privateContext.hasChanges
+        {
+            var savingError:ErrorType?
+            let context = self.privateContext
+            
+            //switch to context`s own queue
+            context.performBlockAndWait { _ in
+                
+                do{
+                    try context.save()
+                }
+                catch let lvSavingError
+                {
+                    savingError = lvSavingError
+                }
+            }
+            
+            //proceed in current queue after context did finish executing "save" operation
+            if let error = savingError
+            {
+                throw error
+            }
+        }
+        
+        //debug
+        if !self.privateContext.hasChanges
+        {
+            assert(false, "Managed Object Context has no changes after inserting new attach file info.")
+        }
+        
+        return newAttach
+    }
     
+    func saveImagePreview(imageData:NSData, forAttachById attachId:Int) throws
+    {
+        do
+        {
+            let foundAttach = try self.readAttachById(attachId)
+        
+            do
+            {
+                try self.savePreview(imageData, forAttach: foundAttach)
+            }
+            catch let savingError
+            {
+                throw savingError
+            }
+        
+        }
+        catch let findingError
+        {
+            throw findingError
+        }
+    }
     
+    /**
+     - Note: if calling this method in a loop or recursively, don`t forget to call *savePrivateContext* method at any point after loop finishes
+      - pass *true* to `shouldSaveContext` if you want contaxt to save after single insertion of image preview
+
+     - Parameter shouldSaveContext: default value is *`false`*
+     - Parameter dbAttach: DBAttach instance to assign attach for
+     - Parameter imageData: NSData object, containing image preview bytes
+     - Throws: if could not save context after insertion, or if new DBAttachImagePreview entity could not be created
+     */
+    func savePreview(imageData:NSData, forAttach dbAttach:DBAttach, shouldSaveContext:Bool = false) throws
+    {
+        guard let newPreview = NSEntityDescription.insertNewObjectForEntityForName("DBAttachImagePreview", inManagedObjectContext: self.privateContext) as? DBAttachImagePreview else
+        {
+            let insertionError = OrigamiError.PreconditionFailure(message: "Could not insert new \"ImagePreview\" entity to context.")
+            throw insertionError
+        }
+        
+        dbAttach.preview = newPreview
+        
+        if shouldSaveContext && self.privateContext.hasChanges
+        {
+            let context = self.privateContext
+            var saveError:ErrorType?
+            
+            context.performBlockAndWait()
+                {
+                do{
+                    try context.save()
+                }
+                catch let lvSaveError
+                {
+                    saveError = lvSaveError
+                }
+            }
+           
+            if let error = saveError
+            {
+                throw error
+            }
+        }
+    }
+    
+    /**
+     Tries to find target element and assign given attaches to it
+     
+     - Parameter shouldSaveContext: *false* by default
+     - if passed *true*, managed object context will try to save immediately
+     - Note: Consider saving managed object context after pairing element and attaches
+     - Throws: 
+        - *NotFoundError* with message containing element ID  if target attach was not found
+        - *UnknownError* if found element attaches could not be converted to Set< DBAttach >
+        - if tried to save managed object context and failed
+     - Returns: number of newly added attaches
+     */
+    func addAttaches(attaches:[DBAttach], toElementById elementId:Int, shouldSaveContext:Bool = false) throws -> Int
+    {
+        guard let foundElement = self.readElementById(elementId) else
+        {
+            let notFound = OrigamiError.NotFoundError(message: "Not Found Element by Id: \(elementId)")
+            throw notFound
+        }
+        
+        //convert to Swift Set
+        guard let currentAttaches = foundElement.attaches as? Set<DBAttach> else
+        {
+            throw OrigamiError.UnknownError
+        }
+        let currentAttachesCount = currentAttaches.count
+        //perform adding new attaches
+        let newAttaches = currentAttaches.union(Set(attaches))
+        
+        //convert back to NSSet
+        let nsSetAttaches = newAttaches as NSSet
+
+        //finaly update found element`s attaches
+        foundElement.attaches = nsSetAttaches
+        let newAttachesCount = newAttaches.count
+        
+        if shouldSaveContext && self.privateContext.hasChanges
+        {
+            var savingError:ErrorType?
+            let context = self.privateContext
+            context.performBlockAndWait() { _ in
+                do
+                {
+                    try context.save()
+                }
+                catch let error
+                {
+                    savingError = error
+                }
+            }
+            
+            if let error = savingError
+            {
+                throw error
+            }
+        }
+        
+        //debug
+        if !self.privateContext.hasChanges
+        {
+            assert(false, "Managed Object Context has no changes after assigning new attaches to element.")
+        }
+        
+        let attachesAddedCount = newAttachesCount - currentAttachesCount
+        
+        return attachesAddedCount
+    }
+    
+    func deleteAttach(attach:DBAttach, shouldSave:Bool = false) throws
+    {
+        let context = self.privateContext
+        var deletingError:ErrorType?
+        context.performBlockAndWait { () -> Void in
+            
+            let attachId = attach.objectID
+            let object = context.objectWithID(attachId)
+            context.deleteObject(object)
+           
+            if shouldSave
+            {
+                if context.hasChanges
+                {
+                    do
+                    {
+                        try context.save()
+                    }
+                    catch let savingError
+                    {
+                        deletingError = savingError
+                    }
+                }
+                else
+                {
+                    let unknownError = OrigamiError.UnknownError
+                    deletingError = unknownError
+                }
+            }
+        }
+        
+        if let error = deletingError
+        {
+            throw error
+        }
+    }
 }

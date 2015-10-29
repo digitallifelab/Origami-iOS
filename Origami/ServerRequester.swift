@@ -1155,76 +1155,79 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         }
     }
         //attach file to element
-    func attachFile(file:MediaFile, toElement elementId:NSNumber, completion completionClosure:((success:Bool, attachId:NSNumber?, error:NSError?)->())? ){
-        /*
-        
-        NSString *photoUploadURL = [NSString stringWithFormat:@"%@AttachFileToElement?elementId=%@&fileName=%@&token=%@", BasicURL, elementId, fileName, _currentUser.token];
-        
-        NSMutableURLRequest *mutableRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:photoUploadURL]];
-        [mutableRequest setHTTPMethod:@"POST"];
-        
-        [mutableRequest setHTTPBody:fileData];
-        */
-        
-        if let userToken = DataSource.sharedInstance.user?.token
+    func attachFile(file:MediaFile, toElement elementId:NSNumber, completion completionClosure:((success:Bool, attachId:Int?, error:ErrorType?)->())? )
+    {
+        guard let userToken = DataSource.sharedInstance.user?.token else
         {
-            let attachedFileDataLength = file.data.length
-            print("\n -> attaching \"\(attachedFileDataLength)\" bytes...")
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-            let postURLstring = "\(serverURL)" + attachToElementUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(file.name)" + "&token=" + "\(userToken)" as NSString
-            let postURL = NSURL(string: postURLstring as String)
-            let mutableRequest = NSMutableURLRequest(URL: postURL!)
-            mutableRequest.HTTPMethod = "POST"
-            mutableRequest.HTTPBody = file.data
-            
-            let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData:NSData?, response:NSURLResponse?, responseError:NSError?) -> Void in
-                
-                if let error = responseError
-                {
-                    print("\(error)")
-                    completionClosure?(success: false, attachId:nil, error: error)
-                    return
-                }
-                
-                guard let data = responseData where data.length > 0  else
-                {
-                    completionClosure?(success: false, attachId: nil, error: nil)
-                    return
-                }
-                
-                let optionReading = NSJSONReadingOptions.AllowFragments
-                
-                do{
-                    if let responseDict = try NSJSONSerialization.JSONObjectWithData(data, options: optionReading) as? [String:AnyObject] {
-                        print("Success sending file to server: \n \(responseDict)")
-                        if let attachID = responseDict["AttachFileToElementResult"] as? NSNumber
-                        {
-                            completionClosure?(success: true, attachId:attachID ,error: nil)
-                        }
-                    }
-                    
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                
-                }
-                catch let error as NSError{
-                    completionClosure?(success: false, attachId:nil ,error: error)
-                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                }
-                catch{
-                    completionClosure?(success: false, attachId:nil ,error: unKnownExceptionError)
-                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                }
-                
-                
-                
-            })
-            
-            dataTask.resume()
-            
+            completionClosure?(success: false,  attachId:nil, error: noUserTokenError)
             return
         }
         
-        completionClosure?(success: false,  attachId:nil, error: noUserTokenError)
+        let postURLstring = "\(serverURL)" + attachToElementUrlPart + "?elementId=" + "\(elementId)" + "&fileName=" + "\(file.name)" + "&token=" + "\(userToken)"
+        
+        guard let postURL = NSURL(string: postURLstring) else
+        {
+            completionClosure?(success: false, attachId: nil, error: OrigamiError.PreconditionFailure(message: "Could not create url for attach uploading request"))
+            return
+        }
+        
+        let attachedFileDataLength = file.data.length
+        print("\n -> attaching \"\(attachedFileDataLength)\" bytes...")
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+        let mutableRequest = NSMutableURLRequest(URL: postURL)
+        mutableRequest.HTTPMethod = "POST"
+        mutableRequest.HTTPBody = file.data
+        
+        let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData:NSData?, response:NSURLResponse?, responseError:NSError?) -> Void in
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            
+            if let error = responseError
+            {
+                print("\(error)")
+                completionClosure?(success: false, attachId:nil, error: error)
+                return
+            }
+            
+            guard let data = responseData where data.length > 0  else
+            {
+                completionClosure?(success: false, attachId: nil, error: nil)
+                return
+            }
+            
+            let optionReading = NSJSONReadingOptions.AllowFragments
+            
+            do
+            {
+                if let responseDict = try NSJSONSerialization.JSONObjectWithData(data, options: optionReading) as? [String:AnyObject] {
+                    print("Success sending file to server: \n \(responseDict)")
+                    if let attachID = responseDict["AttachFileToElementResult"] as? Int
+                    {
+                        completionClosure?(success: true, attachId:attachID ,error: nil)
+                    }
+                    else
+                    {
+                        completionClosure?(success: false, attachId: nil, error: OrigamiError.NotFoundError(message: "attachId was not found after successfull file uploading"))
+                    }
+                }
+            }
+            catch let error
+            {
+                completionClosure?(success: false, attachId:nil , error: error)
+            }
+        })
+        
+        let bgQueue = getBackgroundQueue_DEFAULT()
+        
+        dispatch_async(bgQueue) { () -> Void in
+            dataTask.resume()
+        }
+            
+
+        
+        
+       
     }
         //remove attached file from element attaches
     func unAttachFile(name:String, fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? )

@@ -220,9 +220,19 @@ enum MessageType:Int {
     case UserUnblocked = 65534
     case UserBlocked = 65535
 }
-
-enum InternalDiagnosticError:ErrorType {
+//MARK: - ERRORs
+enum InternalDiagnosticError:ErrorType
+{
     case EmptyValuePassed(value:AnyObject)
     case NilValuePassed
     case UnknownError
 }
+
+enum OrigamiError: ErrorType
+{
+    case PreconditionFailure(message:String?)
+    case NotFoundError(message:String?)
+    case UnknownError
+}
+
+

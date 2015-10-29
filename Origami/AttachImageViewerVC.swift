@@ -75,7 +75,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         {
             if delegate.attachViewerShouldAllowDeletion(self)
             {
-                let deleteBarButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteButtontapped:")
+                let deleteBarButton = UIBarButtonItem(barButtonSystemItem: .Trash, target: self, action: "deleteAttachButtontapped:")
                 self.navigationItem.rightBarButtonItem = deleteBarButton
             }
         }
@@ -153,7 +153,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     
     
     //MARK: - Delete Attach File
-    func deleteButtontapped(sender:AnyObject)
+    func deleteAttachButtontapped(sender:AnyObject)
     {
         delegate?.attachViewerDeleteAttachButtonTapped(self)
     }

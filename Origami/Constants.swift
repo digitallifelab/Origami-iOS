@@ -130,4 +130,4 @@ let kElementWasChangedNotification = "ElementWasChanged"
 let kAttachDataDidFinishLoadingNotification = "DidLoadAttachFileData"
 let kAttachFileDataLoadingCompleted = "AttachFileDataLoadingCompleted"
 let kAvatarDidFinishDownloadingNotification = "AvatarDidFinishDownloadingNotification"
-
+let kPopupMenuItemPressedNotification = "PopoverItemPressed"
