@@ -775,6 +775,61 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         guard let imageData = foundAttach.preview?.imagePreviewData else
         {
+            if let attachFileName = foundAttach.fileName, attachId = foundAttach.attachId?.integerValue
+            {
+                //first check if attach file preview exists on disc
+                do{
+                    let previewImageData = try DataSource.sharedInstance.getAttachPreviewForFileNamed(attachFileName)
+                    do{
+                        try DataSource.sharedInstance.localDatadaseHandler?.saveImagePreview(previewImageData, forAttachById: attachId)
+                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                    }
+                    catch
+                    {
+                        
+                    }
+
+                }
+                catch let error {
+                    
+                    print("Full size file for attach does not exist. \n \(error) \n Will try to download it.  ")
+                    // if not exists = start loading preview
+                    let startedLoading = DataSource.sharedInstance.downloadAttachDataForAttachById(attachId) { (data, error) -> () in
+                        if let dataLoaded = data
+                        {
+                            do
+                            {
+                                try DataSource.sharedInstance.saveAttachFileData(dataLoaded, forAttachFileName: attachFileName)
+                                print(" SingleElementCollectionDataSource imageForAttachmentAtIndexPath -> \(attachFileName) saved full size image data to disk")
+                                do
+                                {
+                                    let previewImageData = try DataSource.sharedInstance.getAttachPreviewForFileNamed(attachFileName)
+                                    do{
+                                        try DataSource.sharedInstance.localDatadaseHandler?.saveImagePreview(previewImageData, forAttachById: attachId)
+                                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                                    }
+                                    catch
+                                    {
+                                        
+                                    }
+                                }
+                                catch{
+                                    
+                                }
+                            }
+                            catch let saveError
+                            {
+                                print("did not save loaded attach file: \(saveError)")
+                            }
+                        }
+
+                    }
+                print("AttachFile Downloading full image did start: \(startedLoading)")
+            }
+                
+                
+            
+            }
             return kNoImageIcon
         }
         
@@ -791,74 +846,5 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     }
     
     //external
-    func deleteAttachNamed(name:String)
-    {
-        guard let attaches = self.currentAttaches else
-        {
-            return
-        }
-        
-        var lvIndexPath:NSIndexPath?
-        var currentItem = 0
-        for anAttach in attaches
-        {
-            guard let fileName = anAttach.fileName else
-            {
-                currentItem += 1
-                continue
-            }
-            if fileName == name
-            {
-                lvIndexPath = NSIndexPath(forItem: currentItem, inSection: 0)
-                break
-            }
-            currentItem += 1
-        }
-        
-        if let pathToRemove = lvIndexPath
-        {
-            self.currentAttaches?.removeAtIndex(pathToRemove.item)
-            if let collectionView = self.handledCollectionView
-            {
-                collectionView.reloadSections(NSIndexSet(index:0))
-                return
-            }
-            print(" ---- -- - - - - - -\n -_ --_ -")
-        }
-    }
-    
-    func deleteAttachByAttachId(attachId:Int)
-    {
-        guard let attaches = self.currentAttaches else
-        {
-            return
-        }
-        var lvIndexPath:NSIndexPath?
-        var currentItem = 0
-        for anAttach in attaches
-        {
-            guard let anId = anAttach.attachId?.integerValue else
-            {
-                currentItem += 1
-                continue
-            }
-            if anId == attachId
-            {
-                lvIndexPath = NSIndexPath(forItem: currentItem, inSection: 0)
-                break
-            }
-            currentItem += 1
-        }
-        
-        if let pathToRemove = lvIndexPath
-        {
-            self.currentAttaches?.removeAtIndex(pathToRemove.item)
-            if let collectionView = self.handledCollectionView
-            {
-                collectionView.reloadSections(NSIndexSet(index:0))
-                return
-            }
-            print(" ---- -- - - - - - -\n -_ --_ - Did not delete attach by Id: \(attachId)")
-        }
-    }
+   
 }

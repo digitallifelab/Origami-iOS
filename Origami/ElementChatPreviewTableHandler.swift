@@ -66,7 +66,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
         {
             chatCell.dateLabel.text = messageInfo.messageDate
             chatCell.messageLabel.text = messageInfo.messageBody
-            chatCell.avatarView.image = messageInfo.authorAvatar
+            chatCell.avatarView?.image = messageInfo.authorAvatar
             chatCell.nameLabel.text = messageInfo.authorName
         }
         

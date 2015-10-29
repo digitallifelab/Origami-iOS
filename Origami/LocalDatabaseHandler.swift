@@ -1982,6 +1982,8 @@ class LocalDatabaseHandler
         return newAttach
     }
     
+    
+    
     func saveImagePreview(imageData:NSData, forAttachById attachId:Int) throws
     {
         do
@@ -2004,6 +2006,7 @@ class LocalDatabaseHandler
         }
     }
     
+    
     /**
      - Note: if calling this method in a loop or recursively, don`t forget to call *savePrivateContext* method at any point after loop finishes
       - pass *true* to `shouldSaveContext` if you want contaxt to save after single insertion of image preview
@@ -2021,6 +2024,8 @@ class LocalDatabaseHandler
             throw insertionError
         }
         
+        newPreview.attachId = dbAttach.attachId
+        newPreview.imagePreviewData = imageData
         dbAttach.preview = newPreview
         
         if shouldSaveContext && self.privateContext.hasChanges

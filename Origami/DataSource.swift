@@ -45,7 +45,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     var languages = [Language]()
     var countries = [Country]()
-    //private lazy var avatarsHolder = [String:NSData]()
+   
+    
+    private lazy var pBgOperationQueue = NSOperationQueue()
+    private var avatarOperationQueue:NSOperationQueue {
+        pBgOperationQueue.maxConcurrentOperationCount = 3
+        return pBgOperationQueue
+    }
     
     lazy var userAvatarsHolder = [Int:UIImage]()
     lazy var participantIDsForElement = [Int:Set<Int>]()
@@ -84,7 +90,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var loadingAllElementsInProgress = false
     
     //private lazy var dataCache:NSCache = NSCache()
-    private var pendingAttachFileDataDownloads = [Int:Bool]()
+    private var pendingAttachFileDataDownloads = [Int:NSOperation]()
     private var pendingUserAvatarsDownolads = [String:Int]()
     //private stuff
     private func getMessagesObserverForElementId(elementId:NSNumber) -> MessageObserver?
@@ -149,11 +155,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     completion?()
                 })
             }
-
-            //no need to reload avatars and attaches everytime user loggs in.  May be later or deleting by user initiated process(e.g. in app settings a button to clear documents)
-//            let aFiler = FileHandler()
-//            aFiler.deleteAvatars()
-//            aFiler.deleteAttachedImages()
         })
     }
     
@@ -1055,21 +1056,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
     }
     
-    func deleteElementsLocked(elementsToDelete:[Int])
-    {
-        let aLock = NSLock()
-        aLock.lock()
-        for anElementId in elementsToDelete
-        {
-            DataSource.sharedInstance.deleteElementFromLocalStorage(anElementId, shouldNotify:false)
-        }
-        aLock.unlock()
-        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        let deletedNotif = NSNotification(name: kElementWasDeletedNotification, object: nil, userInfo:["elementIdInts":elementsToDelete])
-  
-        NSNotificationCenter.defaultCenter().postNotification(deletedNotif)
-    }
-    
+
     func replaceAllElementsToNew(newElements:[Element])
     {
         let aLock = NSLock()
@@ -1248,109 +1235,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
-    func deleteElementFromLocalStorage(elementId:Int, shouldNotify:Bool)
-    {
-        var index = -1
-        var counter = 0
-        for element in DataSource.sharedInstance.elements
-        {
-            if element.elementId! == elementId
-            {
-                index = counter
-                break
-            }
-            counter += 1
-        }
-        if index > -1
-        {
-            //clean also subordinateElements and attached files from disc if present;
-            if let target = DataSource.sharedInstance.getElementById(elementId)
-            {
-                var set = Set(DataSource.sharedInstance.elements)
-                set.remove(target)
-                DataSource.sharedInstance.elements = Array(set)
-                
-                if let allSubordinatesTree = DataSource.sharedInstance.getSubordinateElementsTreeForElement(target)
-                {
-                    //clean attaches if present
-                    let bgQueue = NSOperationQueue()
-                    bgQueue.maxConcurrentOperationCount = 2
-                    
-                    
-                    for lvSubordinateElement in allSubordinatesTree
-                    {
-                        bgQueue.addOperationWithBlock({ () -> Void in
-                            if let _ = lvSubordinateElement.elementId {
-                                DataSource.sharedInstance.cleanAttachesForElement(lvSubordinateElement.elementId!)
-                            }
-                        })
-                    }
-                    
-                    //clean elements themselves
-                    let allElements = Set(DataSource.sharedInstance.elements)
-                    var toDelete = Set(allSubordinatesTree)
-                    toDelete.insert(target)
-                    
-                    let afterDeletionSet = allElements.subtract(toDelete)
-                    let cleanedElements = Array(afterDeletionSet)
-                  
-                    DataSource.sharedInstance.elements = cleanedElements
-                }
-                
-                
-                // iterate through all elements and if element has Root element id, but the root element id is not found - delete it
-                var setToDelete = Set<Element>()
-                for lvElement in DataSource.sharedInstance.elements
-                {
-                    if lvElement.rootElementId > 0
-                    {
-                        if DataSource.sharedInstance.getElementById(lvElement.rootElementId) == nil
-                        {
-                            setToDelete.insert(lvElement)
-                        }
-                    }
-                }
-                
-                for lvElement in setToDelete
-                {
-                    if let _ = lvElement.elementId
-                    {
-                        DataSource.sharedInstance.cleanAttachesForElement(lvElement.elementId!)
-                    }
-                }
-                
-                let filterAgain = Set(DataSource.sharedInstance.elements)
-                let newSet = filterAgain.subtract(setToDelete)
-                
-                var remainingElements = Array(newSet)
-                
-                ObjectsConverter.sortElementsByDate(&remainingElements)
-                
-                DataSource.sharedInstance.elements = remainingElements
-                //Recheck after deleting
-                if let reCheckSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(elementId, shouldIncludeArchived:false)
-                {
-                    if !reCheckSubordinates.isEmpty
-                    {
-                        // assert(false, "Check properly deleted subordinates....")
-                        print("Did not delete subordinates for current element Id: \(elementId)")
-                    }
-                }
-            }
-        }
-        
-        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        print("   ->Finished deleting element from local storage.")
-        if shouldNotify
-        {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: nil, userInfo: ["elementId" : NSNumber(integer:elementId)])
-            })
-        }
-        
-   
-    }
-    
     //MARK: - Attaches
     
     /**
@@ -1459,12 +1343,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         })
     }
     
-    func attachFile(file:MediaFile, toElementId elementId:Int, completion completionClosure:(success:Bool, error: ErrorType?)->() ) {
+    func attachFile(file:MediaFile, toElementId elementId:Int, completion completionClosure:((success:Bool, error: ErrorType?)->())? ) {
         
         guard elementId > 0 else
         {
             let errorId = NSError(domain: "Element id error", code: -65, userInfo: [NSLocalizedDescriptionKey:"Colud not start attaching file. Reason: wrong element id format."])
-            completionClosure(success: false, error: errorId)
+            completionClosure?(success: false, error: errorId)
             return
         }
         
@@ -1474,26 +1358,62 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = true
                 print(" - upload succeeded. saving fileDataToDisc... ")
-                let lvFileHandle = FileHandler()
-                lvFileHandle.saveFileToDisc(file.data, fileName: file.name, completion: { (filePath, saveError) -> Void in
-                    if filePath != nil
-                    {
-                        print(" - saved fila to disc...")
-                        completionClosure(success: true, error: nil)
-                    }
-                    else
-                    {
-                        completionClosure(success: true, error: NSError(domain: "FileSavingError", code: -61, userInfo: [NSLocalizedDescriptionKey:"Could not save file to disc. \n Wanted path: \(filePath)"]) )
-                    }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                })
+               
+                do
+                {
+                    try DataSource.sharedInstance.saveAttachFileData(file.data, forAttachFileName: file.name)
+                    DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (errorSaving) -> () in
+                        if let error = errorSaving
+                        {
+                             completionClosure?(success: true, error: error)
+                        }
+                        else
+                        {
+                            completionClosure?(success: true, error: nil)
+                        }
+                       
+                    })
+                    
+                }
+                catch let saveError
+                {
+                    completionClosure?(success:true, error:saveError)
+                }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }
             else
             {
-                completionClosure(success: false, error: errorAttached)
+                completionClosure?(success: false, error: errorAttached)
             }
         }
     }
+    
+    func saveAttachFileData(fileData:NSData, forAttachFileName fileName:String) throws
+    {
+        var errorSaving:NSError?
+        
+        dispatch_sync(getBackgroundQueue_SERIAL()) { _ in
+            let lvFileHandle = FileHandler()
+            lvFileHandle.saveFileToDisc(fileData, fileName: fileName, completion: { (filePath, saveError) -> Void in
+                if filePath != nil
+                {
+                    print(" - saved fila to disc...")
+                }
+                else
+                {
+                    errorSaving = NSError(domain: "FileSavingError", code: -61, userInfo: [NSLocalizedDescriptionKey:"Could not save file to disc. \n Wanted path: \(filePath)"])
+                }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            })
+        }
+        
+        if let error = errorSaving
+        {
+            throw error
+        }
+       
+    }
+    
     
     func deleteAttachedFileNamed(file:(fileName:String, id:Int), fromElement elementId:Int, completion completionClosure:((success:Bool, error:NSError?)->())? ) {
         
@@ -1532,8 +1452,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             else
             {
                 print("\n deleteAttachedFileNamed -> Could not deAttach file on server: \n Error: \n\(fromServerError)")
-                completionClosure?(success: success, error: fromServerError)
             }
+            completionClosure?(success: success, error: fromServerError)
         }
     }
     /**
@@ -1616,9 +1536,47 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             }
         }
     }
-
     
+    func downloadAttachDataForAttachById(id:Int, completion:((data:NSData?, error:NSError?)->())? ) -> (Bool)
+    {
+        if let _ = DataSource.sharedInstance.pendingAttachFileDataDownloads[id]
+        {
+            return false
+        }
+        
+        let downloadOperation = NSBlockOperation() { _ in
+            
+            DataSource.sharedInstance.serverRequester.loadDataForAttach(id) { (attachFileData, loadingError) -> () in
+                completion?(data:attachFileData, error: loadingError)
+                
+                DataSource.sharedInstance.cancelDownloadingFileForAttachById(id)
+            }
+        }
+        
+        if #available(iOS 8.0, *)
+        {
+            downloadOperation.qualityOfService = NSQualityOfService.Utility
+        }
+        else
+        {
+            downloadOperation.queuePriority = .Low
+        }
+       
+        DataSource.sharedInstance.avatarOperationQueue.addOperation(downloadOperation)
+        
+        return true
+    }
     
+    func cancelDownloadingFileForAttachById(id:Int) -> Bool
+    {
+        if let downloadingOperation = DataSource.sharedInstance.pendingAttachFileDataDownloads[id]
+        {
+            downloadingOperation.cancel()
+            DataSource.sharedInstance.pendingAttachFileDataDownloads[id] = nil
+            return true
+        }
+        return false
+    }
     
     private func reduceImageSize(image:UIImage, toSize size:CGSize) -> UIImage?
     {

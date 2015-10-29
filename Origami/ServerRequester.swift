@@ -1064,7 +1064,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
 
     }
     
-    func loadDataForAttach(attachId:NSNumber, completion:((attachFileData:NSData?, error:NSError?)->())? )
+    func loadDataForAttach(attachId:Int, completion:((attachFileData:NSData?, error:NSError?)->())? )
     {
         if let userToken = DataSource.sharedInstance.user?.token //as? String
         {

@@ -12,5 +12,9 @@ import CoreData
 class DBAttachImagePreview: NSManagedObject {
 
 // Insert code here to add functionality to your managed object subclass
+    override func prepareForDeletion() {
+        super.prepareForDeletion()
+        print("Will delete  DBAttachImagePreview  for attachID: \(self.attachId)")
+    }
 
 }

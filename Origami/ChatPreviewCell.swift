@@ -10,7 +10,7 @@ import UIKit
 
 class ChatPreviewCell: UITableViewCell {
 
-    @IBOutlet var avatarView:UIImageView!
+    @IBOutlet weak var avatarView:UIImageView?
     @IBOutlet var nameLabel:UILabel!
     @IBOutlet var messageLabel:UILabel!
     @IBOutlet var dateLabel:UILabel!
@@ -21,13 +21,13 @@ class ChatPreviewCell: UITableViewCell {
             {
                 self.messageLabel.textColor = UIColor.whiteColor()
                 self.nameLabel.textColor = UIColor.lightGrayColor()
-                self.avatarView.tintColor = kWhiteColor
+                self.avatarView?.tintColor = kWhiteColor
             }
             else
             {
                 self.messageLabel.textColor = UIColor.blackColor()
                 self.nameLabel.textColor = kDayNavigationBarBackgroundColor
-                self.avatarView.tintColor = kDayNavigationBarBackgroundColor
+                self.avatarView?.tintColor = kDayNavigationBarBackgroundColor
             }
         }
     }
@@ -36,9 +36,9 @@ class ChatPreviewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        avatarView.backgroundColor = UIColor.clearColor()
+        avatarView?.backgroundColor = UIColor.clearColor()
         //avatarView.image = UIImage(named: "icon-contacts")
-        avatarView.maskToCircle()
+        avatarView?.maskToCircle()
         self.backgroundColor = UIColor.clearColor() //needed for ipad - ignores this setting in I.B.
         
     }

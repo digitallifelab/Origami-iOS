@@ -139,8 +139,8 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
         {
             let message = lvMessages[indexPath.row]
             chatCell.messageLabel.text = message.textBody
-            chatCell.avatarView.tintColor = kDayCellBackgroundColor
-            chatCell.avatarView.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+            chatCell.avatarView?.tintColor = kDayCellBackgroundColor
+            chatCell.avatarView?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             
             if let messageDate = message.dateCreated
             {
@@ -152,7 +152,7 @@ class SingleElementLastMessagesCell: UICollectionViewCell, UITableViewDataSource
             {
                 if let avatarPreview = DataSource.sharedInstance.getAvatarForUserId(creatorId)
                 {
-                    chatCell.avatarView.image = avatarPreview
+                    chatCell.avatarView?.image = avatarPreview
                 }
                 
                 if let personInfo = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)

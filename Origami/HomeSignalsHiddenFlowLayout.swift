@@ -445,7 +445,9 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             for aSignalBDelement in signals
             {
                 //print("->")
-                if let elementId = aSignalBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                if let
+                    elementId = aSignalBDelement.elementId?.integerValue,
+                    subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
                 {
                     if subordinatesQueryResult.count > 0
                     {

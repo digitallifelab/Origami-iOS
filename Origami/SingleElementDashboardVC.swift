@@ -1175,7 +1175,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                             
                                             destinationVC.imageToDisplay = UIImage(data: fileToDisplay.data)
                                             destinationVC.title = fileToDisplay.name
-                                            destinationVC.fileCreatorId = fileToDisplay.creatorId
+                                            destinationVC.fileCreatorId = fileToDisplay.creatorId // to allow deleting file
                                             weakSelf.navigationController?.pushViewController(destinationVC, animated: true)
                                         }
                                     case .Document:
@@ -1237,9 +1237,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
             DataSource.sharedInstance.deleteAttachedFileNamed(currentAttachInfo, fromElement: elementIdInt, completion:{[weak self] (success, error) in
-                if let weakSelf = self
+                if let weakSelf = self, existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementIdInt)
                 {
-                    weakSelf.collectionDataSource?.deleteAttachByAttachId(attachIdLocal)
+                    weakSelf.currentElement = existingElement
+                    weakSelf.prepareCollectionViewDataAndLayout()
+                   // weakSelf.collectionDataSource?.deleteAttachByAttachId(attachIdLocal)
                 }
             })
         })
