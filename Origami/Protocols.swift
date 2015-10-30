@@ -68,6 +68,7 @@ protocol ChatInputViewDelegate
 }
 
 protocol AttachPickingDelegate {
+    func mediaPickerPreferredImgeSize(picker:AnyObject) -> CGSize?
     func mediaPicker(picker:AnyObject, didPickMediaToAttach mediaFile:MediaFile)
     func mediaPickerDidCancel(picker:AnyObject)
     func mediaPickerShouldAllowEditing(picker:AnyObject) -> Bool

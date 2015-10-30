@@ -1459,6 +1459,34 @@ class LocalDatabaseHandler
         return nil
     }
     
+    func eraseAvatarPreviewForUserId(userId:Int)
+    {
+        
+        if let foundUserAvatarPreview = self.findAvatarPreviewForUserId(userId)
+        {
+            let context = self.privateContext
+            context.performBlockAndWait() {
+                context.deleteObject(foundUserAvatarPreview)
+                
+                if context.hasChanges
+                {
+                    do{
+                        try context.save()
+                    }
+                    catch let errorSavingContext{
+                        print(" DID not save context after avatar preview deleting:\n")
+                        print("\(errorSavingContext)")
+                    }
+                }
+            }
+        }
+        else
+        {
+            print("DID NOT delete user avatar preview:  Not Found.\n")
+        }
+       
+    }
+    
     /**
      private context performs async block on it`s queue
      - Returns:

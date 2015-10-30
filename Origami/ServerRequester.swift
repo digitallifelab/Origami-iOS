@@ -26,6 +26,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     lazy var datatasksForPassElementRequest = [Int:NSURLSessionDataTask]()
     
+    
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
@@ -1074,9 +1075,24 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 let fileDataRequest = NSMutableURLRequest(URL: requestURL)
                 fileDataRequest.HTTPMethod = "GET"
                 
+                
                 let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
                     
                     in
+                    
+                    guard let operation = DataSource.sharedInstance.pendingAttachFileDataDownloads[attachId]
+                    else
+                    {
+                        completion?(attachFileData: nil, error: NSError(domain: "", code: -3021, userInfo: [NSLocalizedDescriptionKey:"Attach operation was cancelled"]))
+                        return
+                    }
+                    
+                    if operation.cancelled
+                    {
+                        completion?(attachFileData: nil, error: NSError(domain: "", code: -3020, userInfo: [NSLocalizedDescriptionKey:"Attach operation was cancelled"]))
+                        return
+                    }
+                    
                     
                     if let anError = responseError
                     {
@@ -1089,6 +1105,12 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                             do{
                                 if let responseDict = try NSJSONSerialization.JSONObjectWithData(synchroData, options: NSJSONReadingOptions.AllowFragments ) as? [String:AnyObject]
                                 {
+                                    guard let _ = responseDict["GetAttachedFileResult"] else
+                                    {
+                                        completion?(attachFileData: nil, error: NSError(domain: "", code: -2003, userInfo: [NSLocalizedDescriptionKey:"Attach Data Not Found"]))
+                                        return
+                                    }
+                                    
                                     if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
                                     {
                                         if arrayOfIntegers.isEmpty
@@ -1101,6 +1123,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                                             if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
                                             {
                                                 completion?(attachFileData: lvData, error: nil)
+                                                print("Fullsize image data for attach: \(lvData.length) bytes")
                                             }
                                             else
                                             {
@@ -1115,8 +1138,11 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                                     {
                                         //error
                                         print("ERROR: Could not convert to array of integers object.")
+                                        
+                                      
                                         let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
                                         completion?(attachFileData: nil, error: arrayConvertingError)
+                                      
                                     }
                                 }
                             }
@@ -1142,8 +1168,9 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                         print("No response data..")
                         completion?(attachFileData: NSData(), error: nil)
                     }
-
+                    
                 })
+                
                 
                 fileTask.resume()
             }
@@ -1179,7 +1206,14 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         mutableRequest.HTTPMethod = "POST"
         mutableRequest.HTTPBody = file.data
         
-        let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(mutableRequest, completionHandler: { (responseData:NSData?, response:NSURLResponse?, responseError:NSError?) -> Void in
+        
+        let config = NSURLSessionConfiguration.ephemeralSessionConfiguration()
+        config.HTTPMaximumConnectionsPerHost = 1
+        
+        let session = NSURLSession(configuration: config, delegate: self, delegateQueue: nil)
+
+        
+        let dataTask = session.dataTaskWithRequest(mutableRequest, completionHandler: { (responseData:NSData?, response:NSURLResponse?, responseError:NSError?) -> Void in
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             
@@ -1865,7 +1899,16 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 }
             }
         }
+        else
+        {
+            if totalBytesSent > 0 {
+                let progress = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
+                
+                print("progress: \(progress * 100) /%")
+            }
+        }
     }
+    
     
     func URLSession(session: NSURLSession, didBecomeInvalidWithError error: NSError?)
     {

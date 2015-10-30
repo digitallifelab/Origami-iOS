@@ -54,6 +54,7 @@
 
 "sureToChangePassword" = "Are you sure to change password?";
 "attention" = "Attention";
+"downloadingAvatarMessage" = "downloading avatar";
 
 "Signal" = "Signal";
 "Idea" = "Idea";

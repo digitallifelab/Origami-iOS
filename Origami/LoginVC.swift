@@ -104,7 +104,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     func userDidLogin(user:User)
     {
-        guard let loggedUserID = user.userId else
+        guard let _ = user.userId else
         {
             print("No User Id Found After Login ..............\n ...............")
             return

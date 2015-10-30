@@ -53,7 +53,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         pBgOperationQueue.maxConcurrentOperationCount = 3
         return pBgOperationQueue
     }
-    
+    //private lazy var dataCache:NSCache = NSCache()
+    var pendingAttachFileDataDownloads = [Int:NSOperation]()
+    var pendingUserAvatarsDownolads = [String:Int]()
     lazy var userAvatarsHolder = [Int:UIImage]()
     lazy var participantIDsForElement = [Int:Set<Int>]()
     
@@ -92,9 +94,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     var loadingAllElementsInProgress = false
     
-    //private lazy var dataCache:NSCache = NSCache()
-    private var pendingAttachFileDataDownloads = [Int:NSOperation]()
-    private var pendingUserAvatarsDownolads = [String:Int]()
+  
     //private stuff
     private func getMessagesObserverForElementId(elementId:NSNumber) -> MessageObserver?
     {
@@ -135,7 +135,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             dispatch_after(timeout, getBackgroundQueue_DEFAULT(), { () -> Void in
                 DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
                 print("stopRefreshingLastMessages")
-                sleep(2)
+                //sleep(2)
                 
                 //DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
                 //print("cancelDispatchSource")
@@ -1529,14 +1529,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func downloadAttachDataForAttachById(id:Int, completion:((data:NSData?, error:NSError?)->())? ) -> (Bool)
     {
+        
+        
         if let _ = DataSource.sharedInstance.pendingAttachFileDataDownloads[id]
         {
             return false
         }
         
+        
+        
         let downloadOperation = NSBlockOperation() { _ in
             
             DataSource.sharedInstance.serverRequester.loadDataForAttach(id) { (attachFileData, loadingError) -> () in
+              
+                
                 completion?(data:attachFileData, error: loadingError)
                 
                 DataSource.sharedInstance.cancelDownloadingFileForAttachById(id)
@@ -1552,9 +1558,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             downloadOperation.queuePriority = .Low
         }
        
+        DataSource.sharedInstance.pendingAttachFileDataDownloads[id] = downloadOperation
+        
         DataSource.sharedInstance.avatarOperationQueue.addOperation(downloadOperation)
         
         return true
+    }
+    
+    func cancelDownloadingAttachesByIDs(attachIDs:Set<Int>)
+    {
+        for anAttachId in attachIDs
+        {
+            DataSource.sharedInstance.pendingAttachFileDataDownloads[anAttachId]?.cancel()
+            DataSource.sharedInstance.pendingAttachFileDataDownloads[anAttachId] = nil
+        }
     }
     
     func cancelDownloadingFileForAttachById(id:Int) -> Bool
@@ -2123,6 +2140,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         let aFileHandler = FileHandler()
         aFileHandler.eraseAvatarForUserName(name, completion: nil)
         DataSource.sharedInstance.userAvatarsHolder[userId] = nil
+        DataSource.sharedInstance.localDatadaseHandler?.eraseAvatarPreviewForUserId(userId)
     }
     /**
     Synchronous method that searches for existing dictionary in UserDefaults and overrides it if found.  If no stored info found, it creates info dictionsty with passed values

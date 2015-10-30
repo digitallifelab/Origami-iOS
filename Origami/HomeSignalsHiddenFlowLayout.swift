@@ -439,72 +439,87 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         var favouritesDimensionsArray = [ElementItemLayoutWidth]()
         var otherElementDimensionsArray = [ElementItemLayoutWidth]()
         
-        if let signals = info.signals
-        {
-            //print("SIGNALS:")
-            for aSignalBDelement in signals
+        
+        let signalsOp = NSBlockOperation() { _ in
+            if let signals = info.signals
             {
-                //print("->")
-                if let
-                    elementId = aSignalBDelement.elementId?.integerValue,
-                    subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                //print("SIGNALS:")
+                for aSignalBDelement in signals
                 {
-                    if subordinatesQueryResult.count > 0
+                    //print("->")
+                    if let
+                        elementId = aSignalBDelement.elementId?.integerValue,
+                        subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
                     {
-                        //print(" -> WIDE")
-                        signalsDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                        if subordinatesQueryResult.count > 0
+                        {
+                            //print(" -> WIDE")
+                            signalsDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                            continue
+                        }
+                        //print(" ->NORMAL")
+                        signalsDimensionsArray.append(ElementItemLayoutWidth.Normal)
                         continue
                     }
-                    //print(" ->NORMAL")
-                    signalsDimensionsArray.append(ElementItemLayoutWidth.Normal)
-                    continue
+                    print(" -> ERROR SIGNAL <- ")
                 }
-                print(" -> ERROR SIGNAL <- ")
             }
         }
         
-        if let favs = info.favourites
-        {
-            //print("FAVOURITES:")
-            for aFavBDelement in favs
+      
+        let favouritesOp = NSBlockOperation() {
+            if let favs = info.favourites
             {
-                //print("->")
-                if let elementId = aFavBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                //print("FAVOURITES:")
+                for aFavBDelement in favs
                 {
-                    if subordinatesQueryResult.count > 0
+                    //print("->")
+                    if let elementId = aFavBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
                     {
-                        //print(" -> WIDE")
-                        favouritesDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                        if subordinatesQueryResult.count > 0
+                        {
+                            //print(" -> WIDE")
+                            favouritesDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                            continue
+                        }
+                        favouritesDimensionsArray.append(ElementItemLayoutWidth.Normal)
                         continue
                     }
-                    favouritesDimensionsArray.append(ElementItemLayoutWidth.Normal)
-                    continue
+                    print(" -> ERROR FAV <- ")
                 }
-                print(" -> ERROR FAV <- ")
             }
         }
         
-        if let other = info.other
-        {
-            //print("OTHER:")
-            for anOtherBDelement in other
+        favouritesOp.addDependency(signalsOp)
+        
+        let otherOp = NSBlockOperation{
+            if let other = info.other
             {
-                //print("->")
-                if let elementId = anOtherBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                //print("OTHER:")
+                for anOtherBDelement in other
                 {
-                    if subordinatesQueryResult.count > 0
+                    //print("->")
+                    if let elementId = anOtherBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
                     {
-                        //print(" ->WIDE")
-                        otherElementDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                        if subordinatesQueryResult.count > 0
+                        {
+                            //print(" ->WIDE")
+                            otherElementDimensionsArray.append(ElementItemLayoutWidth.Wide)
+                            continue
+                        }
+                        //print(" ->NORMAL")
+                        otherElementDimensionsArray.append(ElementItemLayoutWidth.Normal)
                         continue
                     }
-                    //print(" ->NORMAL")
-                    otherElementDimensionsArray.append(ElementItemLayoutWidth.Normal)
-                    continue
+                    print(" -> ERROR OTHER <- ")
                 }
-                print(" -> ERROR OTHER <- ")
             }
         }
+    
+        otherOp.addDependency(favouritesOp)
+        
+        NSOperationQueue().addOperations([signalsOp, favouritesOp, otherOp], waitUntilFinished: true)
+   
         
         let homeLayoutStruct = HomeLayoutStruct(signalsCount: signalsDimensionsArray.count, favourites: favouritesDimensionsArray, other: otherElementDimensionsArray)
         

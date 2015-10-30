@@ -18,6 +18,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     let titleInfoKey = "title"
     let detailsInfoKey = "details"
     var avatarImage:UIImage?
+    var titleLabel:UILabel?
     
     @IBOutlet weak var tableView:UITableView?
     
@@ -52,6 +53,21 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
         avatarImage = nil
     }
     
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if let contactName = contact?.nameAndLastNameSpacedString()
+        {
+            titleLabel = UILabel(frame: CGRectMake(0, 0 ,200 ,20 ))
+            titleLabel?.layer.opacity = 0.0
+            titleLabel?.attributedText = NSAttributedString(string: contactName, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 15)!, NSForegroundColorAttributeName:UIColor.whiteColor()])
+            
+            titleLabel?.sizeToFit()
+            
+            self.navigationItem.titleView = titleLabel
+            titleLabel?.layer.opacity = 1.0
+        }
+    }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)

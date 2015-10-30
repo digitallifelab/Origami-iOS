@@ -166,6 +166,31 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachFileDataLoadingCompleted, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kAttachDataDidFinishLoadingNotification, object:nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasChangedNotification, object: nil)
+        
+        if let elementId = self.currentElement?.elementId?.integerValue
+        {
+            dispatch_async(getBackgroundQueue_SERIAL()){
+                do{
+                    guard let  attaches = try DataSource.sharedInstance.localDatadaseHandler?.readAttachesForElementById(elementId) else
+                    {
+                        return
+                    }
+                    
+                    var setOfAttachIDs = Set<Int>()
+                    for anAttach in attaches
+                    {
+                        if let attachId = anAttach.attachId?.integerValue
+                        {
+                            setOfAttachIDs.insert(attachId)
+                        }
+                    }
+                    DataSource.sharedInstance.cancelDownloadingAttachesByIDs(setOfAttachIDs)}
+                catch{
+                    return
+                }
+            }
+        }
+      
     }
     
     //MARK: Appearance --
@@ -682,10 +707,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             else
             {
-                //self.parentViewController?.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
-                
                 let ios7ActionSheet = UIActionSheet(title: "Choose Option", delegate: self, cancelButtonTitle: nil, destructiveButtonTitle: "cancel".localizedWithComment(""))
-                
                 
                 ios7ActionSheet.addButtonWithTitle("Add Element".localizedWithComment(""))
                 ios7ActionSheet.addButtonWithTitle("Add Attachment".localizedWithComment(""))
@@ -1331,6 +1353,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func mediaPickerShouldAllowEditing(picker: AnyObject) -> Bool {
         return false
     }
+    
+    func mediaPickerPreferredImgeSize(picker: AnyObject) -> CGSize? {
+        return CGSizeMake(800.0, 800.0)
+    }
     //MARK: Chat stuff
     func showChatForCurrentElement()
     {
@@ -1529,6 +1555,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         self.navigationController?.popViewControllerAnimated(true)
         
     }
+    
+    
+    //MARK: -
     /**
      Sends "*editElement*" to server with updated "*responsible*" value and "*typeId*" value.
         - if successfull sends "*setElementFinishState*" if previous query for editing element was successfull

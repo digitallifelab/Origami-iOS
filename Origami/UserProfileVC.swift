@@ -38,6 +38,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.title = nil
         configureLeftBarButtonItem()
         
         configureRightBarButtonItem()
@@ -87,9 +88,20 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                             {
                                 if let weakSelf = self
                                 {
+                                    dispatch_async(dispatch_get_main_queue()) {
+                                        let titleLabel = UILabel(frame: CGRectMake(0,0,100.0,30.0))
+                                        titleLabel.attributedText = NSAttributedString(string: "downloadingAvatarMessage".localizedWithComment(""), attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!, NSForegroundColorAttributeName:UIColor.whiteColor()])
+                                        titleLabel.numberOfLines = 1
+                                        titleLabel.sizeToFit()
+                                        print("user profile title label size: \(titleLabel.bounds.size)")
+                                        weakSelf.navigationItem.titleView = titleLabel
+                                    }
+                                    
                                     NSNotificationCenter.defaultCenter().addObserver(weakSelf, selector: "reReadAvatarFromDisc:", name: kAvatarDidFinishDownloadingNotification, object: nil)
                                     
                                     DataSource.sharedInstance.startLoadingAvatarForUserName( (name: userName, id: DataSource.sharedInstance.user!.userId!))
+                                    
+                                    
                                 }
                             }
                         }
@@ -133,6 +145,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     //MARK: -----
     func reReadAvatarFromDisc(notification:NSNotification)
     {
+        self.navigationItem.titleView = nil
         if let userInfo = notification.userInfo as? [String:AnyObject]
         {
             if let avatarUserId = userInfo["userId"] as? Int
@@ -261,25 +274,8 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             }
             else
             {
-               //let edgeInsets = UIEdgeInsetsMake(0, 0, 0, 0)
                 profileCollection.contentInset = defaultEdgeInsets!
             }
-            
-            
-//            UIView.animateWithDuration(animationTime,
-//                delay: 0.0,
-//                options: options,
-//                animations: {  [weak self]  in
-//                    if let weakSelf = self
-//                    {
-//                        weakSelf.view.layoutIfNeeded()
-//                    }
-//                    
-//                    
-//                },
-//                completion: { [weak self]  (finished) -> () in
-//                    
-//                })
         }
     }
     
@@ -501,7 +497,10 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         if let imagePicker = self.storyboard?.instantiateViewControllerWithIdentifier("ImagePickerVC") as? ImagePickingViewController
         {
             imagePicker.attachPickingDelegate = self
-            self.presentViewController(imagePicker, animated: true, completion: nil)
+            imagePicker.willMoveToParentViewController(self.parentViewController!)
+            self.parentViewController!.addChildViewController(imagePicker)
+            self.parentViewController!.view.addSubview(imagePicker.view)
+            imagePicker.didMoveToParentViewController(self.parentViewController!)
         }
     }
     
@@ -563,9 +562,13 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
 
     
     func mediaPickerDidCancel(picker: AnyObject) {
-        if picker is UIViewController
+        
+        if let lvPicker = picker as? ImagePickingViewController
         {
-            picker.dismissViewControllerAnimated(true, completion: nil)
+            lvPicker.willMoveToParentViewController(nil)
+            lvPicker.view.removeFromSuperview()
+            lvPicker.removeFromParentViewController()
+            lvPicker.didMoveToParentViewController(nil)
         }
     }
     
@@ -573,10 +576,14 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         
         let lvData = mediaFile.data.copy() as! NSData
 
-        if picker is UIViewController
+        if let lvPicker = picker as? ImagePickingViewController
         {
-            picker.dismissViewControllerAnimated(true, completion: nil)
+            lvPicker.willMoveToParentViewController(nil)
+            lvPicker.view.removeFromSuperview()
+            lvPicker.removeFromParentViewController()
+            lvPicker.didMoveToParentViewController(nil)
         }
+        
         DataSource.sharedInstance.uploadAvatarForCurrentUser(lvData, completion: { [weak self](success, error) -> () in
             if success
             {
@@ -616,6 +623,10 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func mediaPickerShouldAllowEditing(picker: AnyObject) -> Bool {
         
         return true
+    }
+    
+    func mediaPickerPreferredImgeSize(picker: AnyObject) -> CGSize? {
+        return CGSizeMake(400.0, 400.0)
     }
     
     //MARK: Edit User Text Info

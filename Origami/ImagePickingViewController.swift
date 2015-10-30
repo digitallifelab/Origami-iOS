@@ -148,21 +148,28 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             
             var fixedImage = image.fixOrientation()
             
-            //reduce image size for networking
-            if fixedImage.size.width >= 1000.0 || fixedImage.size.height >= 1000.0
+            if let weakSelf = self, let targetImageSize = weakSelf.attachPickingDelegate?.mediaPickerPreferredImgeSize(weakSelf)
             {
-                let ratio = min(1000.0 / fixedImage.size.width , 1000.0 / fixedImage.size.height)
-                //let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
-                //let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
-                if let scaled = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
+                //reduce image size for networking
+                let targetWidth = targetImageSize.width
+                let targetHeight = targetImageSize.height
+                
+                if fixedImage.size.width >= targetWidth || fixedImage.size.height >= targetHeight
                 {
-                    fixedImage = scaled
-                }
-                else
-                {
-                    assert(false, " did not  scale down an image.")
+                    let ratio = min(targetWidth / fixedImage.size.width , targetWidth / fixedImage.size.height)
+                    //let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
+                    //let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
+                    if let scaled = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
+                    {
+                        fixedImage = scaled
+                    }
+                    else
+                    {
+                        assert(false, " did not  scale down an image.")
+                    }
                 }
             }
+            
             lvSelectedMedia.type = .Image
             if let name = currentMediaName
             {

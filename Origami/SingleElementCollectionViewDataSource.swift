@@ -794,7 +794,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     
                     print("Full size file for attach does not exist. \n \(error) \n Will try to download it.  ")
                     // if not exists = start loading preview
-                    let startedLoading = DataSource.sharedInstance.downloadAttachDataForAttachById(attachId) { (data, error) -> () in
+                    let startedLoading = DataSource.sharedInstance.downloadAttachDataForAttachById(attachId) {[weak self] (data, error) -> () in
                         if let dataLoaded = data
                         {
                             do
@@ -806,20 +806,40 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                                     let previewImageData = try DataSource.sharedInstance.getAttachPreviewForFileNamed(attachFileName)
                                     do{
                                         try DataSource.sharedInstance.localDatadaseHandler?.saveImagePreview(previewImageData, forAttachById: attachId)
-                                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(){ [weak self](saveError) in
+                                            if let weakSelf = self
+                                            {
+                                                dispatch_async(dispatch_get_main_queue()){
+                                                    weakSelf.handledCollectionView?.reloadData()
+                                                }
+                                            }
+                                        }
                                     }
-                                    catch
+                                    catch let error
                                     {
-                                        
+                                        print("Could not save image preview to lodac database: \n")
+                                        print(error)
                                     }
                                 }
-                                catch{
-                                    
+                                catch let error {
+                                    print("Could NOT GET ATTACH PREVIEW for attachName: \(attachFileName): \n")
+                                    print(error)
                                 }
                             }
                             catch let saveError
                             {
                                 print("did not save loaded attach file: \(saveError)")
+                            }
+                        }
+                        else if let downloadError = error
+                        {
+                            if downloadError.code == -2003 /*not exist on server*/
+                            {
+                                guard let weakSelf = self else
+                                {
+                                    return
+                                }
+                                weakSelf.cleanAttachById(attachId)
                             }
                         }
 
@@ -845,6 +865,35 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         return nil
     }
     
+    
+    private func cleanAttachById(attachId: Int)
+    {
+        if let attaches = self.currentAttaches
+        {
+            var attachesToSave = [DBAttach]()
+            var attachesToClean = attaches
+            repeat{
+            
+                let lastAttach = attachesToClean.removeLast()
+                if let integer = lastAttach.attachId?.integerValue
+                {
+                    if integer == attachId
+                    {
+                        do{ try DataSource.sharedInstance.localDatadaseHandler?.deleteAttach(lastAttach, shouldSave: true) }
+                        catch{}
+                        
+                        continue
+                    }
+                    attachesToSave.insert(lastAttach, atIndex: 0)
+                }
+            }while !attachesToClean.isEmpty
+            
+            self.currentAttaches = attachesToSave
+            dispatch_async(dispatch_get_main_queue()){
+                self.handledCollectionView?.reloadData()
+            }
+        }
+    }
     //external
    
 }

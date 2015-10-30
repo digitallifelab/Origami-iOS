@@ -55,6 +55,7 @@
 
 "sureToChangePassword" = "Подтвердите смену пароля.";
 "attention" = "Внимание";
+"downloadingAvatarMessage" = "загружается аватар";
 
 "Signal" = "Сигнал";
 "Idea" = "Идея";
