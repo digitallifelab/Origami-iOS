@@ -68,7 +68,7 @@ class EditingMenuPopupVC: UIViewController, UITableViewDelegate, UITableViewData
         if indexPath.row >= 0 && indexPath.row < menuItems.count
         {
             cell.leftIcon.tintColor = kDayCellBackgroundColor
-            cell.menuItemlabel.text = menuItems[indexPath.row]
+            cell.menuItemlabel.text = menuItems[indexPath.row].localizedWithComment("")
             switch indexPath.row
             {
             case 0:

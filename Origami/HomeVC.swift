@@ -56,21 +56,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         //print("\(self)  viewDidLoad")
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)        
         
-        if let refresher =  DataSource.sharedInstance.dataRefresher
-        {
-            if !refresher.isCancelled && !refresher.isInProgress
-            {
-                refresher.startRefreshingElementsWithTimeoutInterval(30.0)
-            }
-        }
-        else{
-            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
-            dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
-                DataSource.sharedInstance.dataRefresher = DataRefresher()
-                DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
-                
-            })
-        }        
+        startReadingHomeScreenData(1)
     }
 
     override func didReceiveMemoryWarning()
@@ -88,26 +74,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             nightModeDidChange(nil)
         }
         
-        dispatch_async(getBackgroundQueue_DEFAULT()) { () -> Void in
-            DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
-                
-                if let weakSelf = self
-                {
-                    if info.signals == nil && info.favourites == nil && info.other == nil
-                    {
-                        return
-                    }
-                
-                
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
-                    })
-                }
-            }
-        }
-   
-        
         DataSource.sharedInstance.addObserverForNewMessagesForElement(self, elementId: All_New_Messages_Observation_ElementId)
+        
+        if let dashInfo = DataSource.sharedInstance.dashBoardInfo
+        {
+            reloadDashBoardViewWithDBElementsInfo(dashInfo)
+        }
     }
     
     override func viewDidAppear(animated: Bool)
@@ -266,10 +238,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                 {
                     weakRefreshControl.endRefreshing()
                 }
-//                if let weakSelf = self
-//                {
-//                    weakSelf.reloadDashBoardViewWithDBElementsInfo(info)
-//                }
             })
         }
     }
@@ -279,9 +247,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         
         DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
             
-            if let weakSelf = self
+            if let weakSelf = self, dashInfo = DataSource.sharedInstance.dashBoardInfo
             {
-                if info.signals == nil && info.favourites == nil && info.other == nil
+                if dashInfo.signals == nil && dashInfo.favourites == nil && dashInfo.other == nil
                 {
                     return
                 }
@@ -293,11 +261,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             }
         }
         
-        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.5))
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
             completion?()
         })
-        
         
     }
     
@@ -353,183 +320,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         self.collectionDashboard.reloadData()
         
         self.collectionDashboard.setCollectionViewLayout(hiddenSignalsLayout, animated: false)
-
-        
-//        DataSource.sharedInstance.localDatadaseHandler?.cleanMessagesWithoutElement({ () -> () in
-//            
-//        })
-
-      
     }
     
-//    func reloadDashboardView()
-//    {
-//        print("-> reloadDashboardView")
-//        //loadingAllElementsInProgress = true
-//        //let currentOffset = self.collectionDashboard.contentOffset
-//        DataSource.sharedInstance.getDashboardElements({[weak self](dashboardElements) -> () in
-//            
-//                if let aSelf = self
-//                {
-//                    if let currentCollectionDataSource = aSelf.collectionSource
-//                    {
-//                        let countCurrentSignals = currentCollectionDataSource.countSignals()
-//                        let countCurrentFavs = currentCollectionDataSource.countFavourites()
-//                        let countCurrentOther = currentCollectionDataSource.countOther()
-//                        
-//                        if let recievedElements = dashboardElements
-//                        {
-//                            var newSignalsCount = 0
-//                            var newSignals:[Element]?
-//                            if let lvNewSignals = recievedElements[1]
-//                            {
-//                                newSignals = lvNewSignals
-//                                newSignalsCount = lvNewSignals.count
-//                            }
-//                            
-//                            var newFavouritesCount = 0
-//                            var newFavs:[Element]?
-//                            if let lvNewFavs = recievedElements[2]
-//                            {
-//                                newFavs = lvNewFavs
-//                                newFavouritesCount = lvNewFavs.count
-//                            }
-//                            
-//                            var newOtherCount = 0
-//                            var newOther:[Element]?
-//                            if let lvNewOther = recievedElements[3]
-//                            {
-//                                newOther = lvNewOther
-//                                newOtherCount = lvNewOther.count
-//                            }
-//                            
-//                            if newSignalsCount == 0 && newFavouritesCount == 0 && newOtherCount == 0
-//                            {
-//                                aSelf.showAddTheVeryFirstElementPlus()
-//                                return
-//                            }
-//                            
-//                            if newSignalsCount != countCurrentSignals || newFavouritesCount != countCurrentFavs || newOtherCount != countCurrentOther
-//                            {
-//                                aSelf.shouldReloadCollection = true
-//                            }
-//                            
-//                            if let hiddenLayout = aSelf.collectionDashboard!.collectionViewLayout as? HomeSignalsHiddenFlowLayout
-//                            {
-//                                if aSelf.shouldReloadCollection || DataSource.sharedInstance.shouldReloadAfterElementChanged
-//                                {
-//                                    DataSource.sharedInstance.shouldReloadAfterElementChanged = false
-//                                    
-//                                    hiddenLayout.privSignals = newSignalsCount + 1
-//                                    
-//                                    hiddenLayout.privFavourites = newFavs
-//                                    
-//                                    hiddenLayout.privOther = newOther
-//                                    
-//                                    
-//                                    aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
-//                                   
-//                                    aSelf.collectionSource!.elementSelectionDelegate = aSelf
-//                                    
-//                                    aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
-//                                    aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-//                                    aSelf.collectionDashboard.reloadData()
-//                          
-//                                    aSelf.collectionDashboard.setCollectionViewLayout(hiddenLayout, animated: true)
-//                                    aSelf.shouldReloadCollection = false
-//                               
-//                                }
-//                                else
-//                                {
-//                                    print(" ->  hiddenLayout. Will not reload Home CollectionView.")
-//                                }
-//                            
-//                                //customLayout.invalidateLayout() // to recalculate position of home elements
-//                            }
-//                            else if let _ = aSelf.collectionDashboard?.collectionViewLayout as? HomeSignalsVisibleFlowLayout
-//                            {
-//                                if aSelf.shouldReloadCollection || DataSource.sharedInstance.shouldReloadAfterElementChanged
-//                                {
-//                                    DataSource.sharedInstance.shouldReloadAfterElementChanged = false
-//                                    
-//                                    aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
-//                                    
-//                                    let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount , favourites: newFavs, other: newOther)
-//                                    
-//                                    //                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
-//                                    
-//                                    aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
-//                                    aSelf.collectionSource!.elementSelectionDelegate = aSelf
-//                                    
-//                                    aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
-//                                    aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-//                                    aSelf.collectionDashboard.reloadData()
-//                                    //aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
-//                                    
-//                                    //                                }, completion: { (finished) -> Void in
-//                                    if aSelf.shouldReloadCollection
-//                                    {
-//                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
-//                                    }
-//                                    //                                })
-//                                    
-//                                    aSelf.shouldReloadCollection = false
-//                                }
-//                                else
-//                                {
-//                                    print(" -> visibleLayout. Will not reload Home CollectionView.")
-//                                }
-//                            }
-//                            else
-//                            {
-//                                print(" -> Hone VC. New Layout.")
-//                                
-//                                let newLayout = HomeSignalsHiddenFlowLayout(signals: newSignalsCount + 1 , favourites: newFavs, other: newOther)
-//                                
-//                                aSelf.collectionDashboard?.performBatchUpdates({ () -> Void in
-//                                    
-//                                    aSelf.collectionSource = HomeCollectionHandler(signals: newSignals, favourites: newFavs, other: newOther)
-//                                    print(" -> did assign collection datasource")
-//                                    aSelf.collectionSource!.elementSelectionDelegate = aSelf
-//                                    
-//                                    aSelf.collectionDashboard!.dataSource = aSelf.collectionSource
-//                                    aSelf.collectionDashboard!.delegate = aSelf.collectionSource
-//                                    
-//                                    //aSelf.collectionDashboard.scrollToItemAtIndexPath(NSIndexPath(forItem: 0, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Top, animated: false)
-//                                    
-//                                    }, completion: { (finished) -> Void in
-//                                        
-//                                        aSelf.collectionDashboard?.setCollectionViewLayout(newLayout, animated: true)
-//                                        aSelf.collectionDashboard.collectionViewLayout.invalidateLayout()
-//
-//                                })
-//                            }
-//                            
-//                            //aSelf.loadingAllElementsInProgress = false
-//                            aSelf.shouldReloadCollection = false
-//                        
-//                            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                          
-//                        }
-//                        else
-//                        {
-//                            if let _ = DataSource.sharedInstance.user?.token //as? String
-//                            {
-//                                aSelf.showAddTheVeryFirstElementPlus()
-//                            }
-//                            else if let weakSelf = self
-//                            {
-//                                weakSelf.showAlertWithTitle("Error", message: "Please relogin.", cancelButtonTitle: "Close")
-//                            }
-//                             UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-//                        }
-//                    }
-//                }
-//            
-//        })
-//    }
-//    
-//    
     
     func showElementCreationVC(sender:AnyObject)
     {
@@ -982,6 +774,84 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                 }
             })
         }
+    }
+    
+    //MARK: - On Initial start
+    func startReadingHomeScreenData(attemptCount:Int)
+    {
+        if attemptCount > 2
+        {
+            return
+        }
+        let fetchDashboardOp = NSBlockOperation() { _ in
+            
+            let fetchSemaphore = dispatch_semaphore_create(0)
+            
+            DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
+                    
+                    DataSource.sharedInstance.dashBoardInfo = info
+                    
+                    
+                    if let weakSelf = self, dashInfo = DataSource.sharedInstance.dashBoardInfo
+                    {
+                        if dashInfo.signals == nil && dashInfo.favourites == nil && dashInfo.other == nil
+                        {
+                            DataSource.sharedInstance.loadAllElementsInfo({ (success, failure) -> () in
+//                                if success
+//                                {
+                                    /// refetch dashboard elements
+                                    if let weakSelf = self
+                                    {
+                                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                            weakSelf.startReadingHomeScreenData(2)
+                                        })
+                                        
+                                    }
+//                                }
+                            })
+                            
+                            return
+                        }
+                        
+                        if let refresher =  DataSource.sharedInstance.dataRefresher
+                        {
+                            if !refresher.isCancelled && !refresher.isInProgress
+                            {
+                                refresher.startRefreshingElementsWithTimeoutInterval(30.0)
+                            }
+                        }
+                        else{
+                            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+                            dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
+                                DataSource.sharedInstance.dataRefresher = DataRefresher()
+                                DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                                
+                            })
+                        }
+                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            weakSelf.reloadDashBoardViewWithDBElementsInfo(dashInfo)
+                        })
+                    }
+                dispatch_semaphore_signal(fetchSemaphore)
+            }
+            
+            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 3.0))
+            
+            dispatch_semaphore_wait(fetchSemaphore, timeout )
+           
+        }
+        
+        fetchDashboardOp.completionBlock = { _ in
+            
+            if DataSource.sharedInstance.operationQueue.suspended && DataSource.sharedInstance.operationQueue.operationCount > 0
+            {
+                DataSource.sharedInstance.operationQueue.suspended = false  //starts loading stuff from network
+            }
+        }
+        
+        
+        NSOperationQueue().addOperation(fetchDashboardOp)
     }
     
 }

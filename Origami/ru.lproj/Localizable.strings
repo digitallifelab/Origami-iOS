@@ -80,5 +80,11 @@
 "Created" = "Создан";
 "Changed" = "Изменён";
 "Finished" = "Окончание";
+
+
+"Add Element" = "Добавить элемент";
+"Add Attachment" = "Прикрепить файл";
+"Chat" = "Чат";
+
 //Login attempt failures:
 "YouAreBlocked" = "Вы забокированы. Пожялуйста, Свяжитесь с администратором сервиса.";

@@ -110,20 +110,19 @@ class LoginVC: UIViewController , UITextFieldDelegate
             return
         }
         
+        guard user.userName.characters.count > 0 else
+        {
+            print("No User Email Found in Current User..........\n..........")
+            return
+        }
+        
         DataSource.sharedInstance.user = user
         NSUserDefaults.standardUserDefaults().setObject(nameField.text, forKey: loginNameKey)
         NSUserDefaults.standardUserDefaults().setObject(passwordField.text, forKey: passwordKey)
         NSUserDefaults.standardUserDefaults().synchronize()
         
         self.dismissViewControllerAnimated(true, completion: nil)
-        NSOperationQueue().addOperationWithBlock { _ in
-            
-            let userName = user.userName
-            if userName == ""
-            {
-                print("No User Email Found in Current User..........\n..........")
-                return
-            }
+        
             
             let contactsOperation = NSBlockOperation() { _ in
                 do{
@@ -209,72 +208,11 @@ class LoginVC: UIViewController , UITextFieldDelegate
                 messagesSyncOperation.queuePriority = queuePriority
             }
             
-            let bgQueue = NSOperationQueue()
+        
+            DataSource.sharedInstance.operationQueue.suspended = true
+            DataSource.sharedInstance.operationQueue.addOperations([contactsOperation, avatarsPreviewFromDatabaseOperation, messagesSyncOperation], waitUntilFinished: false)
             
-            bgQueue.addOperations([contactsOperation, avatarsPreviewFromDatabaseOperation, messagesSyncOperation], waitUntilFinished: false)
-            
-            
-            
-//            let fileHandle = FileHandler()
-//            if let fileNames = fileHandle.getAllExistingAvatarsPreviewFileNames()
-//            {
-//                for userName in fileNames
-//                {
-//                    let fixedUserName = userName.stringByReplacingOccurrencesOfString(".jpg", withString: "")
-//                    if fixedUserName == userName
-//                    {
-//                        fileHandle.loadAvatarDataForLoginName(fixedUserName) { (fullImageData, fileError) -> () in
-//                            if let error = fileError
-//                            {
-//                                print("\n -> Could not find requested user avatar... : ")
-//                                print(error)
-//                            }
-//                            else if let fullData = fullImageData, fullImage = UIImage(data: fullData), reducedImage = fullImage.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0))
-//                            {
-//                                DataSource.sharedInstance.userAvatarsHolder[loggedUserID] = reducedImage // to ram
-//                                
-//                                // and to local database for next time launch readiness
-//                                if let reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
-//                                {
-//                                    DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: loggedUserID, fileName: fixedUserName)
-//                                }
-//                            }
-//                        }
-//                    }
-//                    else
-//                    {
-//                        if let foundPerson = DataSource.sharedInstance.localDatadaseHandler?.findPersonByUserName(fixedUserName) as? DBContact , userId = foundPerson.contactId?.integerValue
-//                        {
-//                            if let avatarPreviewData = DataSource.sharedInstance.localDatadaseHandler?.readAvatarPreviewForContactId(userId), previewImage = UIImage(data: avatarPreviewData)
-//                            {
-//                                DataSource.sharedInstance.userAvatarsHolder[userId] = previewImage
-//                            }
-//                            else
-//                            {
-//                                fileHandle.loadAvatarDataForLoginName(fixedUserName) { (fullImageData, fileError) -> () in
-//                                    if let error = fileError
-//                                    {
-//                                        print("\n -> Could not find requested user avatar... : ")
-//                                        print(error)
-//                                    }
-//                                    else if let fullData = fullImageData, fullImage = UIImage(data: fullData), reducedImage = fullImage.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0))
-//                                    {
-//                                        DataSource.sharedInstance.userAvatarsHolder[userId] = reducedImage // to ram
-//                                        
-//                                        // and to local database for next time launch readiness
-//                                        if let reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
-//                                        {
-//                                            DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: userId, fileName: fixedUserName)
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//
-//                    }
-//                }
-//            }
-        }
+        
     }
     
     //MARK: UITextFieldDelegate

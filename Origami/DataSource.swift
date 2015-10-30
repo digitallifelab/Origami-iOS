@@ -41,11 +41,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     private lazy var contacts = [Contact]()
     
-    private lazy var elements = [Element]()
+//    private lazy var elements = [Element]()
     
     var languages = [Language]()
     var countries = [Country]()
    
+    lazy var operationQueue = NSOperationQueue()
     
     private lazy var pBgOperationQueue = NSOperationQueue()
     private var avatarOperationQueue:NSOperationQueue {
@@ -61,6 +62,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var shouldReloadAfterElementChanged = false
     var isRemovingObsoleteMessages = false
     var shouldLoadAllMessages = true
+    
+    var dashBoardInfo:(signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?)?
     
     var localDatadaseHandler: LocalDatabaseHandler?
     func createLocalDatabaseHandler(completion:((dbInitialization:Bool)->())?)
@@ -121,7 +124,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.user = nil
             //DataSource.sharedInstance.cleanDataCache()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
-            DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
+            //DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
             DataSource.sharedInstance.userAvatarsHolder.removeAll()
             //print("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
             //DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
@@ -300,12 +303,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             {
                 if let _ = DataSource.sharedInstance.localDatadaseHandler?.readElementById(keyElementId.integerValue)
                 {
-                    print("Saving Messages \(messages.count) for element: \(keyElementId)")
+                    //print("Saving Messages \(messages.count) for element: \(keyElementId)")
                     messagesForFoundElements += messages
                 }
                 else
                 {
-                    print("Saving messages with currently missing element : \(keyElementId)")
+                    //print("Saving messages with currently missing element : \(keyElementId)")
                     messagesForNotFoundElements += messages
                 }
               
@@ -514,74 +517,74 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
 
     
-    func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
-    {
-        
-        let bgQueue:dispatch_queue_t = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        
-        dispatch_async(bgQueue, { () -> Void in
-            if DataSource.sharedInstance.messages.isEmpty
-            {
-                
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        if let completionBlock = completionClosure
-                        {
-                            completionBlock(messages: nil)
-                        }
-                    })
-                return
-            }
-            
-            var allMessagesSet = Set<Message>()
-            for (_,lvMessages) in DataSource.sharedInstance.messages
-            {
-                allMessagesSet.unionInPlace( Set(lvMessages))
-            }
-            var sortedArray = Array(allMessagesSet)
-            
-            ObjectsConverter.sortMessagesByDate(&sortedArray, > )
-            var lastThreeItems = [Message]()
-            var index = 0
-            
-            var elementIDsToDeleteMessageSet = Set<Int>()
-            for aMessage in sortedArray
-            {
-                if lastThreeItems.count > 2
-                {
-                    break
-                }
-                
-                index += 1
-                
-                if let elementIdInt = aMessage.elementId
-                {
-                    if let _ = DataSource.sharedInstance.getElementById(elementIdInt)
-                    {
-                        lastThreeItems.insert(aMessage, atIndex: 0)
-                    }
-                    else
-                    {
-                        elementIDsToDeleteMessageSet.insert(elementIdInt)
-                    }
-                }
-                
-            }
-            
-            if !elementIDsToDeleteMessageSet.isEmpty
-            {
-                print(" \n -> deleting messages for non existing elements...")
-                DataSource.sharedInstance.removeMessagesForDeletedElements(elementIDsToDeleteMessageSet)
-            }
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                if let completionBlock = completionClosure
-                {
-                    
-                    completionBlock(messages: lastThreeItems) //return result
-                }
-            })
-        })
-        
-    }
+//    func getLastMessagesForDashboardCount(messagesQuantity:Int, completion completionClosure:((messages:[Message]?)->())? = nil)
+//    {
+//        
+//        let bgQueue:dispatch_queue_t = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+//        
+//        dispatch_async(bgQueue, { () -> Void in
+//            if DataSource.sharedInstance.messages.isEmpty
+//            {
+//                
+//                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                        if let completionBlock = completionClosure
+//                        {
+//                            completionBlock(messages: nil)
+//                        }
+//                    })
+//                return
+//            }
+//            
+//            var allMessagesSet = Set<Message>()
+//            for (_,lvMessages) in DataSource.sharedInstance.messages
+//            {
+//                allMessagesSet.unionInPlace( Set(lvMessages))
+//            }
+//            var sortedArray = Array(allMessagesSet)
+//            
+//            ObjectsConverter.sortMessagesByDate(&sortedArray, > )
+//            var lastThreeItems = [Message]()
+//            var index = 0
+//            
+//            var elementIDsToDeleteMessageSet = Set<Int>()
+//            for aMessage in sortedArray
+//            {
+//                if lastThreeItems.count > 2
+//                {
+//                    break
+//                }
+//                
+//                index += 1
+//                
+//                if let elementIdInt = aMessage.elementId
+//                {
+//                    if let _ = DataSource.sharedInstance.getElementById(elementIdInt)
+//                    {
+//                        lastThreeItems.insert(aMessage, atIndex: 0)
+//                    }
+//                    else
+//                    {
+//                        elementIDsToDeleteMessageSet.insert(elementIdInt)
+//                    }
+//                }
+//                
+//            }
+//            
+//            if !elementIDsToDeleteMessageSet.isEmpty
+//            {
+//                print(" \n -> deleting messages for non existing elements...")
+//                DataSource.sharedInstance.removeMessagesForDeletedElements(elementIDsToDeleteMessageSet)
+//            }
+//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                if let completionBlock = completionClosure
+//                {
+//                    
+//                    completionBlock(messages: lastThreeItems) //return result
+//                }
+//            })
+//        })
+//        
+//    }
     
     func addObserverForNewMessagesForElement(newObserver:MessageObserver, elementId:NSNumber) -> ResponseType
     {
@@ -678,244 +681,250 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func addNewElements(elements:[Element], completion:voidClosure?)
-    {
-        DataSource.sharedInstance.elements += elements
-        var elementIDs = Set<NSNumber>()
-        for anElement in elements
-        {
-            if let id = anElement.elementId
-            {
-                elementIDs.insert(id)
-            }
-        }
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: ["IDs" : elementIDs])
-        
-        if (completion != nil)
-        {
-            completion!()
-        }
-    }
-    
-    func getElementById(elementId:Int) -> Element?
-    {
-        let foundElements = DataSource.sharedInstance.elements.filter
-        { lvElement -> Bool in
-            if let existId = lvElement.elementId
-            {
-                return existId == elementId
-            }
-            return false
-        }
-        
-        if !foundElements.isEmpty
-        {
-            return foundElements.last
-        }
-        return  nil
-    }
-    
+//    func addNewElements(elements:[Element], completion:voidClosure?)
+//    {
+//        DataSource.sharedInstance.elements += elements
+//        var elementIDs = Set<NSNumber>()
+//        for anElement in elements
+//        {
+//            if let id = anElement.elementId
+//            {
+//                elementIDs.insert(id)
+//            }
+//        }
+//        
+//        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: ["IDs" : elementIDs])
+//        
+//        if (completion != nil)
+//        {
+//            completion!()
+//        }
+//    }
+//    
+//    func getElementById(elementId:Int) -> Element?
+//    {
+//        let foundElements = DataSource.sharedInstance.elements.filter
+//        { lvElement -> Bool in
+//            if let existId = lvElement.elementId
+//            {
+//                return existId == elementId
+//            }
+//            return false
+//        }
+//        
+//        if !foundElements.isEmpty
+//        {
+//            return foundElements.last
+//        }
+//        return  nil
+//    }
+//    
     /**
     returns array of elements, containing at leats one *Element* object
     */
-    func getRootElementTreeForElement(targetRootElementId:Int) -> [Element]?
-    {
-        var root = targetRootElementId
-        guard  root > 0 else{
-            return nil
-        }
-        
-        var elements = [Element]()
-        
-        while root > 0
-        {
-            if let foundRootElement = DataSource.sharedInstance.getElementById(root)
-            {
-                elements.append(foundRootElement)
-                root = foundRootElement.rootElementId
-            }
-            else
-            {
-                break
-            }
-        }
-        
-        if elements.isEmpty
-        {
-            return nil
-        }
-        return elements
-        
-    }
+//    func getRootElementTreeForElement(targetRootElementId:Int) -> [Element]?
+//    {
+//        var root = targetRootElementId
+//        guard  root > 0 else{
+//            return nil
+//        }
+//        
+//        var elements = [Element]()
+//        
+//        while root > 0
+//        {
+//            if let foundRootElement = DataSource.sharedInstance.getElementById(root)
+//            {
+//                elements.append(foundRootElement)
+//                root = foundRootElement.rootElementId
+//            }
+//            else
+//            {
+//                break
+//            }
+//        }
+//        
+//        if elements.isEmpty
+//        {
+//            return nil
+//        }
+//        return elements
+//        
+//    }
+//    
+//    func getSubordinateElementsForElement(elementId:Int?, shouldIncludeArchived:Bool) -> [Element]?
+//    {
+//        guard let lvElementId = elementId else {
+//            return nil
+//        }
+//        
+//        var elementsToReturn = [Element]()
+//        for lvElement in DataSource.sharedInstance.elements
+//        {
+//            if lvElement.rootElementId == lvElementId
+//            {
+//                elementsToReturn.append(lvElement)
+//            }
+//        }
+//        
+//        if !elementsToReturn.isEmpty
+//        {
+//            ObjectsConverter.sortElementsByDate(&elementsToReturn)
+//            if !shouldIncludeArchived
+//            {
+//                let newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
+//                return newElements
+//            }
+//        }
+//    
+//        return nil
+//    }
+//    
+//    func getSubordinateElementsTreeForElement(targetRootElement:Element) -> [Element]?
+//    {
+//        //var treeToReturn = [Element]()
+//        
+//        guard let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId, shouldIncludeArchived:false) else
+//        {
+//            return nil
+//        }
+//        if currentSubordinates.isEmpty
+//        {
+//            return nil
+//        }
+//        
+//        //let countSubordinates = currentSubordinates.count
+//        var subordinatesSet = Set<Element>()
+//        
+//        for lvElement in currentSubordinates
+//        {
+//            if let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId, shouldIncludeArchived:false)
+//            {
+//                if !subordinatesFirst.isEmpty
+//                {
+//                    let subSetFirst = Set(subordinatesFirst)
+//                    subordinatesSet.exclusiveOrInPlace(subSetFirst)
+//                }
+//            }
+//        }
+//    
+//        return Array(subordinatesSet)
+//       
+//    }
     
-    func getSubordinateElementsForElement(elementId:Int?, shouldIncludeArchived:Bool) -> [Element]?
-    {
-        guard let lvElementId = elementId else {
-            return nil
-        }
-        
-        var elementsToReturn = [Element]()
-        for lvElement in DataSource.sharedInstance.elements
-        {
-            if lvElement.rootElementId == lvElementId
-            {
-                elementsToReturn.append(lvElement)
-            }
-        }
-        
-        if !elementsToReturn.isEmpty
-        {
-            ObjectsConverter.sortElementsByDate(&elementsToReturn)
-            if !shouldIncludeArchived
-            {
-                let newElements = ObjectsConverter.filterArchiveElements(false, elements: elementsToReturn)
-                return newElements
-            }
-        }
+//    func getDashboardElements( completion:([Int:[Element]]?)->() )
+//    {
+//        
+//        let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
+//        dispatch_async(dispatchQueue,
+//        {
+//            if DataSource.sharedInstance.elements.isEmpty
+//            {
+//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                    completion(nil)
+//                })
+//                return
+//            }
+//            
+//            var toReturnDict = [Int:[Element]]()
+//            
+//            let preFavouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
+//                return checkedElement.isFavourite.boolValue
+//            })
+//            
+//            var favouriteElements =  ObjectsConverter.filterArchiveElements(false, elements: preFavouriteElements)
+//            
+//            if let _ = favouriteElements {
+//                ObjectsConverter.sortElementsByDate(&favouriteElements!)
+//                toReturnDict[2] = favouriteElements!
+//            }
+//            else {
+//                toReturnDict[2] = [Element]()
+//            }
+//        
+//            // ----
+//            var otherElementsSet = Set<Element>()//[Element]()
+//            
+//            let filteredMainElements = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
+//                //let rootId = element.rootElementId
+//                return (element.rootElementId == 0)
+//                
+//            })
+//            
+//            for lvElement in filteredMainElements
+//            {
+//                otherElementsSet.insert(lvElement)
+//            }
+//            
+//            let preOtherElementsArray = Array(otherElementsSet)
+//            var otherElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preOtherElementsArray)
+//            if let _ = otherElementsArray {
+//                ObjectsConverter.sortElementsByDate(&otherElementsArray!)
+//                toReturnDict[3] = otherElementsArray!
+//            }
+//            else {
+//                toReturnDict[3] = [Element]()
+//            }
+//            
+//            // get all signals
+//            let filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
+//                
+//                let signalValue = element.isSignal.boolValue
+//                //let  rootId = element.rootElementId.integerValue
+//                
+//                return (signalValue )
+//            })
+//            
+//            let signalElementsSet = Set(filteredSignals)
+//            let preSignalElementsArray = Array(signalElementsSet)
+//            
+//            //filter out archiveElements
+//            
+//            
+//            var signalElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preSignalElementsArray)
+//            if let _ = signalElementsArray{
+//                 ObjectsConverter.sortElementsByDate(&signalElementsArray!)
+//                toReturnDict[1] = signalElementsArray!
+//            }
+//            else{
+//                toReturnDict[1] = [Element]()
+//            }
+//            
+//            dispatch_async(dispatch_get_main_queue(),
+//            {
+//                _ in
+//                //let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
+//                completion(toReturnDict)
+//            })
+//        })
+//    }
     
-        return nil
-    }
-    
-    func getSubordinateElementsTreeForElement(targetRootElement:Element) -> [Element]?
-    {
-        //var treeToReturn = [Element]()
-        
-        guard let currentSubordinates = DataSource.sharedInstance.getSubordinateElementsForElement(targetRootElement.elementId, shouldIncludeArchived:false) else
-        {
-            return nil
-        }
-        if currentSubordinates.isEmpty
-        {
-            return nil
-        }
-        
-        //let countSubordinates = currentSubordinates.count
-        var subordinatesSet = Set<Element>()
-        
-        for lvElement in currentSubordinates
-        {
-            if let subordinatesFirst =  DataSource.sharedInstance.getSubordinateElementsForElement(lvElement.elementId, shouldIncludeArchived:false)
-            {
-                if !subordinatesFirst.isEmpty
-                {
-                    let subSetFirst = Set(subordinatesFirst)
-                    subordinatesSet.exclusiveOrInPlace(subSetFirst)
-                }
-            }
-        }
-    
-        return Array(subordinatesSet)
-       
-    }
-    
-    func getDashboardElements( completion:([Int:[Element]]?)->() )
-    {
-        
-        let dispatchQueue = dispatch_queue_create("elements.sorting", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(dispatchQueue,
-        {
-            if DataSource.sharedInstance.elements.isEmpty
-            {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completion(nil)
-                })
-                return
-            }
-            
-            var toReturnDict = [Int:[Element]]()
-            
-            let preFavouriteElements = DataSource.sharedInstance.elements.filter({ (checkedElement) -> Bool in
-                return checkedElement.isFavourite.boolValue
-            })
-            
-            var favouriteElements =  ObjectsConverter.filterArchiveElements(false, elements: preFavouriteElements)
-            
-            if let _ = favouriteElements {
-                ObjectsConverter.sortElementsByDate(&favouriteElements!)
-                toReturnDict[2] = favouriteElements!
-            }
-            else {
-                toReturnDict[2] = [Element]()
-            }
-        
-            // ----
-            var otherElementsSet = Set<Element>()//[Element]()
-            
-            let filteredMainElements = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
-                //let rootId = element.rootElementId
-                return (element.rootElementId == 0)
-                
-            })
-            
-            for lvElement in filteredMainElements
-            {
-                otherElementsSet.insert(lvElement)
-            }
-            
-            let preOtherElementsArray = Array(otherElementsSet)
-            var otherElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preOtherElementsArray)
-            if let _ = otherElementsArray {
-                ObjectsConverter.sortElementsByDate(&otherElementsArray!)
-                toReturnDict[3] = otherElementsArray!
-            }
-            else {
-                toReturnDict[3] = [Element]()
-            }
-            
-            // get all signals
-            let filteredSignals = DataSource.sharedInstance.elements.filter({ (element) -> Bool in
-                
-                let signalValue = element.isSignal.boolValue
-                //let  rootId = element.rootElementId.integerValue
-                
-                return (signalValue )
-            })
-            
-            let signalElementsSet = Set(filteredSignals)
-            let preSignalElementsArray = Array(signalElementsSet)
-            
-            //filter out archiveElements
-            
-            
-            var signalElementsArray = ObjectsConverter.filterArchiveElements(false, elements: preSignalElementsArray)
-            if let _ = signalElementsArray{
-                 ObjectsConverter.sortElementsByDate(&signalElementsArray!)
-                toReturnDict[1] = signalElementsArray!
-            }
-            else{
-                toReturnDict[1] = [Element]()
-            }
-            
-            dispatch_async(dispatch_get_main_queue(),
-            {
-                _ in
-                //let toReturn : [Int:[Element]] = [1:signalElementsArray, 2:favouriteElements, 3:otherElementsArray]
-                completion(toReturnDict)
-            })
-        })
-    }
-    
-    func getAllElementsSortedByActivity( completion:((elements:[Element]?) -> ())? )
-    {
-        //NSLog("_________ Started gathering elements for RecentActivityTableVC.....")
-        
-        let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
-        dispatch_async(bgQueue, { () -> Void in
-            
-            var elementsToSort = DataSource.sharedInstance.elements
-            print("-> DataSource->  getAllElementsSortedByActivity. All elements: \(elementsToSort.count)\n")
-            ObjectsConverter.sortElementsByDate(&elementsToSort)
-            
-            print("-> DataSource->  getAllElementsSortedByActivity. All elements Sorted by date: \(elementsToSort.count)\n")
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                completion?(elements: elementsToSort)
-            })
-        })
-    }
+//    func getAllElementsSortedByActivity( completion:((elements:[Element]?) -> ())? )
+//    {
+//        //NSLog("_________ Started gathering elements for RecentActivityTableVC.....")
+//        
+//        let bgQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+//        dispatch_async(bgQueue, { () -> Void in
+//            
+//            var elementsToSort = DataSource.sharedInstance.elements
+//            print("-> DataSource->  getAllElementsSortedByActivity. All elements: \(elementsToSort.count)\n")
+//            ObjectsConverter.sortElementsByDate(&elementsToSort)
+//            
+//            print("-> DataSource->  getAllElementsSortedByActivity. All elements Sorted by date: \(elementsToSort.count)\n")
+//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                completion?(elements: elementsToSort)
+//            })
+//        })
+//    }
 
-    
-    func loadAllElementsInfo(completion:(success:Bool, failure:NSError?) ->())
+    /**
+    Starts loading all elements for current user and saves thed to local database with attempt to save managed object context
+    - Returns: in completion block 
+        - true if context did save normally or if no changes occured, 
+        - false if no changes in context, 
+        - false and error if something happened
+    */
+    func loadAllElementsInfo(completion:((success:Bool, failure:NSError?) ->())?)
     {
         DataSource.sharedInstance.loadingAllElementsInProgress = true
         
@@ -925,31 +934,32 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if let allElements = result as? [Element]
             {
                 
-                if allElements .isEmpty
+                if allElements.isEmpty
                 {
-                    completion(success: false, failure: nil)
+                    completion?(success: false, failure: nil)
                     return
                 }
                 
                 DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(allElements, completion: { (didSave, error) -> () in
                     if didSave == true
                     {
-                        let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
-                        dispatch_async(backgroundQueue, { () -> Void in
-                            DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
-                            
-                            
-                            let elementsSet = Set(allElements)
-                            var elementsArrayFromSet = Array(elementsSet)
-                            
-                            ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
-                            
-                            DataSource.sharedInstance.elements += elementsArrayFromSet
-                            print("\n -> Added Elements = \(elementsArrayFromSet.count)")
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                completion(success: true, failure: nil)
-                            })
-                        })
+//                        let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
+//                        dispatch_async(backgroundQueue, { () -> Void in
+//                            DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
+//                            
+//                            
+//                            let elementsSet = Set(allElements)
+//                            var elementsArrayFromSet = Array(elementsSet)
+//                            
+//                            ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
+//                            
+//                            DataSource.sharedInstance.elements += elementsArrayFromSet
+//                            print("\n -> Added Elements = \(elementsArrayFromSet.count)")
+//                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                                completion(success: true, failure: nil)
+//                            })
+//                        })
+                        completion?(success:didSave, failure:error)
                     }
                     else
                     {
@@ -957,6 +967,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         {
                             print(insertError)
                         }
+                        completion?(success:didSave, failure:error)
                     }
                     
                     DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
@@ -964,111 +975,84 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     })
                 })
                 
-                let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
-                dispatch_async(backgroundQueue, { () -> Void in
-                    DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
-                    
-                    
-                    let elementsSet = Set(allElements)
-                    var elementsArrayFromSet = Array(elementsSet)
-                    
-                    ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
-                    
-                    DataSource.sharedInstance.elements += elementsArrayFromSet
-                    print("\n -> Added Elements = \(elementsArrayFromSet.count)")                
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completion(success: true, failure: nil)
-                    })
-                })
+//                let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
+//                dispatch_async(backgroundQueue, { () -> Void in
+//                    DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
+//                    
+//                    
+//                    let elementsSet = Set(allElements)
+//                    var elementsArrayFromSet = Array(elementsSet)
+//                    
+//                    ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
+//                    
+//                    DataSource.sharedInstance.elements += elementsArrayFromSet
+//                    print("\n -> Added Elements = \(elementsArrayFromSet.count)")                
+//                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                        completion(success: true, failure: nil)
+//                    })
+//                })
                 
-                //start loading ather info in background
-                let bgOperationQueue = NSOperationQueue()
-                bgOperationQueue.maxConcurrentOperationCount = 3
-                
-                
-                for anElement in allElements//DataSource.sharedInstance.elements
-                {
-                    if let anInt = anElement.elementId //?.integerValue
-                    {
-                        if !anElement.isArchived()
-                        {
-                            
-                            bgOperationQueue.addOperationWithBlock({ () -> Void in
-                                // load attach files info
-                                if !anElement.attachIDs.isEmpty
-                                {
-                                    DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
-                                }
-                                else if anElement.hasAttaches.boolValue
-                                {
-                                    DataSource.sharedInstance.loadAttachesInfoForElement(anInt, completion: nil)
-                                }
-                            })
-                        }
-                        DataSource.sharedInstance.loadPassWhomIdsForElement(anInt, comlpetion:nil)
-                    }
-                }
             }
             else
             {
-                completion(success: false, failure: error)
+                completion?(success: false, failure: error)
             }
             
             DataSource.sharedInstance.loadingAllElementsInProgress = false
         }
     }
-    func countExistingElementsLocked() -> Int
-    {
-        var elementsCount:Int = 0
-        
-        let aLock =  NSLock()
-        aLock.lock()
-            elementsCount = DataSource.sharedInstance.elements.count
-        aLock.unlock()
-        
-        return elementsCount
-        
-    }
-    func getAllElementsLocked() -> [Element]?
-    {
-        let aLock = NSLock()
-        var elements = [Element]()
-        aLock.lock()
-            elements += DataSource.sharedInstance.elements
-        aLock.unlock()
-        
-        if elements.isEmpty
-        {
-            return nil
-        }
-        return elements
-    }
-    
-    func addElementsLocked(newElements:[Element])
-    {
-        let aLock = NSLock()
-        aLock.lock()
-        DataSource.sharedInstance.elements += newElements
-        
-        aLock.unlock()
-        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: nil)
-        
-    }
-    
-
-    func replaceAllElementsToNew(newElements:[Element])
-    {
-        let aLock = NSLock()
-        aLock.name = "Elements replacer lock"
-        aLock.lock()
-        DataSource.sharedInstance.elements.removeAll(keepCapacity: true)
-        DataSource.sharedInstance.elements += newElements
-        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-        aLock.unlock()
-        
-        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
-    }
+//    func countExistingElementsLocked() -> Int
+//    {
+//        var elementsCount:Int = 0
+//        
+//        let aLock =  NSLock()
+//        aLock.lock()
+//            elementsCount = DataSource.sharedInstance.elements.count
+//        aLock.unlock()
+//        
+//        return elementsCount
+//        
+//    }
+//    func getAllElementsLocked() -> [Element]?
+//    {
+//        let aLock = NSLock()
+//        var elements = [Element]()
+//        aLock.lock()
+//            elements += DataSource.sharedInstance.elements
+//        aLock.unlock()
+//        
+//        if elements.isEmpty
+//        {
+//            return nil
+//        }
+//        return elements
+//    }
+//    
+//    func addElementsLocked(newElements:[Element])
+//    {
+//        let aLock = NSLock()
+//        aLock.lock()
+//        DataSource.sharedInstance.elements += newElements
+//        
+//        aLock.unlock()
+//        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+//        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: nil)
+//        
+//    }
+//    
+//
+//    func replaceAllElementsToNew(newElements:[Element])
+//    {
+//        let aLock = NSLock()
+//        aLock.name = "Elements replacer lock"
+//        aLock.lock()
+//        DataSource.sharedInstance.elements.removeAll(keepCapacity: true)
+//        DataSource.sharedInstance.elements += newElements
+//        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
+//        aLock.unlock()
+//        
+//        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
+//    }
     
     func editElement(element:Element, completionClosure completion:((edited:Bool) -> ())? )
     {
@@ -1153,14 +1137,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func setElementFinishDate(elementId:Int, date:String, completion:((success:Bool)->())?)
+    func setElementFinishDate(elementId:Int, date:NSDate, completion:((success:Bool)->())?)
     {
-        DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: date) { (success) -> () in
+        guard let dateString = date.dateForRequestURL() else
+        {
+            completion?(success:false)
+            return
+        }
+        
+        DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: dateString) { (success) -> () in
             if success
             {
-                if let existElement = DataSource.sharedInstance.getElementById(elementId)
+                if let existElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
                 {
-                    existElement.finishDate = date.dateFromHumanReadableDateString()
+                    existElement.dateFinished = date
                 }
             }
             completion?(success:success)
@@ -1172,9 +1162,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.setElementFinishState(elementId, finishState: newFinishState) { (success) -> () in
             if success
             {
-                if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
                 {
-                    existingElement.finishState = newFinishState
+                    existingElement.finishState = NSNumber(integer: newFinishState)
                 }
             }
             completion?(success: success)
@@ -1725,46 +1715,46 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         return nil
     }
-    
-    func getContactsForElement(elementId:Int, completion:contactsArrayClosure?)
-    {
-        if let completionClosure = completion
-        {
-            var contactsToReturn:[Contact]
-            
-            if let lvElement = DataSource.sharedInstance.getElementById(elementId)
-            {
-                if lvElement.passWhomIDs.count > 0
-                {
-                    contactsToReturn = [Contact]()
-                    for lvContactId in lvElement.passWhomIDs
-                    {
-                        var lvContacts = DataSource.sharedInstance.contacts.filter {lvContact -> Bool in
-                            
-                            return (lvContact.contactId == lvContactId)
-                        }
-                        
-                        if lvContacts.count > 0
-                        {
-                            let lastContact = lvContacts.removeLast()
-                            contactsToReturn.append(lastContact)
-                        }
-                    }
-                    
-                    if contactsToReturn.isEmpty
-                    {
-                        completionClosure(nil)
-                        return
-                    }
-                    completionClosure(contactsToReturn)
-                    return
-                }
-            }
-            
-            completionClosure(nil)
-            return
-        }
-    }
+//    
+//    func getContactsForElement(elementId:Int, completion:contactsArrayClosure?)
+//    {
+//        if let completionClosure = completion
+//        {
+//            var contactsToReturn:[Contact]
+//            
+//            if let lvElement = DataSource.sharedInstance.getElementById(elementId)
+//            {
+//                if lvElement.passWhomIDs.count > 0
+//                {
+//                    contactsToReturn = [Contact]()
+//                    for lvContactId in lvElement.passWhomIDs
+//                    {
+//                        var lvContacts = DataSource.sharedInstance.contacts.filter {lvContact -> Bool in
+//                            
+//                            return (lvContact.contactId == lvContactId)
+//                        }
+//                        
+//                        if lvContacts.count > 0
+//                        {
+//                            let lastContact = lvContacts.removeLast()
+//                            contactsToReturn.append(lastContact)
+//                        }
+//                    }
+//                    
+//                    if contactsToReturn.isEmpty
+//                    {
+//                        completionClosure(nil)
+//                        return
+//                    }
+//                    completionClosure(contactsToReturn)
+//                    return
+//                }
+//            }
+//            
+//            completionClosure(nil)
+//            return
+//        }
+//    }
     
     func addContact(contactId:Int, toElement elementId:Int, completion completionClosure:(success:Bool, error:NSError?) -> ())
     {
@@ -1860,24 +1850,25 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         NSOperationQueue().addOperationWithBlock { () -> Void in
             DataSource.sharedInstance.serverRequester.unPassElement(elementId, fromSeveralContacts: contactsIDsSet) { (succeededIds, failedIds) -> () in
                 
-                if let existingElement = DataSource.sharedInstance.getElementById(elementId)
+                if let existingParticipants = DataSource.sharedInstance.participantIDsForElement[elementId]
                 {
                     if !succeededIds.isEmpty
                     {
                         let succeededSet = Set(succeededIds)
-                        let currentPassWhomIDs = existingElement.passWhomIDs
-                        let filteredOut = currentPassWhomIDs.filter({ (contactID) -> Bool in
-                            if succeededSet.contains(contactID)
-                            {
-                                return false
-                            }
-                            return true
-                        })
-                        existingElement.passWhomIDs = filteredOut
+                        let currentPassWhomIDs = existingParticipants.subtract(succeededSet)
+                        
+//                        let filteredOut = currentPassWhomIDs.filter({ (contactID) -> Bool in
+//                            if succeededSet.contains(contactID)
+//                            {
+//                                return false
+//                            }
+//                            return true
+//                        })
+                        DataSource.sharedInstance.participantIDsForElement[elementId] = currentPassWhomIDs
                     }
                     if !failedIds.isEmpty
                     {
-                        print("\n Failed to detach contacts:\(failedIds) from element \(elementId)\n")
+                        print("\n FAILED to detach contacts:\(failedIds) from element \(elementId)\n")
                     }
                 }
                 
@@ -2044,6 +2035,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.loadAvatarDataForUserName(aName, completion: { (avatarData, error) -> () in
             if let avatarBytes = avatarData
             {
+                //debug  
+                print("-> Downloaded \(avatarBytes.length) bytes for avatar.")
+                
                 if let avatar = UIImage(data: avatarBytes)
                 {
                     if let reducedImage = DataSource.sharedInstance.reduceImageSize(avatar, toSize: CGSizeMake(200, 200)), let avatarData = UIImageJPEGRepresentation(reducedImage, 1.0)

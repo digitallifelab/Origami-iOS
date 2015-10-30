@@ -489,9 +489,11 @@ class LocalDatabaseHandler
             signalsRequest.predicate = NSPredicate(format: "isSignal = true AND dateArchived = nil")
             signalsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
             
-            self.privateContext.performBlockAndWait { _ in
+            let context = self.privateContext
+            
+            context.performBlockAndWait { _ in
                 do{
-                    if let signalElements = try self.privateContext.executeFetchRequest(signalsRequest) as? [DBElement]
+                    if let signalElements = try context.executeFetchRequest(signalsRequest) as? [DBElement]
                     {
                         if signalElements.count > 0
                         {
@@ -509,9 +511,9 @@ class LocalDatabaseHandler
             favouritesRequest.shouldRefreshRefetchedObjects = shouldRefetch
             favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
             favouritesRequest.predicate = NSPredicate(format: "isFavourite = true AND dateArchived = nil")
-            self.privateContext.performBlockAndWait { _ in
+            context.performBlockAndWait { _ in
                 do{
-                    if let favouriteElements = try self.privateContext.executeFetchRequest(favouritesRequest) as? [DBElement]
+                    if let favouriteElements = try context.executeFetchRequest(favouritesRequest) as? [DBElement]
                     {
                         if favouriteElements.count > 0
                         {
@@ -530,9 +532,9 @@ class LocalDatabaseHandler
             otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
             otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId = 0 AND dateArchived = nil")
             
-            self.privateContext.performBlockAndWait { _ in
+            context.performBlockAndWait { _ in
                 do{
-                    if let otherDashboardElements = try self.privateContext.executeFetchRequest(otherDashboardElementsRequest) as? [DBElement]
+                    if let otherDashboardElements = try context.executeFetchRequest(otherDashboardElementsRequest) as? [DBElement]
                     {
                         if otherDashboardElements.count > 0
                         {
@@ -1930,12 +1932,6 @@ class LocalDatabaseHandler
     func saveAttachToLocalDatabase(attach:AttachFile, shouldSaveContext:Bool = false) throws -> DBAttach
     {
         
-        guard let newAttach = NSEntityDescription.insertNewObjectForEntityForName("DBAttach", inManagedObjectContext: self.privateContext) as? DBAttach else
-        {
-            let insertError = OrigamiError.UnknownError
-            throw insertError
-        }
-        
         var noAttachError:ErrorType?
         do
         {
@@ -1950,6 +1946,12 @@ class LocalDatabaseHandler
         {
             let existingAttachError = OrigamiError.PreconditionFailure(message: "target DBAttach already exists in local database")
             throw existingAttachError
+        }
+        
+        guard let newAttach = NSEntityDescription.insertNewObjectForEntityForName("DBAttach", inManagedObjectContext: self.privateContext) as? DBAttach else
+        {
+            let insertError = OrigamiError.UnknownError
+            throw insertError
         }
         
         //perform actual data saving work

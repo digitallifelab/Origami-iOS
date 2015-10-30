@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UIViewControllerTransitioningDelegate,*/ ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate , FinishTaskResultViewDelegate, AttachViewerDelegate {
+class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UIViewControllerTransitioningDelegate,*/ ElementSelectionDelegate, AttachmentSelectionDelegate, AttachPickingDelegate, UIPopoverPresentationControllerDelegate , UIActionSheetDelegate, MessageTapDelegate, UINavigationControllerDelegate, UIAlertViewDelegate, TableItemPickerDelegate , FinishTaskResultViewDelegate, AttachViewerDelegate {
 
     //var currentElement:Element?
     var currentElement:DBElement?
@@ -665,10 +665,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             popoverObject?.delegate = self
             
             leftTopMenuPopupVC.preferredContentSize = CGSizeMake(200, 180.0)
-            self.presentViewController(leftTopMenuPopupVC, animated: true, completion: { () -> Void in
-                
-            })
-
+            self.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
         }
         else
         {
@@ -685,8 +682,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             else
             {
+                //self.parentViewController?.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
                 
-                self.parentViewController?.presentViewController(leftTopMenuPopupVC, animated: true, completion: nil)
+                let ios7ActionSheet = UIActionSheet(title: "Choose Option", delegate: self, cancelButtonTitle: nil, destructiveButtonTitle: "cancel".localizedWithComment(""))
+                
+                
+                ios7ActionSheet.addButtonWithTitle("Add Element".localizedWithComment(""))
+                ios7ActionSheet.addButtonWithTitle("Add Attachment".localizedWithComment(""))
+                ios7ActionSheet.addButtonWithTitle("Chat".localizedWithComment(""))
+                
+                ios7ActionSheet.showFromToolbar(self.navigationController!.toolbar)
             }
         }
         
@@ -707,33 +712,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 
                 if #available (iOS 8.0, *)
                 {
-                    if let popover = iOS7PopoverController //iPad
-                    {
-                        popover.dismissPopoverAnimated(false)
-                        self.iOS7PopoverController = nil
-                    }
-                    else //iPhone with iOS 7
-                    {
-                        self.parentViewController?.dismissViewControllerAnimated(false, completion: nil)
-                    }
-                    
-                    if let targetString = target
-                    {
-                        switch targetString
-                        {
-                        case "Add Element":
-                            self.elementAddNewSubordinatePressed()
-                        case "Add Attachment":
-                            self.startAddingNewAttachFile(nil)
-                        case "Chat":
-                            self.showChatForCurrentElement()
-                        default:
-                            break
-                        }
-                    }
-                }
-                else
-                {
                     self.dismissViewControllerAnimated(false,completion: nil)
                     
                     if target != nil
@@ -750,7 +728,28 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                             break
                         }
                     }
-
+                }
+                else
+                {
+                    if let popover = iOS7PopoverController //iPad
+                    {
+                        popover.dismissPopoverAnimated(false)
+                        self.iOS7PopoverController = nil
+                        if let targetString = target
+                        {
+                            switch targetString
+                            {
+                            case "Add Element":
+                                self.elementAddNewSubordinatePressed()
+                            case "Add Attachment":
+                                self.startAddingNewAttachFile(nil)
+                            case "Chat":
+                                self.showChatForCurrentElement()
+                            default:
+                                break
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -761,6 +760,26 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.None
     }
+    
+    //MARK: - UIActionSheetDelegate
+    func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
+        if buttonIndex != actionSheet.cancelButtonIndex
+        {
+            switch buttonIndex
+            {
+            case 1:
+                elementAddNewSubordinatePressed()
+            case 2:
+                startAddingNewAttachFile(nil)
+            case 3:
+                showChatForCurrentElement()
+            default:
+                break
+            }
+        }
+    }
+    
+
     //MARK: ElementComposingDelegate
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
@@ -1055,12 +1074,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 if let weakSelf = self
                 {
                     let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
-                    print("old count: \(oldItemsCount)")
+                    print("items in section old count: \(oldItemsCount)")
                     weakSelf.currentElement = existingOurElement
                     weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
                     
-                    let newItemsCount = weakSelf.collectionDataSource!.countAllItems()
-                    print("newCount: \(newItemsCount)")
+                    let newItemsCount = weakSelf.collectionDataSource?.countAllItems()
+                    print("items in section newCount: \(newItemsCount)")
                     if oldItemsCount != newItemsCount
                     {
                         weakSelf.prepareCollectionViewDataAndLayout()
@@ -1244,8 +1263,17 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             attachImagePickerVC.attachPickingDelegate = self
             
             //self.presentViewController(attachImagePickerVC, animated: true, completion: nil)
-            
-            self.navigationController?.pushViewController(attachImagePickerVC, animated: true)
+//            if #available (iOS 8.0, *)
+//            {
+                self.navigationController?.pushViewController(attachImagePickerVC, animated: true)
+//            }
+//            else
+//            {
+//                var vcs = self.navigationController!.viewControllers
+//                vcs.append(attachImagePickerVC)
+//                
+//                self.navigationController!.setViewControllers(vcs, animated: true)
+//            }
         }
     }
     
@@ -1439,13 +1467,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func finishElementWithFinishState(state:ElementFinishState)
     {
-        if let current = self.currentElement, elementIdInt = current.elementId?.integerValue, dateString = NSDate().dateForRequestURL()
+        if let current = self.currentElement, elementIdInt = current.elementId?.integerValue
         {
             let finishState = state.rawValue
             DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
                 if edited
                 {
-                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: dateString, completion: {[weak self] (success) -> () in
+                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: NSDate(), completion: {[weak self] (success) -> () in
                         if let weakSelf = self
                         {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -1580,7 +1608,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         operations.append(editingOp)
         
-        if let lvFinishDateToSet = copy.finishDate?.dateForRequestURL()
+        if let lvFinishDateToSet = copy.finishDate//?.dateForRequestURL()
         {
             let setFinishDateOp = NSBlockOperation() { _ in
                 

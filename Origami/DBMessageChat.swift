@@ -20,7 +20,7 @@ class DBMessageChat: NSManagedObject {
             if selfId != message.messageId
             {
                 self.messageId = NSNumber(integer:message.messageId)
-                print("---> WARNING:  Message did change messageId: \(selfId) -> \(self.messageId)")
+               // print("---> WARNING:  Message did change messageId: \(selfId) -> \(self.messageId)")
             }
         }
         else

@@ -14,7 +14,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
 
     var currentElement:DBElement?
     
-    @IBOutlet var chatTable:UITableView!
+    @IBOutlet weak var chatTable:UITableView!
     @IBOutlet var bottomControlsContainerView:ChatTextInputView!
     @IBOutlet var topNavBarBackgroundView:UIView!
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
@@ -38,6 +38,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         
         NSNotificationCenter.defaultCenter().removeObserver(self.mainContext!, name: NSManagedObjectContextDidSaveNotification, object: nil)
         mainContext = nil
+        messagesFetchController?.delegate = nil
+        messagesFetchController = nil
     }
     
     override func viewDidLoad() {
@@ -49,15 +51,35 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         
         setupNavigationBar()
         
-        chatTable.rowHeight = UITableViewAutomaticDimension
-        chatTable.estimatedRowHeight = 100.0
-        chatTable.delegate = self
-        chatTable.dataSource = self
+        chatTable?.rowHeight = UITableViewAutomaticDimension
+        chatTable?.estimatedRowHeight = 100.0
+      
+        
         if let existContext = self.mainContext
         {
             NSNotificationCenter.defaultCenter().removeObserver(existContext)
         }
+    }
+
+    override func didReceiveMemoryWarning()
+    {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.toolbarHidden = true
+        let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        setAppearanceForNightModeToggled(nightModeOn)
+        turnNightModeOn(nightModeOn)
+        bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
+        
         mainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        
+        chatTable?.delegate = self
+        chatTable?.dataSource = self
         
         if let elementId = currentElement?.elementId?.integerValue, context = self.mainContext
         {
@@ -72,11 +94,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
             messagesFetchController?.delegate = self
             
             NSNotificationCenter.defaultCenter().addObserver(context, selector: "mergeChangesFromContextDidSaveNotification:", name: NSManagedObjectContextDidSaveNotification, object: DataSource.sharedInstance.localDatadaseHandler!.getPrivateContext())
-           
+            
         }
-        
-
-        
         
         do{
             try messagesFetchController?.performFetch()
@@ -84,24 +103,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         catch let error as NSError {
             print("messagesFetchController fetch messages error:\n \(error)")
         }
-       
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.toolbarHidden = true
-        let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
-        setAppearanceForNightModeToggled(nightModeOn)
-        turnNightModeOn(nightModeOn)
-        bottomControlsContainerView.endTyping(clearText: true) // sets default attributed text to textView
-        
-        //chatTable.reloadSections(NSIndexSet(index: 0), withRowAnimation: .Bottom)
         
         
     }
@@ -133,6 +134,14 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         self.navigationController?.toolbarHidden = false
         //NSNotificationCenter.defaultCenter().removeObserver(self.mainContext, name: NSManagedObjectContextDidSaveNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kLongPressMessageNotification, object: nil)
+        if let aMainContext = self.mainContext
+        {
+            NSNotificationCenter.defaultCenter().removeObserver(aMainContext)
+            self.messagesFetchController?.delegate = nil
+            self.messagesFetchController = nil
+            self.mainContext = nil
+            self.chatTable?.dataSource = nil
+        }
     }
     
     
@@ -310,11 +319,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         
     //MARK: - NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
-        self.chatTable.beginUpdates()
+        self.chatTable?.beginUpdates()
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        self.chatTable.endUpdates()
+        self.chatTable?.endUpdates()
         let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 0.5))
         dispatch_after(timeout, dispatch_get_main_queue(), {[weak self] () -> Void in
             if let weakSelf = self
@@ -329,36 +338,49 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)
     {
-        if let messageObject = anObject as? DBMessageChat
-        {
-            switch type
-            {
-                case .Insert:
-                print("did Insert message: \n -date:\(messageObject.dateCreated!) \n -text:\n\(messageObject.textBody!)")
-                if let inPath = indexPath
+        let weakSelfBlock =
+        { [weak self] () -> () in
+            
+                guard let weakSelf = self else
                 {
-                    self.chatTable.insertRowsAtIndexPaths([inPath], withRowAnimation: .None)
+                    controller.delegate = nil
+                    return
                 }
-                else if let newPath = newIndexPath
+            
+                if let messageObject = anObject as? DBMessageChat
                 {
-                     self.chatTable.insertRowsAtIndexPaths([newPath], withRowAnimation: .None)
+                    switch type
+                    {
+                    case .Insert:
+                        print("did Insert message: \n -date:\(messageObject.dateCreated!) \n -text:\n\(messageObject.textBody!)")
+                        if let inPath = indexPath
+                        {
+                            weakSelf.chatTable.insertRowsAtIndexPaths([inPath], withRowAnimation: .None)
+                        }
+                        else if let newPath = newIndexPath
+                        {
+                            weakSelf.chatTable.insertRowsAtIndexPaths([newPath], withRowAnimation: .None)
+                        }
+                    case .Move:
+                        print("did Move message: \n -date:\(messageObject.dateCreated!) \n -text:  \(messageObject.textBody!)")
+                        if let inPath = indexPath
+                        {
+                            print("inPath: \(inPath)")
+                        }
+                        if let newPath = newIndexPath
+                        {
+                            print("newPath: \(newPath)")
+                        }
+                    case .Update:
+                        print("did Update message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
+                    case .Delete:
+                            print("did Delete message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
+                    }
                 }
-                case .Move:
-                print("did Move message: \n -date:\(messageObject.dateCreated!) \n -text:  \(messageObject.textBody!)")
-                if let inPath = indexPath
-                {
-                    print("path: \(inPath)")
-                }
-                if let newPath = newIndexPath
-                {
-                    print("path: \(newPath)")
-                }
-                case .Update:
-                print("did Update message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
-                case .Delete:
-                print("did Delete message: \n -date:\(messageObject.dateCreated!) \n -text: \(messageObject.textBody!)")
-            }
         }
+        
+        weakSelfBlock()
+
     }
     
 
@@ -375,7 +397,6 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         contactsButton.addTarget(self, action: "showContactsChecker", forControlEvents: .TouchUpInside)
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: contactsButton)
-        
     }
     
     func setupNavigationTitleView()
