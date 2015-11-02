@@ -54,7 +54,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return pBgOperationQueue
     }
     //private lazy var dataCache:NSCache = NSCache()
-    var pendingAttachFileDataDownloads = [Int:NSOperation]()
+    var pendingAttachFileDataDownloads = [Int:NSURLSessionDataTask]()
     var pendingUserAvatarsDownolads = [String:Int]()
     lazy var userAvatarsHolder = [Int:UIImage]()
     lazy var participantIDsForElement = [Int:Set<Int>]()
@@ -206,6 +206,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
         }
     }
+    
     
     //MARK: - Message
     //MARK: -
@@ -377,6 +378,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if let saveError = error
                     {
                         completion?(saveError)
+                        DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(nil)
+                        
                         return
                     }
 //                    if saved
@@ -384,6 +387,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
 //                        print("DataSource did save new Message to local database")
 //                        
 //                    }
+                    DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(nil)
                     completion?(nil)
                 })
             }
@@ -1529,40 +1533,47 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func downloadAttachDataForAttachById(id:Int, completion:((data:NSData?, error:NSError?)->())? ) -> (Bool)
     {
-        
-        
         if let _ = DataSource.sharedInstance.pendingAttachFileDataDownloads[id]
         {
             return false
         }
         
-        
-        
-        let downloadOperation = NSBlockOperation() { _ in
-            
-            DataSource.sharedInstance.serverRequester.loadDataForAttach(id) { (attachFileData, loadingError) -> () in
-              
-                
+        do
+        {
+            let downLoadAttachTask = try DataSource.sharedInstance.serverRequester.loadDataForAttach(id) {(attachFileData, loadingError) -> () in
                 completion?(data:attachFileData, error: loadingError)
                 
                 DataSource.sharedInstance.cancelDownloadingFileForAttachById(id)
             }
+            
+            let downloadOperation = NSBlockOperation() { _ in
+                
+                downLoadAttachTask.resume()
+            }
+            
+            if #available(iOS 8.0, *)
+            {
+                downloadOperation.qualityOfService = NSQualityOfService.Utility
+            }
+            else
+            {
+                downloadOperation.queuePriority = .Low
+            }
+            
+            DataSource.sharedInstance.pendingAttachFileDataDownloads[id] = downLoadAttachTask
+            
+            DataSource.sharedInstance.avatarOperationQueue.addOperation(downloadOperation)
+            
+            return true
+            
         }
-        
-        if #available(iOS 8.0, *)
+        catch let taskCreationError
         {
-            downloadOperation.qualityOfService = NSQualityOfService.Utility
+            print("Could Not create attach File Data DOwnloading task:")
+            print(taskCreationError)
+            return false
         }
-        else
-        {
-            downloadOperation.queuePriority = .Low
-        }
-       
-        DataSource.sharedInstance.pendingAttachFileDataDownloads[id] = downloadOperation
         
-        DataSource.sharedInstance.avatarOperationQueue.addOperation(downloadOperation)
-        
-        return true
     }
     
     func cancelDownloadingAttachesByIDs(attachIDs:Set<Int>)
@@ -1576,9 +1587,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func cancelDownloadingFileForAttachById(id:Int) -> Bool
     {
-        if let downloadingOperation = DataSource.sharedInstance.pendingAttachFileDataDownloads[id]
+        if let downloadingDataTask = DataSource.sharedInstance.pendingAttachFileDataDownloads[id]
         {
-            downloadingOperation.cancel()
+            downloadingDataTask.cancel()
             DataSource.sharedInstance.pendingAttachFileDataDownloads[id] = nil
             return true
         }
@@ -1672,43 +1683,20 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)
+    func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
     {
-//        let sender = NSProcessInfo.processInfo()
-//        let name = sender.processName
-//        let identifier = sender.processIdentifier
-//        let availableMenory = sender.physicalMemory
-        
-        DataSource.sharedInstance.serverRequester.loadAllContacts { (contacts, error) -> () in
-            if error != nil
-            {
-                print(" ALL Contacts loading failed: \n \(error!.localizedDescription)")
-                if let completionBlock = completion
-                {
-                    completionBlock(contacts: nil, error: error)
-                }
-            }
-            else
-            {
-                if contacts!.isEmpty
-                {
-                    print("WARNING!: Loaded empty contacts!!!!!")
-                    if let completionBlock = completion
-                    {
-                        completionBlock(contacts: nil, error: error)
-                    }
-                }
-                else
-                {
-                    print(" -> Loaded ALL contacts: \(contacts!.count)")
-                    if let completionBlock = completion
-                    {
-                        completionBlock(contacts: contacts, error: nil)
-                    }
-                }
-            }
+        do
+        {
+            let allContactsTask = try DataSource.sharedInstance.serverRequester.loadAllContacts(completion)
+            return allContactsTask
+        }
+        catch let error
+        {
+            throw error
         }
     }
+    
+    
     
     func getContactsByIds(contactIDs:Set<Int>) -> [Contact]?
     {
@@ -1993,6 +1981,36 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     
     
+    func searchForContactByEmail(emailString:String, completion:((Contact?)->())?)
+    {
+        dispatch_async( getBackgroundQueue_UTILITY()) {
+           
+            DataSource.sharedInstance.serverRequester.searchForNewContactByEmail(emailString) { (userInfo, error) -> () in
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                        if let lvError = error
+                        {
+                            completion?(nil)
+                            print("Could not fing person by given email: ")
+                            
+                            print(lvError)
+                            return
+                        }
+                        
+                        guard let info = userInfo else
+                        {
+                            completion?(nil)
+                            return
+                        }
+                        
+                        let aContact = Contact(info: info)
+                        
+                        completion?(aContact)
+                }
+            }
+        }       
+    }
+    
     //MARK: - Avatars
     
     func getAvatarForUserId(userIdInt:Int) -> UIImage?
@@ -2087,6 +2105,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     print(" Did not recieve avatar image bytes.")
                     DataSource.sharedInstance.pendingUserAvatarsDownolads[aName] = nil
+                    let avatarFinishLoadingNotif = NSNotification(name: kAvatarDidFinishDownloadingNotification, object: nil, userInfo: ["userName":aName, "userId":info.id])
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        NSNotificationCenter.defaultCenter().postNotification(avatarFinishLoadingNotif)
+                    })
                 }
              
                 return
@@ -2097,6 +2120,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 print(" Error while downloading avatar for userName: \(aName): \n \(anError.description) ")
             }
             DataSource.sharedInstance.pendingUserAvatarsDownolads[aName] = nil
+            let avatarFinishLoadingNotif = NSNotification(name: kAvatarDidFinishDownloadingNotification, object: nil, userInfo: ["userName":aName, "userId":info.id])
+            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                NSNotificationCenter.defaultCenter().postNotification(avatarFinishLoadingNotif)
+            })
         })
 
     }

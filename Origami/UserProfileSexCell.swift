@@ -14,7 +14,7 @@ class UserProfileSexCell: UICollectionViewCell {
 
     @IBOutlet weak var switcher:UISegmentedControl?
     
-    var delegate:UserProfileCollectionCellDelegate?
+    weak var delegate:UserProfileCollectionCellDelegate?
     let cellType:ProfileTextCellType = .Sex
 
     

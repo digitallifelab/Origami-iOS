@@ -654,7 +654,22 @@ class LocalDatabaseHandler
     
     func readElementByIdAsync(elementId:Int, completion:((DBElement?)->())?)
     {
-        dispatch_async(getBackgroundQueue_CONCURRENT()) { () -> Void in
+//        dispatch_async(getBackgroundQueue_CONCURRENT()) { () -> Void in
+//            guard let foundElement = self.readElementById(elementId) else
+//            {
+//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                    completion?(nil)
+//                })
+//                
+//                return
+//            }
+//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                completion?(foundElement)
+//            })
+//        }
+        
+        
+        let bgOpUserInitiated = NSBlockOperation() {
             guard let foundElement = self.readElementById(elementId) else
             {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -667,6 +682,20 @@ class LocalDatabaseHandler
                 completion?(foundElement)
             })
         }
+        
+        if #available(iOS 9.0, *)
+        {
+            bgOpUserInitiated.qualityOfService = NSQualityOfService.UserInitiated
+        }
+        else
+        {
+            bgOpUserInitiated.queuePriority = .High
+        }
+        
+        let backgroundQueue = NSOperationQueue()
+        backgroundQueue.maxConcurrentOperationCount = 2
+        
+        backgroundQueue.addOperation(bgOpUserInitiated)
        
     }
     
@@ -840,7 +869,7 @@ class LocalDatabaseHandler
                 }
                 else
                 {
-                    print("inserting new message into database")
+                    //print("inserting new message into database")
                     
                     if let message = NSEntityDescription.insertNewObjectForEntityForName("DBMessageChat", inManagedObjectContext: self.privateContext) as? DBMessageChat
                     {
@@ -896,11 +925,22 @@ class LocalDatabaseHandler
         if context.hasChanges
         {
             context.performBlock() {
-                do{
+                do
+                {
                     try context.save()
                     print("Dis Save Context after PAIRING")
-                    completion?()
                     
+//                    do
+//                    {
+//                        try self.deleteMessagesWithoutElement()
+//                        completion?()
+//                    }
+//                    catch let messagesCleanUpError
+//                    {
+//                        print(" Did not delete messages without target element:")
+//                        print(messagesCleanUpError)
+//                         completion?()
+//                    }
                 }
                 catch{
                     print("Dis NOT Save Context after PAIRING")
@@ -912,8 +952,106 @@ class LocalDatabaseHandler
         {
             print("Dis NOT Save Context after PAIRING - No Changes")
             completion?()
+//            do
+//            {
+//                try self.deleteMessagesWithoutElement()
+//            }
+//            catch let deletingError
+//            {
+//                print(" Did not delete messages without target element:")
+//                print(deletingError)
+//            }
         }
-      
+        
+        
+    }
+    
+    
+    
+    func deleteMessagesWithoutElement() throws
+    {
+        let context = self.privateContext
+        var thrownError:ErrorType?
+        
+        let fetchDeleteRequest = NSFetchRequest(entityName: "DBMessageChat")
+        fetchDeleteRequest.predicate = NSPredicate(format: "targetElement = nil")
+        fetchDeleteRequest.propertiesToFetch = ["elementId"]
+        
+        //first check , if we have to perform any delete action at all
+        var errorCount:NSError?
+        let messagesToDeleteCount = context.countForFetchRequest(fetchDeleteRequest, error: &errorCount)
+        
+        guard messagesToDeleteCount > 0 else
+        {
+            return
+        }
+        
+        context.performBlockAndWait { () -> Void in
+            guard let storeCoordinator = context.persistentStoreCoordinator else
+            {
+                thrownError = OrigamiError.UnknownError
+                return
+            }
+        
+            if #available(iOS 9.0, *)
+            {
+                let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchDeleteRequest)
+                batchDeleteRequest.affectedStores = storeCoordinator.persistentStores
+                do
+                {
+                    let result = try context.executeRequest(batchDeleteRequest)
+                    
+                    print(" -> Batch Delete Request deleted messages with result: \(result)")
+                    do
+                    {
+                        try context.save()
+                        print(" -> Batch Delete Request DID SAVE context after batch delete messages iOS 9.")
+                    }
+                    catch let saveContextError
+                    {
+                        thrownError = saveContextError
+                    }
+                }
+                catch let batchDeleteError
+                {
+                    thrownError = batchDeleteError
+                }
+            }
+            else
+            {
+                // Fallback on earlier versions
+                do
+                {
+                    if let foundMessagesWothoutTargetElement = try context.executeFetchRequest(fetchDeleteRequest) as? [DBMessageChat]
+                    {
+                        for aMessage in foundMessagesWothoutTargetElement
+                        {
+                            context.deleteObject(aMessage)
+                        }
+                    }
+                    do
+                    {
+                        try context.save()
+                    }
+                    catch let saveContextPreIos9Error
+                    {
+                        thrownError = saveContextPreIos9Error
+                    }
+                    
+                }
+                catch let fetchError
+                {
+                    thrownError = fetchError
+                }
+            }
+        }
+        
+        if let errorHappened = thrownError
+        {
+            throw errorHappened
+        }
+        
+        print("Successfully deleted messages without target element")
     }
     
     func readChatMessageById(messageId:Int) -> DBMessageChat?
@@ -949,15 +1087,25 @@ class LocalDatabaseHandler
     
     func readLastMessagesForHomeDashboard(completion:( ([DBMessageChat]?, error:NSError?) -> ())? )
     {
+//        do
+//        {
+//            try self.deleteMessagesWithoutElement()
+//        }
+//        catch let deletionError
+//        {
+//            print(" -> readLastMessagesForHomeDashboard -> did not delete messages without element. Error:")
+//            print(deletionError)
+//        }
+        
         let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
         let sortById = NSSortDescriptor(key: "messageId", ascending: false)
         //let sortByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
         lastMessagesRequest.sortDescriptors = [sortById]
         
-        
-        self.privateContext.performBlock { () -> Void in
+        let context = self.privateContext
+        context.performBlock { () -> Void in
             do{
-                if let messages = try self.privateContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                if let messages = try context.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
                 {
                     if !messages.isEmpty
                     {
@@ -1012,11 +1160,12 @@ class LocalDatabaseHandler
         print(predicate)
         lastMessagesRequest.predicate = predicate
         lastMessagesRequest.sortDescriptors = [sort]
-        //lastMessagesRequest.fetchLimit = fetchSize
         
-        self.privateContext.performBlock { () -> Void in
+        let context = self.privateContext
+        
+        context.performBlock { () -> Void in
             do{
-                if let messages = try self.privateContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                if let messages = try context.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
                 {
                     if !messages.isEmpty
                     {
@@ -1072,9 +1221,10 @@ class LocalDatabaseHandler
             lastMessagesRequest.sortDescriptors = [sort]
             lastMessagesRequest.fetchLimit = fetchSize
             
-            self.privateContext.performBlock { () -> Void in
+            let context = self.privateContext
+            context.performBlock { () -> Void in
                 do{
-                    if let messages = try self.privateContext.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
+                    if let messages = try context.executeFetchRequest(lastMessagesRequest) as? [DBMessageChat]
                     {
                         if !messages.isEmpty
                         {

@@ -14,7 +14,7 @@ class UserProfileAvatarCollectionCell: UICollectionViewCell {
     @IBOutlet weak var avatarButton:UIButton? // big button on top of imageview
     @IBOutlet weak var changeAvatarButton:UIButton?
     
-    var delegate:UserProfileCollectionCellDelegate?
+    weak var delegate:UserProfileCollectionCellDelegate?
     
     var displayMode:DisplayMode = .Day{
         didSet{

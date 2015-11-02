@@ -247,7 +247,7 @@ class Element:Hashable, CreateDateComparable
         return nil
     }
     
-    //MARK: Hashable conformance
+    //MARK: - Hashable conformance
     var hashValue:Int {
         return self.title!.hashValue ^ self.elementId!.hashValue
     }
@@ -255,6 +255,7 @@ class Element:Hashable, CreateDateComparable
 }
 
 
+//MARK: Hashable
 
 func == (lhs:Element, rhs:Element) -> Bool {
 

@@ -31,17 +31,17 @@ protocol DatePickerDelegate
     func datePickerViewController(vc:DatePickerVC, didSetDate date:NSDate?)
 }
 
-protocol ElementSelectionDelegate
+protocol ElementSelectionDelegate: class
 {
     func didTapOnElement(elementId:Int)
 }
 
-protocol AttachmentSelectionDelegate
+protocol AttachmentSelectionDelegate : class
 {
     func attachedFileTapped(attachFile:AttachFile)
 }
 
-protocol AttachmentCellDelegate
+protocol AttachmentCellDelegate :class
 {
     func attachTappedAtIndexPath(indexPath:NSIndexPath)
     func attachesCount() -> Int
@@ -55,7 +55,7 @@ protocol AttachViewerDelegate
     func attachViewerShouldAllowDeletion(viewer:UIViewController) -> Bool
 }
 
-protocol ButtonTapDelegate
+protocol ButtonTapDelegate : class
 {
     func didTapOnButton(button:UIButton)
 }
@@ -74,7 +74,7 @@ protocol AttachPickingDelegate {
     func mediaPickerShouldAllowEditing(picker:AnyObject) -> Bool
 }
 
-protocol ElementComposingDelegate
+protocol ElementComposingDelegate : class
 {
     func newElementComposerWantsToCancel(composer:NewElementComposerViewController)
     func newElementComposer(composer:NewElementComposerViewController, finishedCreatingNewElement newElement:Element)
@@ -120,7 +120,7 @@ protocol MessageTapDelegate
     func chatMessageWasTapped(message:Message?)
 }
 
-protocol UserProfileCollectionCellDelegate
+protocol UserProfileCollectionCellDelegate : class
 {
     func showAvatarPressed()
     func changeAvatarPressed()
@@ -134,10 +134,18 @@ protocol TableItemPickerDelegate
     func itemPickerDidCancel(itemPicker:AnyObject)
 }
 
-protocol AllContactsDelegate
+protocol AllContactsDelegate : class
 {
     func reloadUserContactsSender(sender:UIViewController?)
 }
+#if SHEVCHENKO
+    #else
+    protocol ContactsSearcherDelegate: class
+    {
+        func contactsSearcher(searcher:ContactSearchVC, didFindContact:Contact, willDismiss:Bool)
+        func contactsSearcherDidCancelSearch(searcher:ContactSearchVC)
+    }
+#endif
 
 protocol CreateDateComparable {
     var dateCreated:NSDate?{ get set }

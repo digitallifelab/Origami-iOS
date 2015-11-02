@@ -14,7 +14,7 @@ class UserProfileTextContainerCell: UICollectionViewCell {
     @IBOutlet weak var textLabel:UILabel?
     @IBOutlet weak var editButton:UIButton?
     
-    var delegate:UserProfileCollectionCellDelegate?
+    weak var delegate:UserProfileCollectionCellDelegate?
     
     var textView:UITextView?
     var passwordTextField:UITextField?

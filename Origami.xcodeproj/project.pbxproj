@@ -222,6 +222,7 @@
 		F8C93B291B861B94009D890E /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F8C93B2A1B861B94009D890E /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
+		F8CE23AD1BE7A54B00C36661 /* ContactSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE23AC1BE7A54B00C36661 /* ContactSearchVC.swift */; };
 		F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
 		F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
 		F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */; };
@@ -392,6 +393,7 @@
 		F8C2BE971BCFC4C000A03FC9 /* ServiceMessagesHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceMessagesHandler.swift; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
+		F8CE23AC1BE7A54B00C36661 /* ContactSearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactSearchVC.swift; sourceTree = "<group>"; };
 		F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableVC.swift; sourceTree = "<group>"; };
 		F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableCell.swift; sourceTree = "<group>"; };
 		F8D0A3471B5FCE7F0033FD43 /* MenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
@@ -654,6 +656,7 @@
 				F86F74271B56836B00E48E13 /* ContactProfile */,
 				F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */,
 				F8DBE53B1BA30C3900A8891E /* SelectableContactCell.swift */,
+				F8CE23AC1BE7A54B00C36661 /* ContactSearchVC.swift */,
 			);
 			name = Contacts;
 			sourceTree = "<group>";
@@ -1206,6 +1209,7 @@
 				F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
+				F8CE23AD1BE7A54B00C36661 /* ContactSearchVC.swift in Sources */,
 				F84BC0A01BC57DCC0065D5CC /* Person.swift in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,

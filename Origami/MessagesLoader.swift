@@ -19,7 +19,7 @@ class MessagesLoader
     
     deinit
     {
-        print("\n... Messages Loader deinit ...")
+        //print("\n... Messages Loader deinit ...")
     }
     
     func startRefreshingLastMessages()

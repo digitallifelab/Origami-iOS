@@ -43,23 +43,40 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate // to si
     {
         NSNotificationCenter.defaultCenter().removeObserver(self, name: FinishedLoadingMessages, object: DataSource.sharedInstance)
         
-        DataSource.sharedInstance.localDatadaseHandler?.readLastMessagesForHomeDashboard {[weak self] (dbMessages, error) -> () in
-            if let dbError = error{
-                print("error while querying messages from dashboart messages cell: \(dbError)")
-                return
-            }
-            
-            if let messagesFromDB = dbMessages
-            {
-                if let weakSelf = self
+        let bgOpUserInteractive = NSBlockOperation() {
+            DataSource.sharedInstance.localDatadaseHandler?.readLastMessagesForHomeDashboard {[weak self] (dbMessages, error) -> () in
+                
+                if let dbError = error
                 {
-                    weakSelf.messages = messagesFromDB
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.reloadChatTableWithNewMessages(weakSelf.messages)
-                    })
+                    print("error while querying messages from dashboart messages cell: \(dbError)")
+                    return
+                }
+                
+                if let messagesFromDB = dbMessages
+                {
+                    if let weakSelf = self
+                    {
+                        weakSelf.messages = messagesFromDB
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            weakSelf.reloadChatTableWithNewMessages(weakSelf.messages)
+                        })
+                    }
                 }
             }
         }
+        
+        if #available (iOS 9.0, *)
+        {
+            bgOpUserInteractive.qualityOfService = NSQualityOfService.UserInteractive
+        }
+        else
+        {
+            bgOpUserInteractive.queuePriority = .High
+        }
+        
+        let bgQueue = NSOperationQueue()
+        bgQueue.maxConcurrentOperationCount = 2
+        bgQueue.addOperation(bgOpUserInteractive)
     }
     
     func reloadChatTableWithNewMessages(messages:[DBMessageChat]?)
@@ -130,9 +147,9 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate // to si
         self.messagesTable.reloadData()
     }
     
-    func refreshHomeMessages(notification:NSNotification?)
-    {
-        getLastMessages()
-    }
+//    func refreshHomeMessages(notification:NSNotification?)
+//    {
+//        getLastMessages()
+//    }
     
 }

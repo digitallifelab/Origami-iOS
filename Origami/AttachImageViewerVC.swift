@@ -51,6 +51,9 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     override func viewDidAppear(animated: Bool) {
         
         super.viewDidAppear(animated)
+        imageScrollView.contentSize = imageScrollView.bounds.size
+        
+        
         if imageHolder == nil
         {
             addImageHolder()
@@ -64,9 +67,9 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         imageHolder = nil
     }
     
-    override func viewDidLayoutSubviews() {
-        addImageHolder()
-    }
+//    override func viewDidLayoutSubviews() {
+//        addImageHolder()
+//    }
 
     
     private func setupDeleteButton()
@@ -87,12 +90,15 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
         {
             if CGRectGetWidth(imageScrollView.bounds) > imageToDisplay!.size.width || CGRectGetHeight(imageScrollView.bounds) > imageToDisplay!.size.height
             {
-                imageScrollView.contentSize = imageScrollView.bounds.size
+                
             }
             else
             {
                 
             }
+            
+          imageScrollView.contentSize = imageScrollView.bounds.size
+            
             imageHolder = UIImageView(image: imageToDisplay)
             imageHolder!.contentMode = .ScaleAspectFit
             imageHolder!.sizeToFit()
@@ -123,15 +129,18 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             imageHolder!.center = CGPointMake(CGRectGetMidX(imageScrollView.bounds), CGRectGetMidY(imageScrollView.bounds))
             imageHolder!.layer.borderWidth = 1.0
             imageScrollView.addSubview(imageHolder!)
-            
-            centerImageInScrollView()
         }
     }
     
     func centerImageInScrollView()
     {
-        let center = CGPointMake(CGRectGetMidX(imageScrollView.bounds), CGRectGetMidY(imageScrollView.bounds))
-        imageHolder!.center = center
+        let currentBounds = imageScrollView.bounds
+        
+        let center = CGPointMake(CGRectGetMidX(currentBounds), CGRectGetMidY(currentBounds))
+       
+        self.imageHolder!.center = center
+
+        
     }
     
     func doubleTapAction(recognizer:UITapGestureRecognizer)
@@ -152,10 +161,15 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     }
     
     
+    
     //MARK: - Delete Attach File
     func deleteAttachButtontapped(sender:AnyObject)
     {
         delegate?.attachViewerDeleteAttachButtonTapped(self)
     }
+    
+    
+    
+    
 
 }

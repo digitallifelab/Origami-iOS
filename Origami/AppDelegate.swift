@@ -31,7 +31,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
     func applicationDidEnterBackground(application: UIApplication) {
         DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (error) -> () in
-            print(" applicationDidEnterBackground -> privateCOntext saving error: \n \(error)")
+            guard let errorSaving = error else
+            {
+                print(" applicationDidEnterBackground -> privateCOntext saving  OK")
+                return
+            }
+            print(" applicationDidEnterBackground -> privateCOntext saving error: \n \(errorSaving)")
         })
     
     }
@@ -46,6 +51,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (error) -> () in
+            guard let errorSaving = error else
+            {
+                print(" applicationDidEnterBackground -> privateCOntext saving  OK")
+                return
+            }
+            print(" applicationDidEnterBackground -> privateCOntext saving error: \n \(errorSaving)")
+        })
     }
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {

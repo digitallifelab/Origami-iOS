@@ -81,7 +81,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
             {
                 if let aUser = user
                 {
-                    switch aUser.state{
+                    switch aUser.state
+                    {
                     case .Normal:
                          weakSelf.userDidLogin(aUser)
                     case .NeedToConfirm:

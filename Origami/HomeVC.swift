@@ -686,6 +686,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func didTapOnChatMessage(notification:NSNotification?)
     {
+        
         if let
                 elementIdNumber = notification?.object as? NSNumber,
                 foundDbElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementIdNumber.integerValue),

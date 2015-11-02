@@ -67,10 +67,10 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         httpManager.requestSerializer = requestSerializer
         
         
-        if let acceptableTypes = jsonSerializer.acceptableContentTypes //as? NSSet<NSObject>
+        if let acceptableTypes = jsonSerializer.acceptableContentTypes as? Set<String>
         {
-            let newSet = NSMutableSet(set: acceptableTypes)
-            newSet.addObjectsFromArray(["text/html", "application/json"])
+            var newSet = acceptableTypes//NSMutableSet(set: acceptableTypes)
+            newSet.unionInPlace( Set(["text/html", "application/json"]) )
             jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
         }
       
@@ -1065,121 +1065,119 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
 
     }
     
-    func loadDataForAttach(attachId:Int, completion:((attachFileData:NSData?, error:NSError?)->())? )
+    func loadDataForAttach(attachId:Int, completion:((attachFileData:NSData?, error:NSError?)->())? ) throws -> NSURLSessionDataTask
     {
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
+        guard let userToken = DataSource.sharedInstance.user?.token else
         {
-            let requestString = serverURL + getAttachFileUrlPart + "?fileId=" + "\(attachId)" + "&token=" + userToken
-            if let requestURL = NSURL(string: requestString)
+            completion?(attachFileData: nil, error: noUserTokenError)
+            throw noUserTokenError
+        }
+        
+        let requestString = serverURL + getAttachFileUrlPart + "?fileId=" + "\(attachId)" + "&token=" + userToken
+        
+        guard let requestURL = NSURL(string: requestString) else
+        {
+            throw OrigamiError.PreconditionFailure(message: "Could not create URL from resuested string.")
+        }
+            
+        let fileDataRequest = NSMutableURLRequest(URL: requestURL)
+        fileDataRequest.HTTPMethod = "GET"
+        
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
+            
+            in
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            
+            guard let _ = DataSource.sharedInstance.pendingAttachFileDataDownloads[attachId]
+            else
             {
-                let fileDataRequest = NSMutableURLRequest(URL: requestURL)
-                fileDataRequest.HTTPMethod = "GET"
-                
-                
-                let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
+                completion?(attachFileData: nil, error: NSError(domain: "", code: -3021, userInfo: [NSLocalizedDescriptionKey:"Attach download operation was cancelled"]))
+                return
+            }
+            
+            if let anError = responseError
+            {
+                completion?(attachFileData: nil, error: anError)
+            }
+            else if let synchroData = responseData
+            {
+                if synchroData.length > 0
+                {
+                   
                     
-                    in
-                    
-                    guard let operation = DataSource.sharedInstance.pendingAttachFileDataDownloads[attachId]
-                    else
-                    {
-                        completion?(attachFileData: nil, error: NSError(domain: "", code: -3021, userInfo: [NSLocalizedDescriptionKey:"Attach operation was cancelled"]))
-                        return
-                    }
-                    
-                    if operation.cancelled
-                    {
-                        completion?(attachFileData: nil, error: NSError(domain: "", code: -3020, userInfo: [NSLocalizedDescriptionKey:"Attach operation was cancelled"]))
-                        return
-                    }
-                    
-                    
-                    if let anError = responseError
-                    {
-                        completion?(attachFileData: nil, error: anError)
-                    }
-                    else if let synchroData = responseData
-                    {
-                        if synchroData.length > 0
+                    do{
+                        if let responseDict = try NSJSONSerialization.JSONObjectWithData(synchroData, options: NSJSONReadingOptions.AllowFragments ) as? [String:AnyObject]
                         {
-                            do{
-                                if let responseDict = try NSJSONSerialization.JSONObjectWithData(synchroData, options: NSJSONReadingOptions.AllowFragments ) as? [String:AnyObject]
+                            guard let _ = responseDict["GetAttachedFileResult"] else
+                            {
+                                completion?(attachFileData: nil, error: NSError(domain: "", code: -2003, userInfo: [NSLocalizedDescriptionKey:"Attach Data Not Found"]))
+                                return
+                            }
+                            
+                            if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
+                            {
+                                if arrayOfIntegers.isEmpty
                                 {
-                                    guard let _ = responseDict["GetAttachedFileResult"] else
+                                    print("Empty response for Attach File id = \(attachId)")
+                                    completion?(attachFileData: nil, error: nil)
+                                }
+                                else
+                                {
+                                    if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
                                     {
-                                        completion?(attachFileData: nil, error: NSError(domain: "", code: -2003, userInfo: [NSLocalizedDescriptionKey:"Attach Data Not Found"]))
-                                        return
-                                    }
-                                    
-                                    if let arrayOfIntegers = responseDict["GetAttachedFileResult"] as? [Int]
-                                    {
-                                        if arrayOfIntegers.isEmpty
-                                        {
-                                            print("Empty response for Attach File id = \(attachId)")
-                                            completion?(attachFileData: nil, error: nil)
-                                        }
-                                        else
-                                        {
-                                            if let lvData = NSData.dataFromIntegersArray(arrayOfIntegers)
-                                            {
-                                                completion?(attachFileData: lvData, error: nil)
-                                                print("Fullsize image data for attach: \(lvData.length) bytes")
-                                            }
-                                            else
-                                            {
-                                                //error
-                                                print("ERROR: Could not convert response to NSData object")
-                                                let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
-                                                completion?(attachFileData: nil, error: convertingError)
-                                            }
-                                        }
+                                        completion?(attachFileData: lvData, error: nil)
+                                        print("Fullsize image data for attach: \(lvData.length) bytes")
                                     }
                                     else
                                     {
                                         //error
-                                        print("ERROR: Could not convert to array of integers object.")
-                                        
-                                      
-                                        let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
-                                        completion?(attachFileData: nil, error: arrayConvertingError)
-                                      
+                                        print("ERROR: Could not convert response to NSData object")
+                                        let convertingError = NSError(domain: "File loading failure", code: -1003, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response."])
+                                        completion?(attachFileData: nil, error: convertingError)
                                     }
                                 }
                             }
-                            catch let jsonError as NSError{
-                                if let complete = completion
-                                {
-                                    complete(attachFileData: nil, error: jsonError)
-                                }
-                            }
-                            catch{
-                                if let complete = completion
-                                {
-                                    complete(attachFileData: nil, error: unKnownExceptionError)
-                                }
+                            else
+                            {
+                                //error
+                                print("ERROR: Could not convert to array of integers object.")
                                 
+                              
+                                let arrayConvertingError = NSError(domain: "File loading failure", code: -1004, userInfo: [NSLocalizedDescriptionKey:"Failed to read response."])
+                                completion?(attachFileData: nil, error: arrayConvertingError)
+                              
                             }
-                            
-
                         }
                     }
-                    else
-                    {
-                        print("No response data..")
-                        completion?(attachFileData: NSData(), error: nil)
+                    catch let jsonError as NSError{
+                        if let complete = completion
+                        {
+                            complete(attachFileData: nil, error: jsonError)
+                        }
+                    }
+                    catch{
+                        if let complete = completion
+                        {
+                            complete(attachFileData: nil, error: unKnownExceptionError)
+                        }
+                        
                     }
                     
-                })
-                
-                
-                fileTask.resume()
+
+                }
+            }
+            else
+            {
+                print("No response data..")
+                completion?(attachFileData: NSData(), error: nil)
             }
             
-        }
-        else
-        {
-            completion?(attachFileData: nil, error: noUserTokenError)
-        }
+        })
+            
+        return fileTask
+        
     }
         //attach file to element
     func attachFile(file:MediaFile, toElement elementId:NSNumber, completion completionClosure:((success:Bool, attachId:Int?, error:ErrorType?)->())? )
@@ -1658,54 +1656,67 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         self.passElement((elementId * -1), toSeveratContacts: contactIDs, completion: completionClosure)
     }
     
-    func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?)
+    /**
+     - Returns: NSURLSessionDataTask object to be called at some point later , which also can be cancelled.
+     - Throws:
+        - if no user token found
+        - if could not create a NSURL object for request
+     */
+    func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
     {
-        if let userToken = DataSource.sharedInstance.user?.token //as? String
+        guard let userToken = DataSource.sharedInstance.user?.token else
         {
-            let requestString = serverURL + allContactsURLPart + "?token=" + userToken
-            
-            let contactsRequestOp = httpManager.GET(requestString,
-                parameters: nil,
-                success: { (operation, result) -> Void in
-                    let queueBG = dispatch_queue_create("", DISPATCH_QUEUE_SERIAL)
-                    dispatch_async(queueBG) { () -> Void in
-                        
-                        if let lvContactsArray = result["GetAllContactsResult"] as? [[String:AnyObject]]
-                        {
-                            let convertedContacts = ObjectsConverter.convertToContacts(lvContactsArray)                            
-                            completion?(contacts:convertedContacts, error: nil)
-                        }
-                        else
-                        {
-                            completion?(contacts:nil, error:ServerRequester.urlCreatingError)
-                        }
-                    }
-                    
-                }, failure: { (operation, requestError) -> Void in
-                    if let completionBlock = completion
-                    {
-//                        if let responseString = operation.responseString
-//                        {
-//                            let lvError = NSError(domain: "Contacts Query Error.", code: -502, userInfo: [NSLocalizedDescriptionKey:responseString])
-//                            completionBlock(contacts: nil, error: lvError)
-//                        }
-//                        else
-//                        {
-                            completionBlock(contacts:nil, error:requestError)
-//                        }
-                    }
-            })
-            
-            contactsRequestOp?.resume()
-            return
+            throw OrigamiError.PreconditionFailure(message: "No User Token.")
         }
         
-        if let completionBlock = completion
+        let requestString = serverURL + allContactsURLPart + "?token=" + userToken
+        
+        guard let requestURL = NSURL(string: requestString) else
         {
-            completionBlock(contacts: nil, error: noUserTokenError)
+            throw OrigamiError.PreconditionFailure(message: "Could not create URL for rquest")
         }
-
+        
+        let allContactsRequestTask = NSURLSession.sharedSession().dataTaskWithURL(requestURL) { (responseData, urlResponse, responseError) -> Void in
+            if let error = responseError
+            {
+                completion?(contacts: nil, error: error)
+                return
+            }
+            
+            guard let rawData = responseData where rawData.length > 0 else
+            {
+                completion?(contacts: nil, error: OrigamiError.NotFoundError(message: "Recieved no response data.") as NSError)
+                return
+            }
+            
+            do
+            {
+                if let response = try NSJSONSerialization.JSONObjectWithData(rawData, options: .MutableContainers) as? [String:[[String:AnyObject]]]
+                {
+                    if let contactInfosArray = response["GetAllContactsResult"]
+                    {
+                        let convertedContactObjects = ObjectsConverter.convertToContacts(contactInfosArray)
+                        completion?(contacts: convertedContactObjects, error: nil)
+                        return
+                    }
+                   
+                    completion?(contacts: nil, error: OrigamiError.NotFoundError(message: " ") as NSError)
+                    return
+                }
+                print(" Some Shit happened")
+                
+            }
+            catch let errorJSON
+            {
+                completion?(contacts: nil, error: errorJSON as NSError)
+            }
+        }
+        
+        // task will not start until called somewhere in outer object
+        return allContactsRequestTask
+        
     }
+
     
     func toggleContactFavourite(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
     {
@@ -1807,6 +1818,106 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         {
             completionBlock(success: false, error: noUserTokenError)
         }
+    }
+    
+    /**
+     Used to query for new user in ContactSearchVC
+     */
+    func searchForNewContactByEmail(email:String, completion:((userInfo:[String:AnyObject]?, error:ErrorType?)->())?)
+    {
+        let requestString = serverURL + searchContactURLPart + "?userName=" + email + "&getPhoto=" + "false"
+        
+        guard let requestURL = NSURL(string: requestString) else
+        {
+            completion?(userInfo: nil, error: OrigamiError.PreconditionFailure(message: "Could Not Create URL for request."))
+            
+            return
+        }
+        
+        let urlRequest = NSMutableURLRequest(URL: requestURL)
+        
+        
+        let userRequestTask = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest) { (responseData, urlResponse, responseError) -> Void in
+            
+            if let error = responseError
+            {
+                completion?(userInfo: nil, error: error)
+                return
+            }
+            
+            if let data = responseData where data.length > 0
+            {
+                do
+                {
+                    if let responseInfo = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [String:[String:AnyObject]], userInfo = responseInfo["GetUserInfoResult"]
+                    {
+                        completion?(userInfo: userInfo, error: nil)
+                    }
+                    else
+                    {
+                        completion?(userInfo: nil, error: OrigamiError.NotFoundError(message: "Recieved Empty Search Result."))
+                    }
+                }
+                catch let errorJSON
+                {
+                    completion?(userInfo: nil, error: errorJSON)
+                }
+            }
+            else
+            {
+                completion?(userInfo: nil, error: OrigamiError.NotFoundError(message: "Recieved No Data from Request."))
+            }
+        }
+        
+        
+        userRequestTask.resume()
+        
+//        NSString *requestUrlString = [NSString stringWithFormat:@"%@GetUserInfo", BasicURL];
+//        
+//        NSDictionary *parameters = @{@"userName":email, @"getPhoto":@"false"};
+//        
+//        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+//        //[manager.requestSerializer setTimeoutInterval:15];
+//        
+//        AFHTTPRequestOperation *requestOp = [manager GET:requestUrlString
+//            parameters:parameters
+//            success:^(AFHTTPRequestOperation *operation, id responseObject)
+//            {
+//            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+//            
+//            [[[NSOperationQueue alloc] init] addOperationWithBlock:^
+//            {
+//            NSDictionary *response = (NSDictionary *)responseObject;
+//            NSDictionary *userDict = [response objectForKey:@"GetUserInfoResult"];
+//            //NSLog(@"\n --searchForContactByEmail--Success response:\n- %@",response);
+//            if (completionBlock)
+//            {
+//            completionBlock((userDict)?userDict:@{},nil);
+//            }
+//            }];
+//            
+//            
+//            
+//            
+//            }
+//            failure:^(AFHTTPRequestOperation *operation, NSError *error)
+//            {
+//            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+//            //NSLog(@"\n --searchForContactByEmail Error: \n-%@", error);
+//            if (completionBlock)
+//            {
+//            completionBlock(nil,error);
+//            }
+//            
+//            NSString *responseString = operation.responseString;
+//            if (responseString)
+//            {
+//            //NSLog(@"Failure response while searching contact by email: \r \n%@",responseString);
+//            }
+//            }];
+//        
+//        [requestOp start];
+
     }
     
     //MARK: - NSURLSession

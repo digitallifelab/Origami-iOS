@@ -27,6 +27,7 @@ let registerUserUrlPart = "RegisterUser"
 let editUserUrlPart = "EditUser"
 let loginUserUrlPart = "Login"
 
+
 //Info
 let getLanguagesUrlPart = "GetLanguages"
 let getCountriesUrlPart = "GetCountries"
@@ -35,6 +36,8 @@ let getCountriesUrlPart = "GetCountries"
 let myContactsURLPart = "GetContacts"
 let allContactsURLPart = "GetAllContacts"
 let favContactURLPart = "SetFavoriteContact"
+
+let searchContactURLPart = "GetUserInfo"
 
 //Messages
 let getAllMessagesPart = "GetMessages"

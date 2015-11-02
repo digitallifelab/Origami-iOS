@@ -503,3 +503,11 @@ extension Int
         return aDays
     }
 }
+
+#if SHEVCHENKO
+#else
+extension MyContactsListVC:ContactsSearcherDelegate
+{
+    
+}
+#endif

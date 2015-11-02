@@ -9,6 +9,7 @@
 import Foundation
 class Person //: NSObject
 {
+    var userId:Int? //
     var firstName:String?
     var lastName:String?
     var userName:String = ""

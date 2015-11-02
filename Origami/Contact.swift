@@ -20,6 +20,11 @@ class Contact:Person, Hashable
     {
         self.init()
         
+        if let aUserId = info["UserId"] as? Int
+        {
+            self.userId = aUserId
+        }
+        
         if let name = info["FirstName"] as? String
         {
             let fixedName = name.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())

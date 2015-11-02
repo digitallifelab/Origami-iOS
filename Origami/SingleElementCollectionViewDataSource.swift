@@ -780,7 +780,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 //first check if attach file preview exists on disc
                 do{
                     let previewImageData = try DataSource.sharedInstance.getAttachPreviewForFileNamed(attachFileName)
-                    do{
+                    do
+                    {
                         try DataSource.sharedInstance.localDatadaseHandler?.saveImagePreview(previewImageData, forAttachById: attachId)
                         DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
                     }
@@ -790,7 +791,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     }
 
                 }
-                catch let error {
+                catch let error
+                {
                     
                     print("Full size file for attach does not exist. \n \(error) \n Will try to download it.  ")
                     // if not exists = start loading preview

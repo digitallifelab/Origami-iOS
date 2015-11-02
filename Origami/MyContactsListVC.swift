@@ -8,28 +8,48 @@
 
 import UIKit
 import CoreData
-class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate, AllContactsDelegate, NSFetchedResultsControllerDelegate {
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, AllContactsDelegate, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var myContactsTable:UITableView?
     
     var myContacts:[DBContact]?
-    var favContacts:[Contact] = [Contact]()
+    //var favContacts:[Contact] = [Contact]()
     var allContacts:[Contact]?
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
-    var customTransitionAnimator:UIViewControllerAnimatedTransitioning?
+    
     var allContactsFetchController:NSFetchedResultsController?
     var favContactsFetchController:NSFetchedResultsController?
+    
     var localMainContext:NSManagedObjectContext?
     
     var currentFetchController:NSFetchedResultsController?
+    
+    #if SHEVCHENKO
+    var allContactsLoadingOperationTask:NSURLSessionDataTask?
+    lazy var reloadTableOperation:NSBlockOperation = NSBlockOperation(){[weak self] _ in
+        if let weakSelf = self
+        {
+            do
+            {
+                try weakSelf.currentFetchController?.performFetch()
+                weakSelf.myContactsTable?.reloadData()
+            }
+            catch { }
+        }
+    }
+    #endif
+    
+    
+   
+    
     //MARK:----
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        
+       
         configureNavigationItems()
         configureNavigationControllerToolbarItems()
         
@@ -37,7 +57,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         {
             self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
             self.localMainContext!.parentContext = dbHandler.getPrivateContext()
-            
+            self.localMainContext?.undoManager = NSUndoManager()
             let allContactsRequest = NSFetchRequest(entityName: "DBContact")
             let lastNameSort = NSSortDescriptor(key: "lastName", ascending: true)
             allContactsRequest.sortDescriptors = [lastNameSort]
@@ -45,7 +65,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             
             let favContactsRequest = NSFetchRequest(entityName: "DBContact")
             favContactsRequest.sortDescriptors = [lastNameSort]
-            favContactsRequest.predicate = NSPredicate(format: "favorite =  true")
+            favContactsRequest.predicate = NSPredicate(format: "favorite = true")
             
             self.favContactsFetchController = NSFetchedResultsController(fetchRequest: favContactsRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
             
@@ -55,19 +75,53 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
         
         #if SHEVCHENKO
-        DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
-            
-            if let weakSelf = self
+            if let contactsLoadingTask = self.allContactsLoadingOperationTask
             {
-                if let allContacts = contacts
+                if contactsLoadingTask.state != NSURLSessionTaskState.Running
                 {
-                    dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                        weakSelf.allContacts = allContacts
-                        weakSelf.contactsSearchButton?.enabled = true
-                    }
+                    contactsLoadingTask.resume()
                 }
             }
-        }
+            else
+            {
+                do
+                {
+                    let task = try  DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
+                        
+                        if let weakSelf = self
+                        {
+                            if let allContacts = contacts
+                            {
+                                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(allContacts, completion: {[weak self] (saved, error) -> () in
+                                    if saved
+                                    {
+                                        if let weakSelf = self
+                                        {
+                                            NSOperationQueue.mainQueue().addOperation(weakSelf.reloadTableOperation)
+                                        }
+                                    }
+                                })
+                                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                                    weakSelf.contactsSearchButton?.enabled = true
+                                }
+                            }
+                        }
+                    }
+                    
+                    self.allContactsLoadingOperationTask = task
+                    let lowQueue = getBackgroundQueue_UTILITY()
+                    dispatch_async(lowQueue){ _ in
+                        self.allContactsLoadingOperationTask?.resume()
+                    }
+                    
+                }
+                catch let taskError
+                {
+                    self.showAlertWithTitle("Warning.", message: "Could not start loading all contacts from server:\n \(taskError)", cancelButtonTitle: "Close")
+                }
+            }
+        #else
+        contactsSearchButton?.enabled = true
         #endif
         
         
@@ -97,6 +151,9 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         {
             self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contactFavouriteToggledNotification:", name: kContactFavouriteButtonTappedNotification, object: nil)
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -106,11 +163,28 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kContactFavouriteButtonTappedNotification, object: nil)
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        
+        #if SHEVCHENKO
+        self.allContactsLoadingOperationTask?.suspend()
+        self.allContactsLoadingOperationTask?.cancel()
+        self.allContactsLoadingOperationTask = nil
+        #endif
+        super.viewDidDisappear(animated)
     }
     
     func configureNavigationItems()
     {
-        contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: "showAllContactsVC")
+        #if SHEVCHENKO
+            let lvMethodSignatureString:Selector = "showAllContactsVC"
+        #else
+            let lvMethodSignatureString:Selector = "showContactSearchVC"
+        #endif
+        contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
         contactsSearchButton?.enabled = false
         self.navigationItem.rightBarButtonItem = contactsSearchButton
         
@@ -165,6 +239,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
     }
     //MARK: ---
+    #if SHEVCHENKO
     func showAllContactsVC()
     {
         if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
@@ -174,6 +249,18 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             self.navigationController?.pushViewController(allContactsVC, animated: true)
         }
     }
+    #else
+    func showContactSearchVC()
+    {
+        guard let searcherVC = self.storyboard?.instantiateViewControllerWithIdentifier("ContactSearchVC") as? ContactSearchVC else
+        {
+            return
+        }
+        searcherVC.delegate = self
+        self.navigationController?.pushViewController(searcherVC, animated: true)
+    }
+    #endif
+    
     
     //MARK: current VC
 
@@ -195,12 +282,14 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         do
         {
             try self.currentFetchController?.performFetch()
-        }
-        catch
-        {
             
+            self.myContactsTable?.reloadData()
         }
-        self.myContactsTable?.reloadData()
+        catch let fetchError
+        {
+            print("Fetched results controller did fail to fetch:")
+            print(fetchError)
+        }
         
     }
     
@@ -354,27 +443,173 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 print("\n WIll not try to update \"Favourite\" contact - 0(zero) contact id passed.\n")
                 return
             }
+            
+            guard let currentFav = contact.favorite?.integerValue else
+            {
+                return
+            }
+            
+            
+            if currentFav == 0
+            {
+                let newFav = 1
+                contact.favorite = NSNumber(integer: newFav)
+            }
+            else if currentFav == 1
+            {
+                let newFav = 0
+                contact.favorite = NSNumber(integer: newFav)
+            }
+            
+            do{
+                try localMainContext?.save()
+                
+                DataSource.sharedInstance.updateContactIsFavourite(contactIdInt, completion: {[weak self] (success, error) -> () in
+                    if !success
+                    {
+                        if let weakSelf = self
+                        {
+                            weakSelf.localMainContext?.undo()
+                        }
+                    }
+                    
+                    DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                })
+            }
+            catch{
+                
+            }
         }
     }
     
     //MARK: - AllContactsDelegate
-    func reloadUserContactsSender(sender: UIViewController?) {
-        do{
+    func reloadUserContactsSender(sender: UIViewController?)
+    {
+        do
+        {
             try self.currentFetchController?.performFetch()
+            self.myContactsTable?.reloadData()
         }
-        catch{
+        catch
+        {
             
         }
     }
     
     //MARK: - NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
-            self.myContactsTable?.dataSource = nil
+           // self.myContactsTable?.dataSource = nil
+        myContactsTable?.beginUpdates()
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        self.myContactsTable?.dataSource = self
-        self.myContactsTable?.reloadData()
+        //self.myContactsTable?.dataSource = self
+        //self.myContactsTable?.reloadData()
+        myContactsTable?.endUpdates()
+        
     }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)
+    {
+        if controller !== self.currentFetchController
+        {
+            return
+        }
+        
+        switch type
+        {
+            case .Update:
+                
+                var shouldUpdateNewPath = true
+                if let indPath = indexPath
+                {
+                    shouldUpdateNewPath = false
+                    myContactsTable?.reloadRowsAtIndexPaths([indPath], withRowAnimation: .None)
+                }
+                if let newPath = newIndexPath
+                {
+                    if shouldUpdateNewPath
+                    {
+                        myContactsTable?.reloadRowsAtIndexPaths([newPath], withRowAnimation: .None)
+                    }
+                }
+            case .Delete:
+                if let inPath = indexPath
+                {
+                    myContactsTable?.deleteRowsAtIndexPaths([inPath], withRowAnimation: .Left)
+                }
+            case .Insert:
+                if let newPath = newIndexPath
+                {
+                    myContactsTable?.insertRowsAtIndexPaths([newPath], withRowAnimation: .Right)
+                }
+                if let inPath = indexPath
+                {
+                    myContactsTable?.insertRowsAtIndexPaths([inPath], withRowAnimation: .Right)
+                }
+            case .Move:
+                myContactsTable?.moveRowAtIndexPath(indexPath!, toIndexPath: newIndexPath!)
+         
+        }
+    }
+    
+    #if SHEVCHENKO
+    #else
+    //MARK: - ContactsSearcherDelegate
+    func contactsSearcher(searcher:ContactSearchVC, didFindContact:Contact, willDismiss:Bool)
+    {
+        defer
+        {
+            if willDismiss
+            {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        }
+        
+        let backOperation = NSBlockOperation() {
+            guard let recievedUserId = didFindContact.userId else
+            {
+                return
+            }
+            
+            if let _ = DataSource.sharedInstance.localDatadaseHandler?.readContactById(recievedUserId)
+            {
+                return
+            }
+            else
+            {
+                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase([didFindContact], completion: { (saved, error) -> () in
+                    if saved
+                    {
+                        dispatch_async(dispatch_get_main_queue()){[weak self] in
+                            if let weakSelf = self
+                            {
+                                do{
+                                    try weakSelf.currentFetchController?.performFetch()
+                                    //weakSelf.myContactsTable?.reloadData()
+                                }
+                                catch{}
+                            }
+                        }
+                    }
+                    else
+                    {
+                        
+                    }
+                })
+            }
+        }
+        
+        NSOperationQueue().addOperation(backOperation)
+        
+        
+        
+    }
+    
+    func contactsSearcherDidCancelSearch(searcher:ContactSearchVC)
+    {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    #endif
 
 }

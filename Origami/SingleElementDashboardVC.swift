@@ -243,16 +243,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     */
     func prepareCollectionViewDataAndLayout()
     {
-        if let messages = currentElement?.messages as? Set<DBMessageChat>
-        {
-            if !messages.isEmpty
-            {
-                print(" Current element has messages! \(messages.count) ")
-            }
-            else{
-                print("...Current element does not have messages....")
-            }
-        }
+//        if let messages = currentElement?.messages as? Set<DBMessageChat>
+//        {
+//            if !messages.isEmpty
+//            {
+//                print(" Current element has messages! \(messages.count) ")
+//            }
+//            else{
+//                print("...Current element does not have messages....")
+//            }
+//        }
         
         
         let currentContentOffset = collectionView.contentOffset

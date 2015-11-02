@@ -32,7 +32,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
     }
     var currentElementParticipants:Set<Int> = Set<Int>()
     
-    var composingDelegate:ElementComposingDelegate?
+    weak var composingDelegate:ElementComposingDelegate?
     
     var inMemoryElement:Element?
     

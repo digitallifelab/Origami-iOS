@@ -11,8 +11,16 @@ class User:Person
 {
     var password:String? //
     var lastSync:String? //
-    var token:String? //
-    var userId:Int? //
+    var token:String? {
+        willSet(newToken)
+        {
+            print (" will set new token: \(newToken)")
+        }
+        didSet{
+            
+        }
+    }
+  
     
     
     convenience init(info:[String:AnyObject])
