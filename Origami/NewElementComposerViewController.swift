@@ -172,6 +172,8 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
             {
                 weakSelf.inMemoryElement = Element()
                 weakSelf.inMemoryElement?.rootElementId = weakSelf.rootElementID
+                weakSelf.inMemoryElement?.title = weakSelf.composingDelegate?.newElementComposerTitleForNewElement(weakSelf)
+                weakSelf.inMemoryElement?.details = weakSelf.composingDelegate?.newElementComposerDetailsForNewElement(weakSelf)
                 
                 dispatch_async(dispatch_get_main_queue()){ _ in
                     weakSelf.configureBottomToolbar()

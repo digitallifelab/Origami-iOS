@@ -665,7 +665,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     return
                 }
                 
-                NSOperationQueue().addOperationWithBlock(){_ in
+                NSOperationQueue().addOperationWithBlock(){ _ in
                     DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase([successElement]) { (didSave, error) -> () in
                         if didSave
                         {

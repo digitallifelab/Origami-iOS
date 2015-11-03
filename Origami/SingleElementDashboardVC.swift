@@ -1367,6 +1367,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             print(" -- > Added self to observe new element added\n")
             chatVC.currentElement = self.currentElement
             self.navigationController?.pushViewController(chatVC, animated: true)
+            self.afterViewDidLoad = true //later when user returns from chat reload will be triggered - (suppose heor she did  add new subordinate element on a few)
         }
     }
     

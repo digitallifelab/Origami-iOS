@@ -679,27 +679,27 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         self.handleAddingNewElement(newElement)
     }
     
-//    func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
-//        if let fullInfo = self.newElementDetailsInfo
-//        {
-//            let countChars = fullInfo.characters.count
-//            
-//            if countChars > 40
-//            {
-//                let startIndex = fullInfo.startIndex
-//                let toIndex = startIndex.advancedBy(40)
-//                let cutString = fullInfo.substringToIndex(toIndex)
-//                return cutString
-//            }
-//            return fullInfo
-//        }
-//        return nil
-//    }
-//    
-//    func newElementComposerDetailsForNewElement(composer: NewElementComposerViewController) -> String? {
-//        
-//        return self.newElementDetailsInfo
-//    }
+    func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
+        if let fullInfo = self.newElementDetailsInfo
+        {
+            let countChars = fullInfo.characters.count
+            
+            if countChars > 40
+            {
+                let startIndex = fullInfo.startIndex
+                let toIndex = startIndex.advancedBy(40)
+                let cutString = fullInfo.substringToIndex(toIndex)
+                return cutString
+            }
+            return fullInfo
+        }
+        return nil
+    }
+
+    func newElementComposerDetailsForNewElement(composer: NewElementComposerViewController) -> String? {
+        
+        return self.newElementDetailsInfo
+    }
     //MARK: -----
     func handleAddingNewElement(element:Element)
     {
