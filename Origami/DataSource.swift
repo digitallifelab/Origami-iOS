@@ -1290,105 +1290,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(elementIdInt,
-            completion:
-            { (result, error) -> ()
+        DataSource.sharedInstance.serverRequester.loadAttachesListForElementId(elementIdInt) { (result, error) -> ()
                 in
-                
-                
-         
-                if let attachesArray = result as? [AttachFile]
+            
+                guard let attachesArray = result as? [AttachFile] else
                 {
-                    var setCurrentAttachIDs = Set<Int>()
-                    
-                    var dbAttaches = [DBAttach]()
-                    for attach in attachesArray
-                    {
-                        setCurrentAttachIDs.insert(attach.attachID)
-                        
-                        do{
-                            if let newAttach = try DataSource.sharedInstance.localDatadaseHandler?.saveAttachToLocalDatabase(attach, shouldSaveContext:false)
-                            {
-                                dbAttaches.append(newAttach)
-                            }
-                        }
-                        catch let attachInsertError{
-                            print(attachInsertError)
-                        }
-                    }
-                    
-                   let savingOp = NSBlockOperation() {
-                        
-                        let savingGroup = dispatch_group_create()
-                    
-                        dispatch_group_enter(savingGroup)
-                    
-                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (error) -> () in
-                            
-                            dispatch_group_leave(savingGroup)
-                        })
-                        
-                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
-                       
-                        let waitResult = dispatch_group_wait(savingGroup, timeout)
-                        print(" - Saving op finished with esult: \(waitResult)")
-                    }
-                    
-                    
-                    NSOperationQueue().addOperations([savingOp], waitUntilFinished: true)
-                
-                   
-                    
-                    
-                    //if new attaches recieved, pair them to existing element if found
-                    var returnInfo = (loaded:attachesArray.count, saved:0)
-                    
-                    if !dbAttaches.isEmpty
-                    {
-                        do{
-                            try DataSource.sharedInstance.localDatadaseHandler?.addAttaches(dbAttaches, toElementById: elementIdInt)
-                            returnInfo.saved = dbAttaches.count
-                        }
-                        catch let pairingError
-                        {
-                            print("Could not associate attach to element:")
-                            print(pairingError)
-                        }
-                    }
-                    
-                    
-                    var currentAttachesInDBset:Set<Int>?
-                    
-                    do{
-                        if let currentlyExistingAttachesSet = try DataSource.sharedInstance.localDatadaseHandler?.allAttachesIDsForElementById(elementIdInt)
-                        {
-                            currentAttachesInDBset = currentlyExistingAttachesSet
-                        }
-                    }catch{}
-                    
-                    
-                    if let currentAttachesSet = currentAttachesInDBset
-                    {
-                        let attachIDsToDelete = currentAttachesSet.subtract(setCurrentAttachIDs)
-                        if !attachIDsToDelete.isEmpty
-                        {
-                            for anAttachId in attachIDsToDelete
-                            {
-                                do{
-                                    try DataSource.sharedInstance.localDatadaseHandler?.deleteAttachById(anAttachId)
-                                }
-                                catch let deletionError {
-                                    print("did not delete attach:")
-                                    print(deletionError)
-                                }
-                            }
-                        }
-                    }
-                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-                    completion?(info:returnInfo)
-                }
-                else // there are no attaches for current element,  delete existing if present
-                {
+                    // there are no attaches for current element,  delete existing if present
                     do
                     {
                         try DataSource.sharedInstance.localDatadaseHandler?.deleteAllAttachesForElementById(elementIdInt)
@@ -1400,10 +1307,90 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     completion?(info: (loaded: 0, saved: 0))
+                    return
                 }
-            
                 
-        })
+                
+                var setCurrentAttachIDs = Set<Int>()
+                
+                var dbAttaches = [DBAttach]()
+                for attach in attachesArray
+                {
+                    setCurrentAttachIDs.insert(attach.attachID)
+                    
+                    do{
+                        if let newAttach = try DataSource.sharedInstance.localDatadaseHandler?.saveAttachToLocalDatabase(attach, shouldSaveContext:false)
+                        {
+                            dbAttaches.append(newAttach)
+                        }
+                    }
+                    catch let attachInsertError{
+                        print(attachInsertError)
+                    }
+                }
+                
+                
+                let savingGroup = dispatch_group_create()
+            
+                dispatch_group_enter(savingGroup)
+            
+                DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (error) -> () in
+                    
+                    dispatch_group_leave(savingGroup)
+                })
+                
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+               
+                let waitResult = dispatch_group_wait(savingGroup, timeout)
+                print(" - Saving op finished with esult: \(waitResult)")
+   
+                //if new attaches recieved, pair them to existing element if found
+                var returnInfo = (loaded:attachesArray.count, saved:0)
+                
+                if !dbAttaches.isEmpty
+                {
+                    do{
+                        try DataSource.sharedInstance.localDatadaseHandler?.addAttaches(dbAttaches, toElementById: elementIdInt)
+                        returnInfo.saved = dbAttaches.count
+                    }
+                    catch let pairingError
+                    {
+                        print("Could not associate attach to element:")
+                        print(pairingError)
+                    }
+                }
+                
+                
+                var currentAttachesInDBset:Set<Int>?
+                
+                do{
+                    if let currentlyExistingAttachesSet = try DataSource.sharedInstance.localDatadaseHandler?.allAttachesIDsForElementById(elementIdInt)
+                    {
+                        currentAttachesInDBset = currentlyExistingAttachesSet
+                    }
+                }catch{}
+                
+                
+                if let currentAttachesSet = currentAttachesInDBset
+                {
+                    let attachIDsToDelete = currentAttachesSet.subtract(setCurrentAttachIDs)
+                    if !attachIDsToDelete.isEmpty
+                    {
+                        for anAttachId in attachIDsToDelete
+                        {
+                            do{
+                                try DataSource.sharedInstance.localDatadaseHandler?.deleteAttachById(anAttachId)
+                            }
+                            catch let deletionError {
+                                print("did not delete attach:")
+                                print(deletionError)
+                            }
+                        }
+                    }
+                }
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                completion?(info:returnInfo)
+        }
     }
     
     func attachFile(file:MediaFile, toElementId elementId:Int, completion completionClosure:((success:Bool, error: ErrorType?)->())? ) {
