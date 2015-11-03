@@ -17,10 +17,10 @@ class MessagesLoader
         print("\n... MessagesLoader initialized ...")
     }
     
-    deinit
-    {
-        //print("\n... Messages Loader deinit ...")
-    }
+//    deinit
+//    {
+//        //print("\n... Messages Loader deinit ...")
+//    }
     
     func startRefreshingLastMessages()
     {

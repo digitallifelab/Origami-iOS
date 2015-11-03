@@ -1412,6 +1412,29 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 do
                 {
                     try DataSource.sharedInstance.saveAttachFileData(file.data, forAttachFileName: file.name)
+                   
+                    if let attachIdInt = attachId
+                    {
+                        let newFileAttach = AttachFile()
+                        newFileAttach.attachID = attachIdInt
+                        newFileAttach.elementID = elementId
+                        newFileAttach.fileName = file.name
+                        if let userId = DataSource.sharedInstance.user?.userId
+                        {
+                            newFileAttach.creatorID = userId
+                        }
+                        
+                        if let attachDB = try DataSource.sharedInstance.localDatadaseHandler?.saveAttachToLocalDatabase(newFileAttach, shouldSaveContext: true)
+                        {
+                            do{
+                                try DataSource.sharedInstance.localDatadaseHandler?.addAttaches([attachDB], toElementById: elementId)
+                            }
+                            catch{
+                                
+                            }
+                        }
+                    }
+                                       
                     DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (errorSaving) -> () in
                         if let error = errorSaving
                         {

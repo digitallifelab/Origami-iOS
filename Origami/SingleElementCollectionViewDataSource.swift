@@ -71,17 +71,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 return
             }
             
-            if let attachesBool = self.handledElement?.hasAttaches?.boolValue
+            if let attachesSet = self.handledElement?.attaches where attachesSet.count > 0
             {
-                if attachesBool == true
-                {
+//                if attachesBool == true
+//                {
                     options.append(.Attaches)
                     
 //                    if let foundAttaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
 //                    {
 //                        self.currentAttaches = foundAttaches
 //                    }
-                }
+//                }
             }
             
             if let result = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)

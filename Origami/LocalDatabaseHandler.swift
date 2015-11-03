@@ -2116,7 +2116,9 @@ class LocalDatabaseHandler
         var noAttachError:ErrorType?
         do
         {
-            try self.readAttachById(attach.attachID)
+            let existing = try self.readAttachById(attach.attachID)
+            
+            existing.fillInfoFromInMemoryAttach(attach)
         }
         catch let error
         {
