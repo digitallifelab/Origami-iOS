@@ -116,4 +116,18 @@ class DBElement: NSManagedObject {
         
         return lvElement
     }
+    
+    func orderedAttaches() -> [DBAttach]?
+    {
+        if let attachesSet = self.attaches as? Set<DBAttach>
+        {
+            var attachesArray = Array(attachesSet)
+            attachesArray.sortInPlace({ (attach1, attach2) -> Bool in
+                return attach1 < attach2 //DateCreateComparable protocol conformance
+            })
+            
+            return attachesArray
+        }
+        return nil
+    }
 }

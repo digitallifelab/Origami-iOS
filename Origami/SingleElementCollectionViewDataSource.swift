@@ -24,7 +24,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var subordinatesByIndexPath:[NSIndexPath : DBElement]?
     var taskUserAvatar:UIImage?
-    var currentAttaches:[DBAttach]?
+    //var currentAttaches:[DBAttach]?
     weak var handledCollectionView:UICollectionView?
     
     weak var handledElement:DBElement? {
@@ -77,10 +77,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 {
                     options.append(.Attaches)
                     
-                    if let foundAttaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
-                    {
-                        self.currentAttaches = foundAttaches
-                    }
+//                    if let foundAttaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
+//                    {
+//                        self.currentAttaches = foundAttaches
+//                    }
                 }
             }
             
@@ -744,22 +744,20 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             print("\n ERROR! Tryed to tap on non existing attach file....\n")
         }
     }
+    
     func attachesCount() -> Int
     {
-        guard let lvAttaches = self.currentAttaches else
+        guard let lvAttaches = self.handledElement?.attaches else
         {
             return 0
         }
         return lvAttaches.count
     }
+    
     func titleForAttachmentAtIndexPath(indexPath:NSIndexPath) -> String?
     {
-        guard let _ = self.currentAttaches else
+        guard let foundAttach = attachAtIndexPath(indexPath) else
         {
-            return nil
-        }
-        
-        guard let foundAttach = attachAtIndexPath(indexPath) else{
             return nil
         }
         
@@ -860,8 +858,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     private func attachAtIndexPath(indexPath:NSIndexPath) -> DBAttach?
     {
-        if let foundAttach = self.currentAttaches?[indexPath.row]
+        if let attaches = self.handledElement?.orderedAttaches() where attaches.count > indexPath.row
         {
+            let foundAttach = attaches[indexPath.row]
             return foundAttach
         }
         return nil
@@ -870,31 +869,62 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     private func cleanAttachById(attachId: Int)
     {
-        if let attaches = self.currentAttaches
+        guard let databaseHandler = DataSource.sharedInstance.localDatadaseHandler else
         {
-            var attachesToSave = [DBAttach]()
-            var attachesToClean = attaches
-            repeat{
+            return
+        }
+        do
+        {
+            try databaseHandler.deleteAttachById(attachId)
             
-                let lastAttach = attachesToClean.removeLast()
-                if let integer = lastAttach.attachId?.integerValue
+            dispatch_async(dispatch_get_main_queue()){ [weak self] in
+                if let weakSelf = self
                 {
-                    if integer == attachId
-                    {
-                        do{ try DataSource.sharedInstance.localDatadaseHandler?.deleteAttach(lastAttach, shouldSave: true) }
-                        catch{}
-                        
-                        continue
-                    }
-                    attachesToSave.insert(lastAttach, atIndex: 0)
+                    weakSelf.handledCollectionView?.reloadData()
                 }
-            }while !attachesToClean.isEmpty
-            
-            self.currentAttaches = attachesToSave
-            dispatch_async(dispatch_get_main_queue()){
-                self.handledCollectionView?.reloadData()
             }
         }
+        catch let deletingError
+        {
+            print(" SingleElementCollectionViewDataSource -> cleanAttachById -> Error: ")
+            print(deletingError)
+            //reload collection view in attaches cell
+            dispatch_async(dispatch_get_main_queue()){ [weak self] in
+                if let weakSelf = self
+                {
+                    weakSelf.handledCollectionView?.reloadData()
+                }
+            }
+            
+        }
+        
+//        if let attachesSet = self.handledElement?.attaches
+//        {
+//            let attaches = Array(attachesSet)
+//            
+//            var attachesToSave = [DBAttach]()
+//            var attachesToClean = attaches
+//            repeat{
+//            
+//                let lastAttach = attachesToClean.removeLast()
+//                if let integer = lastAttach.attachId?.integerValue
+//                {
+//                    if integer == attachId
+//                    {
+//                        do{ try DataSource.sharedInstance.localDatadaseHandler?.deleteAttach(lastAttach, shouldSave: true) }
+//                        catch{}
+//                        
+//                        continue
+//                    }
+//                    attachesToSave.insert(lastAttach, atIndex: 0)
+//                }
+//            }while !attachesToClean.isEmpty
+//            
+//            self.currentAttaches = attachesToSave
+//            dispatch_async(dispatch_get_main_queue()){
+//                self.handledCollectionView?.reloadData()
+//            }
+//        }
     }
     //external
    

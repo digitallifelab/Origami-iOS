@@ -1069,18 +1069,18 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             if let info = notification.userInfo, attachName = info["fileName"] as? String
             {
                 print(" -> did Recieve Notification for saving Single attach file: \(attachName)")
-                if let attaches = self.collectionDataSource?.currentAttaches
-                {
-                    if attaches.count > 0
-                    {
+//                if let attaches = self.collectionDataSource?.currentAttaches
+//                {
+//                    if attaches.count > 0
+//                    {
                         dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                             if let weakSelf = self
                             {
                                 weakSelf.prepareCollectionViewDataAndLayout()
                             }
                         })
-                    }
-                }
+//                    }
+//                }
             }
         }
     }

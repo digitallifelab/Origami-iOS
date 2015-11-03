@@ -1956,12 +1956,15 @@ class LocalDatabaseHandler
     {
         let allElementsRequest = NSFetchRequest(entityName: "DBContact")
         allElementsRequest.includesPropertyValues = false
+        
+        let lvContext = self.privateContext
+        
         if #available (iOS 9.0, *)
         {
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: allElementsRequest)
             do
             {
-                if let result = try self.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: self.privateContext) as? [DBContact]
+                if let result = try self.persistentStoreCoordinator.executeRequest(deleteRequest, withContext: lvContext) as? [DBContact]
                 {
                     print("will delete contacts: \(result)")
                 }
@@ -1973,8 +1976,8 @@ class LocalDatabaseHandler
         }
         else //pre iOS 9
         {
-            let lvContext = self.privateContext
-            lvContext.performBlock(){ () -> Void in
+            
+            lvContext.performBlockAndWait() { () -> Void in
                 do
                 {
                     if let allContacts = try lvContext.executeFetchRequest(allElementsRequest) as? [DBContact]
@@ -1982,19 +1985,6 @@ class LocalDatabaseHandler
                         for aContact in allContacts
                         {
                             lvContext.deleteObject(aContact)
-                        }
-                    }
-                    
-                    if lvContext.hasChanges
-                    {
-                        do
-                        {
-                            try lvContext.save()
-                            print("Deleted all Contacts from local Database...")
-                        }
-                        catch
-                        {
-                            
                         }
                     }
                 }
@@ -2005,10 +1995,23 @@ class LocalDatabaseHandler
                 
             }
         }
+        
+        if lvContext.hasChanges
+        {
+            do
+            {
+                try lvContext.save()
+                print("Deleted all Contacts from local Database...")
+            }
+            catch
+            {
+                
+            }
+        }
     }
     
     //MARK: - Attaches
-    func readAttachesForElementById(elementId:Int) throws -> [DBAttach]?
+    func readAttachesForElementById(elementId:Int) throws -> [DBAttach]
     {
         if elementId < 1
         {
@@ -2018,12 +2021,12 @@ class LocalDatabaseHandler
         
         guard let lvElement = self.readElementById(elementId) else
         {
-            return nil
+            throw OrigamiError.NotFoundError(message: "Element Not Found By Id: \(elementId).")
         }
         
         guard let lvAttaches = lvElement.attaches as? Set<DBAttach> where lvAttaches.count > 0 else
         {
-            return nil
+            throw OrigamiError.NotFoundError(message: "Element has no Attaches.")
         }
         
         let attachesSorted = lvAttaches.sort( < )
@@ -2175,6 +2178,8 @@ class LocalDatabaseHandler
             {
                 throw error
             }
+            
+            return newAttach
         }
         
         //debug
@@ -2355,6 +2360,106 @@ class LocalDatabaseHandler
         }
         
         if let error = deletingError
+        {
+            throw error
+        }
+    }
+    
+    func deleteAttachById(attachId:Int) throws
+    {
+        do
+        {
+            var saveError:ErrorType?
+            let foundAttach = try self.readAttachById(attachId)
+            let context = self.privateContext
+            context.performBlockAndWait({ () -> Void in
+                context.deleteObject(foundAttach)
+                do{
+                    try context.save()
+                }
+                catch let blockSaveError
+                {
+                    saveError = blockSaveError
+                }
+            })
+            
+            if let errorToThrow = saveError
+            {
+                throw errorToThrow
+            }
+        }
+        catch let error
+        {
+            throw error
+        }
+    }
+    
+    
+    /**
+     - Returns: Non empty array of attachIDs
+     */
+    func allAttachesIDsForElementById(elementId:Int) throws -> Set<Int>
+    {
+        guard let foundElement = self.readElementById(elementId) else
+        {
+            throw OrigamiError.NotFoundError(message: "Element Not Found By Id: \(elementId).")
+        }
+        
+        guard let attachesSet = foundElement.attaches as? Set<DBAttach> where attachesSet.count > 0 else
+        {
+            throw OrigamiError.NotFoundError(message: "No Attaches Found for Element by Id: \(elementId).")
+        }
+        
+        var intsSet = Set<Int>()
+        
+        for anAttach in attachesSet
+        {
+            if let intId = anAttach.attachId?.integerValue
+            {
+                intsSet.insert(intId)
+            }
+        }
+        
+        guard !intsSet.isEmpty else
+        {
+            throw OrigamiError.NotFoundError(message: "No attachIds found.")
+        }
+        return intsSet
+    }
+    
+    func deleteAllAttachesForElementById(elementId:Int) throws
+    {
+        guard let foundElement = self.readElementById(elementId) else
+        {
+            throw OrigamiError.NotFoundError(message: "Element Not Found By Id: \(elementId).")
+        }
+        
+        guard let attachesSet = foundElement.attaches as? Set<DBAttach> where attachesSet.count > 0 else
+        {
+            throw OrigamiError.NotFoundError(message: "No Attaches Found for Element by Id: \(elementId).")
+        }
+        
+        let context = self.privateContext
+        
+        var anyError:ErrorType?
+        
+        context.performBlockAndWait { () -> Void in
+            for anAttach in attachesSet
+            {
+                context.deleteObject(anAttach)
+            }
+            
+            do
+            {
+                try context.save()
+            }
+            catch let saveError
+            {
+                anyError = saveError
+            }
+        }
+        
+        if let error = anyError
         {
             throw error
         }

@@ -36,24 +36,16 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     override func viewDidLoad()
     {
         super.viewDidLoad()
-   
-        //self.collectionDashboard.contentInset = UIEdgeInsetsMake(44.0, 0.0, 44.0, 0.0)
-        //self.collectionDashboard.layer.borderWidth = 2.0
+
         self.title = "Home"
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
-        //self.collectionSource = HomeCollectionHandler()
-        //self.collectionDashboard.dataSource = self.collectionSource
-        
         
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
         
-
-
-        //print("\(self)  viewDidLoad")
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)        
         
         startReadingHomeScreenData(1)

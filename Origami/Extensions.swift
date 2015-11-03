@@ -272,7 +272,7 @@ extension UIView
     }
 }
 
-extension UIImage{
+extension UIImage {
 
     func scaleToSizeKeepAspect(newSize:CGSize) -> UIImage?
     {
