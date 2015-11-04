@@ -150,10 +150,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         #if SHEVCHENKO
         #else
             let titleButton = UIButton(type: .System)
+            titleButton.frame = CGRectMake(0,0,60.0,40.0)
             let titleAttributed = NSAttributedString(string: "Graph", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 15)!])
             titleButton.setAttributedTitle(titleAttributed, forState: .Normal)
             titleButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
-            titleButton.sizeToFit()
+            
             titleButton.addTarget(self, action: "showGraphViewController:", forControlEvents: .TouchUpInside)
             self.navigationItem.titleView = titleButton
         #endif
@@ -161,7 +162,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func showGraphViewController(sender:UIButton)
     {
-        let graphBoard = UIStoryboard(name: "Visualisation", bundle: nil)
+        let graphBoard = UIStoryboard(name: "Visualization", bundle: nil)
         guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("VisualizationVC") as? VisualizationViewController else
         {
             return
