@@ -1229,6 +1229,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
+    func getVisualizableContent() -> [VisualizableObject]?
+    {
+        //TODO: - return objects for VisualizationViewController
+        return nil
+    }
+    
     //MARK: - Attaches
     
     /**
@@ -1714,7 +1720,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     /**
-     - TODO: get rid of dispatch_semaphore with delay of 3 seconds
+     //- TODO: get rid of dispatch_semaphore with delay of 3 seconds
      */
     func getMyContacts() throws -> [DBContact]
     {
@@ -1728,7 +1734,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             dispatch_semaphore_signal(dbReadingSemaphore)
         })
        
-        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 3.0)) //3 seconds should be enough to read all contacts from sqLite database
+        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0)) //3 seconds should be enough to read all contacts from sqLite database
        
         dispatch_semaphore_wait(dbReadingSemaphore, timeout)
         
