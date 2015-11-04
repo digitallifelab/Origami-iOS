@@ -34,9 +34,12 @@
     NSArray <VisualizableObject *> *objectsToVisualize = [[DataSource sharedInstance] getVisualizableContent];
     if (objectsToVisualize)
     {
-        // do thr stuff...
+        // do the stuff...
         //good luck :-)
     }
+    
+    
+    //show stuff.
     
 }
 
