@@ -32,6 +32,14 @@ class DataRefresher
     func startRefreshingElementsWithTimeoutInterval(timeout:NSTimeInterval)
     {
         self.cancelled = false
+        
+        guard let _ = DataSource.sharedInstance.user?.userId else
+        {
+            self.loadedElements = nil
+            self.refreshInterval = 0.0
+            return
+        }
+        
         refreshInterval = timeout
         if #available (iOS 8.0, *)
         {
@@ -61,7 +69,7 @@ class DataRefresher
             print("DataRefresher did Start refreshing elements with interval.")
             isInProgress = true
             
-            serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
+            self.serverRequester.loadAllElements { [weak self](objects, completionError) -> () in
               UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let weakSelf = self
                 {
@@ -79,16 +87,55 @@ class DataRefresher
                 
                 if let recievedElements = objects as? [Element]
                 {
-                    var sortedElements = recievedElements
-                    ObjectsConverter.sortElementsByDate(&sortedElements)
+                    //var sortedElements = recievedElements
+                    //ObjectsConverter.sortElementsByDate(&sortedElements)
 
-                        DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(sortedElements, completion: { (didSave, error) -> () in
-                         
+                    guard let dataBaseHandler = DataSource.sharedInstance.localDatadaseHandler else
+                    {
+                        print("")
+                        return
+                    }
+                    
+                    do
+                    {
+                        let currentIds = try dataBaseHandler.readAllElementIDs()
+                        
+                        //start refreshing and deleting elements if needed
+                        var currentRecievedElementIDsFromServer = Set<Int>()
+                        for anElementFromServer in recievedElements where anElementFromServer.elementId != nil
+                        {
+                            currentRecievedElementIDsFromServer.insert(anElementFromServer.elementId!)
+                        }
+                        
+                        let elementIdsToDelete = currentRecievedElementIDsFromServer.subtract(currentIds)
+                        
+                        if !elementIdsToDelete.isEmpty
+                        {
+                            dataBaseHandler.deleteElementsByIds(elementIdsToDelete)
+                        }
+                        
+                        dataBaseHandler.saveElementsToLocalDatabase(recievedElements, completion: { (didSave, error) -> () in
                             DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
-                                   NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                                })
+                                
                             })
                         })
-
+                        
+                    }
+                    catch// let error
+                    {
+                        //insert all elements as NEW in database
+                        DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(recievedElements, completion: { (didSave, error) -> () in
+                            
+                            DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                                })
+                            })
+                        })
+                    }
                 }
                 
                 if let weakSelf = self

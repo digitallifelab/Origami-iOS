@@ -489,22 +489,33 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     copyElement.archiveDate = string
                 }
                 
-                DataSource.sharedInstance.editElement(copyElement) {[weak self] (edited) -> () in
-                    if edited
-                    {
-                        if let weakSelf = self
+                dispatch_async(getBackgroundQueue_DEFAULT()) {
+                    DataSource.sharedInstance.editElement(copyElement) {[weak self] (edited) -> () in
+                        if edited
                         {
-                            dispatch_async(dispatch_get_main_queue()){ _ in
+                            if let weakSelf = self
+                            {
+                                dispatch_async(dispatch_get_main_queue()){ _ in
+                                    
+                                    weakSelf.setParentElementNeedsUpdateIfPresent()
+                                    
+                                    weakSelf.navigationController?.popViewControllerAnimated(true)
+                                    if let int = elementId
+                                    {
+                                        NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
+                                    }
+                                }
                                 
-                                weakSelf.setParentElementNeedsUpdateIfPresent()
-                                
-                                weakSelf.navigationController?.popViewControllerAnimated(true)
-                                if let int = elementId
-                                {
-                                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasDeletedNotification, object: self, userInfo: ["elementId": NSNumber(integer:int)])
+                            }
+                        }
+                        else
+                        {
+                            if let weakSelf = self
+                            {
+                                dispatch_async(dispatch_get_main_queue()) {
+                                        weakSelf.showAlertWithTitle("Error", message: "Could not archive current element.", cancelButtonTitle: "Close")
                                 }
                             }
-                           
                         }
                     }
                 }

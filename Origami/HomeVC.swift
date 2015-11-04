@@ -22,16 +22,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     private var refreshControl:UIRefreshControl?
     var shouldReloadCollection = false
     
-//    required init?(coder aDecoder: NSCoder)
+//    deinit
 //    {
-//        super.init(coder: aDecoder)
+//        print("\n -> removing HomeVC from NotificationCenter ->\n")
+//        NSNotificationCenter.defaultCenter().removeObserver(self)
 //    }
-    
-    deinit
-    {
-        print("\n -> removing HomeVC from NotificationCenter ->\n")
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
     
     override func viewDidLoad()
     {
@@ -48,7 +43,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)        
         
-        startReadingHomeScreenData(1)
+        
     }
 
     override func didReceiveMemoryWarning()
@@ -68,10 +63,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         
         DataSource.sharedInstance.addObserverForNewMessagesForElement(self, elementId: All_New_Messages_Observation_ElementId)
         
-        if let dashInfo = DataSource.sharedInstance.dashBoardInfo
-        {
-            reloadDashBoardViewWithDBElementsInfo(dashInfo)
-        }
+        
+        startReadingHomeScreenData(1)
+//        if let dashInfo = DataSource.sharedInstance.dashBoardInfo
+//        {
+//            reloadDashBoardViewWithDBElementsInfo(dashInfo)
+//        }
     }
     
     override func viewDidAppear(animated: Bool)
@@ -562,13 +559,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                         }
                     })
                 }
-
                 
-//                if let weakSelf = self
-//                {
-//                    weakSelf.shouldReloadCollection = true
-//                    weakSelf.reloadDashboardView()
-//                }
                 DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true, completion: { [weak self] (info) -> () in
                     if let aSelf = self
                     {

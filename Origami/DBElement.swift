@@ -24,7 +24,16 @@ class DBElement: NSManagedObject {
         self.dateChanged    = element.changeDate?.dateFromServerDateString()
         self.dateCreated    = element.createDate.dateFromServerDateString()
         self.dateRemind     = element.remindDate
-        self.dateArchived   = element.archiveDate?.dateFromServerDateString()
+        if let archDate = element.archiveDate?.dateFromServerDateString()
+        {
+            self.dateArchived = archDate
+            print("did Set dateArchived.")
+        }
+        else
+        {
+            self.dateArchived = nil
+            print("did Delete dateArchived")
+        }
         self.dateFinished   = element.finishDate
         self.type           = NSNumber(integer:element.typeId)
         self.finishState    = NSNumber(integer: element.finishState)

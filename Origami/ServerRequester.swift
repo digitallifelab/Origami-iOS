@@ -396,15 +396,29 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         }//end of bg queue
     }
     
-    func editElement(element:Element, completion completonClosure:(success:Bool, error:NSError?) -> () )
+    func editElement(element:Element, completion completionClosure:(success:Bool, error:NSError?) -> () )
     {
         guard let userToken = DataSource.sharedInstance.user?.token else {
-            completonClosure(success: false, error: noUserTokenError)
+            completionClosure(success: false, error: noUserTokenError)
             return
         }
         
 
         let editUrlString = "\(serverURL)" + "\(editElementUrlPart)" + "?token=" + "\(userToken)"
+        
+        guard let editRequestURL = NSURL(string: editUrlString) else
+        {
+            completionClosure(success: false, error: OrigamiError.NotFoundError(message: "Could Not Create Valid URL for request.") as NSError)
+            return
+        }
+        
+        
+        
+        let editRequest = NSMutableURLRequest(URL: editRequestURL)
+        editRequest.HTTPMethod = "POST"
+        editRequest.setValue("application/json", forHTTPHeaderField:"Content-Type")
+        editRequest.timeoutInterval = 15.0
+        
         var elementDict = element.toDictionary()
         if let archDateString = elementDict["ArchDate"] as? String
         {
@@ -414,37 +428,73 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 elementDict["ArchDate"] = "/Date(0)/"
             }
         }
+        
         let params = ["element":elementDict]
-        let debugDescription = params.description
-        NSLog("Sending editElement params: \n \(debugDescription) \n")
         
-        let requestSerializer = AFJSONRequestSerializer()
-        requestSerializer.timeoutInterval = 15.0
-        requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
-        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-        httpManager.requestSerializer = requestSerializer
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
-        let editRequestOperation = httpManager.POST(editUrlString,
-            parameters: params,
-            success: { (task, resultObject) -> Void in
-                // afnetworking returns here in main thread
+        let serializator = AFJSONRequestSerializer()
+        do
+        {
+            let request = try serializator.requestBySerializingRequest(editRequest, withParameters: params)
+            
+            let editDataTask = NSURLSession.sharedSession().dataTaskWithRequest(request) { (dataResponse, urlResponse, errorResponse) -> Void in
                 
-                print(" edit element response:\n \(resultObject)")
+                guard let data = dataResponse else
+                {
+                    if let error = errorResponse
+                    {
+                        completionClosure(success: false, error: error)
+                        return
+                    }
+                    completionClosure(success: false, error: OrigamiError.UnknownError as NSError)
+                    return
+                }
                 
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-               completonClosure(success: true, error: nil)
-            },
-            failure: { (task, error) -> Void in
-                // afnetworking returns here in main thread
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-
-                completonClosure(success: false, error: error)
+                if data.length == 0
+                {
+                    completionClosure(success: true, error: nil)
+                    return
+                }
                 
-        })
-        
-        editRequestOperation?.resume()
-        
+                do
+                {
+                    if let serverNormalResponseObject = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [String:AnyObject]
+                    {
+                        guard let resultObject = serverNormalResponseObject["EditElementResult"]  as? [String:AnyObject]else
+                        {
+                            //normal success response
+                            completionClosure(success: true, error: nil)
+                            return
+                        }
+                        
+                        print("EditElement Server Response:")
+                        print(resultObject)
+                        completionClosure(success: true, error: OrigamiError.UnknownError as NSError)
+                    }
+                }
+                catch let jsonParsingError
+                {
+                    if let serverReadableError = String(data: data, encoding: NSUTF8StringEncoding)
+                    {
+                        completionClosure(success: false, error: OrigamiError.NotFoundError(message: serverReadableError) as NSError)
+                        return
+                    }
+                    
+                    completionClosure(success: false, error: jsonParsingError as NSError)
+                }
+                
+            }// end of editDataTask block
+            
+            editDataTask.resume()
+            return
+        }
+        catch let error
+        {
+            print("Could not create request for editing an element. :")
+            print(error)
+            
+            completionClosure(success:false, error: error as NSError)
+            return
+        }
     }
     
     func setElementWithId(elementId:NSNumber, favourite isFavourite:Bool, completion completionClosure:(success:Bool, error:NSError?)->())

@@ -699,6 +699,57 @@ class LocalDatabaseHandler
        
     }
     
+    func readAllElementIDs() throws -> Set<Int>
+    {
+        let fetchRequest = NSFetchRequest(entityName: "DBElement")
+        fetchRequest.propertiesToFetch = ["elementId"]
+    
+        let context = self.privateContext
+        
+        var errorToThrow:ErrorType?
+        var elementIDsToReturn = Set<Int>()
+        
+        context.performBlockAndWait { () -> Void in
+            do
+            {
+                if let resultElements = try context.executeFetchRequest(fetchRequest) as? [DBElement]
+                {
+                    if resultElements.count > 0
+                    {
+                        var setToReturnLocal = Set<Int>()
+                        for anElement in resultElements
+                        {
+                            if let elId = anElement.elementId?.integerValue
+                            {
+                                setToReturnLocal.insert(elId)
+                            }
+                        }
+                        elementIDsToReturn = setToReturnLocal
+                    }
+                    else
+                    {
+                        errorToThrow = OrigamiError.NotFoundError(message: "No Elements Found In Database")
+                    }
+                }
+            }
+            catch let fetchError
+            {
+                errorToThrow = fetchError
+            }
+        }
+        
+        if let _ =  errorToThrow
+        {
+            throw errorToThrow!
+        }
+        
+        if !elementIDsToReturn.isEmpty
+        {
+            return elementIDsToReturn
+        }
+        throw OrigamiError.NotFoundError(message: "No Elements Found In Database")
+    }
+    
     func setFavourite(newFavValue:Bool, elementId:Int, completion:(()->())?)
     {
         guard let foundDBElement = self.readElementById(elementId) else
@@ -755,36 +806,42 @@ class LocalDatabaseHandler
         print(" ERROR while updating element SIGNAL: privateContextHasNoChanges")
     }
     
-    func deleteElementById(elementId:Int, completion:((Bool, error:NSError?)->())?)
+    func deleteElementById(elementId:Int, shouldSaveContext:Bool = false, completion:((Bool, error:NSError?)->())? = nil)
     {
         let lvContext = self.privateContext
         if let foundElementToDelete = self.readElementById(elementId)
         {
             let managedObjectId = foundElementToDelete.objectID
             
-            lvContext.performBlock(){_ in
+            lvContext.performBlockAndWait(){_ in
                 if let element = lvContext.objectWithID(managedObjectId) as? DBElement
                 {
                     lvContext.deleteObject(element)
                 }
                 
-                if lvContext.hasChanges
+                
+                if shouldSaveContext
                 {
-                    do{
-                        try lvContext.save()
-                        print("Private Context did save after deleting DBElement")
-                        completion?(true, error: nil)
+                    if lvContext.hasChanges
+                    {
+                        do{
+                            try lvContext.save()
+                            print("Private Context did save after deleting DBElement")
+                            completion?(true, error: nil)
+                        }
+                        catch let saveError as NSError {
+                            print("Private Context did NOT save after deleting DBElement:  Error")
+                            completion?(false, error : saveError)
+                        }
                     }
-                    catch let saveError as NSError {
-                        print("Private Context did NOT save after deleting DBElement:  Error")
-                        completion?(false, error : saveError)
+                    else
+                    {
+                        print("Private Context did NOT save after deleting DBElement:  No Changes to Context")
+                        completion?(false, error: nil)
                     }
+                    return
                 }
-                else
-                {
-                    print("Private Context did NOT save after deleting DBElement:  No Changes to Context")
-                    completion?(false, error: nil)
-                }
+                completion?(true, error:nil)
             }
         }
         else
@@ -793,6 +850,30 @@ class LocalDatabaseHandler
             completion?(false, error:nil)
         }
        
+    }
+    
+    func deleteElementsByIds(elementIds:Set<Int>)
+    {
+        for anElementId in elementIds
+        {
+            self.deleteElementById(anElementId)
+        }
+        
+        if self.privateContext.hasChanges
+        {
+            let context = self.privateContext
+            context.performBlockAndWait({ () -> Void in
+               
+                do{
+                    try context.save()
+                }
+                catch let saveError
+                {
+                    print("context DID NOT SAVE after batch deletion elements:")
+                    print(saveError)
+                }
+            })
+        }
     }
     
     func deleteAllElements()
@@ -1867,9 +1948,11 @@ class LocalDatabaseHandler
     
     func readContactByManagedObjectID(managedId:NSManagedObjectID, completion:((DBContact?, error:NSError?) -> ())?)
     {
-        if #available(iOS 8.3, *) {
+        if #available(iOS 8.3, *)
+        {
             self.privateContext.refreshAllObjects()
-        } else {
+        }
+        else {
             // Fallback on earlier versions
         }
         
