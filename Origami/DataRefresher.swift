@@ -92,7 +92,7 @@ class DataRefresher
 
                     guard let dataBaseHandler = DataSource.sharedInstance.localDatadaseHandler else
                     {
-                        print("")
+                        print(" HUGE ERROR - NO LlocalDatabaseHandler -------- ")
                         return
                     }
                     
