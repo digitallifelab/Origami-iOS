@@ -1180,7 +1180,8 @@ class LocalDatabaseHandler
         
         let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
         let sortById = NSSortDescriptor(key: "messageId", ascending: false)
-        //let sortByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
+
+        lastMessagesRequest.predicate = NSPredicate(format: "targetElement != nil")
         lastMessagesRequest.sortDescriptors = [sortById]
         
         let context = self.privateContext

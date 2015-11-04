@@ -208,73 +208,83 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func elementsForSection(section:Int) -> [DBElement]?
     {
-        if selectedFilterOption == .Task
-        {
+//        if selectedFilterOption == .Task
+//        {
+//            switch section
+//            {
+//            case 0:
+//                if let responsibleElements = self.elementsCreatedByUser where !responsibleElements.isEmpty
+//                {
+//                    return responsibleElements
+//                }
+//                else
+//                {
+//                    fallthrough
+//                }
+//            case 1:
+//                return self.elementsUserParticipatesIn
+//            default:
+//                return nil
+//            }
+//        }
+//        else
+//        {
             switch section
             {
             case 0:
-                if self.elementsUserParticipatesIn != nil && elementsUserParticipatesIn?.count > 0
+                if let createdElements = self.elementsCreatedByUser where !createdElements.isEmpty
                 {
-                    return self.elementsUserParticipatesIn
+                    return createdElements
                 }
                 else
                 {
-                    return self.elementsCreatedByUser
-                }
-            case 1:
-                return self.elementsCreatedByUser
-            default:
-                return nil
-            }
-        }
-        else
-        {
-            switch section
-            {
-            case 0:
-                if self.elementsCreatedByUser != nil && elementsCreatedByUser?.count > 0
-                {
-                    return self.elementsCreatedByUser
-                }
-                else
-                {
-                    return self.elementsUserParticipatesIn
+                    fallthrough
                 }
             case 1:
                 return self.elementsUserParticipatesIn
             default:
                 return nil
             }
-        }
+//        }
     }
     
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if selectedFilterOption == .Task //when displaying elements by TASK filter, we show PArticipating elements first
         {
-            if let elements = elementsForSection(section)
+            switch section
             {
-                if elements == self.elementsCreatedByUser!
+            case 0:
+                if let participatingElements = self.elementsCreatedByUser where !participatingElements.isEmpty
                 {
                     return "responsible".localizedWithComment("")
                 }
                 else
                 {
-                    return "creator".localizedWithComment("")
+                    fallthrough
                 }
+            case 1:
+                return "creator".localizedWithComment("")
+            default:
+                break
             }
         }
         else
         {
-            if let elements = elementsForSection(section)
+            switch section
             {
-                if elements == self.elementsCreatedByUser!
+            case 0:
+                if let createdElements = self.elementsCreatedByUser where !createdElements.isEmpty//count > 0
                 {
                     return "creator".localizedWithComment("")
                 }
                 else
                 {
-                    return "participant".localizedWithComment("")
+                    fallthrough
                 }
+            case 1:
+                return "participant".localizedWithComment("")
+            default:
+                break
             }
         }
         return nil
@@ -358,6 +368,7 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
                 {
                     contactsPicker.delegate = weakSelf
                     contactsPicker.contactsToSelectFrom = myContacts
+                    contactsPicker.selectedContactId = weakSelf.selectedUserId
                     weakSelf.navigationController?.pushViewController(contactsPicker, animated: true)
                 }
             }
@@ -384,8 +395,9 @@ class ElementsSortedByUserVC: RecentActivityTableVC, TableItemPickerDelegate {
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject)
     {
-        if let aContact = item as? DBContact, contactId = aContact.contactId?.integerValue
+        if let aContactIdNum = item as? NSNumber//, contactId = aContact.contactId?.integerValue
         {
+            let contactId = aContactIdNum.integerValue
             if self.selectedUserId != contactId
             {
                 self.selectedUserId = contactId
