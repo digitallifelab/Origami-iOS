@@ -41,7 +41,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
-        
+        configureTestVisualisationTitleButton()
         configureRightBarButtonItem()
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
@@ -147,6 +147,32 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         let rightBarButton = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "showElementCreationVC:")
         self.navigationItem.rightBarButtonItem = rightBarButton
     }
+    
+    func configureTestVisualisationTitleButton()
+    {
+        #if SHEVCHENKO
+        #else
+            let titleButton = UIButton(type: .System)
+            let titleAttributed = NSAttributedString(string: "Graph", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 15)!])
+            titleButton.setAttributedTitle(titleAttributed, forState: .Normal)
+            titleButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
+            titleButton.sizeToFit()
+            titleButton.addTarget(self, action: "showGraphViewController:", forControlEvents: .TouchUpInside)
+            self.navigationItem.titleView = titleButton
+        #endif
+    }
+    
+    func showGraphViewController(sender:UIButton)
+    {
+        let graphBoard = UIStoryboard(name: "Visualisation", bundle: nil)
+        guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("VisualizationVC") as? VisualizationViewController else
+        {
+            return
+        }
+        
+        self.navigationController?.pushViewController(visualVC, animated: true)
+    }
+    
     
     func configureLeftBarButtonItem()
     {

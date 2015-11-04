@@ -1229,6 +1229,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
+    func getVisualizableContent() -> 
+    
     //MARK: - Attaches
     
     /**
