@@ -7,7 +7,9 @@
 //
 
 #import "VisualizationViewController.h"
+#import "VisualizableObject.h"
 
+#import "Origami_task_manager-Swift.h"
 @interface VisualizationViewController ()
 
 @end
@@ -17,11 +19,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+
+    NSArray <VisualizableObject *> *objectsToVisualize = [[DataSource sharedInstance] getVisualizableContent];
+    if (objectsToVisualize)
+    {
+        // do thr stuff...
+        //good luck :-)
+    }
+    
 }
 
 /*
