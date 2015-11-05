@@ -16,15 +16,24 @@ class MyContactListCell: UITableViewCell {
     @IBOutlet weak var favouriteButton:UIButton!
     @IBOutlet weak var moodLabel:UILabel?
     
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            switch displayMode{
+            case .Day:
+                avatar.tintColor = kDayCellBackgroundColor
+                nameLabel.textColor = kBlackColor
+            case .Night:
+                avatar.tintColor = kWhiteColor
+                nameLabel?.textColor = kWhiteColor
+            }
+        }
+    }
+    
     override func awakeFromNib() {
-        avatar.image = UIImage(named: "icon-contacts")
+        //avatar.image = UIImage(named: "icon-contacts")
         avatar.maskToCircle()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        avatar?.tintColor = kDayCellBackgroundColor
-    }
     
     @IBAction func favouriteButtonNapped(sender:UIButton?)
     {

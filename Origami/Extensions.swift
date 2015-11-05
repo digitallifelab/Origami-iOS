@@ -134,7 +134,6 @@ extension NSDate
             let toReturn = (comprarison != .OrderedAscending);
             
             return toReturn;
-            
         }
         
         return false

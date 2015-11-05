@@ -96,11 +96,11 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate // to si
             {
                 if date.lessThanDayAgo()
                 {
-                    dateString = date.dateStringShortStyle()
+                    dateString = date.timeStringShortStyle()
                 }
                 else
                 {
-                    dateString = date.timeStringShortStyle()
+                    dateString = date.dateStringShortStyle()
                 }
             }
             

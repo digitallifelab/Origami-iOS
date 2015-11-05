@@ -17,15 +17,31 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     let titleInfoKey = "title"
     let detailsInfoKey = "details"
-    var avatarImage:UIImage?
+
     var titleLabel:UILabel?
     
     @IBOutlet weak var tableView:UITableView?
     
+    
+    var displayMode:DisplayMode = .Day
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        let nightModeOnBool = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
+        if nightModeOnBool
+        {
+            self.displayMode = .Night
+            self.view.backgroundColor = kBlackColor
+        }
+        else
+        {
+            self.displayMode = .Day
+            self.view.backgroundColor = kWhiteColor
+        }
+            
+        
         
         if let managedId = contactManagedId
         {
@@ -35,7 +51,6 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                     if let lvContact = foundContact
                     {
                         weakSelf.contact = lvContact
-                        weakSelf.refreshTable(nil)
                     }
                 }
             }
@@ -50,13 +65,23 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        avatarImage = nil
+        
+        
+     
+
+        
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        if let contactName = contact?.nameAndLastNameSpacedString()
+        
+        guard let lvContact = self.contact, contactId = lvContact.contactId?.integerValue else
+        {
+            return
+        }
+        
+        if let contactName = lvContact.nameAndLastNameSpacedString()
         {
             titleLabel = UILabel(frame: CGRectMake(0, 0 ,200 ,20 ))
             titleLabel?.layer.opacity = 0.0
@@ -67,12 +92,30 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
             self.navigationItem.titleView = titleLabel
             titleLabel?.layer.opacity = 1.0
         }
+        
+        if let _ = DataSource.sharedInstance.getAvatarForUserId(contactId)
+        {
+            //self.tableView?.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .Fade)
+        }
+        else if let preview = DataSource.sharedInstance.localDatadaseHandler?.readAvatarPreviewForContactId(contactId), image = UIImage(data: preview)
+        {
+            DataSource.sharedInstance.userAvatarsHolder[contactId] = image
+            self.tableView?.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .Fade)
+        }
+        else
+        {
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshTable:", name: kAvatarDidFinishDownloadingNotification, object: nil)
+            
+            DataSource.sharedInstance.startLoadingAvatarForUserName((name:lvContact.userName!, id:contactId))
+        }
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
+    
     func setupToolbarHomeButton()
     {
         let homeButton = UIButton(type: .System)
@@ -110,42 +153,13 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
             }
         }
         
-        if let contactLoginName = self.contact?.userName , contactId = contact?.contactId?.integerValue
+        if let _ = contact?.contactId?.integerValue
         {
-            self.avatarImage = DataSource.sharedInstance.getAvatarForUserId(contactId)
-            
             dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                 if let weakSelf = self
                 {
-                    weakSelf.tableView?.reloadData()
+                    weakSelf.tableView?.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .Automatic)
                 }
-            })
-            
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), { () -> Void in
-                
-                DataSource.sharedInstance.loadAvatarFromDiscForLoginName(contactLoginName, completion: {[weak self] (image, error) -> () in
-                    if let avatarImage = image, weakSelf = self
-                    {
-                        weakSelf.avatarImage = avatarImage
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            weakSelf.tableView?.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .None)
-                        })
-                    }
-                    else
-                    {
-                        print(" Did not load avatar for contact.")
-                        print(".. starting loading from server..")
-                        if let weakSelf = self
-                        {
-                            NSNotificationCenter.defaultCenter().removeObserver(weakSelf, name: kAvatarDidFinishDownloadingNotification, object: nil)
-                            
-                            NSNotificationCenter.defaultCenter().addObserver(weakSelf, selector: "refreshTable:", name: kAvatarDidFinishDownloadingNotification, object: nil)
-                        }
-                        
-                        DataSource.sharedInstance.startLoadingAvatarForUserName((name: contactLoginName, id: contactId))
-                    }
-                    
-                })
             })
         }
     }
@@ -184,9 +198,18 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
             if let contact = self.contact
             {
                 avatarCell.favourite = contact.favorite!.boolValue
+                if let contactId = contact.contactId?.integerValue, avatar = DataSource.sharedInstance.getAvatarForUserId(contactId)
+                {
+                    avatarCell.avatar?.image = avatar
+                }
+                else
+                {
+                    avatarCell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
+                }
             }
-            avatarCell.avatar?.image = self.avatarImage
+            avatarCell.displayMode = self.displayMode
             return avatarCell
+            
         default:
             let textCell = tableView?.dequeueReusableCellWithIdentifier("ContactProfileTextInfoCell", forIndexPath: indexPath) as! ContactProfileTextInfoCell
             if let info = textInfoForIndexPath(indexPath)
@@ -194,6 +217,7 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 textCell.titleTextLabel?.text = info[titleInfoKey]
                 textCell.mainInfoTextLabel?.text = info[detailsInfoKey]
             }
+            textCell.displayMode = self.displayMode
             return textCell
         }
     }

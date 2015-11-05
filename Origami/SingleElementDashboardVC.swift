@@ -1456,7 +1456,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                             contactsPicker.ableToPickFinishDate = true
                             
                             contactsPicker.contactsToSelectFrom = myContactsPresent
-                            
+                            contactsPicker.selectedContactId = DataSource.sharedInstance.user!.userId!
                             weakSelf.navigationController?.pushViewController(contactsPicker, animated: true)
                         }
                     })
@@ -1552,15 +1552,31 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     }
     
     func itemPicker(itemPicker: AnyObject, didPickItem item: AnyObject) {
-        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? DBContact, contactId = contactPicked.contactId?.integerValue, finishDate = contactsPickerVC.finishDate
+        if let contactsPickerVC = itemPicker as? ContactsPickerVC, contactPicked = item as? NSNumber
         {
-            do
+            let contactId = contactPicked.integerValue
+            
+            if let finishDate = contactsPickerVC.finishDate
             {
-                try sendElementTaskNewResponsiblePerson(contactId, finishDate:finishDate)
+                do
+                {
+                    try sendElementTaskNewResponsiblePerson(contactId, finishDate:finishDate)
+                }
+                catch let error
+                {
+                    print(error)
+                }
             }
-            catch let error
+            else
             {
-                print(error)
+                do
+                {
+                    try sendElementTaskNewResponsiblePerson(contactId, finishDate:nil)
+                }
+                catch let error
+                {
+                    print(error)
+                }
             }
         }
        
@@ -1578,7 +1594,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
      - Precondition: `responsiblePersonId` shoild be more than zero
 
     */
-    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate) throws
+    private func sendElementTaskNewResponsiblePerson(responsiblePersonId:Int, finishDate:NSDate?) throws
     {
         guard responsiblePersonId > 0 else
         {

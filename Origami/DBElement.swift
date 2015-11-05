@@ -32,7 +32,7 @@ class DBElement: NSManagedObject {
         else
         {
             self.dateArchived = nil
-            print("did Delete dateArchived")
+            //print("did Delete dateArchived")
         }
         self.dateFinished   = element.finishDate
         self.type           = NSNumber(integer:element.typeId)

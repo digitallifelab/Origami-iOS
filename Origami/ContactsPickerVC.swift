@@ -21,7 +21,7 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
  
     var ableToPickFinishDate = false
     
-    var selectedContact:DBContact?
+    var selectedContactId:Int = 0
     var selectedIndexPath:NSIndexPath = NSIndexPath(forRow: 0, inSection: 0)
     
     
@@ -53,11 +53,11 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         let doneBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed:")
         self.navigationItem.rightBarButtonItem = doneBarButtonItem
         
+        
        
         //self.tableView?.selectRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0), animated: true, scrollPosition: .Top)
         if ableToPickFinishDate
         {
-        
             configureToolbarDateButton()
         }
     }
@@ -163,12 +163,12 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         {
             if let aContact = contactForIndexPath(indexPath)
             {
-                self.selectedContact = aContact
-                self.delegate?.itemPicker(self, didPickItem: aContact)
+                self.selectedContactId = aContact.contactId!.integerValue
+                self.delegate?.itemPicker(self, didPickItem: NSNumber(integer:self.selectedContactId))
             }
             else
             {
-                self.selectedContact = nil
+                self.selectedContactId = 0
                 self.delegate?.itemPickerDidCancel(self)
             }
         }
@@ -176,7 +176,7 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         {
             if let aContact = contactForIndexPath(indexPath)
             {
-                self.selectedContact = aContact
+                self.selectedContactId = aContact.contactId!.integerValue
             }
         }
     }
@@ -192,10 +192,10 @@ class ContactsPickerVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     //MARK: Done button
     func doneButtonPressed(sender:UIBarButtonItem)
     {
-        if let contact = selectedContact
-        {
-            self.delegate?.itemPicker(self, didPickItem: contact)
-        }
+//        if let contact = selectedContact
+//        {
+            self.delegate?.itemPicker(self, didPickItem: NSNumber(integer: self.selectedContactId))
+//        }
     }
     
     // MARK: -

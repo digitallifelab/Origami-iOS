@@ -12,5 +12,18 @@ class ContactProfileTextInfoCell: UITableViewCell {
 
     @IBOutlet weak var titleTextLabel:UILabel?
     @IBOutlet weak var mainInfoTextLabel:UILabel?
+    
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            switch displayMode
+            {
+            case .Day :
+                mainInfoTextLabel?.textColor = kBlackColor
+            case .Night :
+                mainInfoTextLabel?.textColor = kWhiteColor
+            }
+            
+        }
+    }
 
 }

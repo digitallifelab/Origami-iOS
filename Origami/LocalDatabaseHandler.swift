@@ -123,7 +123,7 @@ class LocalDatabaseHandler
     {
         let request = NSFetchRequest(entityName: "DBElement")
         request.predicate = NSPredicate(format: "dateArchived != nil")
-        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
         
         var elementsToReturn:[DBElement]?
         let lvContext = self.privateContext
@@ -153,7 +153,7 @@ class LocalDatabaseHandler
     {
         let request = NSFetchRequest(entityName: "DBElement")
         request.predicate = NSPredicate(format: "dateArchived = nil")
-        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
+        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
         
         var elementsToReturn:[DBElement]?
         let lvContext = self.privateContext
@@ -185,7 +185,7 @@ class LocalDatabaseHandler
         let optionsConverter = ElementOptionsConverter()
         
         let context = self.privateContext
-        let sortByDateChanged = NSSortDescriptor(key: "dateChanged", ascending: true)
+        let sortByDateChanged = NSSortDescriptor(key: "dateChanged", ascending: false)
         let ownedElementsRequest = NSFetchRequest(entityName: "DBElement")
         
         let userIdFilterPredicateString = (elementType == .Task) ? "responsibleId = \(userId)" : "creatorId = \(userId)"
@@ -325,7 +325,7 @@ class LocalDatabaseHandler
     }
     
     /**
-    Mathod is used for querying only count for creating layout of for displaying actual subordinates info.
+    Method is used for querying only count for creating layout of for displaying actual subordinates info.
     - Parameter elementId: an id of element to search it`s subordinate elements
     - Parameter shouldReturnObjects:
         - If *`shouldReturnObjects`* is not passed ( or passed *`false`*) - method starts fetchRequest with resuitType *`ManagedObjectIDResultType`* for faster execution
@@ -336,91 +336,107 @@ class LocalDatabaseHandler
         - optional array of DBElement objects
         - error if fetchRequest fails or if something unusual happens
     */
-    func readSubordinateElementsForElementIdAsync(elementId:Int, shouldReturnObjects:Bool = false, completion:((count:Int, elements:[DBElement]?, error:NSError?) ->())? )
-    {
-        let elementsRequest = NSFetchRequest(entityName: "DBElement")
-        let predicate = NSPredicate(format: "rootElementId == %ld", elementId)
-        elementsRequest.predicate = predicate
-        elementsRequest.shouldRefreshRefetchedObjects = true //TODO: set this flag to false if the method is called in a loop....
-        
-        if shouldReturnObjects
-        {
-            dispatch_async(getBackgroundQueue_DEFAULT(), { () -> Void in
-                do{
-                    if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [DBElement]
-                    {
-                        let count = requestResult.count
-                        if count > 0{
-                            
-                            completion?(count: count, elements: requestResult, error: nil)
-                        }
-                        else
-                        {
-                            completion?(count: count, elements: nil, error: nil)
-                        }
-                    }
-                    else
-                    {
-                        let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
-                        completion?(count: 0, elements: nil, error: anError)
-                    }
-                }
-                catch let error as NSError
-                {
-                    completion?(count:0, elements: nil, error:error)
-                }
-                catch
-                {
-                    let unKnownError = unKnownExceptionError
-                    completion?(count:0, elements: nil, error:unKnownError)
-                }
-            })
-            
-        }
-        else //return only count or error
-        {
-            elementsRequest.resultType = .ManagedObjectIDResultType
-            do{
-                if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [DBElement]
-                {
-                    completion?(count: requestResult.count, elements: nil, error: nil)
-                }
-                else
-                {
-                    let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to NSManagedObjectId array."])
-                    completion?(count: 0, elements: nil, error: anError)
-                }
-            }
-            catch let error as NSError
-            {
-                completion?(count:0, elements: nil, error:error)
-            }
-            catch
-            {
-                let unKnownError = unKnownExceptionError
-                completion?(count:0, elements: nil, error:unKnownError)
-            }
-        }
-    }
+//    func readSubordinateElementsForElementIdAsync(elementId:Int, shouldReturnObjects:Bool = false, completion:((count:Int, elements:[DBElement]?, error:NSError?) ->())? )
+//    {
+//        let elementsRequest = NSFetchRequest(entityName: "DBElement")
+//        let predicate = NSPredicate(format: "rootElementId == %ld", elementId)
+//        elementsRequest.predicate = predicate
+//        elementsRequest.shouldRefreshRefetchedObjects = true //TODO: set this flag to false if the method is called in a loop....
+//        
+//        let context = self.privateContext
+//        
+//        if shouldReturnObjects
+//        {
+//            
+//            do{
+//                if let requestResult = try context.executeFetchRequest(elementsRequest) as? [DBElement]
+//                {
+//                    let count = requestResult.count
+//                    if count > 0{
+//                        
+//                        completion?(count: count, elements: requestResult, error: nil)
+//                    }
+//                    else
+//                    {
+//                        completion?(count: count, elements: nil, error: nil)
+//                    }
+//                }
+//                else
+//                {
+//                    let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
+//                    completion?(count: 0, elements: nil, error: anError)
+//                }
+//            }
+//            catch let error as NSError
+//            {
+//                completion?(count:0, elements: nil, error:error)
+//            }
+//            catch
+//            {
+//                let unKnownError = unKnownExceptionError
+//                completion?(count:0, elements: nil, error:unKnownError)
+//            }
+//        }
+//        else //return only count or error
+//        {
+//            elementsRequest.resultType = .ManagedObjectIDResultType
+//            do{
+//                if let requestResult = try context.executeFetchRequest(elementsRequest) as? [DBElement]
+//                {
+//                    completion?(count: requestResult.count, elements: nil, error: nil)
+//                }
+//                else
+//                {
+//                    let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to NSManagedObjectId array."])
+//                    completion?(count: 0, elements: nil, error: anError)
+//                }
+//            }
+//            catch let error as NSError
+//            {
+//                completion?(count:0, elements: nil, error:error)
+//            }
+//            catch
+//            {
+//                let unKnownError = unKnownExceptionError
+//                completion?(count:0, elements: nil, error:unKnownError)
+//            }
+//        }
+//    }
     
+     /**
+     Method is used for querying only count for creating layout of for displaying actual subordinates info.
+     - Parameter elementId: an id of element to search it`s subordinate elements
+     - Parameter shouldReturnObjects:
+     - If *`shouldReturnObjects`* is not passed ( or passed *`false`*) - method starts fetchRequest with resuitType *`ManagedObjectIDResultType`* for faster execution
+     - If *`shouldReturnObjects`* is passed *`true`* method starts fetchRequest with resultType default, and sorted *DBElement*`s by dateChanged
+     - Parameter completion: an optional closure to handle response of method
+     - Returns:
+     - count of elements in optional array that sholud be returned
+     - optional array of DBElement objects
+     - error if fetchRequest fails or if something unusual happens
+     */
     func readSubordinateElementsForDBElementIdSync(elementId:Int, shouldReturnObjects:Bool = false) -> (count:Int, elements:[DBElement]?, error:NSError?)
     {
         let elementsRequest = NSFetchRequest(entityName: "DBElement")
         
         let predicate = NSPredicate(format: "rootElementId = \(elementId) AND dateArchived = nil")
         elementsRequest.predicate = predicate
-        elementsRequest.shouldRefreshRefetchedObjects = false //TODO: set this flag to false if the method is called in a loop....
+        elementsRequest.shouldRefreshRefetchedObjects = shouldReturnObjects
         
         var returnCount = 0
         var returnError:NSError?
+        
+        let context = self.privateContext
         
         if shouldReturnObjects
         {
             var returnElements:[DBElement]?
             
-            self.privateContext.performBlockAndWait({ () -> Void in
+            context.performBlockAndWait(){ () -> Void in
                 do{
-                    if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [DBElement]
+                    elementsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
+                    
+                    if let requestResult = try context.executeFetchRequest(elementsRequest) as? [DBElement]
                     {
                         returnCount = requestResult.count
                         if returnCount > 0
@@ -442,7 +458,7 @@ class LocalDatabaseHandler
                 {
                     returnError = unKnownExceptionError
                 }
-            })
+            }
             
             return (count: returnCount, elements: returnElements, error: returnError)
             
@@ -451,9 +467,9 @@ class LocalDatabaseHandler
         {
             elementsRequest.resultType = .ManagedObjectIDResultType
             
-            self.privateContext.performBlockAndWait({ () -> Void in
+            context.performBlockAndWait(){ () -> Void in
                 do{
-                    if let requestResult = try self.privateContext.executeFetchRequest(elementsRequest) as? [NSManagedObjectID]
+                    if let requestResult = try context.executeFetchRequest(elementsRequest) as? [NSManagedObjectID]
                     {
                         returnCount = requestResult.count
                     }
@@ -471,7 +487,7 @@ class LocalDatabaseHandler
                 {
                     returnError = unKnownExceptionError
                 }
-            })
+            }
 
             return (count: returnCount, elements: nil, error: returnError)
         }
@@ -483,11 +499,12 @@ class LocalDatabaseHandler
         dispatch_async(bgQueue) { () -> Void in
             var returningValue: (signals:[DBElement]?,favourites:[DBElement]?, other:[DBElement]?) = (signals:nil, favourites:nil, other:nil)
             
+            let dateChangedDescriptor = NSSortDescriptor(key: "dateChanged", ascending: false)
             let signalsRequest = NSFetchRequest(entityName: "DBElement")
             signalsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal"]
             signalsRequest.shouldRefreshRefetchedObjects = shouldRefetch
             signalsRequest.predicate = NSPredicate(format: "isSignal = true AND dateArchived = nil")
-            signalsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
+            signalsRequest.sortDescriptors = [dateChangedDescriptor]
             
             let context = self.privateContext
             
@@ -511,6 +528,7 @@ class LocalDatabaseHandler
             favouritesRequest.shouldRefreshRefetchedObjects = shouldRefetch
             favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
             favouritesRequest.predicate = NSPredicate(format: "isFavourite = true AND dateArchived = nil")
+            favouritesRequest.sortDescriptors = [dateChangedDescriptor]
             context.performBlockAndWait { _ in
                 do{
                     if let favouriteElements = try context.executeFetchRequest(favouritesRequest) as? [DBElement]
@@ -531,6 +549,7 @@ class LocalDatabaseHandler
             otherDashboardElementsRequest.shouldRefreshRefetchedObjects = shouldRefetch
             otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
             otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId = 0 AND dateArchived = nil")
+            otherDashboardElementsRequest.sortDescriptors = [dateChangedDescriptor]
             
             context.performBlockAndWait { _ in
                 do{
@@ -1180,7 +1199,8 @@ class LocalDatabaseHandler
         
         let lastMessagesRequest = NSFetchRequest(entityName: "DBMessageChat")
         let sortById = NSSortDescriptor(key: "messageId", ascending: false)
-        //let sortByDate = NSSortDescriptor(key: "dateCreated", ascending: false)
+
+        lastMessagesRequest.predicate = NSPredicate(format: "targetElement != nil")
         lastMessagesRequest.sortDescriptors = [sortById]
         
         let context = self.privateContext
@@ -1660,8 +1680,11 @@ class LocalDatabaseHandler
     {
         let previewFetchRequest = NSFetchRequest(entityName: "DBAvatarPreview")
         previewFetchRequest.predicate = NSPredicate(format: "avatarUserId == \(userId)")
+        let contextMain = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        contextMain.parentContext = self.privateContext
+        
         do{
-            if let previews = try self.privateContext.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
+            if let previews = try contextMain.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
             {
                 if previews.count == 1
                 {
