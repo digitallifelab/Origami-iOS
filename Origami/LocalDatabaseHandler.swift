@@ -1680,8 +1680,11 @@ class LocalDatabaseHandler
     {
         let previewFetchRequest = NSFetchRequest(entityName: "DBAvatarPreview")
         previewFetchRequest.predicate = NSPredicate(format: "avatarUserId == \(userId)")
+        let contextMain = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        contextMain.parentContext = self.privateContext
+        
         do{
-            if let previews = try self.privateContext.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
+            if let previews = try contextMain.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
             {
                 if previews.count == 1
                 {

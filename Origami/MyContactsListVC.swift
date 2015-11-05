@@ -42,7 +42,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     #endif
     
     
-   
+   var displayMode:DisplayMode = .Day
     
     //MARK:----
     override func viewDidLoad() {
@@ -50,6 +50,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
 
         // Do any additional setup after loading the view.
        
+        setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         configureNavigationItems()
         configureNavigationControllerToolbarItems()
         
@@ -176,6 +177,41 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         #endif
         super.viewDidDisappear(animated)
     }
+    
+    /**
+     
+     Sets night or day mode to the whole app – the tint and background color of navigation bar and toolbar items, and also the background color of viewcontroller`s view
+     
+     - nightModeOn: *false* means .Day, *true* means .Night
+     */
+    override func setAppearanceForNightModeToggled(nightModeOn:Bool)
+    {
+        UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
+        self.navigationController?.navigationBar.translucent = false
+        self.navigationController?.toolbar.translucent = false
+        
+        //    UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
+        
+        if nightModeOn
+        {
+            self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
+            self.navigationController?.navigationBar.barTintColor = kBlackColor
+            self.view.backgroundColor = kBlackColor
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.barTintColor = kBlackColor
+            self.displayMode = .Night
+        }
+        else
+        {
+            self.navigationController?.navigationBar.barStyle = UIBarStyle.Default
+            self.navigationController?.navigationBar.barTintColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.4)
+            self.view.backgroundColor = kWhiteColor
+            self.navigationController?.toolbar.tintColor = kWhiteColor
+            self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.5)
+            self.displayMode = .Day
+        }
+    }
+    
     
     func configureNavigationItems()
     {
@@ -363,6 +399,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     private func configureCell(cell: MyContactListCell, forIndexPath indexPath:NSIndexPath)
     {
+        cell.displayMode = self.displayMode
         if let contact = contactForIndexPath(indexPath)
         {
             //name field
@@ -383,7 +420,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             cell.favouriteButton.tag = indexPath.row
             
             //avatar
-            cell.avatar.tintColor = kDayCellBackgroundColor
            
             if let avatarImage = DataSource.sharedInstance.getAvatarForUserId(contact.contactId!.integerValue)
             {
@@ -393,8 +429,8 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             {
                 cell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
-
         }
+        
     }
     
     private func contactForIndexPath(indexPath:NSIndexPath) -> DBContact?

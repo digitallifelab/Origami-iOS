@@ -13,6 +13,22 @@ class ContactProfileAvatarCell: UITableViewCell {
     @IBOutlet weak var avatar:UIImageView?
     @IBOutlet weak var favIcon:UIImageView!
     
+    
+    var displayMode:DisplayMode = .Day{
+        didSet{
+            switch displayMode
+            {
+                case .Day :
+                    self.favIcon?.tintColor = kDayCellBackgroundColor
+                    self.avatar?.tintColor = kDayCellBackgroundColor
+                case .Night :
+                    self.favIcon?.tintColor = kWhiteColor
+                    self.avatar?.tintColor = kWhiteColor
+            }
+            
+        }
+    }
+    
     var favourite = false{
         didSet{
             if favourite
@@ -35,10 +51,6 @@ class ContactProfileAvatarCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-//        favIcon.image = UIImage(named: "icon-favourite")?.imageWithRenderingMode(.AlwaysTemplate)
-//        favIcon.tintColor = kDayCellBackgroundColor
-        //favIcon.backgroundColor = kWhiteColor
-        
         avatar?.maskToCircle()
     }
 }

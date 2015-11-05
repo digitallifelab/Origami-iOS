@@ -2114,6 +2114,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return nil
     }
     
+    
+    
     func loadAvatarFromDiscForLoginName(loginName:String, completion completionBlock:((image:UIImage?, error:NSError?) ->())? )
     {
         let fileHandler = FileHandler()

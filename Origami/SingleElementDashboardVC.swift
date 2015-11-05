@@ -1578,8 +1578,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     print(error)
                 }
             }
-            
-            
         }
        
         self.navigationController?.popViewControllerAnimated(true)
