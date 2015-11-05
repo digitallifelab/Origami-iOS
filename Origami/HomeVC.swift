@@ -85,10 +85,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
             
-            if !DataSource.sharedInstance.loadingAllElementsInProgress
-            {
-
-            }
             
             if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
             {
@@ -499,30 +495,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                 }
             }
         })
-//        var viewControllersToAppend = [UIViewController]()
-//        if let rootElementsTree = DataSource.sharedInstance.getRootElementTreeForElement(element.rootElementId)
-//        {
-//            for anElement in rootElementsTree
-//            {
-//                if let elementController = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-//                {
-//                    elementController.currentElement = anElement
-//                    viewControllersToAppend.append(elementController)
-//                }
-//            }
-//        }
-//        
-//        if let newVC = self.storyboard?.instantiateViewControllerWithIdentifier("SingleElementDashboardVC") as? SingleElementDashboardVC
-//        {
-//            newVC.currentElement = element
-//           viewControllersToAppend.append(newVC)
-//        }
-//        
-//        if let currentVCs = self.navigationController?.viewControllers
-//        {
-//            viewControllersToAppend.insert(currentVCs.first!, atIndex: 0)
-//            self.navigationController?.setViewControllers(viewControllersToAppend, animated: true)
-//        }        
     }
     
     //MARK: ElementComposingDelegate
@@ -538,18 +510,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         handleAddingNewElement(newElement)
     }
     
-    //MARK: - replace next 3 functions, or delete them after refactoring: ->  they are optional
-//    func newElementComposerTitleForNewElement(composer: NewElementComposerViewController) -> String? {
-//        return nil
-//    }
-//    
-//    func newElementComposerDetailsForNewElement(composer: NewElementComposerViewController) -> String? {
-//        return nil
-//    }
-//    
-//    func newElementForComposer(composer: NewElementComposerViewController) -> Element? {
-//        return nil
-//    }
     //MARK: -----
     func handleAddingNewElement(element:Element)
     {
