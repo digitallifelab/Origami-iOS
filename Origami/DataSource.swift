@@ -1229,10 +1229,65 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
+    
+    /**
+     - Returns: 
+        - array of *VisuzlizableObject* instances,
+        - *nil* if no elements in database found
+     */
     func getVisualizableContent() -> [VisualizableObject]?
     {
-        //TODO: - return objects for VisualizationViewController
-        return nil
+        guard let foundElementsSet = DataSource.sharedInstance.localDatadaseHandler?.readAllElementsForVisualization() else
+        {
+            return nil
+        }
+        
+        var vizualizableObjects = [VisualizableObject]()
+        
+        for anElement in foundElementsSet
+        {
+            let newObject = VisualizableObject()
+            
+            newObject.title = anElement.title
+            
+            newObject.details = anElement.details
+            
+            if let favBool = anElement.isFavourite?.boolValue
+            {
+                newObject.isFavourite = favBool
+            }
+            
+            if let signalBool = anElement.isSignal?.boolValue
+            {
+                newObject.isSignal = signalBool
+            }
+            
+            if let elementId = anElement.elementId?.integerValue, rootId = anElement.rootElementId?.integerValue
+            {
+                newObject.elementId = elementId
+                newObject.rootElementId = rootId
+            }
+            
+            if let creatorId = anElement.creatorId?.integerValue, foundPersonTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
+            {
+                if let dbContact = foundPersonTuple.db
+                {
+                    newObject.displayName = dbContact.nameAndLastNameSpacedString()
+                }
+                else if let currentUser = foundPersonTuple.memory
+                {
+                    newObject.displayName = currentUser.nameAndLastNameSpacedString()
+                }
+                
+                newObject.avatarImage = DataSource.sharedInstance.getAvatarForUserId(creatorId)
+            }
+            
+            vizualizableObjects.append(newObject)
+        }
+        
+        
+        
+        return vizualizableObjects
     }
     
     //MARK: - Attaches
