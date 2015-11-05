@@ -584,40 +584,63 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             lvPicker.didMoveToParentViewController(nil)
         }
         
-        DataSource.sharedInstance.uploadAvatarForCurrentUser(lvData, completion: { [weak self](success, error) -> () in
-            if success
-            {
-                if let weakSelf = self
+        let uploadOperation = NSBlockOperation(){
+            
+            DataSource.sharedInstance.uploadAvatarForCurrentUser(lvData){ [weak self](success, error) -> () in
+                if success
                 {
-                    weakSelf.currentAvatar = UIImage(data: lvData)
-                
-                    if let reducedImage = weakSelf.currentAvatar?.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0)), userId = DataSource.sharedInstance.user?.userId
+                    if let weakSelf = self
                     {
-                        DataSource.sharedInstance.userAvatarsHolder[userId] = reducedImage
+                        weakSelf.currentAvatar = UIImage(data: lvData)
                         
-                        print("Trying To Insert New Avatar Preview Image Data into database")
-                        
-                        if let userName = DataSource.sharedInstance.user?.userName, reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                        if let reducedImage = weakSelf.currentAvatar?.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0)), userId = DataSource.sharedInstance.user?.userId
                         {
-                            DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: userId, fileName: userName)
+                            DataSource.sharedInstance.userAvatarsHolder[userId] = reducedImage
+                            
+                            print("Trying To Insert New Avatar Preview Image Data into database")
+                            
+                            if let userName = DataSource.sharedInstance.user?.userName, reducedImageData = UIImageJPEGRepresentation(reducedImage, 1.0)
+                            {
+                                DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(reducedImageData, forUserId: userId, fileName: userName)
+                            }
+                            
                         }
-                        
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                        })
                     }
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.profileCollection.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                    })
                 }
-            }
-            else
-            {
-                if let weakSelf = self
+                else
                 {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.showAlertWithTitle("Error", message:"Could not update avatar.", cancelButtonTitle:"Close")
-                    })
+                    if let weakSelf = self
+                    {
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            if let lvOrigamiError = error as? OrigamiError
+                            {
+                                switch lvOrigamiError
+                                {
+                                case .NotFoundError(let message) :
+                                    weakSelf.showAlertWithTitle("Error", message:"Could not update avatar.: \(message)", cancelButtonTitle:"Close")
+                                    return
+                                case .PreconditionFailure(let message) :
+                                    weakSelf.showAlertWithTitle("Error", message:"Could not update avatar.: \(message)", cancelButtonTitle:"Close")
+                                    return
+                                default:
+                                    weakSelf.showAlertWithTitle("Error", message:"Could not update avatar.: \(error)", cancelButtonTitle:"Close")
+                                }
+                            }
+                            else
+                            {
+                                weakSelf.showAlertWithTitle("Error", message:"Could not update avatar.: \(error)", cancelButtonTitle:"Close")
+                            }
+                        })
+                    }
                 }
             }
-        })
+        }
+        
+        NSOperationQueue().addOperation(uploadOperation)
+   
     }
     
     func mediaPickerShouldAllowEditing(picker: AnyObject) -> Bool {
@@ -642,7 +665,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
     func startEditingCountry()
     {
         DataSource.sharedInstance.getCountries {[weak self] (countries, error) -> () in
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            dispatch_async(dispatch_get_main_queue()) { _ in
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 if let weakSelf = self
                 {
@@ -654,7 +677,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                         weakSelf.navigationController?.pushViewController(countriesTableVC, animated: true)
                     }
                 }
-            })
+            }
         }
     }
     

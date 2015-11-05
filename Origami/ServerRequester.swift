@@ -1420,7 +1420,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         
     }
     
-    func uploadUserAvatarBytes(data:NSData, completion completionBlock:((response:[NSObject:AnyObject]?, error:NSError?)->())? )
+    func uploadUserAvatarBytes(data:NSData, completion completionBlock:((response:[NSObject:AnyObject]?, error:ErrorType?)->())? )
     {
         if data.length == 0
         {
@@ -1474,6 +1474,11 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                     }
                     else
                     {
+                        if let anErrorString = String(data: respData, encoding: NSUTF8StringEncoding)
+                        {
+                            completionBlock?(response: nil, error: OrigamiError.NotFoundError(message: anErrorString) as NSError)
+                            return
+                        }
                         let errorReading = NSError(domain: "com.Origami.jsonCasting.Error", code: -5432, userInfo: [NSLocalizedDescriptionKey: "Failed to parse \"uploadUserAvatarBytes\" response"])
                         completionBlock?(response: nil, error: errorReading)
                     }
