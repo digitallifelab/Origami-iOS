@@ -14,7 +14,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
 
     var currentElement:DBElement?
     
-    @IBOutlet weak var chatTable:UITableView!
+    @IBOutlet weak var chatTable:UITableView?
     @IBOutlet var bottomControlsContainerView:ChatTextInputView!
     @IBOutlet var topNavBarBackgroundView:UIView!
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
@@ -159,7 +159,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
             self.displayMode = .Day
         }
         bottomControlsContainerView.displayMode = self.displayMode
-        self.chatTable.reloadSections(NSIndexSet(index:0), withRowAnimation: .Fade)
+        self.chatTable?.reloadSections(NSIndexSet(index:0), withRowAnimation: .Fade)
     }
     
     //MARK: ChatInputViewDelegate
@@ -290,12 +290,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
             if notification.name == UIKeyboardWillShowNotification
             {
                 textHolderBottomConstaint.constant = keyboardHeight //- self.navigationController!.toolbar.bounds.size.height
-                chatTable.contentInset.bottom = keyboardHeight
+                chatTable?.contentInset.bottom = keyboardHeight
             }
             else
             {
                 textHolderBottomConstaint.constant = 0.0
-                chatTable.contentInset.bottom = 0.0
+                chatTable?.contentInset.bottom = 0.0
             }
             
             
@@ -355,11 +355,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
                         print("did Insert message: \n -date:\(messageObject.dateCreated!) \n -text:\n\(messageObject.textBody!)")
                         if let inPath = indexPath
                         {
-                            weakSelf.chatTable.insertRowsAtIndexPaths([inPath], withRowAnimation: .None)
+                            weakSelf.chatTable?.insertRowsAtIndexPaths([inPath], withRowAnimation: .None)
                         }
                         else if let newPath = newIndexPath
                         {
-                            weakSelf.chatTable.insertRowsAtIndexPaths([newPath], withRowAnimation: .None)
+                            weakSelf.chatTable?.insertRowsAtIndexPaths([newPath], withRowAnimation: .None)
                         }
                     case .Move:
                         print("did Move message: \n -date:\(messageObject.dateCreated!) \n -text:  \(messageObject.textBody!)")
@@ -427,15 +427,24 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     func scrollToLastMessage(animated:Bool = false)
     {
-        if let count = self.messagesFetchController?.fetchedObjects?.count
-        {
-            if count > 1
+        let scrollingOp = NSBlockOperation() { [weak self] in
+           
+            if let weakSelf = self
             {
-                let lastMessagePath = NSIndexPath(forRow: (count - 1), inSection: 0)
-                
-                chatTable.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Bottom, animated: animated)
+                if let count = weakSelf.messagesFetchController?.fetchedObjects?.count
+                {
+                    if count > 1
+                    {
+                        let lastMessagePath = NSIndexPath(forRow: (count - 1), inSection: 0)
+                        
+                        weakSelf.chatTable?.scrollToRowAtIndexPath(lastMessagePath, atScrollPosition: .Bottom, animated: animated)
+                    }
+                }
             }
+            
         }
+        NSOperationQueue.mainQueue().addOperation(scrollingOp)
+        
     }
     
     //MARK: UITableViewDataSource
@@ -597,13 +606,12 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         var currentMessage:String?
         if let
             cell = note.object as? UITableViewCell,
-            targetIndexPath = self.chatTable.indexPathForCell(cell),
+            targetIndexPath = self.chatTable?.indexPathForCell(cell),
             message = messageForIndexPath(targetIndexPath),
             text = message.textBody
         {
             currentMessage = text
         }
-        
         
         let originX = floor (CGRectGetMidX(self.view.bounds) - 160.0)
         let originY = CGRectGetMaxY(self.view.bounds) - 200.0

@@ -163,7 +163,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         {
             return
         }
-        
         self.navigationController?.pushViewController(visualVC, animated: true)
     }
     

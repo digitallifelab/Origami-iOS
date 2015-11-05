@@ -1749,7 +1749,8 @@ class LocalDatabaseHandler
             childContext.parentContext = self.privateContext
             
             childContext.performBlockAndWait() {
-                childContext.deleteObject(foundUserAvatarPreview)
+                let lvPreviewForMain = childContext.objectWithID(foundUserAvatarPreview.objectID)
+                childContext.deleteObject(lvPreviewForMain)
                 
                 if childContext.hasChanges
                 {
