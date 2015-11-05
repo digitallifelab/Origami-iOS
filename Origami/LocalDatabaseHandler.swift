@@ -769,6 +769,37 @@ class LocalDatabaseHandler
         throw OrigamiError.NotFoundError(message: "No Elements Found In Database")
     }
     
+    func readAllElementsForVisualization() -> Set<DBElement>?
+    {
+        let context = self.privateContext
+        
+        let fetchVisualizableElements = NSFetchRequest(entityName: "DBElement")
+        
+        var foundElements:[DBElement]?
+        context.performBlockAndWait() {
+            
+            do
+            {
+                if let allElementsInDb = try context.executeFetchRequest(fetchVisualizableElements) as? [DBElement] where allElementsInDb.count > 0
+                {
+                    foundElements = allElementsInDb
+                }
+            }
+            catch let fetchError
+            {
+                print(" -> readAllElementsForVisualization _ > fetch error:")
+                print(fetchError)
+            }
+        }
+        
+        if let elementsToReturn = foundElements
+        {
+            return Set(elementsToReturn)
+        }
+        
+        return nil
+    }
+    
     func setFavourite(newFavValue:Bool, elementId:Int, completion:(()->())?)
     {
         guard let foundDBElement = self.readElementById(elementId) else

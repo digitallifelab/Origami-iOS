@@ -34,6 +34,7 @@
 {
     [super viewDidAppear:animated];
 
+    
     NSArray <VisualizableObject *> *objectsToVisualize = [[DataSource sharedInstance] getVisualizableContent];
     if (objectsToVisualize)
     {
