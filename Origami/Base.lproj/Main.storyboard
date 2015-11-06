@@ -2867,7 +2867,7 @@
                                                     <inset key="contentEdgeInsets" minX="10" minY="10" maxX="10" maxY="10"/>
                                                     <state key="normal" image="icon-star"/>
                                                     <connections>
-                                                        <action selector="favouriteButtonNapped:" destination="WUu-eI-ikg" eventType="touchUpInside" id="dgY-uX-Yzb"/>
+                                                        <action selector="favouriteDiscrosureButtonTapped:event:" destination="aNZ-FD-v6J" eventType="touchUpInside" id="Ffo-Jr-xjy"/>
                                                     </connections>
                                                 </button>
                                             </subviews>

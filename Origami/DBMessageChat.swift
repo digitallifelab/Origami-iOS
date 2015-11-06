@@ -43,7 +43,7 @@ class DBMessageChat: NSManagedObject {
         else
         {
             self.dateCreated = message.dateCreated
-            print("did Update message date.")
+            print("did Set New message date.")
         }
         
         if let _ = self.elementId?.integerValue
