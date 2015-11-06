@@ -46,5 +46,4 @@ class HomeNavigationController: UINavigationController {
         //WARNING: to expand menu items add other conditions here
         return NSIntegerMax
     }
-
 }

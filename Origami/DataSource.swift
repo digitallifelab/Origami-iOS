@@ -141,8 +141,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 //print("cancelDispatchSource")
                 //sleep(2)
                 
-                DataSource.sharedInstance.messagesLoader = nil
-                print("messagesLoader = nil")
+                //DataSource.sharedInstance.messagesLoader = nil
+                //print("messagesLoader = nil")
             })
             
             
