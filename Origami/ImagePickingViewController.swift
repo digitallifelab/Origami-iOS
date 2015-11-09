@@ -20,7 +20,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
  
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
-    var attachPickingDelegate:AttachPickingDelegate?
+    weak var attachPickingDelegate:AttachPickingDelegate?
     @IBOutlet var bottomToolbar:UIToolbar!
     
     private var selectedMedia:MediaFile? {
