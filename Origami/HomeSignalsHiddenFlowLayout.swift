@@ -490,9 +490,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             }
         }
         
-        favouritesOp.addDependency(signalsOp)
-        
-        let otherOp = NSBlockOperation{
+        let otherOp = NSBlockOperation {
             if let other = info.other
             {
                 //print("OTHER:")
@@ -516,6 +514,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             }
         }
     
+        favouritesOp.addDependency(signalsOp)
         otherOp.addDependency(favouritesOp)
         
         NSOperationQueue().addOperations([signalsOp, favouritesOp, otherOp], waitUntilFinished: true)

@@ -35,10 +35,10 @@ class MyContactListCell: UITableViewCell {
     }
     
     
-    @IBAction func favouriteButtonNapped(sender:UIButton?)
-    {
-        NSNotificationCenter.defaultCenter().postNotificationName(kContactFavouriteButtonTappedNotification, object: nil, userInfo: ["index":sender!.tag])
-    }
+//    @IBAction func favouriteButtonNapped(sender:UIButton?)
+//    {
+//        NSNotificationCenter.defaultCenter().postNotificationName(kContactFavouriteButtonTappedNotification, object: nil, userInfo: ["index":sender!.tag])
+//    }
 
     
 }

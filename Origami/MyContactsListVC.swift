@@ -152,9 +152,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         {
             self.view.addGestureRecognizer(rootVC.screenEdgePanRecognizer)
         }
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "contactFavouriteToggledNotification:", name: kContactFavouriteButtonTappedNotification, object: nil)
-        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -374,6 +371,32 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
         return 67.0
     }
+    
+    func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath)
+    {
+        print("Fav IndexPath: \(indexPath)")
+        if let tappedContact = self.contactForIndexPath(indexPath), contactId = tappedContact.contactId?.integerValue
+        {
+            let newValue = !tappedContact.favorite!.boolValue
+            
+            DataSource.sharedInstance.updateContactIsFavourite(contactId) {[weak self] (success, error) -> () in
+                if success
+                {
+                    if let weakSelf = self, contactToChange = weakSelf.contactForIndexPath(indexPath)
+                    {
+                        contactToChange.favorite = NSNumber(bool: newValue)
+                        do{
+                            try weakSelf.localMainContext?.save()
+                        }
+                        catch let saveError{
+                            print("Did not save Contacts Main queue context:")
+                            print(saveError)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     //MARK: UITableViewDataSource
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -466,58 +489,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         return nameString
     }
     
-    //MARK: Notifications
-    func contactFavouriteToggledNotification(notification:NSNotification?)
-    {
-        if let
-            userIndex = notification?.userInfo?["index"] as? Int,
-            contact = self.contactForIndexPath(NSIndexPath(forRow: userIndex, inSection: 0))
-        {
-            let contactIdInt = contact.contactId!.integerValue
-            guard contactIdInt > 0 else
-            {
-                print("\n WIll not try to update \"Favourite\" contact - 0(zero) contact id passed.\n")
-                return
-            }
-            
-            guard let currentFav = contact.favorite?.integerValue else
-            {
-                return
-            }
-            
-            
-            if currentFav == 0
-            {
-                let newFav = 1
-                contact.favorite = NSNumber(integer: newFav)
-            }
-            else if currentFav == 1
-            {
-                let newFav = 0
-                contact.favorite = NSNumber(integer: newFav)
-            }
-            
-            do{
-                try localMainContext?.save()
-                
-                DataSource.sharedInstance.updateContactIsFavourite(contactIdInt, completion: {[weak self] (success, error) -> () in
-                    if !success
-                    {
-                        if let weakSelf = self
-                        {
-                            weakSelf.localMainContext?.undo()
-                        }
-                    }
-                    
-                    DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
-                })
-            }
-            catch{
-                
-            }
-        }
-    }
-    
     //MARK: - AllContactsDelegate
     func reloadUserContactsSender(sender: UIViewController?)
     {
@@ -534,15 +505,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     //MARK: - NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
-           // self.myContactsTable?.dataSource = nil
         myContactsTable?.beginUpdates()
     }
     
     func controllerDidChangeContent(controller: NSFetchedResultsController) {
-        //self.myContactsTable?.dataSource = self
-        //self.myContactsTable?.reloadData()
         myContactsTable?.endUpdates()
-        
     }
     
     func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?)
@@ -588,6 +555,27 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
          
         }
     }
+    /**
+     Method is tied to reussable table view cell to determine whith indexPath tapped to switch contact Favourite/UnFavourite
+     */
+    @IBAction func favouriteDiscrosureButtonTapped(sender:UIButton, event:UIEvent)
+    {
+        guard let touch = event.allTouches()?.first else
+        {
+            return
+        }
+        
+        let location = touch.locationInView( self.myContactsTable)
+        
+        guard let indexPathTouched = self.myContactsTable?.indexPathForRowAtPoint(location) else
+        {
+            return
+        }
+        
+        //calling delegate method
+        self.tableView(myContactsTable!, accessoryButtonTappedForRowWithIndexPath: indexPathTouched)
+    }
+    
     
     #if SHEVCHENKO
     #else

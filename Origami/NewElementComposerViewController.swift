@@ -545,10 +545,10 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
         return view
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-       
-        return 80.0
-    }
+//    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//       
+//        return 80.0
+//    }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section > 1
@@ -568,7 +568,7 @@ class NewElementComposerViewController: UIViewController, UITableViewDataSource,
                     let titleHeight = ceil(lvTestSize.height) + 8 + 8 + 17 + 5
                     return titleHeight
                 }
-                return 130.0
+                return 80.0
             case 1: //Details (should be higher than title)
                 if let textView = textViews[indexPath]
                 {

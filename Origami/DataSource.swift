@@ -141,8 +141,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 //print("cancelDispatchSource")
                 //sleep(2)
                 
-                DataSource.sharedInstance.messagesLoader = nil
-                print("messagesLoader = nil")
+                //DataSource.sharedInstance.messagesLoader = nil
+                //print("messagesLoader = nil")
             })
             
             
@@ -947,22 +947,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(allElements, completion: { (didSave, error) -> () in
                     if didSave == true
                     {
-//                        let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
-//                        dispatch_async(backgroundQueue, { () -> Void in
-//                            DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
-//                            
-//                            
-//                            let elementsSet = Set(allElements)
-//                            var elementsArrayFromSet = Array(elementsSet)
-//                            
-//                            ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
-//                            
-//                            DataSource.sharedInstance.elements += elementsArrayFromSet
-//                            print("\n -> Added Elements = \(elementsArrayFromSet.count)")
-//                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                                completion(success: true, failure: nil)
-//                            })
-//                        })
                         completion?(success:didSave, failure:error)
                     }
                     else
@@ -978,24 +962,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         print("\n -> loadAllElementsInfo:   -   Did finish PAIRING elements and messages.")
                     })
                 })
-                
-//                let backgroundQueue = dispatch_queue_create("elements-handler-queue", DISPATCH_QUEUE_SERIAL)
-//                dispatch_async(backgroundQueue, { () -> Void in
-//                    DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
-//                    
-//                    
-//                    let elementsSet = Set(allElements)
-//                    var elementsArrayFromSet = Array(elementsSet)
-//                    
-//                    ObjectsConverter.sortElementsByDate(&elementsArrayFromSet)
-//                    
-//                    DataSource.sharedInstance.elements += elementsArrayFromSet
-//                    print("\n -> Added Elements = \(elementsArrayFromSet.count)")                
-//                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                        completion(success: true, failure: nil)
-//                    })
-//                })
-                
             }
             else
             {
@@ -1005,58 +971,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.loadingAllElementsInProgress = false
         }
     }
-//    func countExistingElementsLocked() -> Int
-//    {
-//        var elementsCount:Int = 0
-//        
-//        let aLock =  NSLock()
-//        aLock.lock()
-//            elementsCount = DataSource.sharedInstance.elements.count
-//        aLock.unlock()
-//        
-//        return elementsCount
-//        
-//    }
-//    func getAllElementsLocked() -> [Element]?
-//    {
-//        let aLock = NSLock()
-//        var elements = [Element]()
-//        aLock.lock()
-//            elements += DataSource.sharedInstance.elements
-//        aLock.unlock()
-//        
-//        if elements.isEmpty
-//        {
-//            return nil
-//        }
-//        return elements
-//    }
-//    
-//    func addElementsLocked(newElements:[Element])
-//    {
-//        let aLock = NSLock()
-//        aLock.lock()
-//        DataSource.sharedInstance.elements += newElements
-//        
-//        aLock.unlock()
-//        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-//        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil, userInfo: nil)
-//        
-//    }
-//    
-//
-//    func replaceAllElementsToNew(newElements:[Element])
-//    {
-//        let aLock = NSLock()
-//        aLock.name = "Elements replacer lock"
-//        aLock.lock()
-//        DataSource.sharedInstance.elements.removeAll(keepCapacity: true)
-//        DataSource.sharedInstance.elements += newElements
-//        DataSource.sharedInstance.shouldReloadAfterElementChanged = true
-//        aLock.unlock()
-//        
-//        NSNotificationCenter.defaultCenter().postNotificationName(kNewElementsAddedNotification, object: nil)
-//    }
     
     func editElement(element:Element, completionClosure completion:((edited:Bool) -> ())? )
     {
@@ -1780,18 +1694,21 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func getMyContacts() throws -> [DBContact]
     {
         var contactsToReturn:[DBContact]?
-        let dbReadingSemaphore = dispatch_semaphore_create(0)
+        let dispatchGroup = dispatch_group_create()
+        
+        dispatch_group_enter(dispatchGroup)
         DataSource.sharedInstance.localDatadaseHandler?.readAllMyContacts({ (presentContacts) -> () in
             if let foundContacts = presentContacts
             {
                 contactsToReturn = foundContacts
             }
-            dispatch_semaphore_signal(dbReadingSemaphore)
+            dispatch_group_leave(dispatchGroup)
         })
        
-        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0)) //3 seconds should be enough to read all contacts from sqLite database
+        let timeout_5_seconds:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+        
+        dispatch_group_wait(dispatchGroup, timeout_5_seconds)
        
-        dispatch_semaphore_wait(dbReadingSemaphore, timeout)
         
         if let contacts = contactsToReturn
         {
@@ -1860,46 +1777,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
         return nil
     }
-//    
-//    func getContactsForElement(elementId:Int, completion:contactsArrayClosure?)
-//    {
-//        if let completionClosure = completion
-//        {
-//            var contactsToReturn:[Contact]
-//            
-//            if let lvElement = DataSource.sharedInstance.getElementById(elementId)
-//            {
-//                if lvElement.passWhomIDs.count > 0
-//                {
-//                    contactsToReturn = [Contact]()
-//                    for lvContactId in lvElement.passWhomIDs
-//                    {
-//                        var lvContacts = DataSource.sharedInstance.contacts.filter {lvContact -> Bool in
-//                            
-//                            return (lvContact.contactId == lvContactId)
-//                        }
-//                        
-//                        if lvContacts.count > 0
-//                        {
-//                            let lastContact = lvContacts.removeLast()
-//                            contactsToReturn.append(lastContact)
-//                        }
-//                    }
-//                    
-//                    if contactsToReturn.isEmpty
-//                    {
-//                        completionClosure(nil)
-//                        return
-//                    }
-//                    completionClosure(contactsToReturn)
-//                    return
-//                }
-//            }
-//            
-//            completionClosure(nil)
-//            return
-//        }
-//    }
     
     func addContact(contactId:Int, toElement elementId:Int, completion completionClosure:(success:Bool, error:NSError?) -> ())
     {
@@ -1950,27 +1827,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
 
                 if !succeededIDs.isEmpty
                 {
-//                    if let existingElement = DataSource.sharedInstance.getElementById(elementId)
-//                    {
-//                        var alreadyExistIDsSet = Set<Int>()
-//                        for number in existingElement.passWhomIDs
-//                        {
-//                            alreadyExistIDsSet.insert(number)
-//                        }
-//                        
-//                        let succseededIDsSet = Set(succeededIDs)
-//                        
-//                        let commonValuesSet = alreadyExistIDsSet.union(succseededIDsSet)
-//                        
-//                        var idsArray = [Int]()
-//                        for integer in commonValuesSet
-//                        {
-//                            idsArray.append(integer)
-//                        }
-//                        
-//                        existingElement.passWhomIDs = idsArray
-//                        
-//                    }
+                    
                 }
                 else
                 {
@@ -2002,13 +1859,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         let succeededSet = Set(succeededIds)
                         let currentPassWhomIDs = existingParticipants.subtract(succeededSet)
                         
-//                        let filteredOut = currentPassWhomIDs.filter({ (contactID) -> Bool in
-//                            if succeededSet.contains(contactID)
-//                            {
-//                                return false
-//                            }
-//                            return true
-//                        })
                         DataSource.sharedInstance.participantIDsForElement[elementId] = currentPassWhomIDs
                     }
                     if !failedIds.isEmpty
@@ -2023,7 +1873,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
             }
         }
-        
     }
     
     
@@ -2271,7 +2120,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
 
     }
     
-    func uploadAvatarForCurrentUser(data:NSData, completion completionBlock:((success:Bool, error:NSError?)->())?)
+    func uploadAvatarForCurrentUser(data:NSData, completion completionBlock:((success:Bool, error:ErrorType?)->())?)
     {
         DataSource.sharedInstance.serverRequester.uploadUserAvatarBytes(data, completion: { (response, error) -> () in
             if let _ = response

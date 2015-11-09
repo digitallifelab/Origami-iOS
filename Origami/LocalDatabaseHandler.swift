@@ -1663,7 +1663,7 @@ class LocalDatabaseHandler
     {
         let localContext = self.privateContext
         
-        localContext.performBlock { () -> Void in
+        localContext.performBlockAndWait { () -> Void in
             if let existingPreview = self.findAvatarPreviewForUserId(forUserId), existingImageData = existingPreview.avatarPreviewData
             {
                 if existingImageData.hashValue != data.hashValue
@@ -1711,52 +1711,51 @@ class LocalDatabaseHandler
     {
         let previewFetchRequest = NSFetchRequest(entityName: "DBAvatarPreview")
         previewFetchRequest.predicate = NSPredicate(format: "avatarUserId == \(userId)")
-        let contextMain = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-        contextMain.parentContext = self.privateContext
+       
+        let context = self.privateContext
         
-        do{
-            if let previews = try contextMain.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
-            {
-                if previews.count == 1
+        var previewToReturn:DBAvatarPreview?
+        context.performBlockAndWait() {
+            
+            do{
+                if let previews = try context.executeFetchRequest(previewFetchRequest) as? [DBAvatarPreview]
                 {
-                    return previews.first!
-                }
-                else if previews.count == 0
-                {
-                    return nil
-                }
-                else if previews.count > 1
-                {
-                    return previews.last!
+                    if previews.count == 1
+                    {
+                        previewToReturn = previews.first!
+                    }
+                    else if previews.count > 1
+                    {
+                        previewToReturn = previews.last!
+                    }
                 }
             }
-            else
+            catch let fetchError
             {
-                return nil
+                print("previewAvatar fetch error:")
+                print(fetchError)
             }
-        }
-        catch let fetchError
-        {
-            print(fetchError)
-            return nil
+
         }
         
-        return nil
+        return previewToReturn
     }
     
     func eraseAvatarPreviewForUserId(userId:Int)
     {
-        
         if let foundUserAvatarPreview = self.findAvatarPreviewForUserId(userId)
         {
-            let context = self.privateContext
-            context.performBlockAndWait() {
-                context.deleteObject(foundUserAvatarPreview)
+            let childContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+            childContext.parentContext = self.privateContext
+            
+            childContext.performBlockAndWait() {
+                let lvPreviewForMain = childContext.objectWithID(foundUserAvatarPreview.objectID)
+                childContext.deleteObject(lvPreviewForMain)
                 
-                if context.hasChanges
+                if childContext.hasChanges
                 {
                     do{
-                        try context.save()
+                        try childContext.save()
                     }
                     catch let errorSavingContext{
                         print(" DID not save context after avatar preview deleting:\n")
@@ -1786,7 +1785,7 @@ class LocalDatabaseHandler
         let previewsRequest = NSFetchRequest(entityName: "DBAvatarPreview")
         previewsRequest.propertiesToFetch = ["avatarUserId","avatarPreviewData"]
         let privateContextLocal = self.privateContext
-        privateContextLocal.performBlock { () -> Void in
+        privateContextLocal.performBlockAndWait { () -> Void in
             do{
                 if let previewObjects = try privateContextLocal.executeFetchRequest(previewsRequest) as?[DBAvatarPreview] where !previewObjects.isEmpty
                 {
