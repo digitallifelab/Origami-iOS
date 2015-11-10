@@ -559,7 +559,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
     }
     /**
-     Method is tied to reussable table view cell to determine whith indexPath tapped to switch contact Favourite/UnFavourite
+     Method is tied to reussable table view cell in storyboard to determine whith indexPath tapped to switch contact Favourite/UnFavourite
      */
     @IBAction func favouriteDiscrosureButtonTapped(sender:UIButton, event:UIEvent)
     {
