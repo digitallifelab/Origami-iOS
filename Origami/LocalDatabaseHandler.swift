@@ -1741,7 +1741,7 @@ class LocalDatabaseHandler
         return previewToReturn
     }
     
-    func eraseAvatarPreviewForUserId(userId:Int)
+    func deleteAvatarPreviewForUserId(userId:Int)
     {
         if let foundUserAvatarPreview = self.findAvatarPreviewForUserId(userId)
         {

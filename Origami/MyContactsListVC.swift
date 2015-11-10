@@ -461,7 +461,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         let row = indexPath.row
         if let currentFetchController = self.currentFetchController, objects = currentFetchController.fetchedObjects as? [DBContact]
         {
-            return objects[row]
+            if objects.count > row
+            {
+                return objects[row]
+            }
         }
         
         return nil

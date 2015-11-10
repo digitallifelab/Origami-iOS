@@ -1719,6 +1719,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
      */
     func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
     {
+        print("ServerRequester -> loadAllContacts...\n")
+        
         guard let userToken = DataSource.sharedInstance.user?.token else
         {
             throw OrigamiError.PreconditionFailure(message: "No User Token.")

@@ -122,7 +122,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
         NSUserDefaults.standardUserDefaults().setObject(passwordField.text, forKey: passwordKey)
         NSUserDefaults.standardUserDefaults().synchronize()
         
-        self.dismissViewControllerAnimated(true, completion: nil)
+     
         
             
             let contactsOperation = NSBlockOperation() { _ in
@@ -212,7 +212,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
         
             DataSource.sharedInstance.operationQueue.suspended = true
             DataSource.sharedInstance.operationQueue.addOperations([contactsOperation, avatarsPreviewFromDatabaseOperation, messagesSyncOperation], waitUntilFinished: false)
-            
+        
+           self.dismissViewControllerAnimated(true, completion: nil)
         
     }
     
