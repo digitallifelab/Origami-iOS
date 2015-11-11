@@ -57,20 +57,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         }
     }
     
-//    var privSignals:Int = 0
-//    var privFavourites:[Element]?
-//    var privOther:[Element]?
-    
-//    convenience init(signals:Int, favourites:[Element]?, other:[Element]?)
-//    {
-//        self.init()
-//        
-//        self.scrollDirection = .Vertical
-//        self.headerReferenceSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width, 30.0)
-//        self.privSignals = signals
-//        self.privFavourites = favourites
-//        self.privOther = other
-//    }
     private var layoutInfoStruct:HomeLayoutStruct?
     
     convenience init(layoutInfoStruct:HomeLayoutStruct)
@@ -80,11 +66,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
         self.headerReferenceSize = CGSizeMake(UIScreen.mainScreen().bounds.size.width, 30.0)
         self.layoutInfoStruct = layoutInfoStruct
     }
-    
-//    required init?(coder aDecoder: NSCoder)
-//    {
-//        super.init(coder: aDecoder)
-//    }
     
     override func prepareLayout()
     {
@@ -102,10 +83,6 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
     func clearAllElements()
     {
-//        privSignals = 0
-//        privOther?.removeAll(keepCapacity: false)
-//        privFavourites?.removeAll(keepCapacity: false)
-        
         layoutInfoStruct = nil
     }
     

@@ -34,9 +34,10 @@ let getCountriesUrlPart = "GetCountries"
 
 //Contacts
 let myContactsURLPart = "GetContacts"
-let allContactsURLPart = "GetAllContacts"
+//let allContactsURLPart = "GetAllContacts"
 let favContactURLPart = "SetFavoriteContact"
 
+//Find user by email
 let searchContactURLPart = "GetUserInfo"
 
 //Messages

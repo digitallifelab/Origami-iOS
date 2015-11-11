@@ -337,10 +337,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     func showElementCreationVC(sender:AnyObject)
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
-        {
-            //customTransitionAnimator = FadeOpaqueAnimator()
-            //let composerHolder = UINavigationController(rootViewController: newElementCreator)
-            
+        {            
             newElementCreator.composingDelegate = self
 
             self.navigationController?.pushViewController(newElementCreator, animated: true)
@@ -354,6 +351,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func showAddTheVeryFirstElementPlus()
     {
+        if let tapView = self.view.viewWithTag(0xAD12)
+        {
+            tapView.removeFromSuperview()
+        }
+        
         self.collectionSource?.deleteAllElements()
         let numberOfSections =  self.collectionDashboard.numberOfSections()
         if numberOfSections > 1
@@ -751,6 +753,29 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     {
         if attemptCount > 2
         {
+            dispatch_async(dispatch_get_main_queue()){[weak self] in
+                if let weakSelf = self
+                {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    weakSelf.showAddTheVeryFirstElementPlus()
+                    
+                    if let refresher =  DataSource.sharedInstance.dataRefresher
+                    {
+                        if !refresher.isCancelled && !refresher.isInProgress
+                        {
+                            refresher.startRefreshingElementsWithTimeoutInterval(30.0)
+                        }
+                    }
+                    else{
+                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+                        dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
+                            DataSource.sharedInstance.dataRefresher = DataRefresher()
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                            
+                        })
+                    }
+                }
+            }
             return
         }
         let fetchDashboardOp = NSBlockOperation() { _ in
@@ -773,7 +798,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                                     if let weakSelf = self
                                     {
                                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                            weakSelf.startReadingHomeScreenData(2)
+                                            weakSelf.startReadingHomeScreenData(attemptCount + 1)
                                         })
                                         
                                     }

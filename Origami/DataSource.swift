@@ -1423,6 +1423,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.downloadMyContacts { (contacts, error) -> () in
             if let recievedContacts = contacts
             {
+                print(" DID Download \(recievedContacts.count) conatcts")
                 DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
                     completion?(didSaveToLocalDatabase: saved, error: error)
                 }
@@ -1434,18 +1435,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
-    {
-        do
-        {
-            let allContactsTask = try DataSource.sharedInstance.serverRequester.loadAllContacts(completion)
-            return allContactsTask
-        }
-        catch let error
-        {
-            throw error
-        }
-    }
+//    func getAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
+//    {
+//        do
+//        {
+//            let allContactsTask = try DataSource.sharedInstance.serverRequester.loadAllContacts(completion)
+//            return allContactsTask
+//        }
+//        catch let error
+//        {
+//            throw error
+//        }
+//    }
     
     
     

@@ -1911,9 +1911,12 @@ class LocalDatabaseHandler
     {
         guard !contacts.isEmpty else
         {
-            completion?(false, error:NSError(domain: "com.Origami.EmptyValue.Error", code: -3030, userInfo: [NSLocalizedDescriptionKey:"Tried to insert empty contacts to local database."]))
+//            completion?(false, error:NSError(domain: "com.Origami.EmptyValue.Error", code: -3030, userInfo: [NSLocalizedDescriptionKey:"Tried to insert empty contacts to local database."]))
+            self.deleteAllContacts()
+            completion?(true, error: nil)
             return
         }
+        
         for aContact in contacts
         {
             if let existingContact = self.readContactById(aContact.contactId)
@@ -2088,6 +2091,9 @@ class LocalDatabaseHandler
         }
     }
     
+    /** 
+     Saves private context after deleting
+    */
     func deleteAllContacts()
     {
         let allElementsRequest = NSFetchRequest(entityName: "DBContact")

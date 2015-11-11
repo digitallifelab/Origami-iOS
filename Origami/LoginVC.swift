@@ -87,12 +87,13 @@ class LoginVC: UIViewController , UITextFieldDelegate
                          weakSelf.userDidLogin(aUser)
                     case .NeedToConfirm:
                         print("\n ! A User is not activated yet.-> MUST change passford.\n")
+                        DataSource.sharedInstance.user = user
+                        weakSelf.dismissViewControllerAnimated(true, completion: nil)
                     case .Blocked: 
                          weakSelf.showAlertWithTitle("FailedToLogin:".localizedWithComment(""), message:"YouAreBlocked".localizedWithComment(""), cancelButtonTitle:"Close".localizedWithComment(""))
                     default:
                         weakSelf.showAlertWithTitle("FailedToLogin", message: "Unknown User Type", cancelButtonTitle: "Close".localizedWithComment(""))
                     }
-                   
                 }
                 else if let anError = error
                 {
@@ -102,6 +103,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
             }
         }
     }
+    
     
     func userDidLogin(user:User)
     {
@@ -125,95 +127,95 @@ class LoginVC: UIViewController , UITextFieldDelegate
      
         
             
-            let contactsOperation = NSBlockOperation() { _ in
-                do{
-                     try DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
+        let contactsOperation = NSBlockOperation() { _ in
+            do{
+                 try DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
+            }
+            catch{
+                
+                let waiterGroup = dispatch_group_create()
+                
+                dispatch_group_enter(waiterGroup)
+                let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 30.0))
+                
+                DataSource.sharedInstance.downloadMyContactsFromServer { (didSaveToLocalDatabase, error) -> () in
+                    dispatch_group_leave(waiterGroup)
                 }
-                catch{
-                    
-                    let waiterGroup = dispatch_group_create()
-                    
-                    dispatch_group_enter(waiterGroup)
-                    let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 30.0))
-                    
-                    DataSource.sharedInstance.downloadMyContactsFromServer { (didSaveToLocalDatabase, error) -> () in
-                        dispatch_group_leave(waiterGroup)
-                    }
-                    
-                    dispatch_group_wait(waiterGroup, timeout)
+                
+                dispatch_group_wait(waiterGroup, timeout)
+            }
+        }
+        
+        
+        let avatarsPreviewFromDatabaseOperation = NSBlockOperation() { _ in
+            
+            DataSource.sharedInstance.localDatadaseHandler?.preloadSavedAvatarPreviewsToDataSource { (imagesDict, error) -> () in
+                if let imagesInfo = imagesDict
+                {
+                    DataSource.sharedInstance.userAvatarsHolder = imagesInfo
+                    print(" __ Did read avatars from database into memory: ")
+                    print(" avatars: \(imagesInfo.count)")
                 }
             }
+        }
+        
+        
+        
+        let messagesSyncOperation = NSBlockOperation() { _ in
             
-            
-            let avatarsPreviewFromDatabaseOperation = NSBlockOperation() { _ in
-                
-                DataSource.sharedInstance.localDatadaseHandler?.preloadSavedAvatarPreviewsToDataSource { (imagesDict, error) -> () in
-                    if let imagesInfo = imagesDict
+            if let lastMessageId = DataSource.sharedInstance.localDatadaseHandler?.getLatestMessageId()
+            {
+                DataSource.sharedInstance.syncLastMessages(lastMessageId, completion: { (finished, error) -> () in
+                    if let _ = DataSource.sharedInstance.messagesLoader
                     {
-                        DataSource.sharedInstance.userAvatarsHolder = imagesInfo
-                        print(" __ Did read avatars from database into memory: ")
-                        print(" avatars: \(imagesInfo.count)")
+                        DataSource.sharedInstance.startRefreshingNewMessages()
                     }
-                }
-            }
-            
-            
-            
-            let messagesSyncOperation = NSBlockOperation() { _ in
-                
-                if let lastMessageId = DataSource.sharedInstance.localDatadaseHandler?.getLatestMessageId()
-                {
-                    DataSource.sharedInstance.syncLastMessages(lastMessageId, completion: { (finished, error) -> () in
-                        if let _ = DataSource.sharedInstance.messagesLoader
-                        {
-                            DataSource.sharedInstance.startRefreshingNewMessages()
-                        }
-                        else
-                        {
-                            DataSource.sharedInstance.messagesLoader = MessagesLoader()
-                            DataSource.sharedInstance.startRefreshingNewMessages()
-                        }
-                    })
-                }
-                else
-                {
-                    DataSource.sharedInstance.syncLastMessages(completion: { (finished, error) -> () in
-                        if let _ = DataSource.sharedInstance.messagesLoader
-                        {
-                            DataSource.sharedInstance.startRefreshingNewMessages()
-                        }
-                        else
-                        {
-                            DataSource.sharedInstance.messagesLoader = MessagesLoader()
-                            DataSource.sharedInstance.startRefreshingNewMessages()
-                        }
-                    })
-                }
-            }
-            
-            messagesSyncOperation.addDependency(contactsOperation)
-            avatarsPreviewFromDatabaseOperation.addDependency(contactsOperation)
-            
-            if #available(iOS 8.0, *) {
-                
-                let qosPriority = NSQualityOfService.Utility
-                
-                avatarsPreviewFromDatabaseOperation.qualityOfService = qosPriority
-                messagesSyncOperation.qualityOfService = qosPriority
+                    else
+                    {
+                        DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                })
             }
             else
             {
-                let queuePriority = NSOperationQueuePriority.Low
-                
-                avatarsPreviewFromDatabaseOperation.queuePriority = queuePriority
-                messagesSyncOperation.queuePriority = queuePriority
+                DataSource.sharedInstance.syncLastMessages(completion: { (finished, error) -> () in
+                    if let _ = DataSource.sharedInstance.messagesLoader
+                    {
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                    else
+                    {
+                        DataSource.sharedInstance.messagesLoader = MessagesLoader()
+                        DataSource.sharedInstance.startRefreshingNewMessages()
+                    }
+                })
             }
+        }
+        
+        messagesSyncOperation.addDependency(contactsOperation)
+        avatarsPreviewFromDatabaseOperation.addDependency(contactsOperation)
+        
+        if #available(iOS 8.0, *) {
             
+            let qosPriority = NSQualityOfService.Utility
+            
+            avatarsPreviewFromDatabaseOperation.qualityOfService = qosPriority
+            messagesSyncOperation.qualityOfService = qosPriority
+        }
+        else
+        {
+            let queuePriority = NSOperationQueuePriority.Low
+            
+            avatarsPreviewFromDatabaseOperation.queuePriority = queuePriority
+            messagesSyncOperation.queuePriority = queuePriority
+        }
         
-            DataSource.sharedInstance.operationQueue.suspended = true
-            DataSource.sharedInstance.operationQueue.addOperations([contactsOperation, avatarsPreviewFromDatabaseOperation, messagesSyncOperation], waitUntilFinished: false)
-        
-           self.dismissViewControllerAnimated(true, completion: nil)
+    
+        DataSource.sharedInstance.operationQueue.suspended = true
+        DataSource.sharedInstance.operationQueue.addOperations([contactsOperation, avatarsPreviewFromDatabaseOperation, messagesSyncOperation], waitUntilFinished: false)
+    
+       self.dismissViewControllerAnimated(true, completion: nil)
         
     }
     

@@ -62,6 +62,8 @@
 		F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */; };
 		F85CF1041B833D940048B3DE /* MessagesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1031B833D940048B3DE /* MessagesLoader.swift */; };
 		F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F864AB191B7252F600686EB1 /* ImageFilter.swift */; };
+		F86C00321BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */; };
+		F86C00331BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */; };
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
@@ -333,6 +335,7 @@
 		F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVCCell.swift; sourceTree = "<group>"; };
 		F85CF1031B833D940048B3DE /* MessagesLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesLoader.swift; sourceTree = "<group>"; };
 		F864AB191B7252F600686EB1 /* ImageFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFilter.swift; sourceTree = "<group>"; };
+		F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		F86E47D41BBE73CD00DA5B6D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		F86F237A1B208AEE00234EFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -710,6 +713,7 @@
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */,
+				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
 				F87637791B56604100AFE376 /* Menu */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
@@ -718,7 +722,6 @@
 				F86F74261B56835E00E48E13 /* UserProfile */,
 				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
 				F86F74251B56834E00E48E13 /* Contacts */,
-				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
 				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
 			);
 			name = ViewControllers;
@@ -797,6 +800,7 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5D1B21C81600156CEC /* LoginVC.swift */,
+				F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */,
 			);
 			name = "Login and Registration";
 			sourceTree = "<group>";
@@ -1179,6 +1183,7 @@
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F87AEE561BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
+				F86C00331BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */,
 				F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
@@ -1240,6 +1245,7 @@
 				F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */,
 				F88564021B31CBD1005D223E /* ChatMessageRecievedCell.swift in Sources */,
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
+				F86C00321BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */,
 				F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */,
 				F8BDB6771BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8D456C31B1DEFFC00172667 /* DataSource.swift in Sources */,

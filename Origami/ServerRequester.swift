@@ -1711,68 +1711,68 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         self.passElement((elementId * -1), toSeveratContacts: contactIDs, completion: completionClosure)
     }
     
-    /**
-     - Returns: NSURLSessionDataTask object to be called at some point later , which also can be cancelled.
-     - Throws:
-        - if no user token found
-        - if could not create a NSURL object for request
-     */
-    func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
-    {
-        print("ServerRequester -> loadAllContacts...\n")
-        
-        guard let userToken = DataSource.sharedInstance.user?.token else
-        {
-            throw OrigamiError.PreconditionFailure(message: "No User Token.")
-        }
-        
-        let requestString = serverURL + allContactsURLPart + "?token=" + userToken
-        
-        guard let requestURL = NSURL(string: requestString) else
-        {
-            throw OrigamiError.PreconditionFailure(message: "Could not create URL for rquest")
-        }
-        
-        let allContactsRequestTask = NSURLSession.sharedSession().dataTaskWithURL(requestURL) { (responseData, urlResponse, responseError) -> Void in
-            if let error = responseError
-            {
-                completion?(contacts: nil, error: error)
-                return
-            }
-            
-            guard let rawData = responseData where rawData.length > 0 else
-            {
-                completion?(contacts: nil, error: OrigamiError.NotFoundError(message: "Recieved no response data.") as NSError)
-                return
-            }
-            
-            do
-            {
-                if let response = try NSJSONSerialization.JSONObjectWithData(rawData, options: .MutableContainers) as? [String:[[String:AnyObject]]]
-                {
-                    if let contactInfosArray = response["GetAllContactsResult"]
-                    {
-                        let convertedContactObjects = ObjectsConverter.convertToContacts(contactInfosArray)
-                        completion?(contacts: convertedContactObjects, error: nil)
-                        return
-                    }
-                   
-                    completion?(contacts: nil, error: OrigamiError.NotFoundError(message: " ") as NSError)
-                    return
-                }
-                print(" Some Shit happened")
-                
-            }
-            catch let errorJSON
-            {
-                completion?(contacts: nil, error: errorJSON as NSError)
-            }
-        }
-        
-        // task will not start until called somewhere in outer object
-        return allContactsRequestTask
-        
-    }
+//    /**
+//     - Returns: NSURLSessionDataTask object to be called at some point later , which also can be cancelled.
+//     - Throws:
+//        - if no user token found
+//        - if could not create a NSURL object for request
+//     */
+//    func loadAllContacts(completion:((contacts:[Contact]?, error:NSError?)->())?) throws -> NSURLSessionDataTask
+//    {
+//        print("ServerRequester -> loadAllContacts...\n")
+//        
+//        guard let userToken = DataSource.sharedInstance.user?.token else
+//        {
+//            throw OrigamiError.PreconditionFailure(message: "No User Token.")
+//        }
+//        
+//        let requestString = serverURL + allContactsURLPart + "?token=" + userToken
+//        
+//        guard let requestURL = NSURL(string: requestString) else
+//        {
+//            throw OrigamiError.PreconditionFailure(message: "Could not create URL for rquest")
+//        }
+//        
+//        let allContactsRequestTask = NSURLSession.sharedSession().dataTaskWithURL(requestURL) { (responseData, urlResponse, responseError) -> Void in
+//            if let error = responseError
+//            {
+//                completion?(contacts: nil, error: error)
+//                return
+//            }
+//            
+//            guard let rawData = responseData where rawData.length > 0 else
+//            {
+//                completion?(contacts: nil, error: OrigamiError.NotFoundError(message: "Recieved no response data.") as NSError)
+//                return
+//            }
+//            
+//            do
+//            {
+//                if let response = try NSJSONSerialization.JSONObjectWithData(rawData, options: .MutableContainers) as? [String:[[String:AnyObject]]]
+//                {
+//                    if let contactInfosArray = response["GetAllContactsResult"]
+//                    {
+//                        let convertedContactObjects = ObjectsConverter.convertToContacts(contactInfosArray)
+//                        completion?(contacts: convertedContactObjects, error: nil)
+//                        return
+//                    }
+//                   
+//                    completion?(contacts: nil, error: OrigamiError.NotFoundError(message: " ") as NSError)
+//                    return
+//                }
+//                print(" Some Shit happened")
+//                
+//            }
+//            catch let errorJSON
+//            {
+//                completion?(contacts: nil, error: errorJSON as NSError)
+//            }
+//        }
+//        
+//        // task will not start until called somewhere in outer object
+//        return allContactsRequestTask
+//        
+//    }
 
     
     func toggleContactFavourite(contactId:Int, completion:((success:Bool, error:NSError?)->())?)
