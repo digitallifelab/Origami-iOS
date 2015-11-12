@@ -584,7 +584,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             lvPicker.didMoveToParentViewController(nil)
         }
         
-        let uploadOperation = NSBlockOperation(){
+        let uploadOperation = NSBlockOperation() {
             
             DataSource.sharedInstance.uploadAvatarForCurrentUser(lvData){ [weak self](success, error) -> () in
                 if success

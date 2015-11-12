@@ -95,15 +95,18 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         
         proceedWithSelectedImage(selectedImage)
         
-        imagePickerController.willMoveToParentViewController(nil)
-        imagePickerController.view.removeFromSuperview()
-        imagePickerController.removeFromParentViewController()
-        imagePickerController.didMoveToParentViewController(nil)
+        picker.willMoveToParentViewController(nil)
+        picker.view.removeFromSuperview()
+        picker.removeFromParentViewController()
+        picker.didMoveToParentViewController(nil)
         
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.willMoveToParentViewController(nil)
+        picker.view.removeFromSuperview()
+        picker.removeFromParentViewController()
+        picker.didMoveToParentViewController(nil)
     }
     
     //MARK: ----

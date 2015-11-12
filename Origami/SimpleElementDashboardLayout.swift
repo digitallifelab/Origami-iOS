@@ -247,14 +247,17 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                         detailsFrame.origin = CGPointMake(offsetX, offsetY)
                     }
                     
-                    if let aDataSource = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
+                    if let _ = self.collectionView?.dataSource as? SingleElementCollectionViewDataSource
                     {
-                        if let detailsCellFromDataSource = aDataSource.detailsCell
-                        {
+                        //if let detailsCellFromDataSource = aDataSource.detailsCell
+                        //{
                             var detailsSize = CGSizeMake(mainFrame.width, 200.0)
                             
-                            let label = detailsCellFromDataSource.textLabel
-
+                            let label = UILabel()//detailsCellFromDataSource.textLabel
+                            label.numberOfLines = 0
+                            label.lineBreakMode = NSLineBreakMode.ByWordWrapping
+                            label.font = UIFont(name: "SegoeUI", size: 14.0)
+                            label.text = detailsString
                             let labelSize = label.sizeThatFits(CGSizeMake(mainFrame.width - (28 + 8), CGFloat(FLT_MAX) ))
 
                             detailsSize.height = labelSize.height + 2 + 2 + 32 //top and bottom constraints
@@ -271,7 +274,7 @@ class SimpleElementDashboardLayout: UICollectionViewFlowLayout {
                                     detailsFrame.size = CGSizeMake(mainFrame.size.width, detailsSize.height)
                                 }
                             }
-                        }
+                        //}
                     }
                     
                     let detailsAttribute = UICollectionViewLayoutAttributes(forCellWithIndexPath: detailsIndexPath)

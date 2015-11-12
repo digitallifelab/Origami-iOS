@@ -79,9 +79,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         {
             //register for night-day modes switching
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
-            
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
-            
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
             
@@ -115,7 +113,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func recievedMessagesFinishedNotification(notification:NSNotification)
     {
-       
         if let currentElementsDataRefresher = DataSource.sharedInstance.dataRefresher
         {
             if currentElementsDataRefresher.isCancelled
@@ -165,7 +162,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         }
         self.navigationController?.pushViewController(visualVC, animated: true)
     }
-    
     
     func configureLeftBarButtonItem()
     {
@@ -384,12 +380,23 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         tapView.opaque = true
         tapView.tag = 0xAD12
         
-        let imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
-        imageView.contentMode = .ScaleAspectFit
-        imageView.image = UIImage(named: "icon-add")?.imageWithRenderingMode(.AlwaysTemplate)
-        imageView.tintColor = kDayNavigationBarBackgroundColor
-        imageView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]// UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
-        tapView.addSubview(imageView)
+//        let imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
+//        imageView.contentMode = .ScaleAspectFit
+//        imageView.image = UIImage(named: "icon-add")?.imageWithRenderingMode(.AlwaysTemplate)
+//        imageView.tintColor = kDayNavigationBarBackgroundColor
+//        imageView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]// UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+//        tapView.addSubview(imageView)
+        var userName = "User"
+        if let realUserName = DataSource.sharedInstance.user?.firstName
+        {
+            userName = realUserName
+        }
+        let greetingLabel = UILabel(frame: tapView.bounds)
+        greetingLabel.numberOfLines = 0
+        let greetingString = "Добро пожаловать, \(userName). Нажмите здесь для создания первого элемента."
+        let attributedWelcome = NSAttributedString(string: greetingString, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 15.0)!, NSForegroundColorAttributeName:kDayCellBackgroundColor])
+        greetingLabel.attributedText = attributedWelcome
+        tapView.addSubview(greetingLabel)
         
         let tapButton = UIButton(type:.System)
         tapButton.frame = tapView.bounds
