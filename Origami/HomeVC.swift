@@ -315,6 +315,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             return
         }
 
+        if let tapView = self.view.viewWithTag(0xAD12) as? TapGreetingView
+        {
+            tapView.removeFromSuperview()
+        }
+        
         self.collectionSource = HomeCollectionHandler(info: info)
         self.collectionSource?.elementSelectionDelegate = self
         let layoutInfoStruct = HomeSignalsHiddenFlowLayout.prepareLayoutStructWithInfo(info)
@@ -373,10 +378,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             collectionDashboard.collectionViewLayout.invalidateLayout()
         }
         
-       
-        let tapView = UIView(frame: CGRectMake(0, 0, 200.0, 200.0))
+        let tapView = TapGreetingView(frame: CGRectMake(0, 0, 200.0, 200.0))
         tapView.userInteractionEnabled = true
-        tapView.backgroundColor = UIColor.whiteColor()
         tapView.opaque = true
         tapView.tag = 0xAD12
         
@@ -391,12 +394,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         {
             userName = realUserName
         }
-        let greetingLabel = UILabel(frame: tapView.bounds)
-        greetingLabel.numberOfLines = 0
-        let greetingString = "Добро пожаловать, \(userName). Нажмите здесь для создания первого элемента."
-        let attributedWelcome = NSAttributedString(string: greetingString, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 15.0)!, NSForegroundColorAttributeName:kDayCellBackgroundColor])
-        greetingLabel.attributedText = attributedWelcome
-        tapView.addSubview(greetingLabel)
+        //let greetingLabel = UILabel(frame: tapView.bounds)
+        //greetingLabel.numberOfLines = 0
+        let greetingString = "Добро пожаловать, \(userName)\nНажмите здесь для создания первого элемента."
+//        let attributedWelcome = NSAttributedString(string: greetingString, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 15.0)!, NSForegroundColorAttributeName:kDayCellBackgroundColor])
+//        greetingLabel.attributedText = attributedWelcome
+        tapView.text = greetingString
+        //tapView.addSubview(greetingLabel)
         
         let tapButton = UIButton(type:.System)
         tapButton.frame = tapView.bounds
@@ -513,9 +517,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element)
     {
-        self.navigationController?.popViewControllerAnimated(true)
-        
         handleAddingNewElement(newElement)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     //MARK: -----

@@ -165,6 +165,11 @@ class User:Person
             }
             else{
                 self.birthDay = lvBirthDay
+                print("user birthday:\(lvBirthDay)")
+                let date = lvBirthDay.dateFromServerDateString()
+                print("user birthday date: \(date)")
+                let stringDate = date?.dateForServer()
+                print("user birthday back: \(stringDate)")
             }
         }
         if let lvTel = info["PhoneNumber"] as? String

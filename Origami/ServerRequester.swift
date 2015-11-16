@@ -19,10 +19,19 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     typealias sessionRequestCompletion = (NSData?, NSURLResponse?, NSError?) -> ()
     
     typealias messagesCompletionBlock = (messages:TypeAliasMessagesTuple?, error:NSError?) -> ()
-    let httpManager:AFHTTPSessionManager = AFHTTPSessionManager()
-    
+    let httpManager:AFHTTPSessionManager// = AFHTTPSessionManager()
+    var urlSession:NSURLSession = NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
     let objectsConverter = ObjectsConverter()
     
+    override init() {
+        
+        let policy = AFSecurityPolicy(pinningMode: .Certificate)
+        policy.allowInvalidCertificates = true
+        policy.validatesDomainName = false
+        self.httpManager = AFHTTPSessionManager(baseURL: NSURL(string: serverURL))
+        self.httpManager.securityPolicy = policy
+        super.init()
+    }
     
     lazy var datatasksForPassElementRequest = [Int:NSURLSessionDataTask]()
     
@@ -55,8 +64,10 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         let requestString:String = "\(serverURL)" + "\(editUserUrlPart)"
         let dictUser = userToEdit.toDictionary()
-        //let dictionaryDebug = NSDictionary(dictionary: dictUser)
-        //print(dictionaryDebug)
+        
+        //debug birthday
+        let dictionaryDebug = NSDictionary(dictionary: dictUser)
+        print("birthday sending: \((dictionaryDebug["BirthDay"] as! String).dateFromServerDateString())")
         let params = ["user":dictUser]
         
         let jsonSerializer = httpManager.responseSerializer
@@ -206,7 +217,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     func loadLanguages(completion:((languages:[Language]?, error:NSError?) -> ())?)
     {
-        let languagesUrlString = serverURL + getLanguagesUrlPart
+        let languagesUrlString = /*serverURL +*/ getLanguagesUrlPart
         
         let langOperation = httpManager.GET(languagesUrlString,
             parameters: nil,
@@ -240,7 +251,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     func loadCountries(completion:((countries:[Country]?, error:NSError?) ->())?)
     {
-        let countriesUrlString = serverURL + getCountriesUrlPart
+        let countriesUrlString = /*serverURL + */getCountriesUrlPart
         
         let countriesOp = httpManager.GET(countriesUrlString,
             parameters: nil,
@@ -261,8 +272,14 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                 
             })
         })
-                { (operation, responseError) -> Void in
-            
+                { [weak self](operation, responseError) -> Void in
+                    
+                    if let weakSelf = self
+                    {
+                        let manager = weakSelf.httpManager
+                        print("MANAGER: \(manager.securityPolicy.validatesDomainName)")
+                    }
+            print(responseError)
             completion?(countries:nil, error: responseError)
         }
             
@@ -1523,7 +1540,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             return
         }
         
-            let requestString = serverURL + myContactsURLPart + "?token=" + userToken
+        let requestString = /*serverURL +*/ myContactsURLPart + "?token=" + userToken
             
             let contactsRequestOp = httpManager.GET(requestString,
                 parameters: nil,
@@ -2028,7 +2045,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     {
         if let completionBlock = completion
         {
-            let dataTask = NSURLSession.sharedSession().dataTaskWithRequest(urlRequest, completionHandler: completionBlock)
+            let dataTask = self.urlSession.dataTaskWithRequest(urlRequest, completionHandler: completionBlock)
             if #available(iOS 8.0, *)
             {
                 if priority >= 0 && priority <= 1.0
@@ -2081,6 +2098,10 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     func URLSession(session: NSURLSession, didBecomeInvalidWithError error: NSError?)
     {
         print( "Session error: \n \(error)")
+    }
+    
+    func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
+        completionHandler(NSURLSessionAuthChallengeDisposition.PerformDefaultHandling, nil)
     }
     
 }

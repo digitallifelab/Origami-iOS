@@ -130,6 +130,10 @@ class LoginVC: UIViewController , UITextFieldDelegate
         let contactsOperation = NSBlockOperation() { _ in
             do{
                  try DataSource.sharedInstance.getMyContacts() //returns nil if empty and starts downloadingcontacts from server
+                
+                DataSource.sharedInstance.downloadMyContactsFromServer({ (didSaveToLocalDatabase, error) -> () in
+                    
+                })
             }
             catch{
                 

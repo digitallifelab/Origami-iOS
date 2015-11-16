@@ -59,7 +59,11 @@ import UIKit
         case 0:
             if let existSignals = self.signals
             {
-                toReturn = existSignals.count + 2 // "toggle bubbon" cell + "last messages" cell
+                toReturn = existSignals.count + 2 // "toggle button" cell + "last messages" cell
+            }
+            else
+            {
+                toReturn = 2
             }
         case 1:
             if let favourites = self.favourites
@@ -286,11 +290,13 @@ import UIKit
         }
         else
         {
+            guard let signalElements = self.signals where signalElements.count > 0 else
+            {
+                return
+            }
             //print("  - Toggle Signals Pressed\n")
             isSignalsToggled = !isSignalsToggled
             var newLayout:UICollectionViewFlowLayout?
-            
-            
             
             let infoForLayout:dashboardDBElementsInfoTuple = (signals: self.signals, favourites:self.favourites, other: self.other)
             let layoutStruct = HomeSignalsHiddenFlowLayout.prepareLayoutStructWithInfo(infoForLayout)

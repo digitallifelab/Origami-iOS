@@ -1424,8 +1424,65 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if let recievedContacts = contacts
             {
                 print(" DID Download \(recievedContacts.count) conatcts")
-                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
-                    completion?(didSaveToLocalDatabase: saved, error: error)
+                if recievedContacts.isEmpty
+                {
+                    DataSource.sharedInstance.localDatadaseHandler?.deleteAllContacts()
+                    completion?(didSaveToLocalDatabase: true, error: nil)
+                    return
+                }
+                
+                guard let currentMyContactsIdsInDB = DataSource.sharedInstance.localDatadaseHandler?.readAllContactIDs() else
+                {
+                    DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
+                        completion?(didSaveToLocalDatabase: saved, error: error)
+                    }
+                    return
+                }
+                
+                if currentMyContactsIdsInDB.isEmpty //insert recieved contacts into local Database
+                {
+                    print("inserting all recieved contacts to local database...")
+                    DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
+                        completion?(didSaveToLocalDatabase: saved, error: error)
+                    }
+                }
+                else //delete contacts that are not mine
+                {
+                    print("rewriting contacts...")
+                    var recievedContactIDs = Set<Int>()
+                    for aContact in recievedContacts
+                    {
+                        recievedContactIDs.insert(aContact.contactId)
+                    }
+                    
+                    let contactIdsToInsert = recievedContactIDs.subtract(currentMyContactsIdsInDB)
+                    let contactIdsToDelete = currentMyContactsIdsInDB.subtract(recievedContactIDs)
+                    
+                    print(" to INSERT contact IDs: \(contactIdsToInsert.count)")
+                    print(" to DELETE contact IDS: \(contactIdsToDelete.count)")
+                    
+                    if !contactIdsToDelete.isEmpty{
+                        for aContactId in contactIdsToDelete
+                        {
+                            DataSource.sharedInstance.localDatadaseHandler?.deleContactById(aContactId, saveImmediately: false)
+                        }
+                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (errorSavingContext) -> () in
+                            if let error = errorSavingContext
+                            {
+                                print(" ERROR while saving context after deletion of old contacts:")
+                                print(error)
+                            }
+                            DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
+                                completion?(didSaveToLocalDatabase: saved, error: error)
+                            }
+                        })
+                    }
+                    else
+                    {
+                        DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(recievedContacts) { (saved, error) -> () in
+                            completion?(didSaveToLocalDatabase: saved, error: error)
+                        }
+                    }
                 }
             }
             else

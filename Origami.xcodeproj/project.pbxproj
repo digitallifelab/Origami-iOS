@@ -17,6 +17,8 @@
 		F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
+		F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
+		F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
 		F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
 		F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
 		F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
@@ -288,6 +290,7 @@
 		F811100F1B2AC2FF00115DF6 /* segoeui.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeui.ttf; sourceTree = "<group>"; };
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
+		F811B3F01BF9E7280012F825 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
 		F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashHeaderView.swift; sourceTree = "<group>"; };
 		F817EE561B9EE2CD007E8EBD /* OptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDashboardVC.swift; sourceTree = "<group>"; };
@@ -809,6 +812,7 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */,
+				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
 				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
 				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
 				F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */,
@@ -1155,6 +1159,7 @@
 				F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */,
 				F8C93AF81B861B94009D890E /* FileHandler.m in Sources */,
 				F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */,
+				F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */,
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F8C93AFB1B861B94009D890E /* HomeNavigationController.swift in Sources */,
 				F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */,
@@ -1303,6 +1308,7 @@
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
 				F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */,
 				F89F3B5C1B21C7C600156CEC /* RootViewController.swift in Sources */,
+				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
 				F882328F1B6B71AD00990A4E /* PopupMenuCell.swift in Sources */,
 				F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,

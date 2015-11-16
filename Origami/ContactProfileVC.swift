@@ -159,6 +159,12 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
                 if let weakSelf = self
                 {
                     weakSelf.tableView?.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation: .Automatic)
+                    
+                    //refresh all contacts view after downloading avatar for current contact
+                    if let navController = weakSelf.navigationController, myContactsVC = navController.viewControllers.first as? MyContactsListVC
+                    {
+                        myContactsVC.myContactsTable?.reloadData()
+                    }
                 }
             })
         }

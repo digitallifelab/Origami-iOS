@@ -2058,7 +2058,39 @@ class LocalDatabaseHandler
         }
     }
     
-    func deleContactById(contactId:Int, completion:((Bool, error:NSError?)->())?)
+    func readAllContactIDs() -> Set<Int>
+    {
+        let contactsRequest = NSFetchRequest(entityName: "DBContact")
+        let context = self.privateContext
+        
+        var setToReturn = Set<Int>()
+        
+        context.performBlockAndWait() {
+            do{
+                if let contacts = try context.executeFetchRequest(contactsRequest) as? [DBContact]
+                {
+                    for aContact in contacts
+                    {
+                        if let contactId = aContact.contactId?.integerValue
+                        {
+                            setToReturn.insert(contactId)
+                        }
+                    }
+                }
+            }
+            catch{
+                
+            }
+        }
+        
+        return setToReturn
+        
+    }
+    
+    /**
+     
+    */
+    func deleContactById(contactId:Int, saveImmediately:Bool = false, completion:((Bool, error:NSError?)->())?)
     {
         if let existingContact = self.findPersonById(contactId).db
         {
@@ -2066,33 +2098,58 @@ class LocalDatabaseHandler
             context.performBlock({ () -> Void in
                 
                 context.deleteObject(existingContact)
-                
-                if context.hasChanges
+                if saveImmediately
                 {
-                    do
+                    if context.hasChanges
                     {
-                        try context.save()
-                        print("-> Deleted Contact From Private Context")
-                        completion?(true, error:nil)
+                        do
+                        {
+                            try context.save()
+                            print("-> Deleted Contact From Private Context")
+                            completion?(true, error:nil)
+                        }
+                        catch let error as NSError
+                        {
+                            print("failed to delete contact from private context:")
+                            print(error)
+                            completion?(true, error:error)
+                        }
                     }
-                    catch let error as NSError
-                    {
-                        print("failed to delete contact from private context:")
-                        print(error)
-                        completion?(true, error:error)
-                    }
-//                    catch  let error {
-//                        print("failed to delete contact from private context:")
-//                        print(error)
-//                        completion?(true, error:nil)
-//                    }
                 }
             })
         }
     }
     
+    func deleContactById(contactId:Int, saveImmediately:Bool = false)
+    {
+        if let existingContact = self.findPersonById(contactId).db
+        {
+            let context = self.privateContext
+            context.performBlockAndWait(){ () -> Void in
+                
+                context.deleteObject(existingContact)
+                if saveImmediately
+                {
+                    if context.hasChanges
+                    {
+                        do
+                        {
+                            try context.save()
+                            print("-> Deleted Contact From Private Context")
+                        }
+                        catch let error as NSError
+                        {
+                            print("failed to delete contact from private context:")
+                            print(error)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     /** 
-     Saves private context after deleting
+    Saves private context after deleting
     */
     func deleteAllContacts()
     {
