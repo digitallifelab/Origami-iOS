@@ -29,7 +29,6 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         policy.allowInvalidCertificates = true
         policy.validatesDomainName = false
         self.httpManager = AFHTTPSessionManager(baseURL: NSURL(string: serverURL))
-       // AFHTTPSessionManager(baseURL: <#T##NSURL?#>, sessionConfiguration: <#T##NSURLSessionConfiguration?#>)
         self.httpManager.securityPolicy = policy
         
         super.init()
@@ -43,24 +42,27 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
-        let requestString:String = "\(serverURL)" + "\(registerUserUrlPart)"
-        let parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
+        let requestString:String = "\(serverURL)" + "\(registerUserUrlPart)" + "?\(firstNameKey)=" + firstName + "&\(lastNameKey)=" + lastName + "&\(loginNameKey)=" + userName
+        //let parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
         
-        let dataTask = httpManager.GET(requestString,
-            parameters: parametersToRegister,
-            success:
-            { (task, responseObject) -> Void in
+        guard let regURL = NSURL(string:requestString) else
+        {
+            completion(success: false, error: ServerRequester.urlCreatingError)
+            return
+        }
+        
+        self.performGETqueryWithURL(regURL, onQueue: nil, priority: 1.0) { (responseData, response, responseError) -> () in
+            if let error = responseError
+            {
+                completion(success: false, error: error)
+                return
+            }
             
+            if let _ = responseData
+            {
                 completion(success: true, error: nil)
-                
-            },
-            failure: { (task, responseError) -> Void in
-                
-            completion(success: false, error: responseError)
-                
-        })
-        
-        dataTask?.resume()
+            }
+        }
     }
     
     func editUser(userToEdit:User, completion:((success:Bool, error:NSError?) -> ())? )
@@ -74,49 +76,103 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         print("birthday sending: \((dictionaryDebug["BirthDay"] as! String).dateFromServerDateString())")
         let params = ["user":dictUser]
         
-        let jsonSerializer = httpManager.responseSerializer
-        
-        let requestSerializer = AFJSONRequestSerializer()
-        requestSerializer.setValue("application/json", forHTTPHeaderField:"Content-Type")
-        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-        httpManager.requestSerializer = requestSerializer
-        
-        
-        if let acceptableTypes = jsonSerializer.acceptableContentTypes as? Set<String>
+        guard let requestURL = NSURL(string:requestString) else
         {
-            var newSet = acceptableTypes//NSMutableSet(set: acceptableTypes)
-            newSet.unionInPlace( Set(["text/html", "application/json"]) )
-            jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
-        }
-      
-        let editTask = httpManager.POST(
-            requestString,
-            parameters: params,
-            success:
-            { (task, resultObject) -> Void in
-                if let result = resultObject as? [String:AnyObject]
-                {
-                    print(" -> Edit user result: \(result)")
-                    completion?(success: true, error: nil)
-                }
-                else
-                {
-                    print(" -> failed to edit user...")
-                    completion?(success: false, error: nil)
-                }
-                
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            
-        })
-            { (operation, responseError) -> Void in
-                
-                print("\n -> Edit user Error: \(responseError)")
-                
-            completion?(success: false, error: responseError)
-                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            completion?(success: false, error: ServerRequester.urlCreatingError)
+            return
         }
         
-        editTask?.resume()
+        //let jsonSerializer = httpManager.responseSerializer
+        
+//        let requestSerializer = AFJSONRequestSerializer()
+      
+        
+        do
+        {
+            let requestEditUser = try self.createSerializedRequestWithURL(requestURL, method: "POST", parameters: params)
+            
+            self.performRequest(requestEditUser, onQueue: getBackgroundQueue_DEFAULT(), priority: 1.0) { (responseData, response, responseError) -> () in
+                
+                if let error = responseError
+                {
+                    completion?(success: false, error: error)
+                    return
+                }
+                if let data = responseData
+                {
+                    do
+                    {
+                        if let responseObject = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? [String:AnyObject]
+                        {
+                            print("EditUser  Result:")
+                            print(responseObject)
+                            
+                            completion?(success: true, error: nil)
+                            return
+                        }
+                        completion?(success: false, error: OrigamiError.UnknownError as NSError)
+                    }
+                    catch let errorJSON
+                    {
+                        if let errorString = String(data:data, encoding:NSUTF8StringEncoding)
+                        {
+                            completion?(success: false, error: OrigamiError.NotFoundError(message: errorString) as NSError)
+                            return
+                        }
+                        
+                        completion?(success: false, error: errorJSON as NSError)
+                    }
+                }
+            }
+        }
+        catch let requestSerializingError
+        {
+            print("\n -> Edit user Error: \(requestSerializingError)")
+            
+            completion?(success: false, error: requestSerializingError as NSError)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        }
+        
+        
+        
+//        httpManager.requestSerializer = requestSerializer
+//        
+//        
+//        if let acceptableTypes = jsonSerializer.acceptableContentTypes as? Set<String>
+//        {
+//            var newSet = acceptableTypes//NSMutableSet(set: acceptableTypes)
+//            newSet.unionInPlace( Set(["text/html", "application/json"]) )
+//            jsonSerializer.acceptableContentTypes = newSet as Set<NSObject>
+//        }
+//      
+//        let editTask = httpManager.POST(
+//            requestString,
+//            parameters: params,
+//            success:
+//            { (task, resultObject) -> Void in
+//                if let result = resultObject as? [String:AnyObject]
+//                {
+//                    print(" -> Edit user result: \(result)")
+//                    completion?(success: true, error: nil)
+//                }
+//                else
+//                {
+//                    print(" -> failed to edit user...")
+//                    completion?(success: false, error: nil)
+//                }
+//                
+//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//            
+//        })
+//            { (operation, responseError) -> Void in
+//                
+//                print("\n -> Edit user Error: \(responseError)")
+//                
+//            completion?(success: false, error: responseError)
+//                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//        }
+//        
+//        editTask?.resume()
     }
     
     func loginWith(userName:String, password:String, completion:networkResult?)
@@ -208,7 +264,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                         completion?(nil, jsonError)
                     }
                 }
-                catch{
+                catch
+                {
                     completion?(nil, NSError(domain: "com.Origami.ExceprionError", code: -1033, userInfo: [NSLocalizedDescriptionKey:"UnknownExceptionError"]))
                 }
             }
@@ -227,7 +284,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         
         guard let url = NSURL(string: languagesUrlString) else
         {
-            completion?(languages: nil, error:OrigamiError.PreconditionFailure(message: "Could not create valid url for request") as NSError)
+            completion?(languages: nil, error:ServerRequester.urlCreatingError)
             return
         }
         
@@ -294,7 +351,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         
         guard let url = NSURL(string: countriesUrlString) else
         {
-            completion?(countries:nil, error:OrigamiError.PreconditionFailure(message: "Could not create valid url for request") as NSError)
+            completion?(countries:nil, error:ServerRequester.urlCreatingError)
             return
         }
         
@@ -424,58 +481,70 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     }
     
     
-    func submitNewElement(element:Element, completion:networkResult)
+    func submitNewElement(element:Element, completion:networkResult?)
     {
         guard let tokenString = DataSource.sharedInstance.user?.token else {
             
-            completion(nil,noUserTokenError)
+            completion?(nil,noUserTokenError)
             return
         }
         
-        let bgQueue = dispatch_queue_create("submit sueue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(bgQueue) { [unowned self] () -> Void in
-            
+        
+        let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
+        
+        guard let submitURL = NSURL(string: postString) else
+        {
+            completion?(nil, ServerRequester.urlCreatingError)
+            return
+        }
+        
         let elementDict = element.toDictionary()
         print(" Submitting new element to server: \n")
         print(elementDict)
         print("\n<--")
-        let postString = serverURL + addElementUrlPart + "?token=" + "\(tokenString)"
+        
         let params = ["element":elementDict]
         
-        let requestSerializer = AFJSONRequestSerializer()
-        requestSerializer.timeoutInterval = 15.0 as NSTimeInterval
-        requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
-        requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        self.httpManager.requestSerializer = requestSerializer
-        
-        let postOperation = self.httpManager.POST(
-            postString,
-            parameters: params,
-            success:
-            { (operation, result) -> Void in
-                
-                if let
-                    resultDict = result as? Dictionary<String, AnyObject>,
-                    newElementDict = resultDict["AddElementResult"] as? Dictionary<String, AnyObject>
+        do
+        {
+            let submitRequest = try createSerializedRequestWithURL(submitURL, method: "POST", parameters: params)
+            
+            let bgQueue = dispatch_queue_create("submit_new_element_queue", DISPATCH_QUEUE_SERIAL)
+            
+            self.performRequest(submitRequest, onQueue: bgQueue, priority: 1.0) { (responseData, response, responseError) -> () in
+                if let error = responseError
                 {
-                    let newUploadedElement = Element(info: newElementDict)
-                    completion(newUploadedElement, nil)
-                }
-                else
-                {
-                    let lvError = NSError(domain: "com.DictionaryConversion.Failure", code: -801, userInfo: [NSLocalizedDescriptionKey:"Failed to convert response to dictionary"])
-                    completion(nil, lvError)
+                    completion?(nil,error)
+                    return
                 }
                 
-            },
-            failure:
-            { (operation, error) -> Void in
-                    completion(nil, error)
-
-        })
-        
-        postOperation?.resume()
-        }//end of bg queue
+                if let data = responseData
+                {
+                    do
+                    {
+                        if let
+                            responseObject = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableLeaves) as? [String:[String:AnyObject]],
+                            elementInfo = responseObject["AddElementResult"]
+                        {
+                            let newElement = Element()
+                            newElement.setInfo(elementInfo)
+                            completion?(newElement, nil)
+                            return
+                        }
+                        
+                        completion?(nil, OrigamiError.UnknownError as NSError)
+                    }
+                    catch let errorJSON
+                    {
+                        completion?(nil, errorJSON as NSError)
+                    }
+                }
+            }
+        }
+        catch let requestCreatingError
+        {
+            completion?(nil, requestCreatingError as NSError)
+        }
     }
     
     func editElement(element:Element, completion completionClosure:(success:Bool, error:NSError?) -> () )
@@ -490,16 +559,16 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         
         guard let editRequestURL = NSURL(string: editUrlString) else
         {
-            completionClosure(success: false, error: OrigamiError.NotFoundError(message: "Could Not Create Valid URL for request.") as NSError)
+            completionClosure(success: false, error:ServerRequester.urlCreatingError)
             return
         }
         
-        
-        
-        let editRequest = NSMutableURLRequest(URL: editRequestURL)
-        editRequest.HTTPMethod = "POST"
-        editRequest.setValue("application/json", forHTTPHeaderField:"Content-Type")
-        editRequest.timeoutInterval = 15.0
+//        
+//        
+//        let editRequest = NSMutableURLRequest(URL: editRequestURL)
+//        editRequest.HTTPMethod = "POST"
+//        editRequest.setValue("application/json", forHTTPHeaderField:"Content-Type")
+//        editRequest.timeoutInterval = 15.0
         
         var elementDict = element.toDictionary()
         if let archDateString = elementDict["ArchDate"] as? String
@@ -512,11 +581,10 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         }
         
         let params = ["element":elementDict]
-        
-        let serializator = AFJSONRequestSerializer()
+
         do
         {
-            let request = try serializator.requestBySerializingRequest(editRequest, withParameters: params)
+            let request = try self.createSerializedRequestWithURL(editRequestURL, method: "POST", parameters: params)
             
             let editDataTask = NSURLSession.sharedSession().dataTaskWithRequest(request) { (dataResponse, urlResponse, errorResponse) -> Void in
                 
@@ -881,7 +949,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         
         guard let urlAllMessages = NSURL(string: urlString) else
         {
-            completion?(messages: nil, error: OrigamiError.PreconditionFailure(message: "Could not create valid URL for request") as NSError)
+            completion?(messages: nil, error: ServerRequester.urlCreatingError)
             return
         }
         
@@ -2092,6 +2160,31 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
 //        
 //        [requestOp start];
 
+    }
+    //MARK: - request serialization
+    func createSerializedRequestWithURL(url:NSURL, method:String, parameters:AnyObject?) throws -> NSURLRequest
+    {
+        guard method == "GET" || method == "POST" else
+        {
+            throw OrigamiError.PreconditionFailure(message: "Wrong method for request (\" \(method) \") . Currently only \"POST\" or \"GET\" methods are supported.")
+        }
+        
+        do
+        {
+            let mutableRequest = NSMutableURLRequest(URL: url)
+            mutableRequest.HTTPMethod = method
+            let requestSerializer = AFJSONRequestSerializer()
+            requestSerializer.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            requestSerializer.setValue("application/json", forHTTPHeaderField: "Accept")
+            
+            let urlRequest = try requestSerializer.requestBySerializingRequest(mutableRequest, withParameters: parameters)
+            
+            return urlRequest
+        }
+        catch let error
+        {
+            throw error
+        }
     }
     
     //MARK: - NSURLSession

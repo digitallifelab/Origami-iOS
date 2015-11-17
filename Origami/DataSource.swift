@@ -211,7 +211,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     //MARK: - Message
     //MARK: -
     //MARK: Messages ServerRequests
-    func loadAllMessagesFromServer()
+    func loadAllMessagesFromServer(completion:(()->())? = nil)
     {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
@@ -222,11 +222,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesTuple.chat, completion: { (saved, error) -> () in
                         NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
+                        completion?()
                     })
                 }
                 else
                 {
                     NSNotificationCenter.defaultCenter().postNotificationName(FinishedLoadingMessages, object: DataSource.sharedInstance)
+                    completion?()
                 }
                 
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
@@ -321,12 +323,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     print("Message Save Error: \n \(messageSaveError)")
                 }
                 
-                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesForNotFoundElements, completion: { (saved, error) -> () in
-                    if let messageSaveError = error
-                    {
-                        print("Message Save Error: \n \(messageSaveError)")
-                    }
-                    
+//                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesForNotFoundElements, completion: { (saved, error) -> () in
+//                    if let messageSaveError = error
+//                    {
+//                        print("Message Save Error: \n \(messageSaveError)")
+//                    }
+                
                     DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(){ _ in
                         print("\n -> DataSource did finish PAIRING messages and elemnts..")
                         if let observerHomeVC = DataSource.sharedInstance.getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
@@ -335,7 +337,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                         }
                     }
                     
-                })
+//                })
             })
         }
         

@@ -167,9 +167,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
         
         let messagesSyncOperation = NSBlockOperation() { _ in
             
-            if let lastMessageId = DataSource.sharedInstance.localDatadaseHandler?.getLatestMessageId()
+            if let lastMessageId = DataSource.sharedInstance.localDatadaseHandler?.getLatestMessageId() where lastMessageId > 0
             {
-                DataSource.sharedInstance.syncLastMessages(lastMessageId, completion: { (finished, error) -> () in
+                DataSource.sharedInstance.syncLastMessages(lastMessageId) { (finished, error) -> () in
                     if let _ = DataSource.sharedInstance.messagesLoader
                     {
                         DataSource.sharedInstance.startRefreshingNewMessages()
@@ -179,11 +179,11 @@ class LoginVC: UIViewController , UITextFieldDelegate
                         DataSource.sharedInstance.messagesLoader = MessagesLoader()
                         DataSource.sharedInstance.startRefreshingNewMessages()
                     }
-                })
+                }
             }
             else
             {
-                DataSource.sharedInstance.syncLastMessages(completion: { (finished, error) -> () in
+               DataSource.sharedInstance.loadAllMessagesFromServer() { _ in
                     if let _ = DataSource.sharedInstance.messagesLoader
                     {
                         DataSource.sharedInstance.startRefreshingNewMessages()
@@ -193,7 +193,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
                         DataSource.sharedInstance.messagesLoader = MessagesLoader()
                         DataSource.sharedInstance.startRefreshingNewMessages()
                     }
-                })
+               }
             }
         }
         

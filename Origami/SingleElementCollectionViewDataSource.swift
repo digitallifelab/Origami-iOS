@@ -394,7 +394,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                                 }
                                 else //user sees now owned element in which another contact in responsible
                                 {
-                                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt])), aContact = contacts.first //as? Contact
+                                    if let aContact = DataSource.sharedInstance.localDatadaseHandler?.readContactById(responsibleIdInt)
                                     {
                                         if let contactName = aContact.nameAndLastNameSpacedString()
                                         {
