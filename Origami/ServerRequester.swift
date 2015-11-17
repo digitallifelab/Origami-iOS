@@ -20,7 +20,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     typealias messagesCompletionBlock = (messages:TypeAliasMessagesTuple?, error:NSError?) -> ()
     let httpManager:AFHTTPSessionManager// = AFHTTPSessionManager()
-    var urlSession:NSURLSession = NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration())
+    var urlSession:NSURLSession!
     let objectsConverter = ObjectsConverter()
     
     override init() {
@@ -29,8 +29,12 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         policy.allowInvalidCertificates = true
         policy.validatesDomainName = false
         self.httpManager = AFHTTPSessionManager(baseURL: NSURL(string: serverURL))
+       // AFHTTPSessionManager(baseURL: <#T##NSURL?#>, sessionConfiguration: <#T##NSURLSessionConfiguration?#>)
         self.httpManager.securityPolicy = policy
+        
         super.init()
+        
+        self.urlSession =  NSURLSession(configuration: NSURLSessionConfiguration.ephemeralSessionConfiguration(), delegate: self, delegateQueue: nil)
     }
     
     lazy var datatasksForPassElementRequest = [Int:NSURLSessionDataTask]()
@@ -217,73 +221,134 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     func loadLanguages(completion:((languages:[Language]?, error:NSError?) -> ())?)
     {
-        let languagesUrlString = /*serverURL +*/ getLanguagesUrlPart
+        let languagesUrlString = serverURL + getLanguagesUrlPart
         
-        let langOperation = httpManager.GET(languagesUrlString,
-            parameters: nil,
-            success: { (operation, responseObject) -> Void in
-                
-                let bgQueue = dispatch_queue_create("languages.queue", DISPATCH_QUEUE_SERIAL)
-                dispatch_async(bgQueue, { () -> Void in
-                    
-                    if let languagesDict = responseObject["GetLanguagesResult"] as? [[String:AnyObject]],  languages = ObjectsConverter.convertToLanguages(languagesDict)
-                    {
-                        completion?(languages:languages, error:nil)
-                    }
-                    else
-                    {
-                        let anError = NSError(domain: "LanguagesError", code: -409, userInfo: [NSLocalizedDescriptionKey:"Could not convert data to langages"])
-                        completion?(languages: nil, error:anError)
-                    }
-                })
-                
-                
-                
-            })/*failure*/
-            { (operation, responseError) -> Void in
-                
-                completion?(languages:nil, error: responseError)
-                
+
+        
+        guard let url = NSURL(string: languagesUrlString) else
+        {
+            completion?(languages: nil, error:OrigamiError.PreconditionFailure(message: "Could not create valid url for request") as NSError)
+            return
         }
         
-        langOperation?.resume()
+        let completionCountriesClosure :sessionRequestCompletion = {(data, response, error) in
+            do{
+                if let
+                    dataRecieved = data ,
+                    responseObject = try NSJSONSerialization.JSONObjectWithData(dataRecieved, options: .MutableContainers) as? [String:AnyObject],
+                    languageDicts = responseObject["GetLanguagesResult"] as? [[String:AnyObject]],
+                    languageObjects = ObjectsConverter.convertToLanguages(languageDicts)
+                {
+                    completion?(languages:languageObjects, error:nil)
+                }
+                else
+                {
+                    completion?(languages: nil, error: OrigamiError.NotFoundError(message: "Could not get countries from server.") as NSError)
+                }
+            }
+            catch let errorJSON
+            {
+                completion?(languages: nil, error: errorJSON as NSError)
+            }
+        }
+        
+        self.performGETqueryWithURL(url, onQueue: nil, priority: 0.5, completion: completionCountriesClosure)
+
+        
+        
+        
+        
+//        let langOperation = httpManager.GET(languagesUrlString,
+//            parameters: nil,
+//            success: { (operation, responseObject) -> Void in
+//                
+//                let bgQueue = dispatch_queue_create("languages.queue", DISPATCH_QUEUE_SERIAL)
+//                dispatch_async(bgQueue, { () -> Void in
+//                    
+//                    if let languagesDict = responseObject["GetLanguagesResult"] as? [[String:AnyObject]],  languages = ObjectsConverter.convertToLanguages(languagesDict)
+//                    {
+//                        completion?(languages:languages, error:nil)
+//                    }
+//                    else
+//                    {
+//                        let anError = NSError(domain: "LanguagesError", code: -409, userInfo: [NSLocalizedDescriptionKey:"Could not convert data to langages"])
+//                        completion?(languages: nil, error:anError)
+//                    }
+//                })
+//                
+//                
+//                
+//            })/*failure*/
+//            { (operation, responseError) -> Void in
+//                print(responseError)
+//                completion?(languages:nil, error: responseError)
+//                
+//            }
+//        
+//        langOperation?.resume()
     }
     
     func loadCountries(completion:((countries:[Country]?, error:NSError?) ->())?)
     {
-        let countriesUrlString = /*serverURL + */getCountriesUrlPart
+        let countriesUrlString = serverURL + getCountriesUrlPart
         
-        let countriesOp = httpManager.GET(countriesUrlString,
-            parameters: nil,
-            success: { (operation, responseObject) -> Void in
-            
-            let bgQueue = dispatch_queue_create("countries.queue", DISPATCH_QUEUE_SERIAL)
-            dispatch_async(bgQueue, { () -> Void in
-                
-                if let countriesDicts = responseObject["GetCountriesResult"] as? [[String:AnyObject]], countries = ObjectsConverter.convertToCountries(countriesDicts)
+        guard let url = NSURL(string: countriesUrlString) else
+        {
+            completion?(countries:nil, error:OrigamiError.PreconditionFailure(message: "Could not create valid url for request") as NSError)
+            return
+        }
+        
+        let completionCountriesClosure :sessionRequestCompletion = {(data, response, error) in
+            do{
+                if let
+                    dataRecieved = data ,
+                    responseObject = try NSJSONSerialization.JSONObjectWithData(dataRecieved, options: .MutableContainers) as? [String:AnyObject],
+                    countryDicts = responseObject["GetCountriesResult"] as? [[String:AnyObject]],
+                    countryObjects = ObjectsConverter.convertToCountries(countryDicts)
                 {
-                    completion?(countries: countries, error: nil)
+                    completion?(countries:countryObjects, error:nil)
                 }
                 else
                 {
-                    let anError = NSError(domain: "CountriesError", code: -409, userInfo: [NSLocalizedDescriptionKey:"Could not convert data to countries"])
-                    completion?(countries: nil, error:anError)
+                    completion?(countries: nil, error: OrigamiError.NotFoundError(message: "Could not get countries from server.") as NSError)
                 }
-                
-            })
-        })
-                { [weak self](operation, responseError) -> Void in
-                    
-                    if let weakSelf = self
-                    {
-                        let manager = weakSelf.httpManager
-                        print("MANAGER: \(manager.securityPolicy.validatesDomainName)")
-                    }
-            print(responseError)
-            completion?(countries:nil, error: responseError)
+            }
+            catch let errorJSON
+            {
+                completion?(countries: nil, error: errorJSON as NSError)
+            }
         }
-            
-        countriesOp?.resume()
+        
+        self.performGETqueryWithURL(url, onQueue: nil, priority: 0.5, completion: completionCountriesClosure)
+        
+//        return
+//        
+//        let countriesOp = httpManager.GET(countriesUrlString,
+//            parameters: nil,
+//            success: { (operation, responseObject) -> Void in
+//            
+//            let bgQueue = dispatch_queue_create("countries.queue", DISPATCH_QUEUE_SERIAL)
+//            dispatch_async(bgQueue, { () -> Void in
+//                
+//                if let countriesDicts = responseObject["GetCountriesResult"] as? [[String:AnyObject]], countries = ObjectsConverter.convertToCountries(countriesDicts)
+//                {
+//                    completion?(countries: countries, error: nil)
+//                }
+//                else
+//                {
+//                    let anError = NSError(domain: "CountriesError", code: -409, userInfo: [NSLocalizedDescriptionKey:"Could not convert data to countries"])
+//                    completion?(countries: nil, error:anError)
+//                }
+//                
+//            })
+//        })
+//                { (operation, responseError) -> Void in
+//                    
+//            print(responseError)
+//            completion?(countries:nil, error: responseError)
+//        }
+//            
+//        countriesOp?.resume()
     }
  
     
@@ -806,35 +871,78 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     //MARK: Messages
     func loadAllMessages(completion: ((messages:(chat: [Message], service:[Message])?, error:NSError?) -> ())?)
     {
-        guard let tokenString = DataSource.sharedInstance.user?.token else{
-            
+        guard let tokenString = DataSource.sharedInstance.user?.token else
+        {
             completion?(messages:nil, error:noUserTokenError)
             return
         }
         
         let urlString = "\(serverURL)" + "\(getAllMessagesPart)" + "?token=" + "\(tokenString)"
         
-        let messagesOp = httpManager.GET(urlString,
-            parameters: nil,
-            success:
-            { (operation, result) -> Void in
-                
-                dispatch_async(getBackgroundQueue_UTILITY(), { () -> Void in
-                    if let
-                        lvResultDict = result as? [String:AnyObject],
-                        messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
-                        messagesArray = ObjectsConverter.convertToMessages(messageDictsArray)
-                    {
-                        completion?(messages:messagesArray, error:nil)
-                    }
-                })
-               
-            })
-            { /*failure closure*/(task, requestError) -> Void in
-                completion?(messages:nil, error:requestError)
+        guard let urlAllMessages = NSURL(string: urlString) else
+        {
+            completion?(messages: nil, error: OrigamiError.PreconditionFailure(message: "Could not create valid URL for request") as NSError)
+            return
         }
         
-        messagesOp?.resume()
+        self.performGETqueryWithURL(urlAllMessages, onQueue: nil, priority: 0.6) { (data, response, error) -> () in
+            guard let recievedData = data else
+            {
+                if let errorRecieved = error
+                {
+                    completion?(messages: nil, error: errorRecieved)
+                    return
+                }
+                
+                completion?(messages: nil, error: OrigamiError.NotFoundError(message: "Error while requesting all messages.") as NSError )
+                return
+            }
+            
+            
+            do
+            {
+                if let
+                    responseObject = try NSJSONSerialization.JSONObjectWithData(recievedData, options: .MutableLeaves) as? [String:[[String:AnyObject]]],
+                    messageInfos = responseObject["GetMessagesResult"],
+                    messages = ObjectsConverter.convertToMessages(messageInfos)
+                {
+                    completion?(messages:messages, error:nil)
+                }
+                else
+                {
+                    completion?(messages: nil, error: OrigamiError.UnknownError as NSError)
+                }
+            }
+            catch let jsonError
+            {
+                completion?(messages: nil, error: jsonError as NSError)
+            }
+            
+        }
+        
+        
+        
+//        let messagesOp = httpManager.GET(urlString,
+//            parameters: nil,
+//            success:
+//            { (operation, result) -> Void in
+//                
+//                dispatch_async(getBackgroundQueue_UTILITY(), { () -> Void in
+//                    if let
+//                        lvResultDict = result as? [String:AnyObject],
+//                        messageDictsArray = lvResultDict["GetMessagesResult"] as? [[String:AnyObject]],
+//                        messagesArray = ObjectsConverter.convertToMessages(messageDictsArray)
+//                    {
+//                        completion?(messages:messagesArray, error:nil)
+//                    }
+//                })
+//               
+//            })
+//            { /*failure closure*/(task, requestError) -> Void in
+//                completion?(messages:nil, error:requestError)
+//        }
+//        
+//        messagesOp?.resume()
     }
     
     func sendMessage(message:String, toElement elementId:Int, completion:networkResult?)
@@ -1019,6 +1127,11 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                     }
                 }
                 catch let jsonError as NSError {
+                    if let errorString = String(data: aData, encoding: NSUTF8StringEncoding)
+                    {
+                        completion?(nil, error:OrigamiError.NotFoundError(message: errorString) as NSError)
+                        return
+                    }
                     completion?(nil, error:jsonError)
                 }
                 catch{
@@ -1040,11 +1153,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             let requestString = "\(serverURL)" + getElementAttachesUrlPart + "?elementId=" + "\(elementId)" + "&token=" + userToken
             if let attachURL = NSURL(string: requestString)
             {
-                let attachesRequest = NSMutableURLRequest(URL: attachURL, cachePolicy: NSURLRequestCachePolicy.ReloadIgnoringCacheData, timeoutInterval: 20.0)
-                attachesRequest.setValue("appliction-json", forHTTPHeaderField: "Accept")
-                
-                let attachLoadTask = NSURLSession.sharedSession().dataTaskWithRequest(attachesRequest, completionHandler: {(responseData, urlResponse, responseError) -> Void in
-                    if let anError = responseError
+                self.performGETqueryWithURL(attachURL, onQueue: nil, priority: 0.7, completion: { (responseData, response, error) -> () in
+                    if let anError = error
                     {
                         completion?(nil, anError)
                         return
@@ -1072,7 +1182,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                                             {
                                                 if attachNameString.containsString("/")
                                                 {
-                                                     anAttach.fileName = attachNameString.stringByReplacingOccurrencesOfString("/", withString:"-")
+                                                    anAttach.fileName = attachNameString.stringByReplacingOccurrencesOfString("/", withString:"-")
                                                 }
                                                 // stringByReplacingOccurencesOfString("/", withString:"-")
                                                 attachesArray.append(anAttach)
@@ -1106,20 +1216,9 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                     {
                         completion?(nil, NSError(domain: "com.Origami.NoResponseData", code: -1044, userInfo: [NSLocalizedDescriptionKey:"an Empty Server Response."]))
                     }
+
                 })
                 
-                if #available(iOS 8.0, *)
-                {
-                    dispatch_async(dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), { () -> Void in
-                        attachLoadTask.resume()
-                    })
-                }
-                else
-                {
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), { () -> Void in
-                        attachLoadTask.resume()
-                    })
-                }
                 return
             }
        
@@ -1151,7 +1250,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         fileDataRequest.HTTPMethod = "GET"
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        let fileTask = NSURLSession.sharedSession().dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
+        let fileTask = self.urlSession.dataTaskWithRequest(fileDataRequest, completionHandler: { (responseData:NSData?, urlResponse:NSURLResponse?, responseError:NSError?) -> Void
             
             in
             
@@ -1218,7 +1317,8 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                             }
                         }
                     }
-                    catch let jsonError as NSError{
+                    catch let jsonError as NSError
+                    {
                         if let complete = completion
                         {
                             complete(attachFileData: nil, error: jsonError)
@@ -2101,7 +2201,22 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     }
     
     func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
-        completionHandler(NSURLSessionAuthChallengeDisposition.PerformDefaultHandling, nil)
+
+        if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust
+        {
+            print(" Handling  URLSession didRecieveChallenge ....")
+            let credential = NSURLCredential(forTrust: challenge.protectionSpace.serverTrust!)
+            completionHandler(NSURLSessionAuthChallengeDisposition.UseCredential, credential);
+            
+        }
+        else
+        {
+            
+        }
+    }
+    
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
+        
     }
     
 }

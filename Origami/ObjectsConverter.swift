@@ -49,6 +49,9 @@ class ObjectsConverter {
         return array
     }
     
+    /**
+     - Returns: nil, if converted to countries array is empty
+    */
     class func convertToCountries(dictionariesArray:[[String:AnyObject]]) -> [Country]?
     {
         var countries = [Country]()

@@ -197,21 +197,43 @@ extension String
         
         
         let dateComponentsArray = dateUTCstring.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "-+"))
+        
         if let dateString = dateComponentsArray.first
         {
-            var trimFactor = -3
-            if forBirthday
+            if dateString.isEmpty
             {
-                trimFactor = -2
+                let secondItem = dateComponentsArray[1]
+                var trimFactor = -3
+                if forBirthday
+                {
+                    trimFactor = -2
+                }
+                let trimmedString = secondItem.substringToIndex(secondItem.endIndex.advancedBy(trimFactor))
+                //print("dateFromServerDateString:  dateString: \(trimmedString)")
+                if let timeInterval = NSTimeInterval(trimmedString)
+                {
+                    let recievedDate = NSDate(timeIntervalSince1970: timeInterval)
+                    //print("-> Date - \(recievedDate)")
+                    return recievedDate
+                }
             }
-            let trimmedString = dateString.substringToIndex(dateString.endIndex.advancedBy(trimFactor))
-            //print("dateFromServerDateString:  dateString: \(trimmedString)")
-            if let timeInterval = NSTimeInterval(trimmedString)
+            else
             {
-                let recievedDate = NSDate(timeIntervalSince1970: timeInterval)
-                //print("-> Date - \(recievedDate)")
-                return recievedDate
+                var trimFactor = -3
+                if forBirthday
+                {
+                    trimFactor = -2
+                }
+                let trimmedString = dateString.substringToIndex(dateString.endIndex.advancedBy(trimFactor))
+                //print("dateFromServerDateString:  dateString: \(trimmedString)")
+                if let timeInterval = NSTimeInterval(trimmedString)
+                {
+                    let recievedDate = NSDate(timeIntervalSince1970: timeInterval)
+                    //print("-> Date - \(recievedDate)")
+                    return recievedDate
+                }
             }
+            
         }
         
         return nil
