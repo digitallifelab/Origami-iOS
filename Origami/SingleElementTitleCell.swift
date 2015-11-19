@@ -306,6 +306,7 @@ class SingleElementTitleCell: UICollectionViewCell {
                         case .Default:
                             taskButton.hidden = true
                         case .InProcess:
+                            taskButton.hidden = false
                             taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedGood:

@@ -728,7 +728,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                 DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (saveError) -> () in
                                     if let error = saveError
                                     {
-                                        print("did not save context because of Error:")
+                                        print("ArchDate - did not save context because of Error:")
                                         print(error)
                                         completion?(edited: false)
                                     }
@@ -740,7 +740,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             }
                             else
                             {
-                                completion?(edited: success)
+                                DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (errorSaving) -> () in
+                                    if let error = errorSaving
+                                    {
+                                        print("ArchDate - did not save context because of Error:")
+                                        print(error)
+                                        completion?(edited: false)
+                                    }
+                                    else
+                                    {
+                                        completion?(edited: true)
+                                    }
+                                })
                             }
                             
                             DataSource.sharedInstance.shouldReloadAfterElementChanged = true
@@ -1911,9 +1922,15 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func cleanAvatarDataForUserName(name:String, userId:Int)
     {
         let aFileHandler = FileHandler()
-        aFileHandler.eraseAvatarForUserName(name, completion: nil)
-        DataSource.sharedInstance.userAvatarsHolder[userId] = nil
-        DataSource.sharedInstance.localDatadaseHandler?.deleteAvatarPreviewForUserId(userId)
+        aFileHandler.eraseAvatarForUserName(name) { (deleted, error) -> Void in
+            if let deletionError = error
+            {
+                print(deletionError)
+            }
+            DataSource.sharedInstance.userAvatarsHolder[userId] = nil
+            DataSource.sharedInstance.localDatadaseHandler?.deleteAvatarPreviewForUserId(userId)
+        }
+
     }
     /**
     Synchronous method that searches for existing dictionary in UserDefaults and overrides it if found.  If no stored info found, it creates info dictionsty with passed values

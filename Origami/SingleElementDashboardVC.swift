@@ -311,6 +311,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             rootId = currentElement?.rootElementId?.integerValue,
             selfNav = self.navigationController
         {
+            DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
             editingVC.editingStyle = .EditCurrent
             editingVC.currentElementId = elementId
             editingVC.rootElementID = rootId
@@ -460,7 +461,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 newElementCreator.composingDelegate = self
                 newElementCreator.rootElementID = rootId//.integerValue
-                
+                DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
             }
         }
@@ -481,7 +482,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 if element.isArchived()
                 {
                     //will unarchve
-                    copyElement.archiveDate = NSDate.dummyDate()
+                    copyElement.archiveDate = NSDate.dummyDate() //nil
                 }
                 else
                 {
@@ -507,6 +508,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                 }
                                 
                             }
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                         }
                         else
                         {
@@ -516,7 +518,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                         weakSelf.showAlertWithTitle("Error", message: "Could not archive current element.", cancelButtonTitle: "Close")
                                 }
                             }
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                         }
+                        
                     }
                 }
             }
@@ -817,13 +821,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
         //composer.dismissViewControllerAnimated(true, completion: nil)
+        DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
         self.navigationController?.popViewControllerAnimated(true)
     
-        DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
+//        DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
         
         switch composer.editingStyle
         {
@@ -1036,7 +1041,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     {
                         
                     }
-                    
+                    DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -1471,10 +1476,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         //show popup with dismiss button and "good"-"bad" buttons
         
-//        if let prompt = NSBundle.mainBundle().loadNibNamed("FinishTaskResultView", owner: nil, options: nil).first as? FinishTaskResultView
-//        {
-//            
-//        }
         //let prompt = FinishTaskResultView.instance()
         let prompt = FinishTaskResultView(frame: CGRectMake(0, 0, 300.0, 200.0))
         prompt.center = CGPointMake( CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds) )

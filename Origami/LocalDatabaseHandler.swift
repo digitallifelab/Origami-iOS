@@ -81,6 +81,7 @@ class LocalDatabaseHandler
             {
                 try lvContext.save()
                 completion?(nil)
+                print(" ---- didSavePrivateContext ---- ")
             }
             catch let saveError as NSError
             {

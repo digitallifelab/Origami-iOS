@@ -105,7 +105,8 @@ let HomeCellWideDimension:CGFloat = 250.0
 let HomeCellVerticalSpacing:CGFloat = 10.0
 let HomeCellHorizontalSpacing:CGFloat = 10.0
 let MaximumLastMessagesCount:Int = 3
-
+let kMessagesRefreshIntervalIdle = 20
+let kMessagesRefreshIntervalChat = 5
 let All_New_Messages_Observation_ElementId:NSNumber = NSNumber(integer:-111)
 
 let FinishedLoadingMessages = "MessagesFinishedLoading"

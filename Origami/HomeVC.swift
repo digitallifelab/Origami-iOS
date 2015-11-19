@@ -82,7 +82,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
-            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshDashboardAfterElementDidChangeNotification:", name: kElementWasChangedNotification, object: nil)
             
             if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
             {
@@ -101,6 +101,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasChangedNotification, object: nil)
         
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
@@ -249,7 +250,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         }
     }
     
-    private func refreshMainDashboard(completion:(()->())?)
+    private func refreshMainDashboard(completion:(()->())? = nil)
     {
         
         DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
@@ -272,7 +273,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
             completion?()
         })
-        
+    }
+    
+    func refreshDashboardAfterElementDidChangeNotification(note:NSNotification?)
+    {
+        self.refreshMainDashboard(nil)
     }
     
     private func configureRefreshControl()
@@ -771,7 +776,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                     
                     if let refresher =  DataSource.sharedInstance.dataRefresher
                     {
-                        if !refresher.isCancelled && !refresher.isInProgress
+                        if !refresher.isCancelled && !refresher.isInProgress && refresher.currentTimeout <= 0
                         {
                             refresher.startRefreshingElementsWithTimeoutInterval(30.0)
                         }
@@ -820,7 +825,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                         
                         if let refresher =  DataSource.sharedInstance.dataRefresher
                         {
-                            if !refresher.isCancelled && !refresher.isInProgress
+                            if !refresher.isCancelled && !refresher.isInProgress && refresher.currentTimeout <= 0
                             {
                                 refresher.startRefreshingElementsWithTimeoutInterval(30.0)
                             }
@@ -854,6 +859,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                 DataSource.sharedInstance.operationQueue.suspended = false  //starts loading stuff from network
             }
         }
+        
         
         
         NSOperationQueue().addOperation(fetchDashboardOp)

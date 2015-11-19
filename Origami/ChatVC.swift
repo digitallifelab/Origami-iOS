@@ -70,6 +70,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+
+        DataSource.sharedInstance.messagesLoader?.setRefreshInterval(kMessagesRefreshIntervalChat)
+
         self.navigationController?.toolbarHidden = true
         let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightModeOn)
@@ -126,6 +129,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        DataSource.sharedInstance.messagesLoader?.setRefreshInterval(kMessagesRefreshIntervalIdle)
+        
+        //DataSource.sharedInstance.messagesLoader?.setRefreshInterval(kMessagesRefreshIntervalIdle)
+        
         DataSource.sharedInstance.removeAllObserversForNewMessages()
         
         removeObserversForKeyboard()
