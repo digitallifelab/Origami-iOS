@@ -1695,10 +1695,20 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             operations.append(setFinishDateOp)
         }
         
+        let finishStateOp = NSBlockOperation {
+            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: 20, completion: { (success) -> () in
+                if success{
+                    print(" did change element finish state to 20")
+                }
+            })
+        }
+        
         let bgQueue = NSOperationQueue()
         bgQueue.maxConcurrentOperationCount = 2
         
-        bgQueue.addOperations(operations, waitUntilFinished: false)
+        bgQueue.addOperations(operations, waitUntilFinished: true)
+        
+        bgQueue.addOperation(finishStateOp)
        
     }
     
