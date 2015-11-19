@@ -790,9 +790,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
                 {
                     existingElement.finishState = NSNumber(integer: newFinishState)
+                    DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (saveError) -> () in
+                        completion?(success: success)
+                    })
+                }
+                else
+                {
+                    completion?(success: false)
                 }
             }
-            completion?(success: success)
+            
         }
     }
     

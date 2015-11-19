@@ -1118,10 +1118,10 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     
                     let newItemsCount = weakSelf.collectionDataSource?.countAllItems()
                     print("items in section newCount: \(newItemsCount)")
-                    if oldItemsCount != newItemsCount
-                    {
+                    //if oldItemsCount != newItemsCount
+                    //{
                         weakSelf.prepareCollectionViewDataAndLayout()
-                    }
+                    //}
                 }
             })
         }
@@ -1142,9 +1142,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             let currentVCs = navController.viewControllers
             let countVCs = currentVCs.count
+            guard let index = currentVCs.indexOf(self) else
+            {
+                return
+            }
             if countVCs > 2 //currently visible a subordinate element dashboard
             {
-                if let parentSelf = currentVCs[(countVCs - 1)] as? SingleElementDashboardVC
+                if let parentSelf = currentVCs[(index - 1)] as? SingleElementDashboardVC
                 {
                     parentSelf.refreshCurrentElementAfterElementChangedNotification(nil)
                 }
@@ -1696,9 +1700,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         }
         
         let finishStateOp = NSBlockOperation {
-            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: 20, completion: { (success) -> () in
+            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: 20, completion: { [weak self](success) -> () in
                 if success{
                     print(" did change element finish state to 20")
+                    if let weakSelf = self
+                    {
+                       // weakSelf.prepareCollectionViewDataAndLayout()
+                        weakSelf.checkoutParentAndRefreshIfPresent()
+                    }
                 }
             })
         }
