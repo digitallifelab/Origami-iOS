@@ -250,8 +250,9 @@ class SingleElementTitleCell: UICollectionViewCell {
                             case .Default:
                                 taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             case .InProcess:
-                                taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                                 taskButton.tintColor = kWhiteColor
+                                taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                               
                             case .FinishedGood:
                                 taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             case .FinishedBad:
@@ -269,8 +270,8 @@ class SingleElementTitleCell: UICollectionViewCell {
                             case .Default:
                                 taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             case .InProcess:
-                                taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                                 taskButton.tintColor = UIColor.grayColor()
+                                taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             case .FinishedGood:
                                 taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             case .FinishedBad:
