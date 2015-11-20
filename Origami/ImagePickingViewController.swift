@@ -16,7 +16,7 @@ import UIKit
 */
 class ImagePickingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    private var imagePickerController:UIImagePickerController = UIImagePickerController()
+    private var imagePickerController:UIImagePickerController?
  
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
@@ -44,11 +44,10 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         if !UIImagePickerController.isSourceTypeAvailable(.Camera) {
             cameraButton.enabled = false
         }
-        imagePickerController.delegate = self
+      
         // Do any additional setup after loading the view.
         
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -99,6 +98,8 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         picker.view.removeFromSuperview()
         picker.removeFromParentViewController()
         picker.didMoveToParentViewController(nil)
+        self.imagePickerController = nil
+
         
     }
     
@@ -107,37 +108,58 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         picker.view.removeFromSuperview()
         picker.removeFromParentViewController()
         picker.didMoveToParentViewController(nil)
+        self.imagePickerController = nil
+        
+     
     }
     
     //MARK: ----
     private func showImagePickerControllerFor(sender:UIBarButtonItem) {
         
+        self.imagePickerController = UIImagePickerController()
+       
+        guard let pickerVC = self.imagePickerController else
+        {
+            return
+        }
+        
+        pickerVC.delegate = self
         if sender.tag == 2 {
             if UIImagePickerController.isSourceTypeAvailable(.Camera)
             {
-                imagePickerController.sourceType = .Camera
-                imagePickerController.showsCameraControls = true
+                pickerVC.sourceType = .Camera
+                pickerVC.showsCameraControls = true
             }
             else
             {
-                imagePickerController.sourceType = .PhotoLibrary
+                pickerVC.sourceType = .PhotoLibrary
             }
         }
         else
         {
-            imagePickerController.sourceType = .PhotoLibrary
+            pickerVC.sourceType = .PhotoLibrary
         }
         
-        imagePickerController.allowsEditing = false
+        pickerVC.allowsEditing = false
         if let allowEditingResult = self.attachPickingDelegate?.mediaPickerShouldAllowEditing(self)
         {
-            imagePickerController.allowsEditing = allowEditingResult
+            pickerVC.allowsEditing = allowEditingResult
         }
         
-        self.addChildViewController(imagePickerController)
-        imagePickerController.willMoveToParentViewController(self)
-        self.view.addSubview(imagePickerController.view)
-        imagePickerController.didMoveToParentViewController(self)
+      
+//        
+//        self.addChildViewController(imagePickerController)
+//        imagePickerController.willMoveToParentViewController(self)
+//        self.view.addSubview(imagePickerController.view)
+//        imagePickerController.didMoveToParentViewController(self)
+        
+        if let mainRootVC = UIApplication.sharedApplication().windows.first?.rootViewController as? RootViewController
+        {
+            mainRootVC.addChildViewController(pickerVC)
+            pickerVC.willMoveToParentViewController(mainRootVC)
+            mainRootVC.view.addSubview(pickerVC.view)
+            pickerVC.didMoveToParentViewController(mainRootVC)
+        }
         
     }
     
