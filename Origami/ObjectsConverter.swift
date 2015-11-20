@@ -252,7 +252,7 @@ class ObjectsConverter {
             {
                 case .Undefined:
                     print("")
-                    assert(false, "Undefined message detected. Please debug client-server communication")
+                    NSLog("Undefined message detected. Please debug client-server communication.")
                 case .ChatMessage:
                     chatMessages.append(lvNewMessage)
                 case .Invitation:

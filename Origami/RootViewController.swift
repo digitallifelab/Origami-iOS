@@ -137,19 +137,14 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
         
         if let navController = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavigationController") as? HomeNavigationController
         {
-            //self.currentNavigationController = navController
-            
             self.addChildViewController(navController)
            
-            
             if let _ = navController.viewControllers.first as? HomeVC
             {
                 
             }
             else if let homeVC = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-            {
-                //navController.setViewControllers([homeVC], animated: true)
-                
+            {                
                 navController.setViewControllers([homeVC], animated: true)
             }
             
@@ -315,13 +310,14 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                     //weakSelf.view.bringSubviewToFront(menu.view)
                     print("Menu Frame: \(menu.view.frame)")
                     weakSelf.isShowingMenu = true
+                    
                     if let topVC = navController.topViewController
                     {
                         topVC.view.addGestureRecognizer(weakSelf.tapToDismissRecognizer)
                     }
                     else
                     {
-                        assert(false, "Could not instantiate top View Controller and add TapToDismiss recognizer.....")
+                        NSLog("Could not instantiate top View Controller and add TapToDismiss recognizer.....")
                     }
                    
                 }

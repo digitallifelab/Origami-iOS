@@ -183,9 +183,7 @@ import UIKit
                 return headerView
             
             default:
-            assert(false, "Unexpected element kind. Only header view is expected.")
-            
-            
+             //assert(false, "Unexpected element kind. Only header view is expected.")
             return collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "DashHeader", forIndexPath: indexPath) as! DashHeaderView
         }
     }
@@ -285,7 +283,7 @@ import UIKit
                 self.elementSelectionDelegate?.didTapOnElement(elementIdInt)
                 return
             }
-            assert(false, "Did not find tapped element");
+            //assert(false, "Did not find tapped element");
           
         }
         else

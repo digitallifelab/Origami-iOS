@@ -659,6 +659,23 @@ class LocalDatabaseHandler
                         {
                             assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
                             //TODO: delete duplicate entries
+                            var elements = elementsResult
+                            let toReturn = elements.removeLast()
+                            elementToReturn = toReturn
+                            for anElement in elements
+                            {
+                                context.deleteObject(anElement)
+                            }
+                            
+                            do
+                            {
+                                try context.save()
+                            }
+                            catch let saveError
+                            {
+                                print("did not save context after deleting duplicate entries:")
+                                print(saveError)
+                            }
                         }
                     }
                 }
@@ -1191,30 +1208,50 @@ class LocalDatabaseHandler
         let fetchRequest = NSFetchRequest(entityName: "DBMessageChat")
         let predicate = NSPredicate(format: "messageId = \(messageId)")
         fetchRequest.predicate = predicate
+        let context = self.privateContext
+        var toReturnMessage:DBMessageChat?
         
-        do{
-            if let messagesResult = try self.privateContext.executeFetchRequest(fetchRequest) as? [DBMessageChat]
-            {
-                if messagesResult.count == 1
+        context.performBlockAndWait() {
+            do{
+                if let messagesResult = try context.executeFetchRequest(fetchRequest) as? [DBMessageChat]
                 {
-                    return messagesResult.first!
+                    if messagesResult.count == 1
+                    {
+                        toReturnMessage = messagesResult.last
+                    }
+                    else if messagesResult.count > 1
+                    {
+                        //assert(false, "readChatMessageById  ERROR  -> Found duplicate messages in Local Database...")
+                        var messagesToClear = messagesResult
+                        
+                        toReturnMessage = messagesToClear.removeLast()
+                        
+                        for aMessage in messagesToClear
+                        {
+                            context.deleteObject(aMessage)
+                        }
+                        
+                        do
+                        {
+                            try context.save()
+                        }
+                        catch let saveError
+                        {
+                            print("did not save context after deleting duplicate message entries:")
+                            print(saveError)
+                        }
+                    }
                 }
-                else if messagesResult.count == 0
-                {
-                    return nil
-                }
-                else if messagesResult.count > 1
-                {
-                    assert(false, "readChatMessageById  ERROR  -> Found duplicate messages in Local Database...")
-                    //TODO: delete duplicate entries
-                }
+               
             }
-            return nil
-        }
-        catch let error {
-            print(error)
-            return nil
-        }
+            catch let error {
+                print("Could not fetch messages:")
+                print(error)
+            }
+        }//end of performBlockAndWait
+        
+        return toReturnMessage
+        
     }
     
     func readLastMessagesForHomeDashboard(completion:( ([DBMessageChat]?, error:NSError?) -> ())? )
@@ -2387,7 +2424,7 @@ class LocalDatabaseHandler
         //debug
         if !self.privateContext.hasChanges
         {
-            assert(false, "Managed Object Context has no changes after inserting new attach file info.")
+            print( "WARNING! -> Managed Object Context has no changes after inserting new attach file info.")
         }
         
         return newAttach
@@ -2522,7 +2559,7 @@ class LocalDatabaseHandler
         //debug
         if !self.privateContext.hasChanges
         {
-            assert(false, "Managed Object Context has no changes after assigning new attaches to element.")
+            print(" WARNING! Managed Object Context has no changes after assigning new attaches to element.")
         }
         
         let attachesAddedCount = newAttachesCount - currentAttachesCount

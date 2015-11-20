@@ -31,6 +31,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             }
         }
     }
+    
     private var mediaName:String? {
         get{
             let lvDateString = NSDate().timeDateStringForMediaName() + ".jpg"
@@ -99,8 +100,6 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         picker.removeFromParentViewController()
         picker.didMoveToParentViewController(nil)
         self.imagePickerController = nil
-
-        
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -109,8 +108,6 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         picker.removeFromParentViewController()
         picker.didMoveToParentViewController(nil)
         self.imagePickerController = nil
-        
-     
     }
     
     //MARK: ----
@@ -146,13 +143,6 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             pickerVC.allowsEditing = allowEditingResult
         }
         
-      
-//        
-//        self.addChildViewController(imagePickerController)
-//        imagePickerController.willMoveToParentViewController(self)
-//        self.view.addSubview(imagePickerController.view)
-//        imagePickerController.didMoveToParentViewController(self)
-        
         if let mainRootVC = UIApplication.sharedApplication().windows.first?.rootViewController as? RootViewController
         {
             mainRootVC.addChildViewController(pickerVC)
@@ -167,7 +157,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     {
         let bgQueue:dispatch_queue_t = dispatch_queue_create("Origami.ImageProcessing.Background", DISPATCH_QUEUE_SERIAL)
         let currentMediaName = self.mediaName
-        dispatch_async(bgQueue, {[weak self] () -> Void in
+        dispatch_async(bgQueue) {[weak self] () -> Void in
             
             let lvSelectedMedia = MediaFile()
             
@@ -182,15 +172,14 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
                 if fixedImage.size.width >= targetWidth || fixedImage.size.height >= targetHeight
                 {
                     let ratio = min(targetWidth / fixedImage.size.width , targetWidth / fixedImage.size.height)
-                    //let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
-                    //let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
+
                     if let scaled = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
                     {
                         fixedImage = scaled
                     }
                     else
                     {
-                        assert(false, " did not  scale down an image.")
+                        print(" did not scale down an image.")
                     }
                 }
             }
@@ -210,13 +199,13 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
                 lvSelectedMedia.data = aData
             }
             
-            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+            dispatch_async(dispatch_get_main_queue()) {[weak self] () -> Void in
                 if let aSelf = self
                 {
                     aSelf.selectedMedia = lvSelectedMedia
                 }
-            })
-        })
+            }//end of mainQueue
+        }// end of BG queue
     }
     
     //MARK: IBActions

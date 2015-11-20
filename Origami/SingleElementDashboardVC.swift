@@ -403,7 +403,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             else
             {
-                assert(false, "Unknown button type pressed.")
+                NSLog("Unknown button type pressed. : %ld", buttonIndex)
             }
         }
     }

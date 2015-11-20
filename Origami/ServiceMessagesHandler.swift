@@ -109,7 +109,7 @@ class ServiceMessagesHandler {
     private func startUpdatingUsersStatuses()
     {
         if isUpdatingContacts {
-            assert(false, "Never call \"startUpdatingUsersInfoStatuses\" while updating is in progress.")
+            NSLog(" ERROR -> Never call \"startUpdatingUsersInfoStatuses\" while updating is in progress.")
             return
         }
         
@@ -186,7 +186,7 @@ class ServiceMessagesHandler {
     private func startUpdatingChangedUserAvatars()
     {
         if isUpdatingContacts {
-            assert(false, "Never call \"startUpdatingChangedUserAvatars\" while updating is in progress.")
+            NSLog(" ERROR -> Never call \"startUpdatingChangedUserAvatars\" while updating is in progress.")
             return
         }
         

@@ -102,7 +102,7 @@ class MessagesLoader
             // Start the timer
             guard let source = self.dispatchSource else
             {
-                assert(false, " No dispatch source timer found for MessagesLoader.")
+                print("ERROR -> No dispatch source timer found for MessagesLoader.  Will not start refreshing messages.")
                 return
             }
             
