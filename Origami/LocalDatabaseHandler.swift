@@ -493,15 +493,45 @@ class LocalDatabaseHandler
         }
     }
     
-    func readHomeDashboardElements(shouldRefetch:Bool = true, completion:( ((signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?) )->() )?)
+    func countSubordinatesForElementByManagedObjectId(managedID:NSManagedObjectID) -> Int
+    {
+        let context = self.privateContext
+        var returnCount = 0
+        context.performBlockAndWait(){
+            if let element = context.objectWithID(managedID) as? DBElement, elementId = element.elementId where elementId.integerValue > 0
+            {
+                let fetchRequest = NSFetchRequest(entityName: "DBElement")
+                fetchRequest.resultType = .CountResultType
+                fetchRequest.predicate = NSPredicate(format:"rootElementId = %@", elementId)
+                
+                do{
+                    if let lvCount = try context.executeFetchRequest(fetchRequest) as? [Int]
+                    {
+                        print("subordinates count: \(lvCount)")
+                        returnCount = lvCount.first!
+                    }
+                }
+                catch let fetchError
+                {
+                    print("fetch count error:")
+                    print(fetchError)
+                }
+            }
+        }
+        
+        return returnCount
+    }
+    
+    func readHomeDashboardElements(shouldRefetch:Bool = true, completion:( ((signals:[NSManagedObjectID]?, favourites:[NSManagedObjectID]?, other:[NSManagedObjectID]?) )->() )? = nil)
     {
         let bgQueue = getBackgroundQueue_DEFAULT()
         dispatch_async(bgQueue) { () -> Void in
-            var returningValue: (signals:[DBElement]?,favourites:[DBElement]?, other:[DBElement]?) = (signals:nil, favourites:nil, other:nil)
+            var returningValue: (signals:[NSManagedObjectID]?,favourites:[NSManagedObjectID]?, other:[NSManagedObjectID]?) = (signals:nil, favourites:nil, other:nil)
             
             let dateChangedDescriptor = NSSortDescriptor(key: "dateChanged", ascending: false)
             let signalsRequest = NSFetchRequest(entityName: "DBElement")
-            signalsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal"]
+            signalsRequest.resultType = NSFetchRequestResultType.ManagedObjectIDResultType
+            //signalsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal"]
             signalsRequest.shouldRefreshRefetchedObjects = shouldRefetch
             signalsRequest.predicate = NSPredicate(format: "isSignal = true AND dateArchived = nil")
             signalsRequest.sortDescriptors = [dateChangedDescriptor]
@@ -510,7 +540,7 @@ class LocalDatabaseHandler
             
             context.performBlockAndWait { _ in
                 do{
-                    if let signalElements = try context.executeFetchRequest(signalsRequest) as? [DBElement]
+                    if let signalElements = try context.executeFetchRequest(signalsRequest) as? [NSManagedObjectID]
                     {
                         if signalElements.count > 0
                         {
@@ -526,12 +556,14 @@ class LocalDatabaseHandler
             
             let favouritesRequest = signalsRequest
             favouritesRequest.shouldRefreshRefetchedObjects = shouldRefetch
-            favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
+            //favouritesRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "isFavourite"]
             favouritesRequest.predicate = NSPredicate(format: "isFavourite = true AND dateArchived = nil")
             favouritesRequest.sortDescriptors = [dateChangedDescriptor]
+            favouritesRequest.resultType = .ManagedObjectIDResultType
+            
             context.performBlockAndWait { _ in
                 do{
-                    if let favouriteElements = try context.executeFetchRequest(favouritesRequest) as? [DBElement]
+                    if let favouriteElements = try context.executeFetchRequest(favouritesRequest) as? [NSManagedObjectID]
                     {
                         if favouriteElements.count > 0
                         {
@@ -547,13 +579,14 @@ class LocalDatabaseHandler
             
             let otherDashboardElementsRequest = signalsRequest
             otherDashboardElementsRequest.shouldRefreshRefetchedObjects = shouldRefetch
-            otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
+            otherDashboardElementsRequest.resultType = .ManagedObjectIDResultType
+            //otherDashboardElementsRequest.propertiesToFetch = ["title", "details", "finishState", "type", "isSignal", "rootElementId"]
             otherDashboardElementsRequest.predicate = NSPredicate(format: "rootElementId = 0 AND dateArchived = nil")
             otherDashboardElementsRequest.sortDescriptors = [dateChangedDescriptor]
             
             context.performBlockAndWait { _ in
                 do{
-                    if let otherDashboardElements = try context.executeFetchRequest(otherDashboardElementsRequest) as? [DBElement]
+                    if let otherDashboardElements = try context.executeFetchRequest(otherDashboardElementsRequest) as? [NSManagedObjectID]
                     {
                         if otherDashboardElements.count > 0
                         {
@@ -566,9 +599,87 @@ class LocalDatabaseHandler
                 }
             }
             
-            dispatch_async(dispatch_get_main_queue(), { _ in
+            
+            
+            dispatch_async(dispatch_get_main_queue()) { _ in
                 completion?(returningValue)
-            })
+            }
+//                let mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+//                mainQueueContext.parentContext = context
+//                
+//                mainQueueContext.performBlock()
+//                {
+//                    var toReturnCollectionInfo:(signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?) = (signals:nil, favourites:nil, other:nil)
+//                    //fill Signals
+//                    if let signalIDs = returningValue.signals
+//                    {
+//                        var signalsArray = [DBElement]()
+//                        for anId in signalIDs
+//                        {
+//                            let _ = mainQueueContext.objectWithID(anId)
+//                            
+//                            if let aSignal = mainQueueContext.objectRegisteredForID(anId) as? DBElement
+//                            {
+//                                print(aSignal.title)
+//                                print(aSignal.details)
+//                                print(aSignal.dateCreated)
+//                                signalsArray.append(aSignal)
+//                            }
+//                        }
+//                        if !signalsArray.isEmpty
+//                        {
+//                            toReturnCollectionInfo.signals = signalsArray
+//                        }
+//                    }
+//                    
+//                    //fill Favourites
+//                    if let favouriteIDs = returningValue.favourites
+//                    {
+//                        var favArray = [DBElement]()
+//                        for anId in favouriteIDs
+//                        {
+//                            let _ = mainQueueContext.objectWithID(anId)
+//                            
+//                            if let aFavouurite = mainQueueContext.objectRegisteredForID(anId) as? DBElement
+//                            {
+//                                print(aFavouurite.isSignal)
+//                                print(aFavouurite.details)
+//                                print(aFavouurite.title)
+//                                print(aFavouurite.dateCreated)
+//                                favArray.append(aFavouurite)
+//                            }
+//                        }
+//                        if !favArray.isEmpty
+//                        {
+//                            toReturnCollectionInfo.favourites = favArray
+//                        }
+//                    }
+//                    
+//                    //fill other
+//                    if let otherIDs = returningValue.other
+//                    {
+//                        var othersArray = [DBElement]()
+//                        for anId in otherIDs
+//                        {
+//                            let _ = mainQueueContext.objectWithID(anId)
+//                            if let anOther = mainQueueContext.objectRegisteredForID(anId) as? DBElement
+//                            {
+//                                print(anOther.isSignal)
+//                                print(anOther.details)
+//                                print(anOther.title)
+//                                print(anOther.dateCreated)
+//                                othersArray.append(anOther)
+//                            }
+//                        }
+//                        if !othersArray.isEmpty
+//                        {
+//                            toReturnCollectionInfo.other = othersArray
+//                        }
+//                    }
+//                    completion?(toReturnCollectionInfo)
+//                }
+            
+            //}
         }
     }
     
@@ -690,21 +801,6 @@ class LocalDatabaseHandler
     
     func readElementByIdAsync(elementId:Int, completion:((DBElement?)->())?)
     {
-//        dispatch_async(getBackgroundQueue_CONCURRENT()) { () -> Void in
-//            guard let foundElement = self.readElementById(elementId) else
-//            {
-//                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                    completion?(nil)
-//                })
-//                
-//                return
-//            }
-//            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-//                completion?(foundElement)
-//            })
-//        }
-        
-        
         let bgOpUserInitiated = NSBlockOperation() {
             guard let foundElement = self.readElementById(elementId) else
             {
@@ -732,7 +828,6 @@ class LocalDatabaseHandler
         backgroundQueue.maxConcurrentOperationCount = 2
         
         backgroundQueue.addOperation(bgOpUserInitiated)
-       
     }
     
     func readAllElementIDs() throws -> Set<Int>

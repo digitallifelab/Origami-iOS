@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate, AttachmentCellDelegate
 {
@@ -24,10 +25,37 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var subordinatesByIndexPath:[NSIndexPath : DBElement]?
     var taskUserAvatar:UIImage?
-    //var currentAttaches:[DBAttach]?
+
+    
+    let mainQueueContext:NSManagedObjectContext
+    override init()
+    {
+        self.mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        if let privateContext = DataSource.sharedInstance.localDatadaseHandler?.getPrivateContext()
+        {
+            self.mainQueueContext.parentContext = privateContext
+        }
+        super.init()
+    }
+    
     weak var handledCollectionView:UICollectionView?
     
-    weak var handledElement:DBElement? {
+    var handledElementId:NSManagedObjectID?{
+        didSet{
+            guard let anID = handledElementId else
+            {
+                self.handledElement = nil
+                return
+            }
+            
+            if let element = self.mainQueueContext.objectWithID(anID) as? DBElement
+            {
+                self.handledElement = element
+            }
+        }
+    }
+    
+    private var handledElement:DBElement? {
         didSet {
             // detect visible cells by checking options
             var options:[ElementCellType] = [ElementCellType]()
@@ -66,10 +94,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 calculateAllCellTypes()
             }
             
-            guard let elementId = handledElement?.elementId?.integerValue else
-            {
-                return
-            }
+//            guard let elementId = handledElement?.elementId?.integerValue else
+//            {
+//                return
+//            }
             
             if let attachesSet = self.handledElement?.attaches where attachesSet.count > 0
             {
@@ -84,12 +112,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
 //                }
             }
             
-            if let result = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+            if let elementObjectID = self.handledElementId, let result = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(elementObjectID) where result > 0
             {
-                if result.count > 0
-                {
-                    options.append(.Subordinates)
-                }
+                options.append(.Subordinates)
             }
             
         

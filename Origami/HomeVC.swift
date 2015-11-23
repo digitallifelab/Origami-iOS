@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 CloudCraft. All rights reserved.
 //
 import UIKit
+import CoreData
 
-typealias dashboardDBElementsInfoTuple = (signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?)
+typealias dashboardDBElementsInfoTuple = (signals:[NSManagedObjectID]?, favourites:[NSManagedObjectID]?, other:[NSManagedObjectID]?)
 
 
 class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate/*, MessageObserver*/
@@ -63,12 +64,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         
         DataSource.sharedInstance.addObserverForNewMessagesForElement(self, elementId: All_New_Messages_Observation_ElementId)
         
-        
         startReadingHomeScreenData(1)
-//        if let dashInfo = DataSource.sharedInstance.dashBoardInfo
-//        {
-//            reloadDashBoardViewWithDBElementsInfo(dashInfo)
-//        }
     }
     
     override func viewDidAppear(animated: Bool)
@@ -793,6 +789,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             }
             return
         }
+        
         let fetchDashboardOp = NSBlockOperation() { _ in
             
             let fetchSemaphore = dispatch_semaphore_create(0)
@@ -802,9 +799,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                     DataSource.sharedInstance.dashBoardInfo = info
                     
                     
-                    if let weakSelf = self, dashInfo = DataSource.sharedInstance.dashBoardInfo
+                    if let weakSelf = self, dataSourceDashInfo = DataSource.sharedInstance.dashBoardInfo
                     {
-                        if dashInfo.signals == nil && dashInfo.favourites == nil && dashInfo.other == nil
+                        if dataSourceDashInfo.signals == nil && dataSourceDashInfo.favourites == nil && dataSourceDashInfo.other == nil
                         {
                             DataSource.sharedInstance.loadAllElementsInfo({ (success, failure) -> () in
 //                                if success
@@ -840,7 +837,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                         }
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            weakSelf.reloadDashBoardViewWithDBElementsInfo(dashInfo)
+                            weakSelf.reloadDashBoardViewWithDBElementsInfo(dataSourceDashInfo)
                         })
                     }
                 dispatch_semaphore_signal(fetchSemaphore)

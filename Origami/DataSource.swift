@@ -8,7 +8,7 @@
 
 import UIKit
 import ImageIO
-
+import CoreData
 typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
 
 @objc class DataSource: NSObject
@@ -65,7 +65,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var isRemovingObsoleteMessages = false
     var shouldLoadAllMessages = true
     
-    var dashBoardInfo:(signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?)?
+    var dashBoardInfo:(signals:[NSManagedObjectID]?, favourites:[NSManagedObjectID]?, other:[NSManagedObjectID]?)?
     
     var localDatadaseHandler: LocalDatabaseHandler?
     func createLocalDatabaseHandler(completion:((dbInitialization:Bool)->())?)

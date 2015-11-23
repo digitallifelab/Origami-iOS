@@ -421,14 +421,12 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             if let signals = info.signals
             {
                 //print("SIGNALS:")
-                for aSignalBDelement in signals
+                for aSignalBDelementId in signals
                 {
                     //print("->")
-                    if let
-                        elementId = aSignalBDelement.elementId?.integerValue,
-                        subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                    if let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(aSignalBDelementId)
                     {
-                        if subordinatesQueryResult.count > 0
+                        if subordinatesQueryResult > 0
                         {
                             //print(" -> WIDE")
                             signalsDimensionsArray.append(ElementItemLayoutWidth.Wide)
@@ -448,12 +446,12 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             if let favs = info.favourites
             {
                 //print("FAVOURITES:")
-                for aFavBDelement in favs
+                for aFavBDelementId in favs
                 {
                     //print("->")
-                    if let elementId = aFavBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                    if let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(aFavBDelementId)
                     {
-                        if subordinatesQueryResult.count > 0
+                        if subordinatesQueryResult > 0
                         {
                             //print(" -> WIDE")
                             favouritesDimensionsArray.append(ElementItemLayoutWidth.Wide)
@@ -471,12 +469,11 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
             if let other = info.other
             {
                 //print("OTHER:")
-                for anOtherBDelement in other
+                for anOtherBDelementId in other
                 {
-                    //print("->")
-                    if let elementId = anOtherBDelement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                    if let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(anOtherBDelementId)
                     {
-                        if subordinatesQueryResult.count > 0
+                        if subordinatesQueryResult > 0
                         {
                             //print(" ->WIDE")
                             otherElementDimensionsArray.append(ElementItemLayoutWidth.Wide)
@@ -493,6 +490,7 @@ class HomeSignalsHiddenFlowLayout:UICollectionViewFlowLayout
     
         favouritesOp.addDependency(signalsOp)
         otherOp.addDependency(favouritesOp)
+        
         
         NSOperationQueue().addOperations([signalsOp, favouritesOp, otherOp], waitUntilFinished: true)
    

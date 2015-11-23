@@ -259,7 +259,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
          let dataSource = SingleElementCollectionViewDataSource()//element: currentElement) // both can be nil
                     self.collectionDataSource = dataSource
           
-            collectionDataSource!.handledElement = currentElement
+            collectionDataSource!.handledElementId = currentElement?.objectID
             collectionDataSource!.handledCollectionView = self.collectionView
             collectionDataSource!.displayMode = self.displayMode
             collectionDataSource!.subordinateTapDelegate = self
@@ -273,7 +273,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
             collectionView.setContentOffset(currentContentOffset, animated: false)
 
-        if let collectionViewLayout = self.prepareCollectionLayoutForElement(collectionDataSource?.handledElement)
+        if let collectionViewLayout = self.prepareCollectionLayoutForElement(currentElement)
         {
             collectionView.setCollectionViewLayout(collectionViewLayout, animated: false)
         }
@@ -1114,7 +1114,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
                     print("items in section old count: \(oldItemsCount)")
                     weakSelf.currentElement = existingOurElement
-                    weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                    weakSelf.collectionDataSource?.handledElementId = weakSelf.currentElement?.objectID
                     
                     let newItemsCount = weakSelf.collectionDataSource?.countAllItems()
                     print("items in section newCount: \(newItemsCount)")
