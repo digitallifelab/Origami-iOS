@@ -174,13 +174,8 @@ class ServiceMessagesHandler {
         }
         catch
         {
-            
             isUpdatingContacts = false
-            return
         }
-
-        
-        
     }
     
     private func startUpdatingChangedUserAvatars()

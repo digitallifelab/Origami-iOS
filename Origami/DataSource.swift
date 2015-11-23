@@ -84,7 +84,8 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     })
                 }
             }
-            catch{
+            catch
+            {
                 completion?(dbInitialization: false)
             }
         }
@@ -98,6 +99,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     //private stuff
     private func getMessagesObserverForElementId(elementId:NSNumber) -> MessageObserver?
     {
+        print("DataSource.messageObservers: \(messagesObservers)")
         if let existingObserver = DataSource.sharedInstance.messagesObservers[elementId]
         {
             return existingObserver

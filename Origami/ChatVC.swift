@@ -525,12 +525,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        return 100.0
+        return 70.0
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        
         if let nsString:NSString = messageForIndexPath(indexPath)?.textBody
         {
             let size = CGSizeMake(160.0, CGFloat(FLT_MAX))

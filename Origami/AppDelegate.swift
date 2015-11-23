@@ -65,9 +65,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
          let string = deviceToken.description
         
         print(" -> recieved device token for PUSHes:\n \(string)")
-        
-        
-        
     }
     
     @available(iOS 8.0, *)

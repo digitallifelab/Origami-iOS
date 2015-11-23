@@ -701,12 +701,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
     }
     
-    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-        if let aCell = cell as? SingleElementTitleCell
-        {
-            aCell.cleanShadow()
-        }
-    }
+//    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+//        if let aCell = cell as? SingleElementTitleCell
+//        {
+//            aCell.cleanShadow()
+//        }
+//    }
     
     
     //MARK: MessageTapDelegate

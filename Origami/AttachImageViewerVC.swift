@@ -127,7 +127,7 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             
             
             imageHolder!.center = CGPointMake(CGRectGetMidX(imageScrollView.bounds), CGRectGetMidY(imageScrollView.bounds))
-            imageHolder!.layer.borderWidth = 1.0
+            //imageHolder!.layer.borderWidth = 1.0
             imageScrollView.addSubview(imageHolder!)
         }
     }

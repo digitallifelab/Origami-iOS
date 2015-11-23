@@ -426,8 +426,8 @@ class LocalDatabaseHandler
         
         var returnCount = 0
         var returnError:NSError?
-        
-        let context = self.privateContext
+        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        context.parentContext = self.privateContext
         
         if shouldReturnObjects
         {
@@ -462,7 +462,6 @@ class LocalDatabaseHandler
             }
             
             return (count: returnCount, elements: returnElements, error: returnError)
-            
         }
         else //return only count or error
         {

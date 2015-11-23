@@ -87,7 +87,7 @@ extension NSDate
     func timeDateStringForMediaName() -> String
     {
         let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "YYYY-MM-dd_HH-MM-SS"
+        dateFormatter.dateFormat = "YYYY-MM-dd_HH-MM-ss"
         let stringToReturn = dateFormatter.stringFromDate(self)
         
         return stringToReturn

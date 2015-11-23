@@ -67,6 +67,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.tintColor = kWhiteColor
         responsiblePersonAvatarIcon?.tintColor = kWhiteColor
         responsiblePersonAvatarIcon?.maskToCircle()
     }
@@ -104,23 +105,20 @@ class SingleElementTitleCell: UICollectionViewCell {
     }
         
     
-    func cleanShadow()
-    {
-        if let sublayers = self.superview?.layer.sublayers
-        {
-            for aLayer in sublayers//self.superview!.layer.sublayers
-            {
-                //if let layer = aLayer as? CALayer
-                //{
-                    if aLayer.zPosition == 900
-                    {
-                        aLayer.removeFromSuperlayer()
-                        break
-                    }
-                //}
-            }
-        }
-    }
+//    func cleanShadow()
+//    {
+//        if let sublayers = self.superview?.layer.sublayers
+//        {
+//            for aLayer in sublayers//self.superview!.layer.sublayers
+//            {
+//                if aLayer.zPosition == 900
+//                {
+//                    aLayer.removeFromSuperlayer()
+//                    break
+//                }
+//            }
+//        }
+//    }
     
     
     func setupActionButtons(active:Bool)
@@ -339,7 +337,8 @@ class SingleElementTitleCell: UICollectionViewCell {
                         switch finishState
                         {
                         case .Default:
-                            taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                            //taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
+                            break
                         case .InProcess:
                             taskButton.tintColor = kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
@@ -363,7 +362,7 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     private func setupDecisionButton()
     {
-        if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Decision.rawValue)
+        if let currentElement = self.handledElement, decisionButton = self.viewWithTag(ActionButtonCellType.Decision.rawValue) as? UIButton
         {
             if (optionsConverter.isOptionEnabled(ElementOptions.Decision, forCurrentOptions: currentElement.typeId))
             {
@@ -399,16 +398,4 @@ class SingleElementTitleCell: UICollectionViewCell {
             NSNotificationCenter.defaultCenter().postNotificationName(kElementActionButtonPressedNotification, object: self, userInfo: ["actionButtonIndex" : theTag])
         }
     }
-    
-    //MARK: element is not owned
-//    private func hideActionButtons()
-//    {
-//        for var i = 0; i < 8; i++
-//        {
-//            if let buttonSubView = self.viewWithTag(i) as? UIButton
-//            {
-//                buttonSubView.hidden = true
-//            }
-//        }
-//    }
 }
