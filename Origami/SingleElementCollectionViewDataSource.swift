@@ -25,9 +25,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var subordinatesByIndexPath:[NSIndexPath : DBElement]?
     var taskUserAvatar:UIImage?
-
     
     let mainQueueContext:NSManagedObjectContext
+    
     override init()
     {
         self.mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
@@ -146,12 +146,28 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         guard let elementId = self.handledElement?.elementId?.integerValue else{
             return nil
         }
-        if let info = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId, shouldReturnObjects: true)
-        {
-            return info.elements
-        }
         
-        return nil
+        do
+        {
+            guard let elementIDs = try DataSource.sharedInstance.localDatadaseHandler?.subordinateElementsForElementId(elementId) else
+            {
+                return nil
+            }
+            
+            var elementsToReturn = [DBElement]()
+            for anElementObjectId in elementIDs
+            {
+                if let element = self.mainQueueContext.objectWithID(anElementObjectId) as? DBElement
+                {
+                    elementsToReturn.append(element)
+                }
+            }
+            return elementsToReturn
+        }
+        catch
+        {
+            return nil
+        }
     }
     
     func elementIsTask() -> Bool
@@ -203,9 +219,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 let value = allValues[i] //again tuple
                 let lvElement = value.1
                 
-                if let elementId = lvElement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                if /*let elementId = lvElement.elementId?.integerValue,*/ let subordinatesCount = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(lvElement.objectID)
                 {
-                    if subordinatesQueryResult.count > 0
+                    if subordinatesCount > 0
                     {
                         lvSubordinatesInfo.append(ElementItemLayoutWidth.Wide)
                         continue

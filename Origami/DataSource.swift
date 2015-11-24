@@ -713,8 +713,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                             
                             if existingElement.isArchived()
                             {
-                                if let info =  DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId, shouldReturnObjects: true)
-                                {
+//                                if let info =
+                                    DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementId(elementId) { (info) in
+                                     
                                     if info.count > 0
                                     {
                                         if let elements = info.elements
@@ -725,20 +726,35 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                                             }
                                         }
                                     }
+                                        
+                                    DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext() { (saveError) -> () in
+                                        if let error = saveError
+                                        {
+                                            print("ArchDate - did not save context because of Error:")
+                                            print(error)
+                                            completion?(edited: false)
+                                        }
+                                        else
+                                        {
+                                            completion?(edited: true)
+                                        }
+                                    }
+                                        
                                 }
+//                                {
+//                                    if info.count > 0
+//                                    {
+//                                        if let elements = info.elements
+//                                        {
+//                                            for anElementDb in elements
+//                                            {
+//                                                anElementDb.dateArchived = existingElement.dateArchived
+//                                            }
+//                                        }
+//                                    }
+//                                }
                                 
-                                DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (saveError) -> () in
-                                    if let error = saveError
-                                    {
-                                        print("ArchDate - did not save context because of Error:")
-                                        print(error)
-                                        completion?(edited: false)
-                                    }
-                                    else
-                                    {
-                                       completion?(edited: true)
-                                    }
-                                })
+                            
                             }
                             else
                             {

@@ -12,7 +12,17 @@ import CoreData
 class LocalDatabaseHandler
 {    
     private let privateContext:NSManagedObjectContext
-    //private let mainQueueContext:NSManagedObjectContext
+    private var pMainQueueContext:NSManagedObjectContext?
+    var mainQueueContext:NSManagedObjectContext {
+        if let _ = self.pMainQueueContext
+        {
+            return self.pMainQueueContext!
+        }
+        
+        self.pMainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        self.pMainQueueContext?.parentContext = self.privateContext
+        return self.mainQueueContext
+    }
     private let persistentStoreCoordinator:NSPersistentStoreCoordinator
     //MARK: - Initialization stuff
     class func getManagedObjectModel() -> NSManagedObjectModel?
@@ -325,115 +335,35 @@ class LocalDatabaseHandler
         return nil
     }
     
-    /**
-    Method is used for querying only count for creating layout of for displaying actual subordinates info.
-    - Parameter elementId: an id of element to search it`s subordinate elements
-    - Parameter shouldReturnObjects:
-        - If *`shouldReturnObjects`* is not passed ( or passed *`false`*) - method starts fetchRequest with resuitType *`ManagedObjectIDResultType`* for faster execution
-        - If *`shouldReturnObjects`* is passed *`true`* method starts fetchRequest with resultType default
-    - Parameter completion: an optional closure to handle response of method
-    - Returns: 
-        - count of elements in optional array that sholud be returned
-        - optional array of DBElement objects
-        - error if fetchRequest fails or if something unusual happens
-    */
-//    func readSubordinateElementsForElementIdAsync(elementId:Int, shouldReturnObjects:Bool = false, completion:((count:Int, elements:[DBElement]?, error:NSError?) ->())? )
-//    {
-//        let elementsRequest = NSFetchRequest(entityName: "DBElement")
-//        let predicate = NSPredicate(format: "rootElementId == %ld", elementId)
-//        elementsRequest.predicate = predicate
-//        elementsRequest.shouldRefreshRefetchedObjects = true //TODO: set this flag to false if the method is called in a loop....
-//        
-//        let context = self.privateContext
-//        
-//        if shouldReturnObjects
-//        {
-//            
-//            do{
-//                if let requestResult = try context.executeFetchRequest(elementsRequest) as? [DBElement]
-//                {
-//                    let count = requestResult.count
-//                    if count > 0{
-//                        
-//                        completion?(count: count, elements: requestResult, error: nil)
-//                    }
-//                    else
-//                    {
-//                        completion?(count: count, elements: nil, error: nil)
-//                    }
-//                }
-//                else
-//                {
-//                    let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
-//                    completion?(count: 0, elements: nil, error: anError)
-//                }
-//            }
-//            catch let error as NSError
-//            {
-//                completion?(count:0, elements: nil, error:error)
-//            }
-//            catch
-//            {
-//                let unKnownError = unKnownExceptionError
-//                completion?(count:0, elements: nil, error:unKnownError)
-//            }
-//        }
-//        else //return only count or error
-//        {
-//            elementsRequest.resultType = .ManagedObjectIDResultType
-//            do{
-//                if let requestResult = try context.executeFetchRequest(elementsRequest) as? [DBElement]
-//                {
-//                    completion?(count: requestResult.count, elements: nil, error: nil)
-//                }
-//                else
-//                {
-//                    let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to NSManagedObjectId array."])
-//                    completion?(count: 0, elements: nil, error: anError)
-//                }
-//            }
-//            catch let error as NSError
-//            {
-//                completion?(count:0, elements: nil, error:error)
-//            }
-//            catch
-//            {
-//                let unKnownError = unKnownExceptionError
-//                completion?(count:0, elements: nil, error:unKnownError)
-//            }
-//        }
-//    }
+
     
      /**
      Method is used for querying only count for creating layout of for displaying actual subordinates info.
      - Parameter elementId: an id of element to search it`s subordinate elements
-     - Parameter shouldReturnObjects:
-     - If *`shouldReturnObjects`* is not passed ( or passed *`false`*) - method starts fetchRequest with resuitType *`ManagedObjectIDResultType`* for faster execution
-     - If *`shouldReturnObjects`* is passed *`true`* method starts fetchRequest with resultType default, and sorted *DBElement*`s by dateChanged
+     - Parameter forMainQueue:  by default is *false*, this means objecta ere fetched by private queue ManagedObjectContext, *true* sets MainQueConcurrency type managed object context to be alloacted and fetched objects.
      - Parameter completion: an optional closure to handle response of method
      - Returns:
      - count of elements in optional array that sholud be returned
      - optional array of DBElement objects
      - error if fetchRequest fails or if something unusual happens
      */
-    func readSubordinateElementsForDBElementIdSync(elementId:Int, shouldReturnObjects:Bool = false) -> (count:Int, elements:[DBElement]?, error:NSError?)
+    func readSubordinateElementsForDBElementId(elementId:Int, forMainQueue:Bool = false, completion:((count:Int, elements:[DBElement]?, error:NSError?) ->())? = nil) //-> (count:Int, elements:[DBElement]?, error:NSError?)
     {
         let elementsRequest = NSFetchRequest(entityName: "DBElement")
         
         let predicate = NSPredicate(format: "rootElementId = \(elementId) AND dateArchived = nil")
         elementsRequest.predicate = predicate
-        elementsRequest.shouldRefreshRefetchedObjects = shouldReturnObjects
+        elementsRequest.shouldRefreshRefetchedObjects = true
         
         var returnCount = 0
         var returnError:NSError?
-        let context = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        let context = NSManagedObjectContext(concurrencyType: (forMainQueue) ? .MainQueueConcurrencyType  : .PrivateQueueConcurrencyType)
         context.parentContext = self.privateContext
         
-        if shouldReturnObjects
-        {
+       
             var returnElements:[DBElement]?
             
-            context.performBlockAndWait(){ () -> Void in
+            context.performBlock/*AndWait*/(){ () -> Void in
                 do{
                     elementsRequest.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: false)]
                     
@@ -451,46 +381,53 @@ class LocalDatabaseHandler
                         returnError = anError
                     }
                 }
-                catch let error as NSError
+                catch let error
                 {
-                    returnError = error
+                    returnError = error as NSError
                 }
-                catch
-                {
-                    returnError = unKnownExceptionError
-                }
+                
+                completion?(count: returnCount, elements: returnElements, error: returnError)
             }
             
-            return (count: returnCount, elements: returnElements, error: returnError)
+            //return (count: returnCount, elements: returnElements, error: returnError)
+    }
+    
+    /**
+     Performs fetch request on main queue context. Used for returning real Elements for CollectionView DataSource and anywhere else if needed
+     - Throws: when no subordinate *DBElement*  found or any error happens
+     */
+    func subordinateElementsForElementId(elementId:Int) throws -> [NSManagedObjectID]
+    {
+        let lvContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
+        lvContext.parentContext = self.privateContext
+        
+        let request = NSFetchRequest(entityName: "DBElement")
+        request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
+        request.predicate = NSPredicate(format: "rootElementId = \(elementId)")
+        request.resultType = .ManagedObjectIDResultType
+        
+        var toReturnElements:[NSManagedObjectID]?
+        
+        lvContext.performBlockAndWait() {
+            do
+            {
+                if let subordinates = try lvContext.executeFetchRequest(request) as? [NSManagedObjectID] where subordinates.count > 0
+                {
+                    toReturnElements = subordinates
+                }
+            }
+            catch let error
+            {
+                print("error for main queue subordinates query:")
+                print(error)
+            }
         }
-        else //return only count or error
+        
+        if let _ = toReturnElements
         {
-            elementsRequest.resultType = .ManagedObjectIDResultType
-            
-            context.performBlockAndWait(){ () -> Void in
-                do{
-                    if let requestResult = try context.executeFetchRequest(elementsRequest) as? [NSManagedObjectID]
-                    {
-                        returnCount = requestResult.count
-                    }
-                    else
-                    {
-                        let anError = NSError(domain: "com.Origami.DatabaseError", code: -101, userInfo: [NSLocalizedDescriptionKey:"Could not cast fetched objects to DBElement array."])
-                        returnError = anError
-                    }
-                }
-                catch let error as NSError
-                {
-                    returnError = error
-                }
-                catch
-                {
-                    returnError = unKnownExceptionError
-                }
-            }
-
-            return (count: returnCount, elements: nil, error: returnError)
+            return toReturnElements!
         }
+        throw OrigamiError.NotFoundError(message: "No Subordinate Elements wer Found")
     }
     
     func countSubordinatesForElementByManagedObjectId(managedID:NSManagedObjectID) -> Int

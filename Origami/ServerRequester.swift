@@ -2304,7 +2304,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
         }
         else
         {
-            
+            print("\n------ERROR  . .. .. . .Handling  URLSession didRecieveChallenge ....")
         }
     }
     
