@@ -407,7 +407,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             textCell?.textLabel?.text = nil
             if let userBirthDay = user?.birthDay
             {
-                if let date = userBirthDay.dateFromServerDateString()
+                if let date = userBirthDay.dateFromServerDateString(true)
                 {
                     let birthDateString = date.dateStringMediumStyle()
                     textCell?.textLabel?.text = birthDateString
@@ -584,7 +584,7 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
             lvPicker.didMoveToParentViewController(nil)
         }
         
-        let uploadOperation = NSBlockOperation(){
+        let uploadOperation = NSBlockOperation() {
             
             DataSource.sharedInstance.uploadAvatarForCurrentUser(lvData){ [weak self](success, error) -> () in
                 if success
@@ -801,8 +801,9 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         let holderWidth = CGRectGetWidth(datePickerHolderView.bounds)
         
         let datePicker = UIDatePicker(frame: CGRectMake(0, 50.0, datePickerHolderView.bounds.size.width, 200))
+        datePicker.maximumDate = NSDate()
         datePicker.backgroundColor = UIColor.whiteColor()
-        if let currentDate = user?.birthDay?.dateFromServerDateString()
+        if let currentDate = user?.birthDay?.dateFromServerDateString(true)
         {
             datePicker.date = currentDate
         }
@@ -860,10 +861,29 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
         {
             if let datePicker = holderView.viewWithTag(2) as? UIDatePicker
             {
-                let date = datePicker.date
+                var date = datePicker.date
+                let checkInterval1 = date.timeIntervalSince1970
+                print("New birthday raw interval sinse 1970  : \(checkInterval1)")
+                let currentCalendar = NSCalendar.currentCalendar()
+                let calendarConponentsFlags:NSCalendarUnit = [NSCalendarUnit.Year, .Month, .Day, .Hour]//, .Minute]
+                
+                let components = currentCalendar.components(calendarConponentsFlags, fromDate: date)
+                components.hour = 12
+                //components.minute = 1
+                
+                if let fixedDate = currentCalendar.dateFromComponents(components)
+                {
+                    date = fixedDate
+                }
+                
                 if let previousDate = DataSource.sharedInstance.user?.birthDay
                 {
-                    DataSource.sharedInstance.user?.birthDay = date.dateForServer()
+                    
+                    let newBirthDayString = date.dateForServer()
+
+//                    let checkDate = newBirthDayString?.dateFromServerDateString(true)
+                    
+                    DataSource.sharedInstance.user?.birthDay = newBirthDayString
                     DataSource.sharedInstance.editUserInfo { (success, error) -> () in
                         if success
                         {

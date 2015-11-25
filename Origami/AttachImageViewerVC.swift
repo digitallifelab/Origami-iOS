@@ -116,8 +116,8 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
                 
                 imageHolder!.frame = newImageFrame
                 
-                imageScrollView.contentSize = CGSizeMake(fullFrame.size.width * 2, fullFrame.size.height * 2)
-                imageScrollView.contentOffset = CGPointMake(-fullFrame.size.width / 2, -fullFrame.size.height / 2)
+                //imageScrollView.contentSize = CGSizeMake(fullFrame.size.width * 2, fullFrame.size.height * 2)
+                //imageScrollView.contentOffset = CGPointMake(-fullFrame.size.width / 2, -fullFrame.size.height / 2)
                 imageScrollView.maximumZoomScale = 1 / scaleFactor
             }
             else
@@ -127,21 +127,45 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
             
             
             imageHolder!.center = CGPointMake(CGRectGetMidX(imageScrollView.bounds), CGRectGetMidY(imageScrollView.bounds))
-            imageHolder!.layer.borderWidth = 1.0
+            //imageHolder!.layer.borderWidth = 1.0
             imageScrollView.addSubview(imageHolder!)
         }
     }
     
     func centerImageInScrollView()
     {
-        let currentBounds = imageScrollView.bounds
+        guard let imageView = imageHolder else
+        {
+            return
+        }
         
-        let center = CGPointMake(CGRectGetMidX(currentBounds), CGRectGetMidY(currentBounds))
-       
-        self.imageHolder!.center = center
+        let boundsSize = imageScrollView.bounds.size;
+        var contentsFrame = imageView.frame;
+        
+        if (contentsFrame.size.width < boundsSize.width)
+        {
+            contentsFrame.origin.x = (boundsSize.width - contentsFrame.size.width) / 2.0;
+        }
+        else
+        {
+            contentsFrame.origin.x = 0.0;
+        }
+        
+        
+        if (contentsFrame.size.height < boundsSize.height)
+        {
+            contentsFrame.origin.y = (boundsSize.height - contentsFrame.size.height) / 2.0;
+        }
+        else
+        {
+            contentsFrame.origin.y = 0.0;
+        }
+        
+        imageView.frame = contentsFrame;
 
-        
     }
+    
+    
     
     func doubleTapAction(recognizer:UITapGestureRecognizer)
     {
@@ -153,10 +177,18 @@ class AttachImageViewerVC: UIViewController, UIScrollViewDelegate {
     }
     
     //MARK: UIScrollViewDelegate
-    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView?
+    {
         return imageHolder
     }
-    func scrollViewDidZoom(scrollView: UIScrollView) {
+    
+    func scrollViewDidZoom(scrollView: UIScrollView)
+    {
+        centerImageInScrollView()
+    }
+    
+    func scrollViewDidEndZooming(scrollView: UIScrollView, withView view: UIView?, atScale scale: CGFloat)
+    {
         centerImageInScrollView()
     }
     

@@ -59,6 +59,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
             self.localMainContext!.parentContext = dbHandler.getPrivateContext()
             self.localMainContext?.undoManager = NSUndoManager()
+            
             let allContactsRequest = NSFetchRequest(entityName: "DBContact")
             let lastNameSort = NSSortDescriptor(key: "lastName", ascending: true)
             allContactsRequest.sortDescriptors = [lastNameSort]
@@ -75,55 +76,55 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             
         }
         
-        #if SHEVCHENKO
-            if let contactsLoadingTask = self.allContactsLoadingOperationTask
-            {
-                if contactsLoadingTask.state != NSURLSessionTaskState.Running
-                {
-                    contactsLoadingTask.resume()
-                }
-            }
-            else
-            {
-                do
-                {
-                    let task = try  DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
-                        
-                        if let weakSelf = self
-                        {
-                            if let allContacts = contacts
-                            {
-                                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(allContacts, completion: {[weak self] (saved, error) -> () in
-                                    if saved
-                                    {
-                                        if let weakSelf = self
-                                        {
-                                            NSOperationQueue.mainQueue().addOperation(weakSelf.reloadTableOperation)
-                                        }
-                                    }
-                                })
-                                dispatch_async(dispatch_get_main_queue()) { () -> Void in
-                                    weakSelf.contactsSearchButton?.enabled = true
-                                }
-                            }
-                        }
-                    }
-                    
-                    self.allContactsLoadingOperationTask = task
-                    let lowQueue = getBackgroundQueue_UTILITY()
-                    dispatch_async(lowQueue){ _ in
-                        self.allContactsLoadingOperationTask?.resume()
-                    }
-                    
-                }
-                catch let taskError
-                {
-                    self.showAlertWithTitle("Warning.", message: "Could not start loading all contacts from server:\n \(taskError)", cancelButtonTitle: "Close")
-                }
-            }
-        #else
-        contactsSearchButton?.enabled = true
-        #endif
+//        #if SHEVCHENKO
+//            if let contactsLoadingTask = self.allContactsLoadingOperationTask
+//            {
+//                if contactsLoadingTask.state != NSURLSessionTaskState.Running
+//                {
+//                    contactsLoadingTask.resume()
+//                }
+//            }
+//            else
+//            {
+//                do
+//                {
+//                    let task = try  DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
+//                        
+//                        if let weakSelf = self
+//                        {
+//                            if let allContacts = contacts
+//                            {
+//                                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(allContacts, completion: {[weak self] (saved, error) -> () in
+//                                    if saved
+//                                    {
+//                                        if let weakSelf = self
+//                                        {
+//                                            NSOperationQueue.mainQueue().addOperation(weakSelf.reloadTableOperation)
+//                                        }
+//                                    }
+//                                })
+//                                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+//                                    weakSelf.contactsSearchButton?.enabled = true
+//                                }
+//                            }
+//                        }
+//                    }
+//                    
+//                    self.allContactsLoadingOperationTask = task
+//                    let lowQueue = getBackgroundQueue_UTILITY()
+//                    dispatch_async(lowQueue){ _ in
+//                        self.allContactsLoadingOperationTask?.resume()
+//                    }
+//                    
+//                }
+//                catch let taskError
+//                {
+//                    self.showAlertWithTitle("Warning.", message: "Could not start loading all contacts from server:\n \(taskError)", cancelButtonTitle: "Close")
+//                }
+//            }
+//        #else
+//        contactsSearchButton?.enabled = true
+//        #endif
         
         
         myContactsTable?.estimatedRowHeight = 60
@@ -213,12 +214,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationItems()
     {
         #if SHEVCHENKO
-            let lvMethodSignatureString:Selector = "showAllContactsVC"
+            //let lvMethodSignatureString:Selector = "showAllContactsVC"
         #else
             let lvMethodSignatureString:Selector = "showContactSearchVC"
+            contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
+            contactsSearchButton?.enabled = true
         #endif
-        contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
-        contactsSearchButton?.enabled = false
+//        contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
+//        contactsSearchButton?.enabled = false
+        
         self.navigationItem.rightBarButtonItem = contactsSearchButton
         
         let segmentedControl = UISegmentedControl(items: ["All".localizedWithComment(""), "Favorite".localizedWithComment("")])
@@ -461,7 +465,10 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         let row = indexPath.row
         if let currentFetchController = self.currentFetchController, objects = currentFetchController.fetchedObjects as? [DBContact]
         {
-            return objects[row]
+            if objects.count > row
+            {
+                return objects[row]
+            }
         }
         
         return nil
@@ -556,7 +563,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
     }
     /**
-     Method is tied to reussable table view cell to determine whith indexPath tapped to switch contact Favourite/UnFavourite
+     Method is tied to reussable table view cell in storyboard to determine whith indexPath tapped to switch contact Favourite/UnFavourite
      */
     @IBAction func favouriteDiscrosureButtonTapped(sender:UIButton, event:UIEvent)
     {

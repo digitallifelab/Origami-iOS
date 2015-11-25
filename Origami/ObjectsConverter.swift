@@ -49,6 +49,9 @@ class ObjectsConverter {
         return array
     }
     
+    /**
+     - Returns: nil, if converted to countries array is empty
+    */
     class func convertToCountries(dictionariesArray:[[String:AnyObject]]) -> [Country]?
     {
         var countries = [Country]()
@@ -142,6 +145,8 @@ class ObjectsConverter {
     class func convertToContacts(array:[[String:AnyObject]]) -> [Contact]
     {
         var contacts = [Contact]()
+        let lvFileHandler = FileHandler()
+        
         for lvDict in array
         {
             var newDict = lvDict
@@ -151,12 +156,49 @@ class ObjectsConverter {
                 avatarDataToSave = avatarData
             }
             
+            let contact = Contact(info: newDict)
+            
             if let contactAvatarData = avatarDataToSave
             {
-                newDict["Photo"] = contactAvatarData
+                let userNameContact = contact.userName
+                let contactId = contact.contactId
+                lvFileHandler.loadAvatarDataForLoginName(userNameContact) { (avatarData, error) in
+                    if let avatarDataLocal = avatarData
+                    {
+                        if avatarDataLocal.hashValue != contactAvatarData.hashValue
+                        {
+                            lvFileHandler.saveAvatar(contactAvatarData, forLoginName:userNameContact , completion: { (saveError) -> Void in
+                                if let savedError = saveError
+                                {
+                                    print("Coult NOT SAVE recieved contact avatar to disc:")
+                                    print(savedError)
+                                    return
+                                }
+                                
+                                print("Did save fullsizeAvatar data to disk for userName: \(userNameContact)")
+                                DataSource.sharedInstance.userAvatarsHolder[contactId] = nil
+                                DataSource.sharedInstance.localDatadaseHandler?.deleteAvatarPreviewForUserId(contactId)
+                            })
+                        }
+                    }
+                    else
+                    {
+                        lvFileHandler.saveAvatar(contactAvatarData, forLoginName:userNameContact , completion: { (saveError) -> Void in
+                            if let savedError = saveError
+                            {
+                                print("Coult NOT SAVE recieved contact avatar to disc:")
+                                print(savedError)
+                                return
+                            }
+                            
+                            print("Did save fullsizeAvatar data to disk for userName: \(userNameContact)")
+                            DataSource.sharedInstance.userAvatarsHolder[contactId] = nil
+                            DataSource.sharedInstance.localDatadaseHandler?.deleteAvatarPreviewForUserId(contactId)
+                        })
+                    }
+                }
             }
             
-            let contact = Contact(info: newDict)
             if let countryName = contact.country
             {
                 if contact.countryId == nil , let country = DataSource.sharedInstance.countryByName(countryName)
@@ -210,7 +252,7 @@ class ObjectsConverter {
             {
                 case .Undefined:
                     print("")
-                    assert(false, "Undefined message detected. Please debug client-server communication")
+                    NSLog("Undefined message detected. Please debug client-server communication.")
                 case .ChatMessage:
                     chatMessages.append(lvNewMessage)
                 case .Invitation:

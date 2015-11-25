@@ -6,8 +6,9 @@
 //  Copyright (c) 2015 CloudCraft. All rights reserved.
 //
 import UIKit
+import CoreData
 
-typealias dashboardDBElementsInfoTuple = (signals:[DBElement]?, favourites:[DBElement]?, other:[DBElement]?)
+typealias dashboardDBElementsInfoTuple = (signals:[NSManagedObjectID]?, favourites:[NSManagedObjectID]?, other:[NSManagedObjectID]?)
 
 
 class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, ElementComposingDelegate, UIViewControllerTransitioningDelegate, UIGestureRecognizerDelegate/*, MessageObserver*/
@@ -63,12 +64,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         
         DataSource.sharedInstance.addObserverForNewMessagesForElement(self, elementId: All_New_Messages_Observation_ElementId)
         
-        
         startReadingHomeScreenData(1)
-//        if let dashInfo = DataSource.sharedInstance.dashBoardInfo
-//        {
-//            reloadDashBoardViewWithDBElementsInfo(dashInfo)
-//        }
     }
     
     override func viewDidAppear(animated: Bool)
@@ -79,12 +75,10 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         {
             //register for night-day modes switching
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "nightModeDidChange:", name: kMenu_Switch_Night_Mode_Changed, object: nil)
-            
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "didTapOnChatMessage:", name: kHomeScreenMessageTappedNotification, object: nil)
-            
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementWasDeleted:", name:kElementWasDeletedNotification , object: nil)
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "elementsWereAdded:", name: kNewElementsAddedNotification, object: nil)
-            
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshDashboardAfterElementDidChangeNotification:", name: kElementWasChangedNotification, object: nil)
             
             if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
             {
@@ -103,6 +97,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kHomeScreenMessageTappedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasDeletedNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: kElementWasChangedNotification, object: nil)
         
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
@@ -115,7 +110,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func recievedMessagesFinishedNotification(notification:NSNotification)
     {
-       
         if let currentElementsDataRefresher = DataSource.sharedInstance.dataRefresher
         {
             if currentElementsDataRefresher.isCancelled
@@ -165,7 +159,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         }
         self.navigationController?.pushViewController(visualVC, animated: true)
     }
-    
     
     func configureLeftBarButtonItem()
     {
@@ -253,9 +246,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         }
     }
     
-    private func refreshMainDashboard(completion:(()->())?)
+    private func refreshMainDashboard(completion:(()->())? = nil)
     {
-        
         DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
             
             if let weakSelf = self, dashInfo = DataSource.sharedInstance.dashBoardInfo
@@ -276,7 +268,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         dispatch_after(timeout, dispatch_get_main_queue(), { () -> Void in
             completion?()
         })
-        
+    }
+    
+    func refreshDashboardAfterElementDidChangeNotification(note:NSNotification?)
+    {
+        self.refreshMainDashboard(nil)
     }
     
     private func configureRefreshControl()
@@ -319,6 +315,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             return
         }
 
+        if let tapView = self.view.viewWithTag(0xAD12) as? TapGreetingView
+        {
+            tapView.removeFromSuperview()
+        }
+        
         self.collectionSource = HomeCollectionHandler(info: info)
         self.collectionSource?.elementSelectionDelegate = self
         let layoutInfoStruct = HomeSignalsHiddenFlowLayout.prepareLayoutStructWithInfo(info)
@@ -337,10 +338,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     func showElementCreationVC(sender:AnyObject)
     {
         if let newElementCreator = self.storyboard?.instantiateViewControllerWithIdentifier("NewElementComposingVC") as? NewElementComposerViewController
-        {
-            //customTransitionAnimator = FadeOpaqueAnimator()
-            //let composerHolder = UINavigationController(rootViewController: newElementCreator)
-            
+        {            
             newElementCreator.composingDelegate = self
 
             self.navigationController?.pushViewController(newElementCreator, animated: true)
@@ -354,6 +352,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func showAddTheVeryFirstElementPlus()
     {
+        if let tapView = self.view.viewWithTag(0xAD12)
+        {
+            tapView.removeFromSuperview()
+        }
+        
         self.collectionSource?.deleteAllElements()
         let numberOfSections =  self.collectionDashboard.numberOfSections()
         if numberOfSections > 1
@@ -375,19 +378,29 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             collectionDashboard.collectionViewLayout.invalidateLayout()
         }
         
-       
-        let tapView = UIView(frame: CGRectMake(0, 0, 200.0, 200.0))
+        let tapView = TapGreetingView(frame: CGRectMake(0, 0, 200.0, 200.0))
         tapView.userInteractionEnabled = true
-        tapView.backgroundColor = UIColor.whiteColor()
         tapView.opaque = true
         tapView.tag = 0xAD12
         
-        let imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
-        imageView.contentMode = .ScaleAspectFit
-        imageView.image = UIImage(named: "icon-add")?.imageWithRenderingMode(.AlwaysTemplate)
-        imageView.tintColor = kDayNavigationBarBackgroundColor
-        imageView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]// UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
-        tapView.addSubview(imageView)
+//        let imageView = UIImageView(frame: CGRectMake(50.0, 50.0, 100.0, 100.0))
+//        imageView.contentMode = .ScaleAspectFit
+//        imageView.image = UIImage(named: "icon-add")?.imageWithRenderingMode(.AlwaysTemplate)
+//        imageView.tintColor = kDayNavigationBarBackgroundColor
+//        imageView.autoresizingMask = [UIViewAutoresizing.FlexibleHeight, UIViewAutoresizing.FlexibleWidth]// UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
+//        tapView.addSubview(imageView)
+        var userName = "User"
+        if let realUserName = DataSource.sharedInstance.user?.firstName
+        {
+            userName = realUserName
+        }
+        //let greetingLabel = UILabel(frame: tapView.bounds)
+        //greetingLabel.numberOfLines = 0
+        let greetingString = "Добро пожаловать, \(userName)\nНажмите здесь для создания первого элемента."
+//        let attributedWelcome = NSAttributedString(string: greetingString, attributes: [NSFontAttributeName:UIFont(name: "SegoeUI", size: 15.0)!, NSForegroundColorAttributeName:kDayCellBackgroundColor])
+//        greetingLabel.attributedText = attributedWelcome
+        tapView.text = greetingString
+        //tapView.addSubview(greetingLabel)
         
         let tapButton = UIButton(type:.System)
         tapButton.frame = tapView.bounds
@@ -504,9 +517,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element)
     {
-        self.navigationController?.popViewControllerAnimated(true)
-        
         handleAddingNewElement(newElement)
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     //MARK: -----
@@ -751,8 +763,32 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     {
         if attemptCount > 2
         {
+            dispatch_async(dispatch_get_main_queue()){[weak self] in
+                if let weakSelf = self
+                {
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                    weakSelf.showAddTheVeryFirstElementPlus()
+                    
+                    if let refresher =  DataSource.sharedInstance.dataRefresher
+                    {
+                        if !refresher.isCancelled && !refresher.isInProgress && refresher.currentTimeout <= 0
+                        {
+                            refresher.startRefreshingElementsWithTimeoutInterval(30.0)
+                        }
+                    }
+                    else{
+                        let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+                        dispatch_after(timeout, getBackgroundQueue_UTILITY(), { () -> Void in
+                            DataSource.sharedInstance.dataRefresher = DataRefresher()
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
+                            
+                        })
+                    }
+                }
+            }
             return
         }
+        
         let fetchDashboardOp = NSBlockOperation() { _ in
             
             let fetchSemaphore = dispatch_semaphore_create(0)
@@ -762,9 +798,9 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                     DataSource.sharedInstance.dashBoardInfo = info
                     
                     
-                    if let weakSelf = self, dashInfo = DataSource.sharedInstance.dashBoardInfo
+                    if let weakSelf = self, dataSourceDashInfo = DataSource.sharedInstance.dashBoardInfo
                     {
-                        if dashInfo.signals == nil && dashInfo.favourites == nil && dashInfo.other == nil
+                        if dataSourceDashInfo.signals == nil && dataSourceDashInfo.favourites == nil && dataSourceDashInfo.other == nil
                         {
                             DataSource.sharedInstance.loadAllElementsInfo({ (success, failure) -> () in
 //                                if success
@@ -773,7 +809,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                                     if let weakSelf = self
                                     {
                                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                            weakSelf.startReadingHomeScreenData(2)
+                                            weakSelf.startReadingHomeScreenData(attemptCount + 1)
                                         })
                                         
                                     }
@@ -785,7 +821,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                         
                         if let refresher =  DataSource.sharedInstance.dataRefresher
                         {
-                            if !refresher.isCancelled && !refresher.isInProgress
+                            if !refresher.isCancelled && !refresher.isInProgress && refresher.currentTimeout <= 0
                             {
                                 refresher.startRefreshingElementsWithTimeoutInterval(30.0)
                             }
@@ -800,7 +836,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                         }
                         
                         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            weakSelf.reloadDashBoardViewWithDBElementsInfo(dashInfo)
+                            weakSelf.reloadDashBoardViewWithDBElementsInfo(dataSourceDashInfo)
                         })
                     }
                 dispatch_semaphore_signal(fetchSemaphore)
@@ -819,6 +855,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                 DataSource.sharedInstance.operationQueue.suspended = false  //starts loading stuff from network
             }
         }
+        
         
         
         NSOperationQueue().addOperation(fetchDashboardOp)

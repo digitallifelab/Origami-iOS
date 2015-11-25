@@ -48,7 +48,6 @@ class ChatMessageRecievedCell: UITableViewCell {
         }
     }
     
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         messageLabel.preferredMaxLayoutWidth = 200.0

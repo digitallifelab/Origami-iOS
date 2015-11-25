@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate, AttachmentCellDelegate
 {
@@ -24,10 +25,37 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     var subordinatesByIndexPath:[NSIndexPath : DBElement]?
     var taskUserAvatar:UIImage?
-    //var currentAttaches:[DBAttach]?
+    
+    let mainQueueContext:NSManagedObjectContext
+    
+    override init()
+    {
+        self.mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        if let privateContext = DataSource.sharedInstance.localDatadaseHandler?.getPrivateContext()
+        {
+            self.mainQueueContext.parentContext = privateContext
+        }
+        super.init()
+    }
+    
     weak var handledCollectionView:UICollectionView?
     
-    weak var handledElement:DBElement? {
+    var handledElementId:NSManagedObjectID?{
+        didSet{
+            guard let anID = handledElementId else
+            {
+                self.handledElement = nil
+                return
+            }
+            
+            if let element = self.mainQueueContext.objectWithID(anID) as? DBElement
+            {
+                self.handledElement = element
+            }
+        }
+    }
+    
+    private var handledElement:DBElement? {
         didSet {
             // detect visible cells by checking options
             var options:[ElementCellType] = [ElementCellType]()
@@ -66,10 +94,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 calculateAllCellTypes()
             }
             
-            guard let elementId = handledElement?.elementId?.integerValue else
-            {
-                return
-            }
+//            guard let elementId = handledElement?.elementId?.integerValue else
+//            {
+//                return
+//            }
             
             if let attachesSet = self.handledElement?.attaches where attachesSet.count > 0
             {
@@ -84,12 +112,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
 //                }
             }
             
-            if let result = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+            if let elementObjectID = self.handledElementId, let result = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(elementObjectID) where result > 0
             {
-                if result.count > 0
-                {
-                    options.append(.Subordinates)
-                }
+                options.append(.Subordinates)
             }
             
         
@@ -121,12 +146,28 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         guard let elementId = self.handledElement?.elementId?.integerValue else{
             return nil
         }
-        if let info = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId, shouldReturnObjects: true)
-        {
-            return info.elements
-        }
         
-        return nil
+        do
+        {
+            guard let elementIDs = try DataSource.sharedInstance.localDatadaseHandler?.subordinateElementsForElementId(elementId) else
+            {
+                return nil
+            }
+            
+            var elementsToReturn = [DBElement]()
+            for anElementObjectId in elementIDs
+            {
+                if let element = self.mainQueueContext.objectWithID(anElementObjectId) as? DBElement
+                {
+                    elementsToReturn.append(element)
+                }
+            }
+            return elementsToReturn
+        }
+        catch
+        {
+            return nil
+        }
     }
     
     func elementIsTask() -> Bool
@@ -178,9 +219,9 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 let value = allValues[i] //again tuple
                 let lvElement = value.1
                 
-                if let elementId = lvElement.elementId?.integerValue, let subordinatesQueryResult = DataSource.sharedInstance.localDatadaseHandler?.readSubordinateElementsForDBElementIdSync(elementId)
+                if /*let elementId = lvElement.elementId?.integerValue,*/ let subordinatesCount = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(lvElement.objectID)
                 {
-                    if subordinatesQueryResult.count > 0
+                    if subordinatesCount > 0
                     {
                         lvSubordinatesInfo.append(ElementItemLayoutWidth.Wide)
                         continue
@@ -394,7 +435,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                                 }
                                 else //user sees now owned element in which another contact in responsible
                                 {
-                                    if let contacts = DataSource.sharedInstance.getContactsByIds(Set([responsibleIdInt])), aContact = contacts.first //as? Contact
+                                    if let aContact = DataSource.sharedInstance.localDatadaseHandler?.readContactById(responsibleIdInt)
                                     {
                                         if let contactName = aContact.nameAndLastNameSpacedString()
                                         {
@@ -415,7 +456,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             //show current user`s data
                             if creatorId == currentUserIDInt //user sees own element
                             {
-                                titleCell.responsibleNameLabel?.text = "Your Own Element"
+                                titleCell.responsibleNameLabel?.text = "Your_Own_Element".localizedWithComment("")
                             }
                             else //contact`s data
                             {
@@ -701,12 +742,12 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         }
     }
     
-    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-        if let aCell = cell as? SingleElementTitleCell
-        {
-            aCell.cleanShadow()
-        }
-    }
+//    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+//        if let aCell = cell as? SingleElementTitleCell
+//        {
+//            aCell.cleanShadow()
+//        }
+//    }
     
     
     //MARK: MessageTapDelegate

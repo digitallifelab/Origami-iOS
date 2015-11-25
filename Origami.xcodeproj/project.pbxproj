@@ -17,6 +17,8 @@
 		F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
+		F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
+		F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
 		F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
 		F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
 		F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
@@ -62,6 +64,8 @@
 		F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */; };
 		F85CF1041B833D940048B3DE /* MessagesLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF1031B833D940048B3DE /* MessagesLoader.swift */; };
 		F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F864AB191B7252F600686EB1 /* ImageFilter.swift */; };
+		F86C00321BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */; };
+		F86C00331BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */; };
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
@@ -286,6 +290,7 @@
 		F811100F1B2AC2FF00115DF6 /* segoeui.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeui.ttf; sourceTree = "<group>"; };
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
+		F811B3F01BF9E7280012F825 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
 		F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashHeaderView.swift; sourceTree = "<group>"; };
 		F817EE561B9EE2CD007E8EBD /* OptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDashboardVC.swift; sourceTree = "<group>"; };
@@ -333,6 +338,7 @@
 		F85CF1011B830DA70048B3DE /* AllContactsVCCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVCCell.swift; sourceTree = "<group>"; };
 		F85CF1031B833D940048B3DE /* MessagesLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesLoader.swift; sourceTree = "<group>"; };
 		F864AB191B7252F600686EB1 /* ImageFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageFilter.swift; sourceTree = "<group>"; };
+		F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePasswordViewController.swift; sourceTree = "<group>"; };
 		F86E47D41BBE73CD00DA5B6D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		F86F237A1B208AEE00234EFD /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -710,6 +716,7 @@
 				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
 				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
 				F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */,
+				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
 				F87637791B56604100AFE376 /* Menu */,
 				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
@@ -718,7 +725,6 @@
 				F86F74261B56835E00E48E13 /* UserProfile */,
 				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
 				F86F74251B56834E00E48E13 /* Contacts */,
-				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
 				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
 			);
 			name = ViewControllers;
@@ -797,6 +803,7 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5D1B21C81600156CEC /* LoginVC.swift */,
+				F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */,
 			);
 			name = "Login and Registration";
 			sourceTree = "<group>";
@@ -805,6 +812,7 @@
 			isa = PBXGroup;
 			children = (
 				F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */,
+				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
 				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
 				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
 				F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */,
@@ -1151,6 +1159,7 @@
 				F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */,
 				F8C93AF81B861B94009D890E /* FileHandler.m in Sources */,
 				F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */,
+				F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */,
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F8C93AFB1B861B94009D890E /* HomeNavigationController.swift in Sources */,
 				F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */,
@@ -1179,6 +1188,7 @@
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F87AEE561BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
+				F86C00331BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */,
 				F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
@@ -1240,6 +1250,7 @@
 				F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */,
 				F88564021B31CBD1005D223E /* ChatMessageRecievedCell.swift in Sources */,
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
+				F86C00321BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */,
 				F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */,
 				F8BDB6771BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8D456C31B1DEFFC00172667 /* DataSource.swift in Sources */,
@@ -1297,6 +1308,7 @@
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
 				F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */,
 				F89F3B5C1B21C7C600156CEC /* RootViewController.swift in Sources */,
+				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
 				F882328F1B6B71AD00990A4E /* PopupMenuCell.swift in Sources */,
 				F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F880D1811B25B22900E702D3 /* ServerRequester.swift in Sources */,
@@ -1369,8 +1381,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1394,8 +1406,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1503,8 +1515,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1530,9 +1542,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
-				GCC_OPTIMIZATION_LEVEL = 0;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				GCC_OPTIMIZATION_LEVEL = fast;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				INFOPLIST_FILE = Origami/Origami.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
