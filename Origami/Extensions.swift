@@ -21,8 +21,12 @@ extension NSDate
     func dateForServer() -> String?
     {
         let interval = self.timeIntervalSince1970
-
-        let lvString = "/Date(\(Int(floor(Double(interval))))00+0000)/"
+        
+        let intervalString = "\(Int(floor(Double(interval))))"
+        //print(" Debug intervat to string: \(interval.stringRepresentation()) ")
+        let lvString = "/Date(" + intervalString + "00+0000)/"
+        
+        //let lvString = "/Date(\(Int(floor(Double(interval))))00+0000)/"
         
         return lvString
     }
@@ -83,7 +87,7 @@ extension NSDate
     func timeDateStringForMediaName() -> String
     {
         let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "YYYY-MM-dd_HH-MM-SS"
+        dateFormatter.dateFormat = "YYYY-MM-dd_HH-MM-ss"
         let stringToReturn = dateFormatter.stringFromDate(self)
         
         return stringToReturn
@@ -166,10 +170,11 @@ extension NSTimeInterval {
         let ms = Int((self % 1) * 1000)
 
         let seconds = self % 60
-        let minutes = (self / 60) % 60
-        let hours = (self / 3600)
+        let minutes = (self / 60.0) % 60
+        let hours = (self / 3600.0)
+        let years = (self / (3600 * 365))
 
-        return NSString(format: "%0.2d-%0.2d-%0.2d-%0.3d", hours, minutes, seconds, ms) as String
+        return NSString(format: "%0.2 y | %0.2d h | %0.2d m | %0.2d s | %0.3d ms", years, hours, minutes, seconds, ms) as String
     }
 }
 //MARK: -
@@ -181,7 +186,7 @@ extension String
         return toReturnDebug
     }
     
-    func dateFromServerDateString() -> NSDate?
+    func dateFromServerDateString(forBirthday:Bool = false) -> NSDate?
     {
         if self == kWrongEmptyDate{
             return nil
@@ -192,16 +197,43 @@ extension String
         
         
         let dateComponentsArray = dateUTCstring.componentsSeparatedByCharactersInSet(NSCharacterSet(charactersInString: "-+"))
+        
         if let dateString = dateComponentsArray.first
         {
-            let trimmedString = dateString.substringToIndex(dateString.endIndex.advancedBy(-3))
-            //print("dateFromServerDateString:  dateString: \(trimmedString)")
-            if let timeInterval = NSTimeInterval(trimmedString)
+            if dateString.isEmpty
             {
-                let recievedDate = NSDate(timeIntervalSince1970: timeInterval)
-                //print("-> Date - \(recievedDate)")
-                return recievedDate
+                let secondItem = dateComponentsArray[1]
+                var trimFactor = -3
+                if forBirthday
+                {
+                    trimFactor = -2
+                }
+                let trimmedString = secondItem.substringToIndex(secondItem.endIndex.advancedBy(trimFactor))
+                //print("dateFromServerDateString:  dateString: \(trimmedString)")
+                if let timeInterval = NSTimeInterval(trimmedString)
+                {
+                    let recievedDate = NSDate(timeIntervalSince1970: timeInterval)
+                    //print("-> Date - \(recievedDate)")
+                    return recievedDate
+                }
             }
+            else
+            {
+                var trimFactor = -3
+                if forBirthday
+                {
+                    trimFactor = -2
+                }
+                let trimmedString = dateString.substringToIndex(dateString.endIndex.advancedBy(trimFactor))
+                //print("dateFromServerDateString:  dateString: \(trimmedString)")
+                if let timeInterval = NSTimeInterval(trimmedString)
+                {
+                    let recievedDate = NSDate(timeIntervalSince1970: timeInterval)
+                    //print("-> Date - \(recievedDate)")
+                    return recievedDate
+                }
+            }
+            
         }
         
         return nil
@@ -407,11 +439,6 @@ extension UIViewController
 {
     func showAlertWithTitle(alertTitle:String, message:String, cancelButtonTitle:String)
     {
-//        let comparisonResult = UIDevice.currentDevice().systemVersion.compare("8.0.0", options: NSStringCompareOptions.NumericSearch)
-//        
-//        switch comparisonResult
-//        {
-//        case .OrderedSame, .OrderedDescending: // iOS 8 and More
         if #available (iOS 8.0, *)
         {
             let closeAction:UIAlertAction = UIAlertAction(title: cancelButtonTitle as String, style: .Cancel, handler: nil)
@@ -428,10 +455,9 @@ extension UIViewController
     
     
     /**
+    Sets night or day mode to the whole app – the tint and background color of navigation bar and toolbar items, and also the background color of viewcontroller`s view
     
-        Sets night or day mode to the whole app – the tint and background color of navigation bar and toolbar items, and also the background color of viewcontroller`s view
-    
-        - nightModeOn: *false* means .Day, *true* means .Night
+    - Parameter nightModeOn: *false* means .Day, *true* means .Night
     */
     func setAppearanceForNightModeToggled(nightModeOn:Bool)
     {
@@ -448,6 +474,10 @@ extension UIViewController
             self.view.backgroundColor = kBlackColor
             self.navigationController?.toolbar.tintColor = kWhiteColor
             self.navigationController?.toolbar.barTintColor = kBlackColor
+            if let tapView = self.view.viewWithTag(0xAD12) as? TapGreetingView
+            {
+                tapView.displayMode = .Night
+            }
         }
         else
         {
@@ -456,6 +486,10 @@ extension UIViewController
             self.view.backgroundColor = kWhiteColor
             self.navigationController?.toolbar.tintColor = kWhiteColor
             self.navigationController?.toolbar.barTintColor = kDayNavigationBarBackgroundColor.colorWithAlphaComponent(0.5)
+            if let tapView = self.view.viewWithTag(0xAD12) as? TapGreetingView
+            {
+                tapView.displayMode = .Day
+            }
         }
     }
     

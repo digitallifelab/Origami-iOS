@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RootViewController: UIViewController, UIGestureRecognizerDelegate {
+class RootViewController: UIViewController, UIGestureRecognizerDelegate, PasswordChangeDelegate {
     
     
     var dataRefresher:DataRefresher?
@@ -109,50 +109,70 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        if let _ = DataSource.sharedInstance.user
+        
+        guard let user = DataSource.sharedInstance.user else
         {
-            //self.performSegueWithIdentifier("ShowHomeVC", sender: nil)
+            NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
             
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
-            
-            if let navController = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavigationController") as? HomeNavigationController
-            {
-                //self.currentNavigationController = navController
-                
-                self.addChildViewController(navController)
-               
-                
-                if let _ = navController.viewControllers.first as? HomeVC
-                {
-                    
-                }
-                else if let homeVC = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
-                {
-                    //navController.setViewControllers([homeVC], animated: true)
-                    
-                    navController.setViewControllers([homeVC], animated: true)
-                }
-                
-                self.view.addSubview(navController.view)
-                navController.didMoveToParentViewController(self)
-                self.currentNavigationController = navController
-                
-                if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
-                {
-                    self.addChildViewController(menuVC)
-                    self.leftMenuVC = menuVC
-                    self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
-                    self.leftMenuVC?.didMoveToParentViewController(self)
-                }
-            }
-            
+            self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
             return
         }
         
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+        switch user.state
+        {
+            case .Normal:
+                break
+            case .Blocked:
+                showAlertWithTitle("Warning".localizedWithComment(""), message: "BlockedUserMessage".localizedWithComment(""), cancelButtonTitle: "Close".localizedWithComment(""))
+                return
+            case .NeedToConfirm:
+                showChangePasswordVC()
+                return
+            case .Undefined:
+                showAlertWithTitle("Error".localizedWithComment(""), message: "UnknownError".localizedWithComment(""), cancelButtonTitle: "Close".localizedWithComment(""))
+                return
+        }
         
-        self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "processMenuDisplaying:", name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+        
+        if let navController = self.storyboard?.instantiateViewControllerWithIdentifier("HomeNavigationController") as? HomeNavigationController
+        {
+            self.addChildViewController(navController)
+           
+            if let _ = navController.viewControllers.first as? HomeVC
+            {
+                
+            }
+            else if let homeVC = self.storyboard?.instantiateViewControllerWithIdentifier("HomeVC") as? HomeVC
+            {                
+                navController.setViewControllers([homeVC], animated: true)
+            }
+            
+            self.view.addSubview(navController.view)
+            navController.didMoveToParentViewController(self)
+            self.currentNavigationController = navController
+            
+            if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
+            {
+                self.addChildViewController(menuVC)
+                self.leftMenuVC = menuVC
+                self.view.insertSubview(menuVC.view, belowSubview: currentNavigationController!.view)
+                self.leftMenuVC?.didMoveToParentViewController(self)
+            }
+        }
     }
+
+    func showChangePasswordVC()
+    {
+        if let passwordChangeVC = self.storyboard?.instantiateViewControllerWithIdentifier("ChangePasswordVC") as? ChangePasswordViewController
+        {
+            passwordChangeVC.delegate = self
+            
+            self.presentViewController(passwordChangeVC, animated: true, completion: nil)
+        }
+    }
+    
+    
     
   
     func handleLogoutNotification(notification:NSNotification?)
@@ -290,13 +310,14 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
                     //weakSelf.view.bringSubviewToFront(menu.view)
                     print("Menu Frame: \(menu.view.frame)")
                     weakSelf.isShowingMenu = true
+                    
                     if let topVC = navController.topViewController
                     {
                         topVC.view.addGestureRecognizer(weakSelf.tapToDismissRecognizer)
                     }
                     else
                     {
-                        assert(false, "Could not instantiate top View Controller and add TapToDismiss recognizer.....")
+                        NSLog("Could not instantiate top View Controller and add TapToDismiss recognizer.....")
                     }
                    
                 }
@@ -399,6 +420,28 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate {
     func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return false
     }
+    
+    //MARK: - PasswordChangeDelegate
+    func userDidChangePassword(newPassword: String?, sender: ChangePasswordViewController)
+    {
+        defer
+        {
+            NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
+        }
+        
+        guard let newPasswordString = newPassword else
+        {
+            NSUserDefaults.standardUserDefaults().removeObjectForKey(passwordKey)
+            return
+        }
+        
+        DataSource.sharedInstance.user = nil
+        NSUserDefaults.standardUserDefaults().setObject(newPasswordString, forKey: passwordKey)
+        NSUserDefaults.standardUserDefaults().synchronize()
+        
+        sender.dismissViewControllerAnimated(true, completion:nil)
+    }
+    
     
     //MARK: - Segue
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?)

@@ -29,8 +29,17 @@ class DataRefresher
         return self.cancelled
     }
     
+    var currentTimeout:Int {
+        return Int(self.refreshInterval)
+    }
+    
     func startRefreshingElementsWithTimeoutInterval(timeout:NSTimeInterval)
     {
+        if self.isInProgress
+        {
+            print("\n - DataRefresher will not start new elements refresh loop:  Cancelled.\n")
+            return
+        }
         self.cancelled = false
         
         guard let _ = DataSource.sharedInstance.user?.userId else
@@ -92,7 +101,7 @@ class DataRefresher
 
                     guard let dataBaseHandler = DataSource.sharedInstance.localDatadaseHandler else
                     {
-                        print(" HUGE ERROR - NO LlocalDatabaseHandler -------- ")
+                        print(" HUGE ERROR - NO LocalDatabaseHandler -------- ")
                         return
                     }
                     
@@ -107,34 +116,54 @@ class DataRefresher
                             currentRecievedElementIDsFromServer.insert(anElementFromServer.elementId!)
                         }
                         
-                        let elementIdsToDelete = currentRecievedElementIDsFromServer.subtract(currentIds)
+                        let elementIdsToDelete = currentIds.subtract(currentRecievedElementIDsFromServer)
+                        
+                        let elementIDsToInsert = currentRecievedElementIDsFromServer.subtract(currentIds)
+                        
+                        var shouldPostNotification = false
                         
                         if !elementIdsToDelete.isEmpty
                         {
+                            shouldPostNotification = true
                             dataBaseHandler.deleteElementsByIds(elementIdsToDelete)
                         }
+                        if !elementIDsToInsert.isEmpty
+                        {
+                            shouldPostNotification = true
+                        }
                         
-                        dataBaseHandler.saveElementsToLocalDatabase(recievedElements, completion: { (didSave, error) -> () in
-                            DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
-                                })
-                                
-                            })
-                        })
+                        dataBaseHandler.saveElementsToLocalDatabase(recievedElements) { [weak self](didSave, error) -> () in
+                            DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(){ () -> () in
+                                dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                                    
+                                    if shouldPostNotification
+                                    {
+                                        NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
+                                    }
+                                    if let weakSelf = self
+                                    {
+                                        weakSelf.isInProgress = false
+                                    }
+                                }
+                            }
+                        }
                         
                     }
                     catch// let error
                     {
                         //insert all elements as NEW in database
-                        DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(recievedElements, completion: { (didSave, error) -> () in
+                        DataSource.sharedInstance.localDatadaseHandler?.saveElementsToLocalDatabase(recievedElements) { (didSave, error) -> () in
                             
-                            DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing({ () -> () in
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(){ () -> () in
+                                dispatch_async(dispatch_get_main_queue()) { () -> Void in
                                     NSNotificationCenter.defaultCenter().postNotificationName(kElementWasChangedNotification, object: nil)
-                                })
-                            })
-                        })
+                                    if let weakSelf = self
+                                    {
+                                        weakSelf.isInProgress = false
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -165,9 +194,8 @@ class DataRefresher
     
     func startNewRefreshLoop()
     {
-       // self.isInProgress = false
         
-        if self.refreshInterval > 0
+        if self.refreshInterval > 0 && !self.cancelled
         {
             
             var globalQueue:dispatch_queue_t?

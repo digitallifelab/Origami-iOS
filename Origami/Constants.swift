@@ -34,9 +34,10 @@ let getCountriesUrlPart = "GetCountries"
 
 //Contacts
 let myContactsURLPart = "GetContacts"
-let allContactsURLPart = "GetAllContacts"
+//let allContactsURLPart = "GetAllContacts"
 let favContactURLPart = "SetFavoriteContact"
 
+//Find user by email
 let searchContactURLPart = "GetUserInfo"
 
 //Messages
@@ -85,7 +86,7 @@ let kHomeButtonImageName = "icon-home-SH"
 let kDayCellBackgroundColor =          UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0) //blue
 let kElementAttributeIconsDisabledColor = UIColor(red: 25.0/255.0, green: 117.0/255.0, blue: 190.0/255.0, alpha: 1.0)
 let kDayNavigationBarBackgroundColor = UIColor(red: 33.0/255.0, green: 150.0/255.0, blue: 243.0/255.0, alpha: 1.0)
-let serverURL = "http://cloudcraftt1.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"
+let serverURL =  "http://cloudcraftt1.cloudapp.net:8052/OrigamiWCFService/OrigamiService/"  //"https://192.168.1.30:8002/OrigamiWCFService/OrigamiService/" 
 let kHomeButtonImageName = "icon-home"
 #endif
 
@@ -104,7 +105,8 @@ let HomeCellWideDimension:CGFloat = 250.0
 let HomeCellVerticalSpacing:CGFloat = 10.0
 let HomeCellHorizontalSpacing:CGFloat = 10.0
 let MaximumLastMessagesCount:Int = 3
-
+let kMessagesRefreshIntervalIdle = 20
+let kMessagesRefreshIntervalChat = 5
 let All_New_Messages_Observation_ElementId:NSNumber = NSNumber(integer:-111)
 
 let FinishedLoadingMessages = "MessagesFinishedLoading"

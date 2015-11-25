@@ -184,14 +184,6 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
                 
             }
             
-//            existingAttrs.filter({ (attributeToCheck) -> Bool in
-//                if rect.intersects(attributeToCheck.frame)
-//                {
-//                    return true
-//                }
-//                return false
-//            })
-            
             let filtered = existingAttrs.filter({ (attributeToCheck) -> Bool in
                 if rect.intersects(attributeToCheck.frame)
                 {
@@ -217,9 +209,6 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
     
     func clearAllElements()
     {
-//        privSignals = 0
-//        privFavourites?.removeAll(keepCapacity: false)
-//        privOther?.removeAll(keepCapacity: false)
         self.layoutInfoStruct = nil
     }
     
@@ -246,19 +235,6 @@ class HomeSignalsVisibleFlowLayout:UICollectionViewFlowLayout
             {
                 headerAttributes = [NSIndexPath : UICollectionViewLayoutAttributes]()
             }
-            
-            
-//            var countOfSections = 1
-//            if privFavourites!.count > 0
-//            {
-//                countOfSections += 1
-//            }
-//            if privOther!.count > 0
-//            {
-//                countOfSections += 1
-//            }
-            
-            
             
             var countOfSections = 0
             

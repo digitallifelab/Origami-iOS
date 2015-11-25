@@ -259,7 +259,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
          let dataSource = SingleElementCollectionViewDataSource()//element: currentElement) // both can be nil
                     self.collectionDataSource = dataSource
           
-            collectionDataSource!.handledElement = currentElement
+            collectionDataSource!.handledElementId = currentElement?.objectID
             collectionDataSource!.handledCollectionView = self.collectionView
             collectionDataSource!.displayMode = self.displayMode
             collectionDataSource!.subordinateTapDelegate = self
@@ -273,7 +273,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
             collectionView.setContentOffset(currentContentOffset, animated: false)
 
-        if let collectionViewLayout = self.prepareCollectionLayoutForElement(collectionDataSource?.handledElement)
+        if let collectionViewLayout = self.prepareCollectionLayoutForElement(currentElement)
         {
             collectionView.setCollectionViewLayout(collectionViewLayout, animated: false)
         }
@@ -311,6 +311,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             rootId = currentElement?.rootElementId?.integerValue,
             selfNav = self.navigationController
         {
+            DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
             editingVC.editingStyle = .EditCurrent
             editingVC.currentElementId = elementId
             editingVC.rootElementID = rootId
@@ -402,7 +403,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             }
             else
             {
-                assert(false, "Unknown button type pressed.")
+                NSLog("Unknown button type pressed. : %ld", buttonIndex)
             }
         }
     }
@@ -460,7 +461,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             {
                 newElementCreator.composingDelegate = self
                 newElementCreator.rootElementID = rootId//.integerValue
-                
+                DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
                 self.navigationController?.pushViewController(newElementCreator, animated: true)
             }
         }
@@ -481,7 +482,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 if element.isArchived()
                 {
                     //will unarchve
-                    copyElement.archiveDate = NSDate.dummyDate()
+                    copyElement.archiveDate = NSDate.dummyDate() //nil
                 }
                 else
                 {
@@ -507,6 +508,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                 }
                                 
                             }
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                         }
                         else
                         {
@@ -516,7 +518,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                                         weakSelf.showAlertWithTitle("Error", message: "Could not archive current element.", cancelButtonTitle: "Close")
                                 }
                             }
+                            DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                         }
+                        
                     }
                 }
             }
@@ -817,13 +821,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
 
     func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
         //composer.dismissViewControllerAnimated(true, completion: nil)
+        DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
         self.navigationController?.popViewControllerAnimated(true)
     }
     
     func newElementComposer(composer: NewElementComposerViewController, finishedCreatingNewElement newElement: Element) {
         self.navigationController?.popViewControllerAnimated(true)
     
-        DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
+//        DataSource.sharedInstance.dataRefresher?.stopRefreshingElements()
         
         switch composer.editingStyle
         {
@@ -1036,7 +1041,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     {
                         
                     }
-                    
+                    DataSource.sharedInstance.dataRefresher?.startRefreshingElementsWithTimeoutInterval(30.0)
                     dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
                         if let weakSelf = self
                         {
@@ -1109,14 +1114,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
                     print("items in section old count: \(oldItemsCount)")
                     weakSelf.currentElement = existingOurElement
-                    weakSelf.collectionDataSource?.handledElement = weakSelf.currentElement
+                    weakSelf.collectionDataSource?.handledElementId = weakSelf.currentElement?.objectID
                     
                     let newItemsCount = weakSelf.collectionDataSource?.countAllItems()
                     print("items in section newCount: \(newItemsCount)")
-                    if oldItemsCount != newItemsCount
-                    {
+                    //if oldItemsCount != newItemsCount
+                    //{
                         weakSelf.prepareCollectionViewDataAndLayout()
-                    }
+                    //}
                 }
             })
         }
@@ -1137,9 +1142,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         {
             let currentVCs = navController.viewControllers
             let countVCs = currentVCs.count
+            guard let index = currentVCs.indexOf(self) else
+            {
+                return
+            }
             if countVCs > 2 //currently visible a subordinate element dashboard
             {
-                if let parentSelf = currentVCs[(countVCs - 1)] as? SingleElementDashboardVC
+                if let parentSelf = currentVCs[(index - 1)] as? SingleElementDashboardVC
                 {
                     parentSelf.refreshCurrentElementAfterElementChangedNotification(nil)
                 }
@@ -1471,10 +1480,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         //show popup with dismiss button and "good"-"bad" buttons
         
-//        if let prompt = NSBundle.mainBundle().loadNibNamed("FinishTaskResultView", owner: nil, options: nil).first as? FinishTaskResultView
-//        {
-//            
-//        }
         //let prompt = FinishTaskResultView.instance()
         let prompt = FinishTaskResultView(frame: CGRectMake(0, 0, 300.0, 200.0))
         prompt.center = CGPointMake( CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds) )
@@ -1694,10 +1699,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             operations.append(setFinishDateOp)
         }
         
+        let finishStateOp = NSBlockOperation {
+            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: 20, completion: { [weak self](success) -> () in
+                if success{
+                    print(" did change element finish state to 20")
+                    if let weakSelf = self
+                    {
+                       // weakSelf.prepareCollectionViewDataAndLayout()
+                        weakSelf.checkoutParentAndRefreshIfPresent()
+                    }
+                }
+            })
+        }
+        
         let bgQueue = NSOperationQueue()
         bgQueue.maxConcurrentOperationCount = 2
         
-        bgQueue.addOperations(operations, waitUntilFinished: false)
+        bgQueue.addOperations(operations, waitUntilFinished: true)
+        
+        bgQueue.addOperation(finishStateOp)
        
     }
     

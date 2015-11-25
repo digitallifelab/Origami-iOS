@@ -7,24 +7,35 @@
 //
 
 import UIKit
-
+import CoreData
 @objc class HomeCollectionHandler: NSObject, UICollectionViewDataSource, UICollectionViewDelegate
 {
-    var signals:[DBElement]?
-    var favourites:[DBElement]?
-    var other:[DBElement]?
+    var signals:[NSManagedObjectID]?
+    var favourites:[NSManagedObjectID]?
+    var other:[NSManagedObjectID]?
     
     var elementSelectionDelegate:ElementSelectionDelegate?
   
     var isSignalsToggled = false
     private var nightModeEnabled = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
   
+    let mainQueueContext:NSManagedObjectContext
     convenience init(info:dashboardDBElementsInfoTuple)
     {
+        //self.mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         self.init()
         self.signals = info.signals
         self.favourites = info.favourites
         self.other = info.other
+    }
+    
+    override init() {
+        self.mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        if let privateContext = DataSource.sharedInstance.localDatadaseHandler?.getPrivateContext()
+        {
+            self.mainQueueContext.parentContext = privateContext
+        }
+        super.init()
     }
 
     func deleteAllElements()
@@ -59,7 +70,11 @@ import UIKit
         case 0:
             if let existSignals = self.signals
             {
-                toReturn = existSignals.count + 2 // "toggle bubbon" cell + "last messages" cell
+                toReturn = existSignals.count + 2 // "toggle button" cell + "last messages" cell
+            }
+            else
+            {
+                toReturn = 2
             }
         case 1:
             if let favourites = self.favourites
@@ -109,7 +124,6 @@ import UIKit
             {
                 if let existingElement = elementForIndexPath(indexPath)
                 {
-
                 dashCell.titleLabel?.text = existingElement.title?.uppercaseString
 
                 dashCell.descriptionLabel?.text = existingElement.details
@@ -179,9 +193,7 @@ import UIKit
                 return headerView
             
             default:
-            assert(false, "Unexpected element kind. Only header view is expected.")
-            
-            
+             //assert(false, "Unexpected element kind. Only header view is expected.")
             return collectionView.dequeueReusableSupplementaryViewOfKind(kind, withReuseIdentifier: "DashHeader", forIndexPath: indexPath) as! DashHeaderView
         }
     }
@@ -202,31 +214,45 @@ import UIKit
                 {
                     if indexPath.row > 0
                     {
-                        let foundSignalElement = signals[(indexPath.row - 1)]
-                        
-                        return foundSignalElement
-                        
+                        let foundSignalElementId = signals[(indexPath.row - 1)]
+                        if let element = self.mainQueueContext.objectWithID(foundSignalElementId) as? DBElement
+                        {
+                            return element
+                        }
                     }
                 }
             case 1:
-                if let favCount = favourites?.count
+                if let favCount = favourites?.count where favCount > 0
                 {
-                    if favCount > 0 && favCount > lvRow
+                    if let foundFavouriteElementId = favourites?[lvRow]
                     {
-                        return favourites![lvRow]
+                        if let element = self.mainQueueContext.objectWithID(foundFavouriteElementId) as? DBElement
+                        {
+                            return element
+                        }
                     }
                 }
-                else if let otherCount = other?.count
+                else if let otherCount = other?.count where otherCount > 0
                 {
-                    if otherCount > 0
+                    
+                    if let foundOtherElementId = other?[lvRow]
                     {
-                        return other![lvRow]
+                        if let element = self.mainQueueContext.objectWithID(foundOtherElementId) as? DBElement
+                        {
+                            return element
+                        }
                     }
                 }
             case 2:
                 if other!.count > lvRow
                 {
-                    return other![lvRow]
+                    if let foundOtherElementId = other?[lvRow]
+                    {
+                        if let element = self.mainQueueContext.objectWithID(foundOtherElementId) as? DBElement
+                        {
+                            return element
+                        }
+                    }
                 }
             default:
                 break
@@ -281,16 +307,18 @@ import UIKit
                 self.elementSelectionDelegate?.didTapOnElement(elementIdInt)
                 return
             }
-            assert(false, "Did not find tapped element");
+            //assert(false, "Did not find tapped element");
           
         }
         else
         {
+            guard let signalElements = self.signals where signalElements.count > 0 else
+            {
+                return
+            }
             //print("  - Toggle Signals Pressed\n")
             isSignalsToggled = !isSignalsToggled
             var newLayout:UICollectionViewFlowLayout?
-            
-            
             
             let infoForLayout:dashboardDBElementsInfoTuple = (signals: self.signals, favourites:self.favourites, other: self.other)
             let layoutStruct = HomeSignalsHiddenFlowLayout.prepareLayoutStructWithInfo(infoForLayout)

@@ -16,11 +16,11 @@ import UIKit
 */
 class ImagePickingViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
-    private var imagePickerController:UIImagePickerController = UIImagePickerController()
+    private var imagePickerController:UIImagePickerController?
  
     @IBOutlet var preview:UIImageView!
     @IBOutlet var cameraButton:UIBarButtonItem!
-    var attachPickingDelegate:AttachPickingDelegate?
+    weak var attachPickingDelegate:AttachPickingDelegate?
     @IBOutlet var bottomToolbar:UIToolbar!
     
     private var selectedMedia:MediaFile? {
@@ -31,6 +31,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
             }
         }
     }
+    
     private var mediaName:String? {
         get{
             let lvDateString = NSDate().timeDateStringForMediaName() + ".jpg"
@@ -44,11 +45,10 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         if !UIImagePickerController.isSourceTypeAvailable(.Camera) {
             cameraButton.enabled = false
         }
-        imagePickerController.delegate = self
+      
         // Do any additional setup after loading the view.
         
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -95,46 +95,61 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
         
         proceedWithSelectedImage(selectedImage)
         
-        imagePickerController.willMoveToParentViewController(nil)
-        imagePickerController.view.removeFromSuperview()
-        imagePickerController.removeFromParentViewController()
-        imagePickerController.didMoveToParentViewController(nil)
-        
+        picker.willMoveToParentViewController(nil)
+        picker.view.removeFromSuperview()
+        picker.removeFromParentViewController()
+        picker.didMoveToParentViewController(nil)
+        self.imagePickerController = nil
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true, completion: nil)
+        picker.willMoveToParentViewController(nil)
+        picker.view.removeFromSuperview()
+        picker.removeFromParentViewController()
+        picker.didMoveToParentViewController(nil)
+        self.imagePickerController = nil
     }
     
     //MARK: ----
     private func showImagePickerControllerFor(sender:UIBarButtonItem) {
         
+        self.imagePickerController = UIImagePickerController()
+       
+        guard let pickerVC = self.imagePickerController else
+        {
+            return
+        }
+        
+        pickerVC.delegate = self
         if sender.tag == 2 {
             if UIImagePickerController.isSourceTypeAvailable(.Camera)
             {
-                imagePickerController.sourceType = .Camera
-                imagePickerController.showsCameraControls = true
+                pickerVC.sourceType = .Camera
+                pickerVC.showsCameraControls = true
             }
             else
             {
-                imagePickerController.sourceType = .PhotoLibrary
+                pickerVC.sourceType = .PhotoLibrary
             }
         }
         else
         {
-            imagePickerController.sourceType = .PhotoLibrary
+            pickerVC.sourceType = .PhotoLibrary
         }
         
-        imagePickerController.allowsEditing = false
+        pickerVC.allowsEditing = false
         if let allowEditingResult = self.attachPickingDelegate?.mediaPickerShouldAllowEditing(self)
         {
-            imagePickerController.allowsEditing = allowEditingResult
+            pickerVC.allowsEditing = allowEditingResult
         }
         
-        self.addChildViewController(imagePickerController)
-        imagePickerController.willMoveToParentViewController(self)
-        self.view.addSubview(imagePickerController.view)
-        imagePickerController.didMoveToParentViewController(self)
+        if let mainRootVC = UIApplication.sharedApplication().windows.first?.rootViewController as? RootViewController
+        {
+            mainRootVC.addChildViewController(pickerVC)
+            pickerVC.willMoveToParentViewController(mainRootVC)
+            mainRootVC.view.addSubview(pickerVC.view)
+            pickerVC.didMoveToParentViewController(mainRootVC)
+        }
         
     }
     
@@ -142,7 +157,7 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
     {
         let bgQueue:dispatch_queue_t = dispatch_queue_create("Origami.ImageProcessing.Background", DISPATCH_QUEUE_SERIAL)
         let currentMediaName = self.mediaName
-        dispatch_async(bgQueue, {[weak self] () -> Void in
+        dispatch_async(bgQueue) {[weak self] () -> Void in
             
             let lvSelectedMedia = MediaFile()
             
@@ -157,15 +172,14 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
                 if fixedImage.size.width >= targetWidth || fixedImage.size.height >= targetHeight
                 {
                     let ratio = min(targetWidth / fixedImage.size.width , targetWidth / fixedImage.size.height)
-                    //let imageWidth:CGFloat =  round(fixedImage.size.width * ratio)
-                    //let imageHeight:CGFloat = round(fixedImage.size.height * ratio)
+
                     if let scaled = fixedImage.scaleToSizeKeepAspect(CGSizeMake(fixedImage.size.width * ratio, fixedImage.size.height * ratio))
                     {
                         fixedImage = scaled
                     }
                     else
                     {
-                        assert(false, " did not  scale down an image.")
+                        print(" did not scale down an image.")
                     }
                 }
             }
@@ -185,13 +199,13 @@ class ImagePickingViewController: UIViewController, UIImagePickerControllerDeleg
                 lvSelectedMedia.data = aData
             }
             
-            dispatch_async(dispatch_get_main_queue(), {[weak self] () -> Void in
+            dispatch_async(dispatch_get_main_queue()) {[weak self] () -> Void in
                 if let aSelf = self
                 {
                     aSelf.selectedMedia = lvSelectedMedia
                 }
-            })
-        })
+            }//end of mainQueue
+        }// end of BG queue
     }
     
     //MARK: IBActions

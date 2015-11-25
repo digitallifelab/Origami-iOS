@@ -72,6 +72,13 @@
 "MHy-Gy-Yry.segmentTitles[0]" = "All";
 "MHy-Gy-Yry.segmentTitles[1]" = "Archived";
 
+
+"TCo-kg-hh0.segmentTitles[0]" = "All";
+"TCo-kg-hh0.segmentTitles[1]" = "Signals";
+"TCo-kg-hh0.segmentTitles[2]" = "Ideas";
+"TCo-kg-hh0.segmentTitles[3]" = "Tasks";
+"TCo-kg-hh0.segmentTitles[4]" = "Decisions";
+
 /* Class = "UILabel"; text = "18.06.2015 12:27"; ObjectID = "OZB-6b-hhu"; */
 "OZB-6b-hhu.text" = "18.06.2015 12:27";
 

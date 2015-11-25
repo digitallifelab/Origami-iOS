@@ -20,7 +20,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
     @IBOutlet weak var textHolderHeightConstraint: NSLayoutConstraint!
     var defaultTextInputViewHeight:CGFloat?
-    //var currentChatMessages = [DBMessageChat]()
+    var userNames = [Int:String]()
     
     var messagesFetchController:NSFetchedResultsController?
     
@@ -70,6 +70,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+
+        DataSource.sharedInstance.messagesLoader?.setRefreshInterval(kMessagesRefreshIntervalChat)
+
         self.navigationController?.toolbarHidden = true
         let nightModeOn = NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey)
         setAppearanceForNightModeToggled(nightModeOn)
@@ -126,6 +129,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        DataSource.sharedInstance.messagesLoader?.setRefreshInterval(kMessagesRefreshIntervalIdle)
+        
+        //DataSource.sharedInstance.messagesLoader?.setRefreshInterval(kMessagesRefreshIntervalIdle)
+        
         DataSource.sharedInstance.removeAllObserversForNewMessages()
         
         removeObserversForKeyboard()
@@ -448,7 +456,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     }
     
     //MARK: UITableViewDataSource
-    func messageForIndexPath(indexPath:NSIndexPath) -> DBMessageChat?
+    private func messageForIndexPath(indexPath:NSIndexPath) -> DBMessageChat?
     {
         guard
             let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
@@ -459,6 +467,22 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         }
         
         return fetchedObjects[indexPath.row]
+    }
+    
+    private func userNameForId(userId:Int) -> String
+    {
+        if let nameFound = userNames[userId]
+        {
+            return nameFound
+        }
+        
+        if let contact = DataSource.sharedInstance.localDatadaseHandler?.readContactById(userId), initialsString = contact.initialsString()
+        {
+            userNames[userId] = initialsString
+            return initialsString
+        }
+        
+        return ""
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -509,6 +533,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
                 recievedCell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
             
+            recievedCell.nameLabel.text = userNameForId(creatorIdInt)
+            
             return recievedCell
         }
         
@@ -517,12 +543,11 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        return 100.0
+        return 70.0
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        
         if let nsString:NSString = messageForIndexPath(indexPath)?.textBody
         {
             let size = CGSizeMake(160.0, CGFloat(FLT_MAX))
