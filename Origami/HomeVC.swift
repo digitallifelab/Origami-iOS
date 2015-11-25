@@ -248,7 +248,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     private func refreshMainDashboard(completion:(()->())? = nil)
     {
-        
         DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
             
             if let weakSelf = self, dashInfo = DataSource.sharedInstance.dashBoardInfo
