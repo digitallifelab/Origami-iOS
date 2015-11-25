@@ -63,6 +63,7 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -3187,18 +3188,18 @@
                                             <outlet property="textContainerView" destination="FBR-Np-f6m" id="C9S-j1-ytt"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OthersMessageCell" id="62X-Ry-dwV" customClass="ChatMessageRecievedCell" customModule="Origami_task_manager" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="96" width="600" height="77"/>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="OthersMessageCell" rowHeight="106" id="62X-Ry-dwV" customClass="ChatMessageRecievedCell" customModule="Origami_task_manager" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="96" width="600" height="106"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="62X-Ry-dwV" id="nZE-m9-0Mi">
-                                            <rect key="frame" x="0.0" y="0.0" width="600" height="77"/>
+                                        <tableViewCellContentView key="contentView" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="62X-Ry-dwV" id="nZE-m9-0Mi">
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="106"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" horizontalCompressionResistancePriority="500" verticalCompressionResistancePriority="500" translatesAutoresizingMaskIntoConstraints="NO" id="bNc-wZ-Eyy">
-                                                    <rect key="frame" x="51" y="29" width="142" height="38"/>
+                                                    <rect key="frame" x="51" y="29" width="142" height="67"/>
                                                     <subviews>
                                                         <label contentMode="left" horizontalHuggingPriority="600" verticalHuggingPriority="600" text="message from user" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cXG-xX-3MC" userLabel="messageLabel">
-                                                            <rect key="frame" x="8" y="5" width="126" height="28"/>
+                                                            <rect key="frame" x="8" y="5" width="126" height="57"/>
                                                             <animations/>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="15"/>
@@ -3242,6 +3243,14 @@
                                                         <constraint firstAttribute="height" constant="35" id="9dc-WU-BFC"/>
                                                     </constraints>
                                                 </imageView>
+                                                <label userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name string" textAlignment="center" lineBreakMode="clip" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xr0-VC-YNL" userLabel="nameLabel">
+                                                    <rect key="frame" x="8" y="65" width="35" height="16"/>
+                                                    <animations/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="12"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <animations/>
                                             <constraints>
@@ -3250,11 +3259,14 @@
                                                 <constraint firstAttribute="bottom" secondItem="bNc-wZ-Eyy" secondAttribute="bottom" constant="10" id="6dt-aU-iRL"/>
                                                 <constraint firstItem="ywS-5g-qLl" firstAttribute="top" secondItem="nZE-m9-0Mi" secondAttribute="top" constant="8" id="7AH-ru-nfU"/>
                                                 <constraint firstAttribute="bottom" secondItem="4Cd-4o-a9a" secondAttribute="bottom" constant="8" id="94E-3b-pmc"/>
+                                                <constraint firstItem="Xr0-VC-YNL" firstAttribute="leading" secondItem="ywS-5g-qLl" secondAttribute="leading" id="ANb-Eh-Mim"/>
                                                 <constraint firstItem="4Cd-4o-a9a" firstAttribute="top" secondItem="bNc-wZ-Eyy" secondAttribute="bottom" constant="2" id="Koc-SH-546"/>
                                                 <constraint firstItem="4Cd-4o-a9a" firstAttribute="leading" secondItem="nZE-m9-0Mi" secondAttribute="leading" constant="8" id="M8C-nU-UfQ"/>
+                                                <constraint firstItem="Xr0-VC-YNL" firstAttribute="top" secondItem="ywS-5g-qLl" secondAttribute="bottom" constant="1" id="QR3-2k-OtF"/>
                                                 <constraint firstItem="bNc-wZ-Eyy" firstAttribute="top" secondItem="ywS-5g-qLl" secondAttribute="top" id="eqy-hh-RzS"/>
                                                 <constraint firstItem="bNc-wZ-Eyy" firstAttribute="leading" secondItem="ywS-5g-qLl" secondAttribute="trailing" constant="8" id="lKm-Ke-qTX"/>
                                                 <constraint firstItem="ywS-5g-qLl" firstAttribute="leading" secondItem="nZE-m9-0Mi" secondAttribute="leading" constant="8" id="lLy-cc-Q2M"/>
+                                                <constraint firstItem="Xr0-VC-YNL" firstAttribute="width" secondItem="ywS-5g-qLl" secondAttribute="width" id="qTy-5D-hSm"/>
                                                 <constraint firstAttribute="centerX" secondItem="4Cd-4o-a9a" secondAttribute="centerX" id="rGX-XE-6KG"/>
                                             </constraints>
                                             <variation key="default">
@@ -3272,6 +3284,7 @@
                                             <outlet property="avatar" destination="ywS-5g-qLl" id="6jl-4D-6px"/>
                                             <outlet property="dateLabel" destination="4Cd-4o-a9a" id="Mub-Te-JlA"/>
                                             <outlet property="messageLabel" destination="cXG-xX-3MC" id="0ee-92-iGd"/>
+                                            <outlet property="nameLabel" destination="Xr0-VC-YNL" id="uFn-TB-uyO"/>
                                             <outlet property="textContainerView" destination="bNc-wZ-Eyy" id="35q-0b-13K"/>
                                         </connections>
                                     </tableViewCell>

@@ -456,7 +456,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                             //show current user`s data
                             if creatorId == currentUserIDInt //user sees own element
                             {
-                                titleCell.responsibleNameLabel?.text = "Your Own Element"
+                                titleCell.responsibleNameLabel?.text = "Your_Own_Element".localizedWithComment("")
                             }
                             else //contact`s data
                             {

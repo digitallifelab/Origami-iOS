@@ -125,3 +125,9 @@
 /* Class = "UISegmentedControl";  ObjectID = "MHy-Gy-Yry"; */
 "MHy-Gy-Yry.segmentTitles[0]" = "Все";
 "MHy-Gy-Yry.segmentTitles[1]" = "Архивные";
+
+"TCo-kg-hh0.segmentTitles[0]" = "Все";
+"TCo-kg-hh0.segmentTitles[1]" = "Сигналы";
+"TCo-kg-hh0.segmentTitles[2]" = "Идеи";
+"TCo-kg-hh0.segmentTitles[3]" = "Задачи";
+"TCo-kg-hh0.segmentTitles[4]" = "Решения";

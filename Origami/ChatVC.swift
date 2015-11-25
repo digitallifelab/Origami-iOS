@@ -20,7 +20,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     @IBOutlet weak var textHolderBottomConstaint: NSLayoutConstraint!
     @IBOutlet weak var textHolderHeightConstraint: NSLayoutConstraint!
     var defaultTextInputViewHeight:CGFloat?
-    //var currentChatMessages = [DBMessageChat]()
+    var userNames = [Int:String]()
     
     var messagesFetchController:NSFetchedResultsController?
     
@@ -456,7 +456,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     }
     
     //MARK: UITableViewDataSource
-    func messageForIndexPath(indexPath:NSIndexPath) -> DBMessageChat?
+    private func messageForIndexPath(indexPath:NSIndexPath) -> DBMessageChat?
     {
         guard
             let fetchedObjects = self.messagesFetchController?.fetchedObjects as? [DBMessageChat]
@@ -467,6 +467,22 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         }
         
         return fetchedObjects[indexPath.row]
+    }
+    
+    private func userNameForId(userId:Int) -> String
+    {
+        if let nameFound = userNames[userId]
+        {
+            return nameFound
+        }
+        
+        if let contact = DataSource.sharedInstance.localDatadaseHandler?.readContactById(userId), initialsString = contact.initialsString()
+        {
+            userNames[userId] = initialsString
+            return initialsString
+        }
+        
+        return ""
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -516,6 +532,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
             {
                 recievedCell.avatar?.image = UIImage(named: "icon-contacts")?.imageWithRenderingMode(.AlwaysTemplate)
             }
+            
+            recievedCell.nameLabel.text = userNameForId(creatorIdInt)
             
             return recievedCell
         }

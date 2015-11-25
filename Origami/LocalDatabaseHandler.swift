@@ -393,7 +393,8 @@ class LocalDatabaseHandler
     }
     
     /**
-     Performs fetch request on main queue context. Used for returning real Elements for CollectionView DataSource and anywhere else if needed
+     Performs fetch request on private queue context. Used for returning real Elements for CollectionView DataSource and anywhere else if needed
+     - Returns: an array of `NSManagedObjectID` which contains at least one element
      - Throws: when no subordinate *DBElement*  found or any error happens
      */
     func subordinateElementsForElementId(elementId:Int) throws -> [NSManagedObjectID]
