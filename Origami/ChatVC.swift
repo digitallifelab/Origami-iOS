@@ -34,6 +34,8 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     var newElementDetailsInfo:String?
     var newCreatedElement:Element?
     
+    let options = [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!]
+    
     deinit{
         
         NSNotificationCenter.defaultCenter().removeObserver(self.mainContext!, name: NSManagedObjectContextDidSaveNotification, object: nil)
@@ -476,7 +478,9 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
             return nameFound
         }
         
-        if let contact = DataSource.sharedInstance.localDatadaseHandler?.readContactById(userId), initialsString = contact.initialsString()
+        if let
+            contact = DataSource.sharedInstance.localDatadaseHandler?.readContactById(userId),
+            initialsString = contact.nameAndLastNameSpacedString()
         {
             userNames[userId] = initialsString
             return initialsString
@@ -543,7 +547,7 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
-        return 70.0
+        return 75.0
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
@@ -551,16 +555,16 @@ class ChatVC: UIViewController, ChatInputViewDelegate, UITableViewDataSource, UI
         if let nsString:NSString = messageForIndexPath(indexPath)?.textBody
         {
             let size = CGSizeMake(160.0, CGFloat(FLT_MAX))
-            let options = [NSFontAttributeName:UIFont(name: "SegoeUI", size: 14.0)!]
+            
             let targetStringFrame = nsString.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: options, context: nil)
-            let height = targetStringFrame.size.height + 8 * 2 + 22 + 5 + 5 + 8 * 2
-            if height > 70.0
+            let height = targetStringFrame.size.height + 8 * 2 + 22 + 5 + 5 + 5 + 8 * 2
+            if height > 75.0
             {
                 return height
             }
         }
         
-        return 70.0
+        return 75.0
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)

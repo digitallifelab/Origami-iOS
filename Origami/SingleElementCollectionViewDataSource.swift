@@ -40,7 +40,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     weak var handledCollectionView:UICollectionView?
     
-    var handledElementId:NSManagedObjectID?{
+    var handledElementId:NSManagedObjectID? {
         didSet{
             guard let anID = handledElementId else
             {
@@ -50,6 +50,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
             if let element = self.mainQueueContext.objectWithID(anID) as? DBElement
             {
+                self.mainQueueContext.refreshObject(element, mergeChanges: true)
                 self.handledElement = element
             }
         }
@@ -149,7 +150,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         do
         {
-            guard let elementIDs = try DataSource.sharedInstance.localDatadaseHandler?.subordinateElementsForElementId(elementId) else
+            guard let elementIDs = try DataSource.sharedInstance.localDatadaseHandler?.subordinateElementsForElementId(elementId, archived: (self.handledElement?.dateArchived != nil)) else
             {
                 return nil
             }
@@ -219,7 +220,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 let value = allValues[i] //again tuple
                 let lvElement = value.1
                 
-                if /*let elementId = lvElement.elementId?.integerValue,*/ let subordinatesCount = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(lvElement.objectID)
+                if /*let elementId = lvElement.elementId?.integerValue,*/ let subordinatesCount = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(lvElement.objectID, includeArchived: (self.handledElement?.dateArchived != nil))
                 {
                     if subordinatesCount > 0
                     {
@@ -823,6 +824,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     {
                         try DataSource.sharedInstance.localDatadaseHandler?.saveImagePreview(previewImageData, forAttachById: attachId)
                         DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                        if let image = UIImage(data: previewImageData)
+                        {
+                            return image
+                        }
                     }
                     catch
                     {

@@ -397,14 +397,14 @@ class LocalDatabaseHandler
      - Returns: an array of `NSManagedObjectID` which contains at least one element
      - Throws: when no subordinate *DBElement*  found or any error happens
      */
-    func subordinateElementsForElementId(elementId:Int) throws -> [NSManagedObjectID]
+    func subordinateElementsForElementId(elementId:Int, archived:Bool = false) throws -> [NSManagedObjectID]
     {
         let lvContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         lvContext.parentContext = self.privateContext
         
         let request = NSFetchRequest(entityName: "DBElement")
         request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
-        request.predicate = NSPredicate(format: "rootElementId = \(elementId)")
+        request.predicate = (archived) ? NSPredicate(format: "rootElementId = \(elementId)") : NSPredicate(format:"rootElementId = \(elementId) AND dateArchived = nil" )
         request.resultType = .ManagedObjectIDResultType
         
         var toReturnElements:[NSManagedObjectID]?
@@ -431,7 +431,7 @@ class LocalDatabaseHandler
         throw OrigamiError.NotFoundError(message: "No Subordinate Elements wer Found")
     }
     
-    func countSubordinatesForElementByManagedObjectId(managedID:NSManagedObjectID) -> Int
+    func countSubordinatesForElementByManagedObjectId(managedID:NSManagedObjectID, includeArchived:Bool = false) -> Int
     {
         let context = self.privateContext
         var returnCount = 0
@@ -440,12 +440,12 @@ class LocalDatabaseHandler
             {
                 let fetchRequest = NSFetchRequest(entityName: "DBElement")
                 fetchRequest.resultType = .CountResultType
-                fetchRequest.predicate = NSPredicate(format:"rootElementId = %@", elementId)
+                fetchRequest.predicate = (includeArchived) ? NSPredicate(format:"rootElementId = %@", elementId) : NSPredicate(format:"rootElementId = %@ AND dateArchived = nil", elementId)
                 
                 do{
                     if let lvCount = try context.executeFetchRequest(fetchRequest) as? [Int]
                     {
-                        print("subordinates count: \(lvCount)")
+                        print("subordinates count: \(lvCount.first)")
                         returnCount = lvCount.first!
                     }
                 }
@@ -1928,7 +1928,7 @@ class LocalDatabaseHandler
                                 
                                 let context = self.privateContext
                                 
-                                context.performBlock(){_ in
+                                context.performBlock() {_ in
                                     for aDBuser in toDelete
                                     {
                                         context.deleteObject(aDBuser)
@@ -2422,7 +2422,7 @@ class LocalDatabaseHandler
         catch let previewImageError
         {
             print(" saveAttachToLocalDatabase -> Could not get attachPreviewImageData:")
-            print(previewImageError)
+            print((previewImageError as NSError).localizedDescription)
         }
         
         

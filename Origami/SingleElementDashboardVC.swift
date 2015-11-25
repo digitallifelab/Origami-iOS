@@ -236,7 +236,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     - sets **SingleElementCollectionViewDataSource** instance delegate and datasouce of collection view
     - sets new layout if created from current element
     - calls collectionView.reloadData()
-    - throws: 
+    - Throws:
         - an error, containing a string in LocalizedDescription that says, layout coud not be created, 
         - or dataSource for colelctionview could not be created
     
@@ -366,6 +366,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     {
                         weakSelf.refreshCurrentElementFromLocalDatabase(elementId)
                         weakSelf.setParentElementNeedsUpdateIfPresent()
+                        weakSelf.collectionDataSource?.handledElementId = element.objectID
                         weakSelf.collectionView?.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                 }
@@ -426,12 +427,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             let elementCopy = theElement.createCopyForServer()
 
             elementCopy.isSignal = isSignal
-            
+            let objId = theElement.objectID
             DataSource.sharedInstance.editElement(elementCopy) {[weak self] (edited) -> () in
                 if let aSelf = self
                 {
                     dispatch_async(dispatch_get_main_queue()) { _ in
+                        
                         aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                        aSelf.collectionDataSource?.handledElementId = objId
+                        
                         if edited
                         {
                             aSelf.setParentElementNeedsUpdateIfPresent()
@@ -889,7 +893,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleEditingElementOptions(element:Element, newOptions:NSNumber)
     {
-        guard let elementId = element.elementId else
+        guard let elementId = element.elementId, objId = currentElement?.objectID else
         {
             return
         }
@@ -901,6 +905,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     if edited
                     {
                         aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                       
+                        aSelf.collectionDataSource?.handledElementId = objId
                         aSelf.setParentElementNeedsUpdateIfPresent()
                         aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
@@ -916,7 +922,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleEditingElement(editingElement:Element)
     {
-        
         guard let currentTitle = editingElement.title ,  editedTitle = self.currentElement?.title, currentElementId = self.currentElement?.elementId?.integerValue, editingElementId = editingElement.elementId else
         {
             return

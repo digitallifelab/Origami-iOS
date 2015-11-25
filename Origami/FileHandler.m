@@ -401,7 +401,7 @@
         NSLog(@" ... Asynchron . Error. File \" %@ \"does not exist at Attaches directory.", fileName);
         if (completionBlock)
         {
-            NSError *noFileError = [NSError errorWithDomain:@"Origamy.File Reading Error." code:-1021 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"File not found: \n%@ .", fileName]}];
+            NSError *noFileError = [NSError errorWithDomain:@"Origami.File Reading Error." code:-1021 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"File not found: \n%@ .", fileName]}];
             completionBlock(nil, noFileError);
         }
         return ;

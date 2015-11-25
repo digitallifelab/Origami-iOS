@@ -33,7 +33,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     {
         super.viewDidLoad()
 
-        self.title = "Home"
+        self.title = "Home".localizedWithComment("")
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
