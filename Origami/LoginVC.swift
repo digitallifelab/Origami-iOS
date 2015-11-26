@@ -139,9 +139,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
             catch{
                 
                 let waiterGroup = dispatch_group_create()
-                
-                dispatch_group_enter(waiterGroup)
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 30.0))
+                dispatch_group_enter(waiterGroup)
                 
                 DataSource.sharedInstance.downloadMyContactsFromServer { (didSaveToLocalDatabase, error) -> () in
                     dispatch_group_leave(waiterGroup)

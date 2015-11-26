@@ -174,8 +174,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     func configureNavigationTitleView()
     {
         #if SHEVCHENKO
-            let titleView = UIView(frame: CGRectMake(0,0,100,40))
-            let titleImageView = UIImageView(frame: CGRectMake(0, 0, 100, 35))//(image:UIImage(named: "title-home"))
+            let titleView = UIView(frame: CGRectMake(0,0,100,38))
+            let titleImageView = UIImageView(frame: CGRectMake(0, 2, 100, 36))//(image:UIImage(named: "title-home"))
             titleImageView.contentMode = .ScaleAspectFit
             titleImageView.autoresizingMask = [.FlexibleLeftMargin, .FlexibleRightMargin]
             titleImageView.image = UIImage(named: "title-home")

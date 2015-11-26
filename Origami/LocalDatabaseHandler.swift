@@ -2119,7 +2119,9 @@ class LocalDatabaseHandler
                     {
                         completion?(nil)
                     }
+                    return
                 }
+                completion?(nil)
             }
             catch
             {
