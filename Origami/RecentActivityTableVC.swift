@@ -275,14 +275,14 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     }
                     
                     
-                    
-                    if let responsible = element.responsibleId?.integerValue, contacts = DataSource.sharedInstance.getContactsByIds(Set([responsible])), currentContact = contacts.first
+                    //setup NameLabel text under avatar
+                    if let responsible = element.responsibleId?.integerValue, currentContact = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(responsible).db
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
-                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId
+                    else if let responsibleIdInt = element.responsibleId?.integerValue, user = DataSource.sharedInstance.user,  userIdInt = user.userId
                     {
-                        if userIdInt == element.creatorId
+                        if userIdInt == responsibleIdInt
                         {
                             activityCell.nameLabel?.text = user.initialsString()
                         }
@@ -321,7 +321,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                         
                     }
                     
-                    if let creatorId = element.creatorId?.integerValue, contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), currentContact = contacts.first
+                    if let creatorId = element.creatorId?.integerValue, currentContact = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId).db //contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), currentContact = contacts.first
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }

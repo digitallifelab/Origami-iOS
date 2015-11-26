@@ -42,9 +42,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)        
-        
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)
     }
 
     override func didReceiveMemoryWarning()
@@ -144,7 +142,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             let titleAttributed = NSAttributedString(string: "Graph", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 15)!])
             titleButton.setAttributedTitle(titleAttributed, forState: .Normal)
             titleButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
-            
             titleButton.addTarget(self, action: "showGraphViewController:", forControlEvents: .TouchUpInside)
             self.navigationItem.titleView = titleButton
         #endif
@@ -162,13 +159,13 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     func configureLeftBarButtonItem()
     {
-        let leftButton = UIButton(type:.Custom)
-        leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
-        leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        let leftButton = UIButton(type:.System)
+        leftButton.frame = CGRectMake(-8.0, 0.0, 50.0, 35.0)
+        leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, -8, 0, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         leftButton.tintColor = UIColor.whiteColor()
-        
+        //leftButton.layer.borderWidth = 1.0
         let leftBarButton = UIBarButtonItem(customView: leftButton)
         
         self.navigationItem.leftBarButtonItem = leftBarButton
@@ -177,10 +174,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     func configureNavigationTitleView()
     {
         #if SHEVCHENKO
-            let titleImageView = UIImageView(image:UIImage(named: "title-home"))
+            let titleView = UIView(frame: CGRectMake(0,0,100,40))
+            let titleImageView = UIImageView(frame: CGRectMake(0, 0, 100, 35))//(image:UIImage(named: "title-home"))
             titleImageView.contentMode = .ScaleAspectFit
-            titleImageView.frame = CGRectMake(0, 0, 200, 40)
-            self.navigationItem.titleView = titleImageView
+            titleImageView.autoresizingMask = [.FlexibleLeftMargin, .FlexibleRightMargin]
+            titleImageView.image = UIImage(named: "title-home")
+            //titleImageView.layer.borderWidth = 1.0
+            titleView.addSubview(titleImageView)
+            self.navigationItem.titleView = titleView
         #else
             let titleLabel = UILabel()
             self.navigationItem.titleView = titleLabel

@@ -309,11 +309,11 @@ class LocalDatabaseHandler
         
         var foundRoots = [DBElement]()
         var pendingElement:DBElement? = currentElement
-        while let _ = pendingElement
+        while let pending = pendingElement
         {
-            if let parentFound = self.findParentElementForElement(pendingElement!)
+            if let parentFound = self.findParentElementForElement(pending)
             {
-                foundRoots.append(parentFound)
+                foundRoots.insert(parentFound, atIndex:0)
                 pendingElement = parentFound
                 continue
             }
