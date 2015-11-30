@@ -383,7 +383,7 @@ class ObjectsConverter {
         return newElements
     }
     
-    class func sortMessagesByDate(inout messages:[Message],  _ sortingFunction:((Message, Message)->Bool))
+    class func sortMessagesByDate(inout messages:[Message], sortingFunction:((Message, Message)->Bool))
     {
         if messages.count > 1
         {

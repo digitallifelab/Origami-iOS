@@ -393,7 +393,7 @@ class LocalDatabaseHandler
     }
     
     /**
-     Performs fetch request on private queue context. Used for returning real Elements for CollectionView DataSource and anywhere else if needed
+     Performs fetch request on private queue context. Used for returning `NSManagedObjectID`s of `DBElement`-s for CollectionView DataSource and anywhere else if needed
      - Returns: an array of `NSManagedObjectID` which contains at least one element
      - Throws: when no subordinate *DBElement*  found or any error happens
      */
@@ -405,22 +405,46 @@ class LocalDatabaseHandler
         let request = NSFetchRequest(entityName: "DBElement")
         request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
         request.predicate = (archived) ? NSPredicate(format: "rootElementId = \(elementId)") : NSPredicate(format:"rootElementId = \(elementId) AND dateArchived = nil" )
-        request.resultType = .ManagedObjectIDResultType
+        //request.resultType = .ManagedObjectIDResultType
         
         var toReturnElements:[NSManagedObjectID]?
         
         lvContext.performBlockAndWait() {
+//            do
+//            {
+//                if let subordinates = try lvContext.executeFetchRequest(request) as? [NSManagedObjectID] where subordinates.count > 0
+//                {
+//                    toReturnElements = subordinates
+//                }
+//            }
+//            catch let error
+//            {
+//                print("error for main queue subordinates query:")
+//                print(error)
+//            }
             do
             {
-                if let subordinates = try lvContext.executeFetchRequest(request) as? [NSManagedObjectID] where subordinates.count > 0
+                if let subordinateElements = try lvContext.executeFetchRequest(request) as? [DBElement] where subordinateElements.count > 0
                 {
-                    toReturnElements = subordinates
+                    let sortedByLastMessage = subordinateElements.sort() { (element1, element2) -> Bool in
+                        if let date1 = element1.latestAffectingDate, date2 = element2.latestAffectingDate
+                        {
+                            return date1.compare(date2) == .OrderedDescending
+                        }
+                        return false
+                    }
+                    
+                    toReturnElements = [NSManagedObjectID]()
+                    for anElement in sortedByLastMessage
+                    {
+                        toReturnElements?.append(anElement.objectID)
+                    }
                 }
             }
-            catch let error
+            catch let fetchError
             {
                 print("error for main queue subordinates query:")
-                print(error)
+                print(fetchError)
             }
         }
         
@@ -698,15 +722,15 @@ class LocalDatabaseHandler
                         {
                             elementToReturn = elementsResult.first!
                         }
-                        else if elementsResult.count == 0
-                        {
-                            //print("no element found for id: \(elementId)\n")
-                            
-                        }
+//                        else if elementsResult.count == 0
+//                        {
+//                            //print("no element found for id: \(elementId)\n")
+//                            
+//                        }
                         else if elementsResult.count > 1
                         {
-                            assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
-                            //TODO: delete duplicate entries
+                            //assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
+                         
                             var elements = elementsResult
                             let toReturn = elements.removeLast()
                             elementToReturn = toReturn
@@ -714,14 +738,15 @@ class LocalDatabaseHandler
                             {
                                 context.deleteObject(anElement)
                             }
-                            
+                    
                             do
                             {
                                 try context.save()
+                                print("--> Did delete duplicate DBElements.")
                             }
                             catch let saveError
                             {
-                                print("did not save context after deleting duplicate entries:")
+                                print(" --> ERROR: did not save context after deleting duplicate DBElement`s:")
                                 print(saveError)
                             }
                         }

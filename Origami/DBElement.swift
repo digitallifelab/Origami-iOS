@@ -139,4 +139,47 @@ class DBElement: NSManagedObject {
         }
         return nil
     }
+    
+    var latestChatMessage:DBMessageChat? {
+        if let messages = self.messages as? Set<DBMessageChat> where messages.count > 0
+        {
+            let latestMessage = messages.sort({ (message1, message2) -> Bool in
+                
+                if let date1 = message1.dateCreated, date2 = message2.dateCreated
+                {
+                    return date1.compare(date2) == .OrderedDescending
+                }
+            
+                return false
+                
+            }).first
+            
+            return latestMessage
+        }
+        return nil
+    }
+    
+    var latestAffectingDate : NSDate? {
+        guard let lvDate = self.dateCreated else
+        {
+            return nil
+        }
+        
+        var dateToReturn = lvDate
+        
+        if let lastMessageDate = self.latestChatMessage?.dateCreated
+        {
+            dateToReturn = lastMessageDate
+        }
+        
+        if let changeDate = self.dateChanged
+        {
+            if changeDate.compare(dateToReturn) == .OrderedDescending
+            {
+                dateToReturn = changeDate
+            }
+        }
+        
+        return dateToReturn
+    }
 }
