@@ -42,8 +42,8 @@ class SingleElementTitleCell: UICollectionViewCell {
     
     var handledElement:Element? {
         didSet{
-            print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
-            print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
+            //print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
+            //print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
         }
     }
     var buttonTrueColor = UIColor.whiteColor()

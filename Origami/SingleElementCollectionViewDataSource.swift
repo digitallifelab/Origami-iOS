@@ -392,8 +392,8 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 titleCell.handledElement = titleElement
                 
                 let elementIsOwnedBool = elementIsOwned()
-                print("currentElement is Owned: \(elementIsOwnedBool)")
-                print("currentElement Responsible: \(handledElement?.responsibleId?.integerValue)")
+                //print("currentElement is Owned: \(elementIsOwnedBool)")
+                //print("currentElement Responsible: \(handledElement?.responsibleId?.integerValue)")
                 titleCell.setupActionButtons(elementIsOwnedBool)
               
                 if let currentelement = self.handledElement

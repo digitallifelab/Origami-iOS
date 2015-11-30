@@ -292,7 +292,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     
     func showMenu(animated:Bool, completion:(()->())?)
     {
-        if let navController = self.currentNavigationController, menu = self.leftMenuVC
+        if let navController = self.currentNavigationController//, menu = self.leftMenuVC
         {
             let navFrame = navController.view.frame
             let movedToLeftFrame = CGRectOffset(navFrame, 200.0, 0.0)
@@ -308,7 +308,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 if let weakSelf = self
                 {
                     //weakSelf.view.bringSubviewToFront(menu.view)
-                    print("Menu Frame: \(menu.view.frame)")
+                    //print("Menu Frame: \(menu.view.frame)")
                     weakSelf.isShowingMenu = true
                     
                     if let topVC = navController.topViewController

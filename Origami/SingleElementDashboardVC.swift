@@ -103,7 +103,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
             
                 dispatch_semaphore_wait(semaphore, timeout)
-                print("signelled semaphore for refresh attaches queue")
+                //print("signelled semaphore for refresh attaches queue")
             }
             
             let collectionLayoutMainQueueOp = NSBlockOperation() { [weak self]_ in
@@ -292,7 +292,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             infoStruct = readyDataSource.getLayoutInfo(),
             aLayout = SimpleElementDashboardLayout(infoStruct: infoStruct)
         {
-            print("SingleElementLayoutInfoStruct -> needed number of sections: \(infoStruct.numberOfSections())")
+            //print("SingleElementLayoutInfoStruct -> needed number of sections: \(infoStruct.numberOfSections())")
             return aLayout
         }
         

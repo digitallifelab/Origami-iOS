@@ -24,7 +24,7 @@ class DBElement: NSManagedObject {
         self.dateChanged    = element.changeDate?.dateFromServerDateString()
         self.dateCreated    = element.createDate.dateFromServerDateString()
         self.dateRemind     = element.remindDate
-        if let archDate = element.archiveDate?.dateFromServerDateString()
+        if let archDate = element.archiveDate?.dateFromServerDateString() where archDate != self.dateArchived
         {
             self.dateArchived = archDate
             print("did Set dateArchived.")

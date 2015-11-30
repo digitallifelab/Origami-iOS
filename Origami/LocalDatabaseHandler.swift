@@ -445,7 +445,7 @@ class LocalDatabaseHandler
                 do{
                     if let lvCount = try context.executeFetchRequest(fetchRequest) as? [Int]
                     {
-                        print("subordinates count: \(lvCount.first)")
+                        //print("subordinates count: \(lvCount.first)")
                         returnCount = lvCount.first!
                     }
                 }
