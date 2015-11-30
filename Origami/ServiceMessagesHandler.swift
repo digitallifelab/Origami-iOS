@@ -70,6 +70,7 @@ class ServiceMessagesHandler {
                         }
                         else
                         {
+                            print("Will NOT start updating avatar for contact \(userIdInt)")
                             break
                         }
                     }
@@ -219,7 +220,7 @@ class ServiceMessagesHandler {
             }
             
             contactAvatarChangeIDs.removeAll()
-            
+            NSUserDefaults.standardUserDefaults().synchronize()
             isUpdatingContacts = false
         }
         catch
@@ -227,11 +228,7 @@ class ServiceMessagesHandler {
             isUpdatingContacts = false
             return
         }
-        
-
-        
     }
-    
     
     
 }

@@ -1863,6 +1863,17 @@ class LocalDatabaseHandler
         {
             print("DID NOT delete user avatar preview:  Not Found.\n")
         }
+        
+        if self.privateContext.hasChanges
+        {
+            do{
+                try self.privateContext.save()
+            }
+            catch let saveError{
+                print("Error while saving privateContext after user avatars deletion:")
+                print(saveError)
+            }
+        }
        
     }
     

@@ -2315,23 +2315,3 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
 }
 
 
-
-//JSON Parsing
-//func parseJSON<T where T:CustomDebugStringConvertible>(jsonObjectData:NSData, asObject: T, jsonReadingOptions:NSJSONReadingOptions, completion:(([String:AnyObject]?, NSError?) ->()))
-//{
-//    do{
-//        var targetType = asObject.dynamicType
-//       
-//        
-//        if let result = try NSJSONSerialization.JSONObjectWithData(jsonObjectData, options: jsonReadingOptions) as? targetType
-//        {
-//            completion(result, nil)
-//        }
-//    }
-//    catch let jsonParsingError as NSError {
-//        completion(nil, jsonParsingError)
-//    }
-//    catch{
-//        completion(nil, unKnownExceptionError)
-//    }
-//}

@@ -264,10 +264,22 @@ class ObjectsConverter {
                     //print("\n changed user info. \" \(lvNewMessage.textBody) \"")
                     serviceMessages.append(lvNewMessage)
                 case .UserPhotoUpdated:
-                    //print(" \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!)")
+                   
                     if let integerUserId = Int(lvNewMessage.textBody!)
                     {
-                        lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                        if let existServiceMessage = lastPhotoUpdateMessagesForUserIDs[integerUserId]
+                        {
+                            if existServiceMessage.messageId < lvNewMessage.messageId
+                            {
+                                lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                                print("UPDATED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
+                            }
+                        }
+                        else
+                        {
+                            lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                             print("INSERTED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
+                        }
                     }
                 
                 case .UserBlocked:
@@ -283,7 +295,7 @@ class ObjectsConverter {
         
         for ( _ , aMessage) in lastPhotoUpdateMessagesForUserIDs
         {
-            print(" \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
+            print("RESULT \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
             serviceMessages.append(aMessage)
         }
         
@@ -383,7 +395,7 @@ class ObjectsConverter {
         return newElements
     }
     
-    class func sortMessagesByDate(inout messages:[Message], sortingFunction:((Message, Message)->Bool))
+    class func sortMessagesByDate(inout messages:[Message], sortingFunction:((Message, Message) -> Bool))
     {
         if messages.count > 1
         {

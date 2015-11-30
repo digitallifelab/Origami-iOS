@@ -1053,7 +1053,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
                
                 let waitResult = dispatch_group_wait(savingGroup, timeout)
-                print(" - Saving op finished with esult: \(waitResult)")
+                print(" - Saving op finished with result: \(waitResult). Zero means Success. ")
    
                 //if new attaches recieved, pair them to existing element if found
                 var returnInfo = (loaded:attachesArray.count, saved:0)
