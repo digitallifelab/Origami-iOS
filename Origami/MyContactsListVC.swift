@@ -8,13 +8,13 @@
 
 import UIKit
 import CoreData
-class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, AllContactsDelegate, NSFetchedResultsControllerDelegate {
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, /*AllContactsDelegate, */NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var myContactsTable:UITableView?
     
     var myContacts:[DBContact]?
     //var favContacts:[Contact] = [Contact]()
-    var allContacts:[Contact]?
+//    var allContacts:[Contact]?
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
@@ -27,18 +27,18 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     var currentFetchController:NSFetchedResultsController?
     
     #if SHEVCHENKO
-    var allContactsLoadingOperationTask:NSURLSessionDataTask?
-    lazy var reloadTableOperation:NSBlockOperation = NSBlockOperation(){[weak self] _ in
-        if let weakSelf = self
-        {
-            do
-            {
-                try weakSelf.currentFetchController?.performFetch()
-                weakSelf.myContactsTable?.reloadData()
-            }
-            catch { }
-        }
-    }
+//    var allContactsLoadingOperationTask:NSURLSessionDataTask?
+//    lazy var reloadTableOperation:NSBlockOperation = NSBlockOperation(){[weak self] _ in
+//        if let weakSelf = self
+//        {
+//            do
+//            {
+//                try weakSelf.currentFetchController?.performFetch()
+//                weakSelf.myContactsTable?.reloadData()
+//            }
+//            catch { }
+//        }
+//    }
     #endif
     
     
@@ -169,9 +169,9 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     override func viewDidDisappear(animated: Bool) {
         
         #if SHEVCHENKO
-        self.allContactsLoadingOperationTask?.suspend()
-        self.allContactsLoadingOperationTask?.cancel()
-        self.allContactsLoadingOperationTask = nil
+//        self.allContactsLoadingOperationTask?.suspend()
+//        self.allContactsLoadingOperationTask?.cancel()
+//        self.allContactsLoadingOperationTask = nil
         #endif
         super.viewDidDisappear(animated)
     }
@@ -277,15 +277,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     //MARK: ---
     #if SHEVCHENKO
-    func showAllContactsVC()
-    {
-        if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
-        {
-            allContactsVC.allContacts = allContacts
-            allContactsVC.delegate = self
-            self.navigationController?.pushViewController(allContactsVC, animated: true)
-        }
-    }
+//    func showAllContactsVC()
+//    {
+//        if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
+//        {
+////            allContactsVC.allContacts = allContacts
+//            allContactsVC.delegate = self
+//            self.navigationController?.pushViewController(allContactsVC, animated: true)
+//        }
+//    }
     #else
     func showContactSearchVC()
     {
@@ -497,18 +497,18 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     //MARK: - AllContactsDelegate
-    func reloadUserContactsSender(sender: UIViewController?)
-    {
-        do
-        {
-            try self.currentFetchController?.performFetch()
-            self.myContactsTable?.reloadData()
-        }
-        catch
-        {
-            
-        }
-    }
+//    func reloadUserContactsSender(sender: UIViewController?)
+//    {
+//        do
+//        {
+//            try self.currentFetchController?.performFetch()
+//            self.myContactsTable?.reloadData()
+//        }
+//        catch
+//        {
+//            
+//        }
+//    }
     
     //MARK: - NSFetchedResultsControllerDelegate
     func controllerWillChangeContent(controller: NSFetchedResultsController) {
@@ -632,9 +632,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
         
         NSOperationQueue().addOperation(backOperation)
-        
-        
-        
     }
     
     func contactsSearcherDidCancelSearch(searcher:ContactSearchVC)

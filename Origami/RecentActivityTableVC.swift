@@ -127,9 +127,9 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 if let weakSelf = self
                 {
                     weakSelf.elements = recentElements
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.tableView?.reloadData()
-                    })
+//                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                        weakSelf.tableView?.reloadData()
+//                    })
                 }
             }
         }

@@ -656,34 +656,38 @@ class LocalDatabaseHandler
     */
     func saveElementsToLocalDatabase(elements:[Element], completion:((didSave:Bool, error:NSError?)->())?)
     {
-        for anElement in elements
-        {
-           if let existingElement = self.readElementById(anElement.elementId!)
-           {
-                //print("2 - changingFoundElement in database")
-               
-                existingElement.fillInfoFromInMemoryElement(anElement)
-               // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
-            }
-            else
+        let context = self.privateContext
+        context.performBlockAndWait() {
+            for anElement in elements
             {
-                print("1 - inserting new element into database...")
-                if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: self.privateContext) as? DBElement
+                if let foundElement = self.readElementById(anElement.elementId!), existingElement = context.objectWithID(foundElement.objectID) as? DBElement
                 {
-                    newElement.fillInfoFromInMemoryElement(anElement)
-                    //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")
+                    //print("2 - changingFoundElement in database")
+                    
+                    existingElement.fillInfoFromInMemoryElement(anElement)
+                    // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
                 }
+                else
+                {
+                    print(" -> inserting new element into database...")
+                    if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: context) as? DBElement
+                    {
+                        newElement.fillInfoFromInMemoryElement(anElement)
+                        //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")
+                    }
+                }
+                
             }
-        
         }
+     
         
-        if self.privateContext.hasChanges
+        if context.hasChanges
         {
-            let context = self.privateContext
             context.performBlock({ () -> Void in
                 do
                 {
                     try context.save()
+                    print(" Did Save Context after elements info inserting or updating.")
                     completion?(didSave: true, error: nil)
                 }
                 catch let error as NSError
@@ -721,6 +725,7 @@ class LocalDatabaseHandler
                         if elementsResult.count == 1
                         {
                             elementToReturn = elementsResult.first!
+                            //print("arch date: \(elementToReturn?.dateArchived)")
                         }
 //                        else if elementsResult.count == 0
 //                        {
@@ -742,7 +747,7 @@ class LocalDatabaseHandler
                             do
                             {
                                 try context.save()
-                                print("--> Did delete duplicate DBElements.")
+                                //print("--> Did delete duplicate DBElements.")
                             }
                             catch let saveError
                             {
@@ -1156,7 +1161,7 @@ class LocalDatabaseHandler
         }
         else
         {
-            print("Dis NOT Save Context after PAIRING - No Changes")
+            print("\n -> Did NOT Save Context after PAIRING - No Changes")
             completion?()
 //            do
 //            {
@@ -1582,7 +1587,7 @@ class LocalDatabaseHandler
         let fetchRequest = NSFetchRequest(entityName: "DBMessageChat")
         let predicate = NSPredicate(format: "targetElement = nil")
         fetchRequest.predicate = predicate
-        fetchRequest.propertiesToFetch = ["messageId", "elementId"]
+        //fetchRequest.propertiesToFetch = ["messageId", "elementId"]
         
         let context = self.privateContext
         
@@ -1619,9 +1624,10 @@ class LocalDatabaseHandler
                     }
                 }
             }
-            catch
+            catch let fetchError
             {
-                
+                print("Error: -> Could not execute fetch request")
+                print(fetchError)
             }
         }
         
@@ -1761,7 +1767,7 @@ class LocalDatabaseHandler
         localContext.performBlockAndWait { () -> Void in
             if let existingPreview = self.findAvatarPreviewForUserId(forUserId), existingImageData = existingPreview.avatarPreviewData
             {
-                if existingImageData.hashValue != data.hashValue
+                if !existingImageData.isEqualToData(data)
                 {
                     existingPreview.avatarPreviewData = data
                     print("edited existing avatar preview IMAGE DATA")
@@ -1775,7 +1781,7 @@ class LocalDatabaseHandler
             else
             {
                 if let
-                    newAvatarPreview = NSEntityDescription.insertNewObjectForEntityForName("DBAvatarPreview", inManagedObjectContext: self.privateContext) as? DBAvatarPreview
+                    newAvatarPreview = NSEntityDescription.insertNewObjectForEntityForName("DBAvatarPreview", inManagedObjectContext: localContext) as? DBAvatarPreview
                 {
                     newAvatarPreview.fileName = fileName
                     newAvatarPreview.avatarUserId = forUserId
@@ -1821,7 +1827,25 @@ class LocalDatabaseHandler
                     }
                     else if previews.count > 1
                     {
-                        previewToReturn = previews.last!
+                        var previewsToCleanup = previews
+                        previewToReturn = previewsToCleanup.removeLast()
+                        
+                        //perform cleanup in database
+                        for aPreview in previewsToCleanup
+                        {
+                            context.deleteObject(aPreview)
+                        }
+                        
+                        do
+                        {
+                            try context.save()
+                            print("deleted dupliacte avatar previews from context.")
+                        }
+                        catch let saveError
+                        {
+                            print(" ERROR while saving context after deleting duplicate previews for avatar:")
+                            print(saveError)
+                        }
                     }
                 }
             }

@@ -10,6 +10,7 @@ import UIKit
 
 class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    //TODO: Delete this class completely
     @IBOutlet weak var contactsTable:UITableView?
     var delegate:AllContactsDelegate?
     var allContacts:[Contact]?
@@ -191,6 +192,7 @@ class AllContactsVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     
     func contactIsMine(contact:Contact) -> Bool
     {
+        //TODO: delete methods no longer used
         if let _ = DataSource.sharedInstance.getContactsByIds(Set([contact.contactId]))
         {
             return true
