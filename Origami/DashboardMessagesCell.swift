@@ -10,10 +10,11 @@ import UIKit
 
 class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate // to simplify development, I don`t divide simple table delegate logic to separate classes
 {
+    @IBOutlet var messagesTable:UITableView!
+    
     var displayMode:DisplayMode = .Day
     var messagesDatasource:ElementChatPreviewTableHandler?
-    @IBOutlet var messagesTable:UITableView!
-    //var currentMessages:[Message]?
+   
     var messages:[DBMessageChat]?
     
     override func awakeFromNib()
@@ -147,9 +148,5 @@ class DashboardMessagesCell : UICollectionViewCell, UITableViewDelegate // to si
         self.messagesTable.reloadData()
     }
     
-//    func refreshHomeMessages(notification:NSNotification?)
-//    {
-//        getLastMessages()
-//    }
     
 }

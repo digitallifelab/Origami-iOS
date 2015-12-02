@@ -105,7 +105,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         DataSource.sharedInstance.removeObserverForNewMessagesForElement(All_New_Messages_Observation_ElementId)
     }
 
-    
     func recievedMessagesFinishedNotification(notification:NSNotification)
     {
         if let currentElementsDataRefresher = DataSource.sharedInstance.dataRefresher
@@ -456,14 +455,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             print(" Horizontal Velocity: \(velocityX)")
             print(" Horizontal Translation: \(translationX)")
         
-//            if translationX > 60.0
-//            {
-                let ratio = ceil(velocityX / translationX)
-                if  ratio > 3
-                {
-                    menuButtonTapped(nil)
-                }
-//            }
+            let ratio = ceil(velocityX / translationX)
+            if  ratio > 3
+            {
+                menuButtonTapped(nil)
+            }
         }
     }
   
@@ -503,8 +499,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                     {
                         viewControllersToAppend.insert(currentVCs.first!, atIndex: 0)
                         weakSelf.navigationController?.setViewControllers(viewControllersToAppend, animated: true)
-                    }        
-
+                    }
                 }
             }
         })
@@ -512,7 +507,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     //MARK: ElementComposingDelegate
 
-    func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
+    func newElementComposerWantsToCancel(composer: NewElementComposerViewController)
+    {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
@@ -711,54 +707,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         self.performSegueWithIdentifier("ShowSortedElements", sender: sender)
     }
     
-    //MARK: ------ menu displaying
-    func handleDisplayingMenuAnimated(animated:Bool, completion completionBlock:(()->())? = nil)
-    {
-
-        // hide MenuTableVC
-        if let menuPresentedVC = self.presentedViewController as? MenuVC
-        {
-            let menuAnimator = MenuTransitionAnimator()
-            menuAnimator.shouldAnimate = animated
-            customTransitionAnimator = menuAnimator
-            
-            menuPresentedVC.transitioningDelegate = self
-            menuPresentedVC.dismissViewControllerAnimated(true, completion: { () -> Void in
-                if let compBlock = completionBlock
-                {
-                    compBlock()
-                }
-                
-            }) //NOTE! this does not dismiss TabBarController, but dismisses menu VC from Tabbar`s presented view controller. the same could be achieved by calling "menuPresendedVC.dismissViewControllerAnimated ...."
-            return
-        }
-        if let contactsOrProfileNavHolderVC = self.presentedViewController as? UINavigationController
-        {
-            contactsOrProfileNavHolderVC.dismissViewControllerAnimated(true, completion: { () -> Void in
-                completionBlock?()
-            })
-            return
-        }
-        
-        // present MenuTableVC
-        if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
-        {
-            let menuAnimator = MenuTransitionAnimator()
-            menuAnimator.shouldAnimate = animated
-            customTransitionAnimator = menuAnimator
-            
-            menuVC.modalPresentationStyle = .Custom
-            menuVC.transitioningDelegate = self
-            
-            self.presentViewController(menuVC, animated: true, completion: { () -> Void in
-                if let compBlock = completionBlock
-                {
-                    compBlock()
-                }
-            })
-        }
-    }
-    
     //MARK: - On Initial start
     func startReadingHomeScreenData(attemptCount:Int)
     {
@@ -797,8 +745,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
                     
                     DataSource.sharedInstance.dashBoardInfo = info
-                    
-                    
+                
                     if let weakSelf = self, dataSourceDashInfo = DataSource.sharedInstance.dashBoardInfo
                     {
                         if dataSourceDashInfo.signals == nil && dataSourceDashInfo.favourites == nil && dataSourceDashInfo.other == nil

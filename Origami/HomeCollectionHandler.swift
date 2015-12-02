@@ -22,7 +22,6 @@ import CoreData
     let mainQueueContext:NSManagedObjectContext
     convenience init(info:dashboardDBElementsInfoTuple)
     {
-        //self.mainQueueContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
         self.init()
         self.signals = info.signals
         self.favourites = info.favourites
@@ -70,7 +69,7 @@ import CoreData
         case 0:
             if let existSignals = self.signals
             {
-                toReturn = existSignals.count + 2 // "toggle button" cell + "last messages" cell
+                toReturn = existSignals.count + 2
             }
             else
             {
@@ -101,7 +100,6 @@ import CoreData
         let cellType = cellTypeForIndexPath(indexPath)
         if cellType == .Messages
         {
-            //print("row: \(indexPath.row) in section: \(indexPath.section) -> \(cellType)")
             let messagesHolderCell = collectionView.dequeueReusableCellWithReuseIdentifier("LastMessagesHolderCollectionCell", forIndexPath: indexPath) as! DashboardMessagesCell
             messagesHolderCell.displayMode = (nightModeEnabled) ? .Night : .Day
             messagesHolderCell.getLastMessages()
@@ -109,7 +107,6 @@ import CoreData
         }
         else
         {
-            //print("row: \(indexPath.row) in section: \(indexPath.section) -> \(cellType)")
             let dashCell:DashCell =  collectionView.dequeueReusableCellWithReuseIdentifier("DashCell", forIndexPath: indexPath) as! DashCell
             dashCell.displayMode = (nightModeEnabled) ? .Night : .Day
             dashCell.cellType = cellType
@@ -130,15 +127,15 @@ import CoreData
 
                 if let signalBool = existingElement.isSignal
                 {
-                    dashCell.signalDetectorView?.hidden = !signalBool.boolValue //existingElement.isSignal?.boolValue
+                    dashCell.signalDetectorView?.hidden = !signalBool.boolValue
                 }
                     
                     if let elType = existingElement.type?.integerValue
                     {
-                        dashCell.currentElementType = elType //existingElement.typeId //.integerValue // will set visibility for icons
+                        dashCell.currentElementType = elType
                     }
                     
-                    if let finishState = existingElement.finishState, let finishStateEnumValue = ElementFinishState(rawValue: finishState.integerValue)//.integerValue)
+                    if let finishState = existingElement.finishState, let finishStateEnumValue = ElementFinishState(rawValue: finishState.integerValue)
                     {
                         switch finishStateEnumValue
                         {

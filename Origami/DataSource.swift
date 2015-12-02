@@ -326,22 +326,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     print("Message Save Error: \n \(messageSaveError)")
                 }
-                
-//                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesForNotFoundElements, completion: { (saved, error) -> () in
-//                    if let messageSaveError = error
-//                    {
-//                        print("Message Save Error: \n \(messageSaveError)")
-//                    }
-                
-                    DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(){ _ in
-                        print("\n -> DataSource did finish PAIRING messages and elemnts..")
-                        if let observerHomeVC = DataSource.sharedInstance.getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
-                        {
-                            observerHomeVC.newMessagesWereAdded()
-                        }
+
+                DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing() { _ in
+                    print("\n -> DataSource did finish PAIRING messages and elemnts..")
+                    if let observerHomeVC = DataSource.sharedInstance.getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
+                    {
+                        observerHomeVC.newMessagesWereAdded()
                     }
-                    
-//                })
+                }
             })
         }
         
@@ -416,37 +408,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     //MARK: Messages Local Stuff
     
-    func isMessagesEmpty() -> Bool{
-        return DataSource.sharedInstance.messages.isEmpty
-    }
-    
-    func addMessages(messageObjects:[Message], forElementId elementId:NSNumber, completion:voidClosure?)
+    func isMessagesEmpty() -> Bool
     {
-        let messagesToAdd = ObjectsConverter.sortMessagesByMessageId(messageObjects)
-        // add to our array container
-        if let existingMessages = DataSource.sharedInstance.messages[elementId]
-        {
-            var mutableExisting = existingMessages
-            mutableExisting += messagesToAdd
-            //replace existing messages with new array
-            DataSource.sharedInstance.messages[elementId] = mutableExisting
-        }
-        else
-        {
-            DataSource.sharedInstance.messages[elementId] = messagesToAdd
-        }
-        
-        // also check if there are any observers waiting for new messages
-        if let observer =  getMessagesObserverForElementId(elementId)
-        {
-            observer.newMessagesAdded(messagesToAdd)
-        }
-        
-        //return from function
-        if let completionBlock = completion
-        {
-            completionBlock()
-        }
+        return DataSource.sharedInstance.messages.isEmpty
     }
     
     func getAllMessagesForElementId(elementId:NSNumber) -> [Message]?
@@ -546,10 +510,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func removeObserverForNewMessagesForElement(elementId:NSNumber)
     {
-        if let _ = DataSource.sharedInstance.messagesObservers[elementId]
-        {
+//        if let _ = DataSource.sharedInstance.messagesObservers[elementId]
+//        {
             DataSource.sharedInstance.messagesObservers[elementId] = nil
-        }
+//        }
     }
     
     

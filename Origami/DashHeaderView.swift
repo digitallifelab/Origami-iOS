@@ -26,21 +26,22 @@ class DashHeaderView : UICollectionReusableView
     required init?(coder aDecoder: NSCoder)
     {
         super.init(coder: aDecoder)
-        //fatalError("init(coder:) has not been implemented")
     }
+    
     override init(frame: CGRect)
     {
         super.init(frame: frame)
         label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false//setTranslatesAutoresizingMaskIntoConstraints(false)
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 1
         self.addSubview(label)
         configureLabel()
     }
+    
     private func configureLabel()
     {
         let subViews = ["_label" : label]
-        let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[_label]", options:.AlignAllLeft, metrics:nil, views:subViews /*as [NSObject:AnyObject]*/)
+        let horizontalConstraint = NSLayoutConstraint.constraintsWithVisualFormat("H:|-[_label]", options:.AlignAllLeft, metrics:nil, views:subViews)
         
         addConstraints(horizontalConstraint)
         let verticalCenterConstraint = NSLayoutConstraint(item: label,
@@ -52,17 +53,15 @@ class DashHeaderView : UICollectionReusableView
         addConstraint(verticalCenterConstraint)
         
         label.font = UIFont(name: "SegoeUI-Semibold", size: 19.0)
-        //self.backgroundColor = UIColor.lightGrayColor().colorWithAlphaComponent(0.6)
     }
+    
     func displayDividerLine(display:Bool)
     {
         if display
         {
             let dividerView:UIView = UIView()
-            //dividerView.setTranslatesAutoresizingMaskIntoConstraints(false)
             dividerView.tag = 0xADF
             dividerView.backgroundColor = UIColor.lightGrayColor()
-            
             self.addSubview(dividerView)
             addConstraintsToDividerView(dividerView)
         }
@@ -83,15 +82,6 @@ class DashHeaderView : UICollectionReusableView
             multiplier: 1.0,
             constant: 2.0) //2 px height
         
-        
-//        let verticalCenter = NSLayoutConstraint(
-//            item: view,
-//            attribute: NSLayoutAttribute.CenterY,
-//            relatedBy: NSLayoutRelation.Equal,
-//            toItem: label,
-//            attribute: NSLayoutAttribute.CenterY,
-//            multiplier: 1.0,
-//            constant: 0.0) //equal vertical centers with label
         let bottomConstraint = NSLayoutConstraint(
             item: view,
             attribute: NSLayoutAttribute.Bottom,
@@ -119,9 +109,7 @@ class DashHeaderView : UICollectionReusableView
         
         self.addConstraints([leadingConstraint, trailingConatraint])
         self.addConstraint(heightConstraint)
-        //self.addConstraint(verticalCenter)
         self.addConstraint(bottomConstraint)
-        
     }
     
 }

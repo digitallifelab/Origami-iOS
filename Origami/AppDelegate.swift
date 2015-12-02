@@ -29,7 +29,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate
        
     }
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(application: UIApplication)
+    {
         DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (error) -> () in
             guard let errorSaving = error else
             {
@@ -38,7 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate
             }
             print(" applicationDidEnterBackground -> privateCOntext saving error: \n \(errorSaving)")
         })
-    
     }
 
     func applicationWillEnterForeground(application: UIApplication) {

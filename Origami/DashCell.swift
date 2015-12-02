@@ -40,7 +40,7 @@ class DashCell: UICollectionViewCell
     
     required init?(coder aDecoder: NSCoder) {
         
-        backColor = kDayCellBackgroundColor//UIColor.clearColor()
+        backColor = kDayCellBackgroundColor
         titleColor = UIColor.blackColor()
         descriptionColor = UIColor.grayColor()
         
@@ -96,7 +96,6 @@ class DashCell: UICollectionViewCell
                         case .Messages:
                             backColor = UIColor.whiteColor()
                         
-                        
                     }
                 
                 case DisplayMode.Night:
@@ -112,7 +111,7 @@ class DashCell: UICollectionViewCell
                             titleColor = kWhiteColor
                             descriptionColor = kWhiteColor.colorWithAlphaComponent(0.6)
                         case .Messages:
-                            backColor = kBlackColor//UIColor.clearColor()
+                            backColor = kBlackColor
                         
                     }
             }
@@ -132,7 +131,7 @@ class DashCell: UICollectionViewCell
                     signalDetectorView?.hidden = true
                 
                 case .Signal:
-                    titleColor = UIColor.whiteColor()//(self.displayMode == .Day) ? UIColor.blackColor() : UIColor.whiteColor()
+                    titleColor = UIColor.whiteColor()
                     descriptionColor = UIColor.whiteColor()
                     backColor =  (self.displayMode == .Day) ? kDaySignalColor : kNightSignalColor
                     flagIcon?.image = nil
@@ -140,8 +139,8 @@ class DashCell: UICollectionViewCell
                     signalDetectorView?.hidden = true
                 
                 case .Other :
-                    titleColor = kWhiteColor //(self.displayMode == .Day) ? UIColor.blackColor() : UIColor.whiteColor()
-                    descriptionColor = kWhiteColor.colorWithAlphaComponent(0.6) // (self.displayMode == .Day) ? UIColor.grayColor() : UIColor(white: 0.5, alpha: 1.0)
+                    titleColor = kWhiteColor
+                    descriptionColor = kWhiteColor.colorWithAlphaComponent(0.6)
                     flagIcon?.image = nil
                     signalsCountLabel?.text = nil
                     backColor = (self.displayMode == .Day) ? kDayCellBackgroundColor : kBlackColor
@@ -164,7 +163,7 @@ class DashCell: UICollectionViewCell
         self.layer.shadowColor = UIColor.grayColor().colorWithAlphaComponent(0.7).CGColor
         self.layer.shadowRadius = 1.0
         self.layer.shadowOpacity = 1.0
-        self.contentView.layer.cornerRadius = 5.0// = true
+        self.contentView.layer.cornerRadius = 5.0
         self.contentView.layer.masksToBounds = true
         self.layer.masksToBounds = false
         self.layer.shouldRasterize = true

@@ -1140,18 +1140,7 @@ class LocalDatabaseHandler
                 {
                     try context.save()
                     print("Dis Save Context after PAIRING")
-                    
-//                    do
-//                    {
-//                        try self.deleteMessagesWithoutElement()
-//                        completion?()
-//                    }
-//                    catch let messagesCleanUpError
-//                    {
-//                        print(" Did not delete messages without target element:")
-//                        print(messagesCleanUpError)
-//                         completion?()
-//                    }
+                    completion?()
                 }
                 catch{
                     print("Dis NOT Save Context after PAIRING")
@@ -1163,18 +1152,7 @@ class LocalDatabaseHandler
         {
             print("\n -> Did NOT Save Context after PAIRING - No Changes")
             completion?()
-//            do
-//            {
-//                try self.deleteMessagesWithoutElement()
-//            }
-//            catch let deletingError
-//            {
-//                print(" Did not delete messages without target element:")
-//                print(deletingError)
-//            }
         }
-        
-        
     }
     
     
@@ -2041,7 +2019,6 @@ class LocalDatabaseHandler
     {
         guard !contacts.isEmpty else
         {
-//            completion?(false, error:NSError(domain: "com.Origami.EmptyValue.Error", code: -3030, userInfo: [NSLocalizedDescriptionKey:"Tried to insert empty contacts to local database."]))
             self.deleteAllContacts()
             completion?(true, error: nil)
             return
@@ -2051,7 +2028,7 @@ class LocalDatabaseHandler
         {
             if let existingContact = self.readContactById(aContact.contactId)
             {
-                print("Updating Contact: \(existingContact.contactId!)")
+                //print("Updating Contact: \(existingContact.contactId!)")
                 existingContact.fillInfoFromContact(aContact)
             }
             else
@@ -2088,8 +2065,6 @@ class LocalDatabaseHandler
             print("\n ->->->-> PrivateContext has no changes after contacts saving.")
             completion?(false, error:nil)
         }
-        
-        
     }
 
     func readContactById(contactId:Int) -> DBContact?

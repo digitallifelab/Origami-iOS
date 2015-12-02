@@ -30,7 +30,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 collectionDataSource?.displayMode = self.displayMode
                 
                 self.prepareCollectionViewDataAndLayout()
-             
             }
         }
     }
@@ -42,7 +41,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        print(" ->removed observer SingleDashVC from Deinit.")
+        //print(" ->removed observer SingleDashVC from Deinit.")
     }
     
     override func viewDidLoad()
