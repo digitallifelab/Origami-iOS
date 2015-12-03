@@ -1524,6 +1524,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         if let weakSelf = self
                         {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                
+                                if let editedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementIdInt)
+                                {
+                                    weakSelf.currentElement = editedElement
+                                    
+                                    weakSelf.prepareCollectionViewDataAndLayout()
+                                    //                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                }
+                                
                                 weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                                 weakSelf.checkoutParentAndRefreshIfPresent()
                             })
