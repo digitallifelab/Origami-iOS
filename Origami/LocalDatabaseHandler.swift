@@ -855,7 +855,7 @@ class LocalDatabaseHandler
         
         let fetchVisualizableElements = NSFetchRequest(entityName: "DBElement")
         
-        fetchVisualizableElements.predicate = NSPredicate(format: "dateCreated = nil")
+        fetchVisualizableElements.predicate = NSPredicate(format: "dateArchived = nil")
         
         var foundElements:[DBElement]?
         context.performBlockAndWait() {
