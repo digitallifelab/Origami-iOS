@@ -410,12 +410,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementSignalToggled()
     {
+        self.showActivityIndicator(true)
+        
         if let theElement = currentElement, elementId = theElement.elementId?.integerValue, oldSignal = theElement.isSignal?.boolValue
         {
-            if !theElement.isOwnedByCurrentUser()
-            {
-                return // Important
-            }
+//            if !theElement.isOwnedByCurrentUser()
+//            {
+//                return // Important
+//            }
             if theElement.isArchived()
             {
                 self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
@@ -444,11 +446,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         {
                             aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
                         }
+                        aSelf.showActivityIndicator(false)
                     }
                 }
             }
         }
     }
+    
+    
     
     func elementEditingToggled()
     {
@@ -538,7 +543,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementIdeaPressed()
     {
-        print("Idea tapped.")
+        //print("Idea tapped.")
+       
         if let current = self.currentElement, elementType = current.type?.integerValue
         {
             if !current.isArchived()
@@ -795,6 +801,52 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         }
     }
     
+    //MARK: UIActivityIndicatorView
+    func showActivityIndicator(show:Bool)
+    {
+        if let activityView = self.view.viewWithTag(0x1234) as? UIActivityIndicatorView
+        {
+            if activityView.isAnimating()
+            {
+                if show
+                {
+                    return
+                }
+                else
+                {
+                    activityView.stopAnimating()
+                    activityView.removeFromSuperview()
+                }
+            }
+            else
+            {
+                if show
+                {
+                    activityView.startAnimating()
+                }
+                else
+                {
+                    //activityView.stopAnimating()
+                    activityView.removeFromSuperview()
+                }
+            }
+            return
+        }
+        
+        if show
+        {
+            let animatingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            animatingIndicator.autoresizingMask = [.FlexibleBottomMargin, .FlexibleTopMargin, .FlexibleLeftMargin, .FlexibleRightMargin] //to keep in center of the view when screen rotates
+            animatingIndicator.hidesWhenStopped = true
+            animatingIndicator.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.6)
+            animatingIndicator.frame = CGRectMake( CGRectGetMidX(self.view.bounds) - 75.0, CGRectGetMidY(self.view.bounds) - 75.0, 150.0, 150.0)
+            animatingIndicator.layer.cornerRadius = 10.0
+            animatingIndicator.tag = 0x1234
+            self.view.addSubview(animatingIndicator)
+            animatingIndicator.startAnimating()
+        }
+    }
+    
     //MARK: UIPopoverPresentationControllerDelegate
     @available(iOS 8.0, *)
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
@@ -897,6 +949,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             return
         }
         
+        showActivityIndicator(true)
+        
         DataSource.sharedInstance.editElement(element) {[weak self] (edited) -> () in
             if let aSelf = self
             {
@@ -913,6 +967,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     {
                         aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
                     }
+                    aSelf.showActivityIndicator(false)
                 }
 
             }

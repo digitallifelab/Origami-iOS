@@ -843,6 +843,15 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
+    func currentUserCanEditElementByManagedObjectID(objectId:NSManagedObjectID) -> Bool
+    {
+        guard let userId = DataSource.sharedInstance.user?.userId, databaseHandler = DataSource.sharedInstance.localDatadaseHandler else
+        {
+            return false
+        }
+        
+        return databaseHandler.userById(userId, canEditElement:objectId)
+    }
     
     /**
      - Returns: 
@@ -898,8 +907,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             
             vizualizableObjects.append(newObject)
         }
-        
-        
         
         return vizualizableObjects
     }

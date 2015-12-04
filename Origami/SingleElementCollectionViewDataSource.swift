@@ -363,12 +363,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 titleElement.responsible = handledElement!.responsibleId!.integerValue
                 titleElement.creatorId = handledElement!.creatorId!.integerValue
                 
-                titleCell.handledElement = titleElement
+                if let canBeEdited = self.handledElement?.canBeEditedByCurrentUser
+                {
+                    titleElement.canBeEdited = canBeEdited
+                }
                 
-                let elementIsOwnedBool = elementIsOwned()
-                //print("currentElement is Owned: \(elementIsOwnedBool)")
-                //print("currentElement Responsible: \(handledElement?.responsibleId?.integerValue)")
-                titleCell.setupActionButtons(elementIsOwnedBool)
+                titleCell.handledElement = titleElement
+                titleCell.setupActionButtons(titleElement.canBeEdited)
+                //let elementIsOwnedBool = elementIsOwned()
+                //titleCell.setupActionButtons(elementIsOwnedBool)
+                
+              
               
                 if let currentelement = self.handledElement
                 {

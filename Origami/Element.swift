@@ -29,7 +29,8 @@ class Element:Hashable, CreateDateComparable
     var changeDate:String?
     
     var archiveDate:String?
-     
+    
+    internal var canBeEdited = false
     
     //MARK: - CreateDateComparable conformance
     var dateCreated:NSDate? {

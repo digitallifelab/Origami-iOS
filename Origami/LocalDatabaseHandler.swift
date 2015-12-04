@@ -855,6 +855,8 @@ class LocalDatabaseHandler
         
         let fetchVisualizableElements = NSFetchRequest(entityName: "DBElement")
         
+        fetchVisualizableElements.predicate = NSPredicate(format: "dateCreated = nil")
+        
         var foundElements:[DBElement]?
         context.performBlockAndWait() {
             
@@ -1051,6 +1053,40 @@ class LocalDatabaseHandler
             }
         }
     }
+    
+    func userById(userId:Int, canEditElement:NSManagedObjectID) -> Bool
+    {
+        let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        context.parentContext = self.privateContext
+        
+        guard let dbElement = context.objectWithID(canEditElement) as? DBElement, elementCreator = dbElement.creatorId?.integerValue else
+        {
+            return false
+        }
+        
+        if elementCreator == userId
+        {
+            return true
+        }
+        
+        if let parentsTree = self.readRootElementTreeForElementManagedObjectId(canEditElement)
+        {
+            for aParentElement in parentsTree
+            {
+                if let creatorInt =  aParentElement.creatorId?.integerValue
+                {
+                    if creatorInt == userId
+                    {
+                        return true
+                    }
+                }
+            }
+        }
+        
+        return false
+        
+    }
+    
     
     //MARK: - Messages
     

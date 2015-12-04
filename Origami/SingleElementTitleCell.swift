@@ -40,12 +40,12 @@ class SingleElementTitleCell: UICollectionViewCell {
     }
     var optionsConverter = ElementOptionsConverter()
     
-    var handledElement:Element? {
-        didSet{
-            //print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
-            //print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
-        }
-    }
+    var handledElement:Element? //{
+//        didSet{
+//            //print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
+//            //print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
+//        }
+//    }
     var buttonTrueColor = UIColor.whiteColor()
     var buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
     
@@ -185,15 +185,9 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else
             {
-                if currentElement.isOwnedByCurrentUser()
-                {
-                    signalButton.hidden = false
-                    signalButton.tintColor = kElementAttributeIconsDisabledColor
-                }
-                else
-                {
-                    signalButton.hidden = true
-                }
+                signalButton.tintColor = kElementAttributeIconsDisabledColor
+                
+                signalButton.hidden = !currentElement.canBeEdited
             }
         }
     }
@@ -214,14 +208,8 @@ class SingleElementTitleCell: UICollectionViewCell {
                 }
                 else
                 {
-                    if currentElement.isOwnedByCurrentUser()
-                    {
-                        ideaButton.tintColor = kElementAttributeIconsDisabledColor
-                    }
-                    else
-                    {
-                        ideaButton.hidden = true
-                    }
+                    ideaButton.tintColor = kElementAttributeIconsDisabledColor
+                    ideaButton.hidden = !currentElement.canBeEdited
                 }
             }
         }
@@ -370,7 +358,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else
             {
-                if currentElement.isOwnedByCurrentUser()
+                if currentElement.canBeEdited//isOwnedByCurrentUser()
                 {
                     decisionButton.tintColor = kElementAttributeIconsDisabledColor
                     if currentElement.isArchived()

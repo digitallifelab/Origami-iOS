@@ -115,6 +115,22 @@ class DBElement: NSManagedObject {
         return false
     }
     
+    var canBeEditedByCurrentUser:Bool
+    {
+        if let userId = DataSource.sharedInstance.user?.userId, elementCreatorId = self.creatorId?.integerValue
+        {
+            if userId == elementCreatorId
+            {
+                return true
+            }
+            else
+            {
+                return DataSource.sharedInstance.currentUserCanEditElementByManagedObjectID(self.objectID)
+            }
+        }
+        return false
+    }
+    
     func addMessages(messages:Set<DBMessageChat>)
     {
         if let existingMessages = self.messages as? Set<DBMessageChat>
