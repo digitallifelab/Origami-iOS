@@ -124,14 +124,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllChatMessages()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllContacts()
             DataSource.sharedInstance.user = nil
-            //DataSource.sharedInstance.cleanDataCache()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
-            //DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
             DataSource.sharedInstance.userAvatarsHolder.removeAll()
-            //print("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
-            //DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
-            //print("AvatarsHolder After cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
-            //DataSource.sharedInstance.stopRefreshingNewMessages()
+            DataSource.sharedInstance.localDatadaseHandler?.deleteAllAvatarPreviews()
             let fileHandler = FileHandler()
             fileHandler.deleteAvatars()
             
@@ -139,14 +134,6 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             dispatch_after(timeout, getBackgroundQueue_DEFAULT(), { () -> Void in
                 DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
                 print("stopRefreshingLastMessages")
-                //sleep(2)
-                
-                //DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
-                //print("cancelDispatchSource")
-                //sleep(2)
-                
-                //DataSource.sharedInstance.messagesLoader = nil
-                //print("messagesLoader = nil")
             })
             
             

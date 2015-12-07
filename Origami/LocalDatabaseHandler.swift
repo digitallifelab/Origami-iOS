@@ -1904,15 +1904,96 @@ class LocalDatabaseHandler
         
         if self.privateContext.hasChanges
         {
-            do{
+            do
+            {
                 try self.privateContext.save()
             }
-            catch let saveError{
+            catch let saveError
+            {
                 print("Error while saving privateContext after user avatars deletion:")
                 print(saveError)
             }
         }
        
+    }
+    
+    /**
+     Delete all **DBAvatarPreview** objects from local database.
+      Submits async task on private queue context.
+      Tries to save context if it has any changes.
+     - Note: On iOS 9 and later NSBatchDeleteRequest workflow is used.
+     */
+    func deleteAllAvatarPreviews()
+    {
+        let fetchDeleteRequest = NSFetchRequest(entityName: "DBAvatarPreview")
+        let context = self.privateContext
+        
+        if #available(iOS 9.0, *)
+        {
+            let deletionRequest = NSBatchDeleteRequest(fetchRequest: fetchDeleteRequest)
+           
+            context.performBlock(){
+                do
+                {
+                    if let result = try context.executeRequest(deletionRequest) as? NSBatchDeleteResult
+                    {
+                        print("DBAvatarPreviews cleanup resultType: \(result.resultType)")
+                    }
+                    
+                    if context.hasChanges
+                    {
+                        do
+                        {
+                            try context.save()
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                    
+                }
+                catch let delError
+                {
+                    print("Could delete all DBAvatarPreviews:")
+                    print(delError)
+                }
+            }
+        }
+        else //pre iOS 9
+        {
+            context.performBlock() {
+                do
+                {
+                    if let avatarPreviews = try context.executeFetchRequest(fetchDeleteRequest) as? [DBAvatarPreview] where avatarPreviews.count > 0
+                    {
+                        for aPreview in avatarPreviews
+                        {
+                            context.deleteObject(aPreview)
+                        }
+                        print("DBAvatarPreviews cleanup finished.")
+                    }
+                    
+                    if context.hasChanges
+                    {
+                        do
+                        {
+                            try context.save()
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                }
+                catch let fetchError
+                {
+                    print("Could not fetch avatar previews. Error:")
+                    print(fetchError)
+                }
+                
+            }
+        }
     }
     
     /**
