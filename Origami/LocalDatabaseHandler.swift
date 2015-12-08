@@ -1951,7 +1951,6 @@ class LocalDatabaseHandler
                             
                         }
                     }
-                    
                 }
                 catch let delError
                 {
@@ -1991,7 +1990,6 @@ class LocalDatabaseHandler
                     print("Could not fetch avatar previews. Error:")
                     print(fetchError)
                 }
-                
             }
         }
     }

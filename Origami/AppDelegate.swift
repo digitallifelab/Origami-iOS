@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate
         DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext({ (error) -> () in
             guard let errorSaving = error else
             {
-                print(" applicationDidEnterBackground -> privateCOntext saving  OK")
+                print(" applicationDidEnterBackground -> privateContext saving  OK")
                 return
             }
             print(" applicationDidEnterBackground -> privateCOntext saving error: \n \(errorSaving)")

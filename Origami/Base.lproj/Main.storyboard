@@ -1697,7 +1697,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9a-zL-yqE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1096" y="1148"/>
+            <point key="canvasLocation" x="1123" y="941"/>
         </scene>
         <!--Contact SearchVC-->
         <scene sceneID="g5Z-AV-PaD">
@@ -2900,23 +2900,23 @@
                         <viewControllerLayoutGuide type="bottom" id="RA0-3u-jjw"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="gPx-uG-wVu">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="600" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="73" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="D6b-aP-BCJ">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <animations/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MyContactCell" rowHeight="73" id="WUu-eI-ikg" customClass="MyContactListCell" customModule="Origami_task_manager" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="22" width="320" height="73"/>
+                                        <rect key="frame" x="0.0" y="22" width="600" height="73"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WUu-eI-ikg" id="Hxv-jt-pYS">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="73"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="600" height="73"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="700" horizontalCompressionResistancePriority="600" verticalCompressionResistancePriority="755" text="Name Lastname" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E7I-zk-h2q" userLabel="name label">
-                                                    <rect key="frame" x="56" y="8" width="208" height="23"/>
+                                                    <rect key="frame" x="56" y="8" width="488" height="23"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -2932,14 +2932,14 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="600" verticalHuggingPriority="500" horizontalCompressionResistancePriority="752" verticalCompressionResistancePriority="753" text="what a nice day is it today, let`s make a picnick" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rW0-kk-o1P">
-                                                    <rect key="frame" x="56" y="32" width="208" height="25"/>
+                                                    <rect key="frame" x="56" y="32" width="488" height="25"/>
                                                     <animations/>
                                                     <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sJf-i0-tOA" userLabel="favButton">
-                                                    <rect key="frame" x="268" y="8" width="44" height="44"/>
+                                                    <rect key="frame" x="548" y="8" width="44" height="44"/>
                                                     <animations/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                     <constraints>
@@ -2994,15 +2994,14 @@
                             <constraint firstItem="D6b-aP-BCJ" firstAttribute="leading" secondItem="gPx-uG-wVu" secondAttribute="leading" id="lcV-fV-p8v"/>
                         </constraints>
                     </view>
-                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="320" height="480"/>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <connections>
                         <outlet property="myContactsTable" destination="D6b-aP-BCJ" id="lDg-0E-pua"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5on-pj-Vxt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1088" y="1712"/>
+            <point key="canvasLocation" x="688" y="1734"/>
         </scene>
         <!--Attach Image ViewerVC-->
         <scene sceneID="8ML-Ub-qk4">
