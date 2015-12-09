@@ -13,16 +13,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     @IBOutlet weak var myContactsTable:UITableView?
     
     var myContacts:[DBContact]?
-    //var favContacts:[Contact] = [Contact]()
-//    var allContacts:[Contact]?
+
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
     
-    var allContactsFetchController:NSFetchedResultsController?
     var segmentedControl:UISegmentedControl?
-    //var allFilteredContacts:[DBContact] = [DBContact]()
     var searchBar:UISearchBar?
+    
+    var allContactsFetchController:NSFetchedResultsController?
     var favContactsFetchController:NSFetchedResultsController?
     var contactsFetchRequest = NSFetchRequest(entityName: "DBContact")
     
@@ -44,22 +43,22 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         configureNavigationItems()
         configureNavigationControllerToolbarItems()
         
-        if let dbHandler = DataSource.sharedInstance.localDatadaseHandler
+        self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        
+        if let dbHandler = DataSource.sharedInstance.localDatadaseHandler, mainQueueContext = self.localMainContext
         {
-            self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-            self.localMainContext!.parentContext = dbHandler.getPrivateContext()
-            self.localMainContext?.undoManager = NSUndoManager()
+            mainQueueContext.parentContext = dbHandler.getPrivateContext()
+            //mainQueueContext.undoManager = NSUndoManager()
             
-            //let allContactsRequest = NSFetchRequest(entityName: "DBContact")
             let lastNameSort = NSSortDescriptor(key: "lastName", ascending: true)
             contactsFetchRequest.sortDescriptors = [lastNameSort]
-            self.allContactsFetchController = NSFetchedResultsController(fetchRequest: contactsFetchRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
+            self.allContactsFetchController = NSFetchedResultsController(fetchRequest: contactsFetchRequest, managedObjectContext: mainQueueContext, sectionNameKeyPath: nil, cacheName: nil)
             
             let favContactsRequest = NSFetchRequest(entityName: "DBContact")
             favContactsRequest.sortDescriptors = [lastNameSort]
             favContactsRequest.predicate = NSPredicate(format: "favorite = true")
             
-            self.favContactsFetchController = NSFetchedResultsController(fetchRequest: favContactsRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
+            self.favContactsFetchController = NSFetchedResultsController(fetchRequest: favContactsRequest, managedObjectContext: mainQueueContext, sectionNameKeyPath: nil, cacheName: nil)
             
             self.currentFetchController = self.allContactsFetchController
             self.currentFetchController?.delegate = self
@@ -71,7 +70,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewWillAppear(animated: Bool)
@@ -106,12 +104,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     override func viewDidDisappear(animated: Bool) {
         
-        #if SHEVCHENKO
-//        self.allContactsLoadingOperationTask?.suspend()
-//        self.allContactsLoadingOperationTask?.cancel()
-//        self.allContactsLoadingOperationTask = nil
-        #endif
-        
         if let searchingBar = searchBar
         {
             searchBarCancelButtonClicked(searchingBar)
@@ -131,8 +123,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
         self.navigationController?.navigationBar.translucent = false
         self.navigationController?.toolbar.translucent = false
-        
-        //    UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
         
         if nightModeOn
         {
@@ -158,14 +148,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationItems()
     {
         #if SHEVCHENKO
-            //let lvMethodSignatureString:Selector = "showAllContactsVC"
         #else
             let lvMethodSignatureString:Selector = "showContactSearchVC"
             contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
             contactsSearchButton?.enabled = true
         #endif
-//        contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
-//        contactsSearchButton?.enabled = false
         
         self.navigationItem.rightBarButtonItem = contactsSearchButton
         
@@ -196,7 +183,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationControllerToolbarItems()
     {
         let homeButton = UIButton(type:.System)
-        //homeButton.tintColor = kDayNavigationBarBackgroundColor
+
         homeButton.setImage(UIImage(named: kHomeButtonImageName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
@@ -237,15 +224,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     //MARK: ---
     #if SHEVCHENKO
-//    func showAllContactsVC()
-//    {
-//        if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
-//        {
-////            allContactsVC.allContacts = allContacts
-//            allContactsVC.delegate = self
-//            self.navigationController?.pushViewController(allContactsVC, animated: true)
-//        }
-//    }
     #else
     func showContactSearchVC()
     {
@@ -359,8 +337,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                             print(saveError)
                         }
                         
-//                        weakSelf.myContactsTable?.reloadData()
-//                       
                         guard let _ = weakSelf.currentFetchController?.delegate else
                         {
                             weakSelf.currentFetchController?.delegate = weakSelf
@@ -607,7 +583,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     #endif
 
-    
     //MARK:  - table view filtering
     //MARK: - UISearchBarDelegate
     
@@ -690,29 +665,4 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             }
         }
     }
-    /*
-    - (void)searchForText:(NSString *)searchText scope:(UYLWorldFactsSearchScope)scopeOption
-    {
-    if (self.managedObjectContext)
-    {
-    NSString *predicateFormat = @"%K BEGINSWITH[cd] %@";
-    NSString *searchAttribute = @"name";
-    
-    if (scopeOption == searchScopeCapital)
-    {
-    searchAttribute = @"capital";
-    }
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFormat, searchAttribute, searchText];
-    [self.searchFetchRequest setPredicate:predicate];
-    
-    NSError *error = nil;
-    self.filteredList = [self.managedObjectContext executeFetchRequest:self.searchFetchRequest error:&error];
-    if (error)
-    {
-    NSLog(@"searchFetchRequest failed: %@",[error localizedDescription]);
-    }
-    }
-    }
-    */
 }
