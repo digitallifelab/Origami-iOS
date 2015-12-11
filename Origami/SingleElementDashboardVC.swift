@@ -37,7 +37,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     var afterViewDidLoad = false
     
     @IBOutlet var collectionView:UICollectionView!
-    
+        
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
@@ -69,8 +69,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     override func viewWillAppear(animated: Bool)
     {
-      
-       
         self.navigationController?.delegate = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)

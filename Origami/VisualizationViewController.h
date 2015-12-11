@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "VisualizableObject.h"
 @interface VisualizationViewController : UIViewController
-
+@property (nonatomic, strong) NSMutableArray <VisualizableObject *> *objectsToVisualize;
 @end
