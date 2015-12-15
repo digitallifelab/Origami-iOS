@@ -94,7 +94,7 @@
     }
 }
 
-- (IBAction)cancelAction:(UIButton *)sender {
+- (IBAction)closeAction:(UIButton *)sender {
     [self.delegate finishTaskResultViewDidCancel:self];
 }
 - (IBAction)badAction:(UIButton *)sender {
