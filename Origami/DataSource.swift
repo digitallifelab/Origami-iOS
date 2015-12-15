@@ -738,7 +738,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         guard let dateString = date?.dateForRequestURL() else
         {
             //for deleting TASK option enabled for element
-            DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: kWrongEmptyDate ) { (success) -> () in
+            DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: "/Date(0)/" ) { (success) -> () in
                 if success
                 {
                     if let existElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)

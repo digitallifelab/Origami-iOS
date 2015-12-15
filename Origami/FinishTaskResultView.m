@@ -47,7 +47,8 @@
 -(void) layoutSubviews
 {
     [super layoutSubviews];
-    [self.closeButton setTitle:NSLocalizedString(@"Cancel task", nil) forState:UIControlStateNormal];
+    [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
+    [self.cencelTaskButton setTitle:NSLocalizedString(@"Cancel task", nil) forState:UIControlStateNormal];
 }
 
 -(void)setTint:(UIColor *)tintColor

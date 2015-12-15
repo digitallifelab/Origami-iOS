@@ -839,47 +839,41 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             })
     }
     
-    private func handleResponseWithData(data:NSData, completion:((success:Bool) -> ()) )
+    private func handleResponseWithData(data:NSData, completion:(((success:Bool) -> ()))? = nil )
     {
         do{
             if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [String:AnyObject]
             {
                 if jsonResponse.isEmpty
                 {
-                    completion(success:true)
+                    completion?(success:true)
                 }
                 print("\n Set Finish Date response: \(jsonResponse)")
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }
-            else if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
+        }
+        catch let jsonError  {
+            
+            if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
             {
-                let range =  stringFromData.rangeOfString("String was not recognized as a valid DateTime.")
+                let wrongDateFormatError = "String was not recognized as a valid DateTime."
+                let range =  stringFromData.rangeOfString(wrongDateFormatError)
+                print("  - Error: (Hardcoded parsed HTML) - \(wrongDateFormatError)")
                 print("\(range)")
                 if range.location != Int.max
                 {
-                    completion(success:false)
-                }
-                else
-                {
-                    completion(success: true)
+                    completion?(success:false)
+                    return
                 }
             }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            
-        }
-        catch let error as NSError  {
-            print(error.description)
-            completion(success:false)
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            
-            if let serverResponseString = NSString(data: data, encoding: NSUTF8StringEncoding) as? String
+            else
             {
-                print("-->\n Error from Server: \n \(serverResponseString)\n<-")
+                print(jsonError)
+                completion?(success: false)
             }
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
-        catch {
-            print("\n -> Did catch unknown error...")
-        }
-
     }
     
     func setElementFinishState(elementId:Int, finishState:Int, completion:((success:Bool)->())?)
