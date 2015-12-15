@@ -168,8 +168,17 @@ enum ActionButtonCellType:Int
 enum ElementFinishState:Int {
     case Default = 10
     case InProcess = 20
+    case InProcessNoDate = 21
     case FinishedGood = 30
+    case FinishedGoodNoDate = 31
     case FinishedBad = 40
+    case FinishedBadNoDate = 41
+    
+    var hasDateSet:Bool {
+        let boolToReturn = self.rawValue % 10 == 0
+        return boolToReturn
+    }
+    
 }
 
 enum FadedTransitionDirection:String {

@@ -143,11 +143,11 @@ import CoreData
                             //dashCell.taskIcon?.image = UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate)
                             dashCell.taskIcon?.image = nil
                             break
-                        case .InProcess:
+                        case .InProcess, .InProcessNoDate:
                             dashCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
-                        case .FinishedBad:
+                        case .FinishedBad, .FinishedBadNoDate:
                             dashCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
-                        case .FinishedGood:
+                        case .FinishedGood, .FinishedGoodNoDate:
                             dashCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                         }
                     }

@@ -258,11 +258,11 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                         {
                         case .Default:
                             activityCell.taskIcon?.image = nil
-                        case .InProcess:
+                        case .InProcess, .InProcessNoDate:
                             activityCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
-                        case .FinishedGood:
+                        case .FinishedGood, .FinishedGoodNoDate:
                             activityCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
-                        case .FinishedBad:
+                        case .FinishedBad, .FinishedBadNoDate:
                             activityCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
                         
                         }

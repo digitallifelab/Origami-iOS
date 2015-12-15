@@ -639,11 +639,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     case .Default:
                         subordinateCell.taskIcon?.image = nil
                         break
-                    case .InProcess:
+                    case .InProcess, .InProcessNoDate:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
-                    case .FinishedBad:
+                    case .FinishedBad, .FinishedBadNoDate:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
-                    case .FinishedGood:
+                    case .FinishedGood, .FinishedGoodNoDate:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                     }
                 }
