@@ -40,7 +40,6 @@
 		F82AF3581BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF3591BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */; };
-		F82AF35D1BEA3A2400E8514A /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */; };
 		F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
@@ -1178,7 +1177,6 @@
 				F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F8BDB68E1BD909E500BB80B4 /* DBElement.swift in Sources */,
 				F8C93AE51B861B94009D890E /* SingleElementTitleCell.swift in Sources */,
-				F82AF35D1BEA3A2400E8514A /* VisualizationViewController.m in Sources */,
 				F8C93AE61B861B94009D890E /* MediaFile.swift in Sources */,
 				F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */,
 				F8BDB6821BD909E500BB80B4 /* DBPerson.swift in Sources */,

@@ -180,7 +180,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             
             if currentElement.isSignal.boolValue == true
             {
-                signalButton.hidden = false
+                //signalButton.hidden = false
                 signalButton.tintColor = kWhiteColor
             }
             else
@@ -315,11 +315,14 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else //task for anyone else
             {
-                taskButton.userInteractionEnabled = false
+                let canBeEdited = currentElement.canBeEdited
+                taskButton.userInteractionEnabled = canBeEdited//false
+                
                 if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId))
                 {
                    // self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     taskButton.hidden = false
+                    
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState)
                     {
                         switch finishState
@@ -328,21 +331,21 @@ class SingleElementTitleCell: UICollectionViewCell {
                             //taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             break
                         case .InProcess:
-                            taskButton.tintColor = kElementAttributeIconsDisabledColor
+                            taskButton.tintColor = (canBeEdited) ? kWhiteColor :kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedGood:
-                            taskButton.tintColor = kElementAttributeIconsDisabledColor
+                            taskButton.tintColor = (canBeEdited) ? kWhiteColor :kElementAttributeIconsDisabledColor //kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         case .FinishedBad:
-                            taskButton.tintColor = kElementAttributeIconsDisabledColor
+                            taskButton.tintColor = (canBeEdited) ? kWhiteColor :kElementAttributeIconsDisabledColor //kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         }
                     }
                 }
                 else
                 {
-                    taskButton.hidden = true
-                    //self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
+                    taskButton.hidden = !canBeEdited // true
+                    taskButton.tintColor = kElementAttributeIconsDisabledColor
                 }
             }
         }

@@ -733,11 +733,22 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func setElementFinishDate(elementId:Int, date:NSDate, completion:((success:Bool)->())?)
+    func setElementFinishDate(elementId:Int, date:NSDate?, completion:((success:Bool)->())?)
     {
-        guard let dateString = date.dateForRequestURL() else
+        guard let dateString = date?.dateForRequestURL() else
         {
-            completion?(success:false)
+            //for deleting TASK option enabled for element
+            DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: kWrongEmptyDate ) { (success) -> () in
+                if success
+                {
+                    if let existElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+                    {
+                        existElement.dateFinished = nil
+                    }
+                }
+                completion?(success:success)
+            }
+            
             return
         }
         
@@ -840,6 +851,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         return databaseHandler.userById(userId, canEditElement:objectId)
     }
     
+    
+    #if SHEVCHENKO
+    #else
     /**
      - Returns: 
         - array of *VisuzlizableObject* instances,
@@ -897,6 +911,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         
         return vizualizableObjects
     }
+    #endif
     
     //MARK: - Attaches
     

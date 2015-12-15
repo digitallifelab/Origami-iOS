@@ -84,5 +84,6 @@
 "Created" = "Created";
 "Changed" = "Changed";
 "Finished" = "Finished";
+"Cancel task" = "Cancel task";
 //Login attempt failures:
 "YouAreBlocked" = "You are blocked, please contact service administrator.";

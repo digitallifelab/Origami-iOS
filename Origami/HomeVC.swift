@@ -145,7 +145,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             self.navigationItem.titleView = titleButton
         #endif
     }
-    
+    #if SHEVCHENKO
+    #else
     func showGraphViewController(sender:UIButton)
     {
         let graphBoard = UIStoryboard(name: "Visualization", bundle: nil)
@@ -155,6 +156,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         }
         self.navigationController?.pushViewController(visualVC, animated: true)
     }
+    #endif
     
     func configureLeftBarButtonItem()
     {

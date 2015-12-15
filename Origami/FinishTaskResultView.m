@@ -47,7 +47,7 @@
 -(void) layoutSubviews
 {
     [super layoutSubviews];
-    [self.closeButton setTitle:NSLocalizedString(@"cancel", nil) forState:UIControlStateNormal];
+    [self.closeButton setTitle:NSLocalizedString(@"Cancel task", nil) forState:UIControlStateNormal];
 }
 
 -(void)setTint:(UIColor *)tintColor
@@ -103,6 +103,10 @@
 
 - (IBAction)goodAction:(UIButton *)sender {
     [self.delegate finishTaskResultViewDidPressGoodButton:self];
+}
+
+- (IBAction)cancelTaskAction:(UIButton *)sender {
+    [self.delegate finishTaskResultViewDidPressCancellTaskButton:self];
 }
 
 @end

@@ -15,6 +15,7 @@
 -(void) finishTaskResultViewDidPressGoodButton:(FinishTaskResultView *)resultView;
 -(void) finishTaskResultViewDidPressBadButton:(FinishTaskResultView *)resultView;
 -(void) finishTaskResultViewDidCancel:(FinishTaskResultView *)resultView;
+-(void) finishTaskResultViewDidPressCancellTaskButton:(FinishTaskResultView *)resultView;
 
 @end
 
@@ -23,6 +24,7 @@
 
 @property (nonatomic, weak) IBOutlet UIView *view;
 @property (nonatomic, weak) IBOutlet UIButton *closeButton;
+@property (nonatomic, weak) IBOutlet UIButton *cencelTaskButton;
 @property (nonatomic, weak) IBOutlet UIButton *badButton;
 @property (nonatomic, weak) IBOutlet UIButton *goodButton;
 @property (nonatomic, weak) IBOutlet UILabel *titleLabel;

@@ -599,16 +599,16 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                             }
                         } 
                     }
-                    else if element.isTaskForCurrentUser()
+                    else if element.isTaskForCurrentUser() || element.canBeEditedByCurrentUser
                     {
                         if let currentFinishState = ElementFinishState(rawValue: finishState)
                         {
                             switch currentFinishState
                             {
                             case .Default:
-                                print("element is not owned. current user cannot assign task.")
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)//print("element is not owned. current user cannot assign task.")
                             case .FinishedBad , .FinishedGood:
-                                print("element is already finished. current user cannot update task.")
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)//print("element is already finished. current user cannot update task.")
                             case .InProcess:
                                 showFinishTaskPrompt()
                             }
@@ -628,7 +628,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 if !element.isArchived()
                 {
                     //1 - detect if element is owned
-                    if element.isOwnedByCurrentUser()
+                    if element.isOwnedByCurrentUser() || element.canBeEditedByCurrentUser
                     {
                         //2 - if is owned prompt user to start creating TASK with responsible user and remind date
                         if let currentFinishState = ElementFinishState(rawValue: finishState)
@@ -1565,6 +1565,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
 
     }
     
+    func finishTaskResultViewDidPressCancellTaskButton(resultView:FinishTaskResultView)
+    {
+        //set finishState to be default, finish date to be nil, taskOption
+        self.finishElementWithFinishState(.Default)
+    }
+    
     func finishElementWithFinishState(state:ElementFinishState)
     {
         if let current = self.currentElement, elementIdInt = current.elementId?.integerValue
@@ -1573,7 +1579,13 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
                 if edited
                 {
-                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: NSDate(), completion: {[weak self] (success) -> () in
+                    var lvDate:NSDate? = NSDate()
+                    if state == .Default
+                    {
+                        lvDate = nil
+                    }
+                    
+                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: lvDate, completion: {[weak self] (success) -> () in
                         if let weakSelf = self
                         {
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
