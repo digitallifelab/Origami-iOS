@@ -98,11 +98,9 @@ class Element:Hashable, CreateDateComparable
             {
                 if let finishDate = info["FinishDate"] as? String
                 {
-                    print("will set element`s finish DATE.")
                     if let date = finishDate.dateFromServerDateString() //still optional
                     {
                         self.finishDate = date
-                        //print("elId: \(self.elementId!), finDate: \(finishDate)")
                     }
                 }
             }

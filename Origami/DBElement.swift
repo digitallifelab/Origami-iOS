@@ -26,7 +26,7 @@ class DBElement: NSManagedObject {
         self.dateRemind     = element.remindDate
         self.dateFinished   = element.finishDate
         self.type           = NSNumber(integer:element.typeId)
-        print("New FinishState: \(element.finishState) )")
+        //print("New FinishState: \(element.finishState) )")
         self.finishState    = NSNumber(integer: element.finishState)
         self.isFavourite    = NSNumber(bool:element.isFavourite)
         self.isSignal       = NSNumber(bool:element.isSignal)

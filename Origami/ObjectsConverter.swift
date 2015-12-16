@@ -232,7 +232,7 @@ class ObjectsConverter {
         for lvDictionary in dictionaries
         {
             let lvNewMessage = Message(info: lvDictionary)
-            //print(lvDictionary)
+            
             if lvNewMessage.textBody == "User invited you!"
             {
                 continue
@@ -244,10 +244,6 @@ class ObjectsConverter {
             TypeId = 65535 - user was blocked
             TypeId = 65534 - user was unBlocked
             */
-            //var shouldStoreMessage = true
-            
-            
-            
             switch lvNewMessage.type
             {
                 case .Undefined:
@@ -272,7 +268,7 @@ class ObjectsConverter {
                             if existServiceMessage.messageId < lvNewMessage.messageId
                             {
                                 lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
-                                print("UPDATED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
+                                //print("UPDATED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
                             }
                         }
                         else
@@ -281,16 +277,13 @@ class ObjectsConverter {
                              print("INSERTED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
                         }
                     }
-                
                 case .UserBlocked:
                     //print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
                     serviceMessages.append(lvNewMessage)
                 case .UserUnblocked:
                     //print("\n-> User Was UnBlosked: userID = \(lvNewMessage.textBody!) \n")
                     serviceMessages.append(lvNewMessage)
-
             }
-            
         }
         
         for ( _ , aMessage) in lastPhotoUpdateMessagesForUserIDs

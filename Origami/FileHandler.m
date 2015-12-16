@@ -398,7 +398,7 @@
     BOOL isDirectory = NO;
     if (![[NSFileManager defaultManager] fileExistsAtPath:filePath isDirectory:&isDirectory])
     {
-        NSLog(@" ... Asynchron . Error. File \" %@ \"does not exist at Attaches directory.", fileName);
+        //NSLog(@" ... Asynchron . Error. File \" %@ \"does not exist at Attaches directory.", fileName);
         if (completionBlock)
         {
             NSError *noFileError = [NSError errorWithDomain:@"Origami.File Reading Error." code:-1021 userInfo:@{NSLocalizedDescriptionKey:[NSString stringWithFormat:@"File not found: \n%@ .", fileName]}];
