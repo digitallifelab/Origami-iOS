@@ -37,6 +37,8 @@
 "changePassword" = "Изменить пароль";
 
 "Register" = "Зарегистрироваться";
+"RegistrationScreenTitle" = "Регистрация";
+"password" = "пароль";
 
 "sex" = "Пол";
 "male" = "Мужчина";

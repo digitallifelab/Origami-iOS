@@ -64,6 +64,7 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
             <string>SegoeUI-SemiBold</string>
@@ -2718,15 +2719,27 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nzy-sI-BTi">
                                 <rect key="frame" x="0.0" y="67" width="600" height="533"/>
                             </scrollView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Registration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuI-ad-S71">
+                                <rect key="frame" x="255" y="20" width="90" height="23"/>
+                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="nzy-sI-BTi" firstAttribute="leading" secondItem="E3S-h1-FnS" secondAttribute="leadingMargin" constant="-20" id="5Ju-q7-Two"/>
                             <constraint firstItem="WTA-nM-1Os" firstAttribute="top" secondItem="nzy-sI-BTi" secondAttribute="bottom" id="CFE-6S-6UX"/>
                             <constraint firstItem="nzy-sI-BTi" firstAttribute="top" secondItem="nx0-dh-6bj" secondAttribute="bottom" constant="47" id="QV4-NY-oiX"/>
+                            <constraint firstItem="IuI-ad-S71" firstAttribute="centerX" secondItem="E3S-h1-FnS" secondAttribute="centerX" id="hQq-FY-hSb"/>
+                            <constraint firstItem="IuI-ad-S71" firstAttribute="top" secondItem="nx0-dh-6bj" secondAttribute="bottom" id="iLU-lP-kGF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nzy-sI-BTi" secondAttribute="trailing" constant="-20" id="wF9-QF-y51"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="containerScrollView" destination="nzy-sI-BTi" id="M0e-rH-cjX"/>
+                        <outlet property="topLabel" destination="IuI-ad-S71" id="Ihc-E1-RXR"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PVW-0d-sJI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

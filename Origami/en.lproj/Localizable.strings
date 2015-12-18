@@ -36,7 +36,8 @@
 "changePassword" = "Change password";
 
 "Register" = "Sign Up";
-
+"RegistrationScreenTitle" = "Registration";
+"password" = "password";
 "sex" = "Gender";
 "male" = "Man";
 "female" = "Woman";
