@@ -115,7 +115,13 @@
             VisualizableObject *currentObject = self.objectsToVisualize[i];
             
             PFButton *subV = [PFButton buttonWithType:UIButtonTypeSystem];
-            subV.frame = (showsCircleButtons) ? CGRectMake(0, 0, 30, 30) : CGRectMake(0, 0, 60, 30) ;
+            subV.frame = (showsCircleButtons) ? CGRectMake(0, 0, 30, 30) : CGRectMake(0, 0, 80, 60) ;
+            subV.titleLabel.numberOfLines = 0;
+            subV.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            subV.titleLabel.preferredMaxLayoutWidth = 60.0;
+            subV.titleLabel.adjustsFontSizeToFitWidth = YES;
+            //subV.titleLabel.backgroundColor = [UIColor yellowColor];
+            
             if (showsCircleButtons)
             {
                 subV.layer.cornerRadius = 15.0;
@@ -125,15 +131,12 @@
             {
                 subV.layer.masksToBounds=YES;
                 subV.layer.cornerRadius=3;
-            }
-            subV.titleLabel.lineBreakMode = NSLineBreakByClipping;
-            subV.titleLabel.textColor = [UIColor whiteColor];
-           
+            }           
             
             NSString *currentTitle = currentObject.title;
-            if (currentTitle.length > 6)
+            if (currentTitle.length > 20)
             {
-                currentTitle = [currentTitle substringToIndex:6];
+                currentTitle = [currentTitle substringToIndex:20];
             }
             
             NSAttributedString *textToSet;
@@ -157,11 +160,12 @@
                     [subV setAttributedTitle:textToSet forState:UIControlStateNormal];
                 }
             }
-        
+           
+            //[subV sizeToFit];
             [subV addTarget:self action:@selector(subVClick:) forControlEvents:UIControlEventTouchUpInside];
             
             subV.elementIdTag = currentObject.elementId;
-            printf("tag: %ld",(long)subV.tag);
+            //printf("tag: %ld",(long)subV.tag);
             [views addObject:subV];
             //[subV release];
         }

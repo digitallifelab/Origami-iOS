@@ -120,6 +120,7 @@
 		F8A1DFD31B7B74BE00A66692 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1DFD21B7B74BE00A66692 /* Language.swift */; };
 		F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */; };
 		F8A2A4D01B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */; };
+		F8B207201C2401D100BC3465 /* RegistrationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */; };
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
@@ -402,6 +403,7 @@
 		F8A1DFD01B7B74AB00A66692 /* Country.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		F8A1DFD21B7B74BE00A66692 /* Language.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileSexCell.swift; sourceTree = "<group>"; };
+		F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationVC.swift; sourceTree = "<group>"; };
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
@@ -843,6 +845,7 @@
 			children = (
 				F89F3B5D1B21C81600156CEC /* LoginVC.swift */,
 				F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */,
+				F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */,
 			);
 			name = "Login and Registration";
 			sourceTree = "<group>";
@@ -1344,6 +1347,7 @@
 				F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,
 				F84E84581BE21BFF001B1B87 /* DBAttach.swift in Sources */,
+				F8B207201C2401D100BC3465 /* RegistrationVC.swift in Sources */,
 				F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */,
 				F88668141B429FC30021C806 /* ContactCheckerCell.swift in Sources */,
 				F8BDB6941BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
