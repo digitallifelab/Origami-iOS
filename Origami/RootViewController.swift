@@ -109,7 +109,9 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        
+     
+        showRegistrationVC()
+        /*
         guard let user = DataSource.sharedInstance.user else
         {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
@@ -160,6 +162,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 self.leftMenuVC?.didMoveToParentViewController(self)
             }
         }
+        */
     }
 
     func showChangePasswordVC()
@@ -220,15 +223,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
             }
         }
     }
-    
-    func getCurrentTopViewController() -> UIViewController?
-    {
-        if isShowingMenu
-        {
-            return self.leftMenuVC
-        }
-        return self.currentNavigationController
-    }
  
     func showLoginScreenWithReloginPrompt(showAlert:Bool)
     {
@@ -252,7 +246,14 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
         {
              self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
         }
-       
+    }
+    
+    func showRegistrationVC()
+    {
+        if let regVC = self.storyboard?.instantiateViewControllerWithIdentifier("RegistrationVC") as? RegistrationVC
+        {
+            self.presentViewController(regVC, animated: true, completion: nil)
+        }
     }
 
     func processMenuDisplaying(notification:NSNotification?)
