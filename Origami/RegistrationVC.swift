@@ -141,6 +141,8 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         startRegistrationButton.backgroundColor = UIColor.clearColor()
         startRegistrationButton.sizeToFit()
         startRegistrationButton.translatesAutoresizingMaskIntoConstraints = false
+        startRegistrationButton.addTarget(self, action: "registrationButtonAction:", forControlEvents: .TouchUpInside)
+        
         registerButton = startRegistrationButton
         containerView.addSubview(startRegistrationButton)
         
@@ -254,6 +256,8 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
             //prepare needed values
             let keyboardFrame = notifInfo[UIKeyboardFrameEndUserInfoKey]!.CGRectValue//()
             var keyboardHeight = keyboardFrame.size.height
+            
+            //damn iOS 7 and before for theese keyboard dimensions
             if #available (iOS 8.0, *)
             {
                 
@@ -301,6 +305,12 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
             containerScrollView.contentInset = insets
             
         }
+    }
+    
+    //MARK: - 
+    func registrationButtonAction(sender:UIButton)
+    {
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
     
     //MARK: - UITextFieldDelegate
