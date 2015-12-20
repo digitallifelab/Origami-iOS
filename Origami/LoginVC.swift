@@ -13,8 +13,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
     @IBOutlet var nameField:UITextField!
     @IBOutlet var passwordField:UITextField!
     @IBOutlet var loginButton:UIButton!
-    var alertInfoToShowAfterAppearance:[String:String]?
+    @IBOutlet var registrationButton:UIButton!
     
+    var alertInfoToShowAfterAppearance:[String:String]?
     
     
     override func viewDidLoad() {
@@ -34,6 +35,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
         passwordField.text = password
         
         loginButton.setTitle("LoginButtonTitle".localizedWithComment(""), forState: .Normal)
+        registrationButton.setTitle("RegistrationScreenTitle".localizedWithComment(""), forState: .Normal)
+        
         self.view.backgroundColor = kDayNavigationBarBackgroundColor
         
         let leftViewName = UIView(frame: CGRectMake(0, 0, 16, 10))
@@ -104,6 +107,16 @@ class LoginVC: UIViewController , UITextFieldDelegate
         }
     }
     
+    
+    @IBAction func registrationButtonPress(sender:UIButton)
+    {
+        if let authManagerVC = self.presentingViewController as? AuthorizationManagerViewController
+        {
+            sender.enabled = false
+            
+            authManagerVC.presentRegistrationViewController(self)
+        }
+    }
     
     func userDidLogin(user:User)
     {

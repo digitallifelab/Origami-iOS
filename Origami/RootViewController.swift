@@ -19,8 +19,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     
     var isShowingMenu = false
     
-    var didShowTestRegisgtrationVC = false
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -112,19 +110,15 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     {
         super.viewDidAppear(animated)
      
-        //test stuff
-        if !didShowTestRegisgtrationVC
-        {
-            didShowTestRegisgtrationVC = true
-            showRegistrationVC()
-            return
-        }
-        
         guard let user = DataSource.sharedInstance.user else
         {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
             
-            self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+            //self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+            if let authHandlerVC = self.storyboard?.instantiateViewControllerWithIdentifier("AuthManagerVC") as? AuthorizationManagerViewController, appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, aWindow = appDelegate.window
+            {
+                aWindow.rootViewController = authHandlerVC
+            }
             return
         }
         
@@ -256,14 +250,9 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
         }
     }
     
-    func showRegistrationVC()
-    {
-        if let regVC = self.storyboard?.instantiateViewControllerWithIdentifier("RegistrationVC") as? RegistrationVC
-        {
-            self.presentViewController(regVC, animated: true, completion: nil)
-        }
-    }
-
+    
+    
+    //MARK: -
     func processMenuDisplaying(notification:NSNotification?)
     {
         

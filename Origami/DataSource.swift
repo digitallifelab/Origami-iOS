@@ -153,6 +153,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     
     //MARK: - User
+    
+    func registerUser(user:User, completion:(success:Bool, error:NSError?) ->())
+    {
+        guard let first = user.firstName, last = user.lastName  else
+        {
+            completion(success:false, error:OrigamiError.NotFoundError(message: "email, first name or last name is missing") as NSError)
+            return
+        }
+        
+        DataSource.sharedInstance.serverRequester.registerNewUser(first, lastName: last, userName: user.userName, completion: completion)
+    }
+    
     func tryToGetUser(completion:(user:User?, error:NSError?)->())
     {
         if DataSource.sharedInstance.user != nil

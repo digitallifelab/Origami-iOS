@@ -8,17 +8,26 @@
 
 import UIKit
 
+protocol RegistrationViewControllerDelegate : class
+{
+    func userDidRegister(user:User?, sender:AnyObject?)
+}
+
 class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegate {
 
+    weak var delegate:RegistrationViewControllerDelegate?
     var firstNameTF:UITextField?
     var lastNameTF:UITextField?
     var emailTF:UITextField?
-    var passwordTF:UITextField?
+    //var passwordTF:UITextField?
     var registerButton:UIButton?
+    
+    
     lazy var tapRecognizer:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "tapGestureAction:")
     
     @IBOutlet weak var containerScrollView:UIScrollView!
     @IBOutlet weak var topLabel:UILabel!
+    @IBOutlet var cancelButton:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +36,7 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         tapRecognizer.requireGestureRecognizerToFail(containerScrollView.panGestureRecognizer)
 
         topLabel.text = "RegistrationScreenTitle".localizedWithComment("")
+        cancelButton.setTitle("cancel".localizedWithComment(""), forState: .Normal)
         
         self.view.backgroundColor = kDayNavigationBarBackgroundColor
         // Do any additional setup after loading the view.
@@ -63,9 +73,7 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         super.viewDidAppear(animated)
         addSubviewsToScrollView()
     }
-    
 
-    
     private func addSubviewsToScrollView()
     {
         let textFieldsFrame = CGRectMake(0, 0, 200.0, 40.0) // used to set sizes of UITextFields,  later the layout constraints will configure actual positions of each textField
@@ -90,21 +98,21 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         let nameField = UITextField(frame:textFieldsFrame)
         let lastNameField = UITextField(frame: textFieldsFrame)
         let emailField = UITextField(frame: textFieldsFrame)
-        let passwordField = UITextField(frame:textFieldsFrame)
+        //let passwordField = UITextField(frame:textFieldsFrame)
         
         emailField.keyboardType = .EmailAddress
-        passwordField.secureTextEntry = true
+        //passwordField.secureTextEntry = true
         
         nameField.layer.cornerRadius = textFieldCornerRadius
         lastNameField.layer.cornerRadius = textFieldCornerRadius
         emailField.layer.cornerRadius = textFieldCornerRadius
-        passwordField.layer.cornerRadius = textFieldCornerRadius
+        //passwordField.layer.cornerRadius = textFieldCornerRadius
         
         //setup left margin for textfields
         let leftView1 = UIView(frame: textFieldLeftViewMarginFrame)
         let leftView2 = UIView(frame: textFieldLeftViewMarginFrame)
         let leftView3 = UIView(frame: textFieldLeftViewMarginFrame)
-        let leftView4 = UIView(frame: textFieldLeftViewMarginFrame)
+        //let leftView4 = UIView(frame: textFieldLeftViewMarginFrame)
         
         nameField.leftViewMode = .Always
         nameField.leftView = leftView1
@@ -112,15 +120,15 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         lastNameField.leftView = leftView2
         emailField.leftViewMode = .Always
         emailField.leftView = leftView3
-        passwordField.leftViewMode = .Always
-        passwordField.leftView = leftView4
+        //passwordField.leftViewMode = .Always
+        //passwordField.leftView = leftView4
         
         nameField.translatesAutoresizingMaskIntoConstraints = false
         lastNameField.translatesAutoresizingMaskIntoConstraints = false
         emailField.translatesAutoresizingMaskIntoConstraints = false
-        passwordField.translatesAutoresizingMaskIntoConstraints = false
+        //passwordField.translatesAutoresizingMaskIntoConstraints = false
         
-        passwordField.backgroundColor = backGroundWhiteTextFieldColor
+        //passwordField.backgroundColor = backGroundWhiteTextFieldColor
         emailField.backgroundColor = backGroundWhiteTextFieldColor
         nameField.backgroundColor = backGroundWhiteTextFieldColor
         lastNameField.backgroundColor = backGroundWhiteTextFieldColor
@@ -128,12 +136,12 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         firstNameTF = nameField
         lastNameTF = lastNameField
         emailTF = emailField
-        passwordTF = passwordField
+        //passwordTF = passwordField
         
         containerView.addSubview(nameField)
         containerView.addSubview(lastNameField)
         containerView.addSubview(emailField)
-        containerView.addSubview(passwordField)
+        //containerView.addSubview(passwordField)
         
         let startRegistrationButton = UIButton(type: .System)
         startRegistrationButton.tintColor = kWhiteColor
@@ -146,7 +154,7 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         registerButton = startRegistrationButton
         containerView.addSubview(startRegistrationButton)
         
-        addConstraintsToSubviews([nameField, lastNameField, emailField, passwordField, startRegistrationButton] , inView:containerView)
+        addConstraintsToSubviews([nameField, lastNameField, emailField, /*passwordField,*/ startRegistrationButton] , inView:containerView)
         
         
         checkRegisterButtonEnabled()
@@ -154,7 +162,7 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         firstNameTF?.delegate = self
         lastNameTF?.delegate = self
         emailTF?.delegate = self
-        passwordTF?.delegate = self
+        //passwordTF?.delegate = self
         
     }
     
@@ -241,8 +249,8 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
         
         if  let name = firstNameTF?.text where name.characters.count > 0,
             let lastName = lastNameTF?.text where lastName.characters.count > 0,
-            let email = emailTF?.text where email.characters.count > 0,
-            let password = passwordTF?.text where password.characters.count > 0
+            let email = emailTF?.text where email.characters.count > 0//,
+            //let password = passwordTF?.text where password.characters.count > 0
         {
             regButton.enabled = true
         }
@@ -310,7 +318,49 @@ class RegistrationVC: UIViewController, UITextFieldDelegate, UIScrollViewDelegat
     //MARK: - 
     func registrationButtonAction(sender:UIButton)
     {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        //self.dismissViewControllerAnimated(true, completion: nil)
+
+        self.view.userInteractionEnabled = false
+        setLoadingIndicatorVisible(true)
+        
+        let newUserToRegister = User()
+        newUserToRegister.userName = emailTF!.text!
+        newUserToRegister.firstName = firstNameTF!.text!
+        newUserToRegister.lastName = lastNameTF!.text!
+        
+        
+        
+        DataSource.sharedInstance.registerUser(newUserToRegister) {[weak self] (success, error) -> () in
+           dispatch_async(dispatch_get_main_queue()){ [weak self] in
+                if let weakSelf = self
+                {
+                    weakSelf.view.userInteractionEnabled = true
+                    weakSelf.setLoadingIndicatorVisible(false)
+                    if success == false
+                    {
+                        if let errorFromRequest = error
+                        {
+                            weakSelf.showAlertWithTitle("Error", message: errorFromRequest.localizedDescription, cancelButtonTitle: "Close")
+                        }
+                        return
+                    }
+                    
+                    //newUserToRegister.state = PersonAuthorisationState.NeedToConfirm
+                    if let delegate = weakSelf.delegate
+                    {
+                        delegate.userDidRegister(newUserToRegister, sender: weakSelf)
+                    }
+                }
+            }
+        }
+    }
+    
+    @IBAction func cancelButtonAction(sender:UIButton)
+    {
+        if let delegate = self.delegate
+        {
+            delegate.userDidRegister(nil, sender: self)
+        }
     }
     
     //MARK: - UITextFieldDelegate

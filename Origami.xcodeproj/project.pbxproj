@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC07EA8E1C26A7C60005F499 /* AuthorizationManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */; };
 		F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8016FF01B304614002A1620 /* FrameCounter.swift */; };
 		F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
 		F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
@@ -284,6 +285,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManagerViewController.swift; sourceTree = "<group>"; };
 		F800022E1BC3E57C00E6E2E7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F8016FF01B304614002A1620 /* FrameCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCounter.swift; sourceTree = "<group>"; };
 		F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileAvatarCell.swift; sourceTree = "<group>"; };
@@ -843,9 +845,10 @@
 		F8B517E71B3C0C7700BDDEDB /* Login and Registration */ = {
 			isa = PBXGroup;
 			children = (
+				BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */,
 				F89F3B5D1B21C81600156CEC /* LoginVC.swift */,
-				F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */,
 				F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */,
+				F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */,
 			);
 			name = "Login and Registration";
 			sourceTree = "<group>";
@@ -1363,6 +1366,7 @@
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
 				F87AEE551BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
+				BC07EA8E1C26A7C60005F499 /* AuthorizationManagerViewController.swift in Sources */,
 				F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */,
 				F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,

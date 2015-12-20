@@ -65,8 +65,10 @@
             <string>SegoeUI</string>
             <string>SegoeUI</string>
             <string>SegoeUI</string>
+            <string>SegoeUI</string>
         </mutableArray>
         <mutableArray key="seguisb.ttf">
+            <string>SegoeUI-SemiBold</string>
             <string>SegoeUI-SemiBold</string>
             <string>SegoeUI-SemiBold</string>
             <string>SegoeUI-SemiBold</string>
@@ -78,7 +80,7 @@
         <!--Root View Controller-->
         <scene sceneID="tSl-6H-MOK">
             <objects>
-                <viewController autoresizesArchivedViewToFullSize="NO" id="t8C-T4-RMy" customClass="RootViewController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="RootVC" autoresizesArchivedViewToFullSize="NO" id="t8C-T4-RMy" customClass="RootViewController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="MfM-Hv-pqs"/>
                         <viewControllerLayoutGuide type="bottom" id="fUT-ct-Q0E"/>
@@ -102,7 +104,7 @@
         <!--LoginVC-->
         <scene sceneID="JPH-bJ-umA">
             <objects>
-                <viewController id="UGF-yz-ac4" customClass="LoginVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginVC" id="UGF-yz-ac4" customClass="LoginVC" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="RCu-Cq-FLy"/>
                         <viewControllerLayoutGuide type="bottom" id="fYw-zZ-iPv"/>
@@ -112,7 +114,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Uxo-Jh-pfs">
-                                <rect key="frame" x="278" y="510" width="45" height="36"/>
+                                <rect key="frame" x="278" y="500" width="45" height="36"/>
                                 <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="18"/>
                                 <state key="normal" title="Login">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
@@ -150,15 +152,27 @@
                                 <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="20"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wLf-cW-1TW">
+                                <rect key="frame" x="253" y="544" width="95" height="36"/>
+                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="18"/>
+                                <state key="normal" title="Registration">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="registrationButtonPress:" destination="UGF-yz-ac4" eventType="touchUpInside" id="qge-p5-mYR"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.11764705882352941" green="0.61960784313725492" blue="0.43137254901960786" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstItem="wLf-cW-1TW" firstAttribute="centerX" secondItem="T6g-Z0-Sgb" secondAttribute="centerX" id="4qu-YF-XiW"/>
                             <constraint firstItem="OI8-MY-dbo" firstAttribute="top" secondItem="AKb-PF-R3o" secondAttribute="bottom" constant="8" id="A7b-9a-OSz"/>
-                            <constraint firstItem="fYw-zZ-iPv" firstAttribute="top" secondItem="Uxo-Jh-pfs" secondAttribute="bottom" constant="54" id="Eu8-5H-vR2"/>
+                            <constraint firstItem="fYw-zZ-iPv" firstAttribute="top" secondItem="Uxo-Jh-pfs" secondAttribute="bottom" constant="64" id="Eu8-5H-vR2"/>
                             <constraint firstItem="AKb-PF-R3o" firstAttribute="leading" secondItem="T6g-Z0-Sgb" secondAttribute="leadingMargin" constant="167" id="NBO-3z-iAp"/>
                             <constraint firstItem="AKb-PF-R3o" firstAttribute="height" secondItem="Vhg-5m-q1o" secondAttribute="height" id="NhK-tG-Evg"/>
                             <constraint firstItem="AKb-PF-R3o" firstAttribute="leading" secondItem="T6g-Z0-Sgb" secondAttribute="leadingMargin" priority="750" id="YCN-qV-pPk"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Vhg-5m-q1o" secondAttribute="trailing" constant="166" id="Z5e-u1-vH0"/>
+                            <constraint firstItem="wLf-cW-1TW" firstAttribute="top" secondItem="Uxo-Jh-pfs" secondAttribute="bottom" constant="8" id="ZQ6-hq-iyj"/>
                             <constraint firstAttribute="centerY" secondItem="OI8-MY-dbo" secondAttribute="centerY" constant="60" id="ZwN-gf-mnV"/>
                             <constraint firstAttribute="centerX" secondItem="Uxo-Jh-pfs" secondAttribute="centerX" id="e9R-85-rv1"/>
                             <constraint firstItem="Vhg-5m-q1o" firstAttribute="leading" secondItem="T6g-Z0-Sgb" secondAttribute="leadingMargin" constant="167" id="fFe-BA-IgO"/>
@@ -210,6 +224,7 @@
                         <outlet property="loginButton" destination="Uxo-Jh-pfs" id="MR2-Dc-4R2"/>
                         <outlet property="nameField" destination="AKb-PF-R3o" id="a23-dn-Krm"/>
                         <outlet property="passwordField" destination="Vhg-5m-q1o" id="xA0-LC-gRN"/>
+                        <outlet property="registrationButton" destination="wLf-cW-1TW" id="4s6-L7-BWy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Sv-8r-Vlr" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -2704,6 +2719,24 @@
             </objects>
             <point key="canvasLocation" x="5248" y="1109"/>
         </scene>
+        <!--Authorization Manager View Controller-->
+        <scene sceneID="5LS-Vd-cAw">
+            <objects>
+                <viewController storyboardIdentifier="AuthManagerVC" id="cjz-fS-d8y" customClass="AuthorizationManagerViewController" customModule="Origami_task_manager" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gUd-NZ-OcG"/>
+                        <viewControllerLayoutGuide type="bottom" id="efO-Rg-NJN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dOc-tU-DYB">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fu8-Vy-b7d" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-480" y="1047"/>
+        </scene>
         <!--RegistrationVC-->
         <scene sceneID="BOH-r1-S1d">
             <objects>
@@ -2720,30 +2753,43 @@
                                 <rect key="frame" x="0.0" y="67" width="600" height="533"/>
                             </scrollView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Registration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IuI-ad-S71">
-                                <rect key="frame" x="255" y="20" width="90" height="23"/>
-                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <rect key="frame" x="251" y="30" width="99" height="24"/>
+                                <fontDescription key="fontDescription" name="SegoeUI-SemiBold" family="Segoe UI" pointSize="18"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8EF-rL-1jd">
+                                <rect key="frame" x="20" y="26" width="44" height="32"/>
+                                <fontDescription key="fontDescription" name="SegoeUI" family="Segoe UI" pointSize="15"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelButtonAction:" destination="aUh-TG-ZQx" eventType="touchUpInside" id="FOe-ps-7ud"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="nzy-sI-BTi" firstAttribute="leading" secondItem="E3S-h1-FnS" secondAttribute="leadingMargin" constant="-20" id="5Ju-q7-Two"/>
                             <constraint firstItem="WTA-nM-1Os" firstAttribute="top" secondItem="nzy-sI-BTi" secondAttribute="bottom" id="CFE-6S-6UX"/>
+                            <constraint firstItem="8EF-rL-1jd" firstAttribute="centerY" secondItem="IuI-ad-S71" secondAttribute="centerY" id="IPc-xs-nd9"/>
                             <constraint firstItem="nzy-sI-BTi" firstAttribute="top" secondItem="nx0-dh-6bj" secondAttribute="bottom" constant="47" id="QV4-NY-oiX"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="8EF-rL-1jd" secondAttribute="leading" id="Xod-os-oCe"/>
                             <constraint firstItem="IuI-ad-S71" firstAttribute="centerX" secondItem="E3S-h1-FnS" secondAttribute="centerX" id="hQq-FY-hSb"/>
-                            <constraint firstItem="IuI-ad-S71" firstAttribute="top" secondItem="nx0-dh-6bj" secondAttribute="bottom" id="iLU-lP-kGF"/>
+                            <constraint firstItem="IuI-ad-S71" firstAttribute="top" secondItem="nx0-dh-6bj" secondAttribute="bottom" constant="10" id="iLU-lP-kGF"/>
                             <constraint firstAttribute="trailingMargin" secondItem="nzy-sI-BTi" secondAttribute="trailing" constant="-20" id="wF9-QF-y51"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="cancelButton" destination="8EF-rL-1jd" id="UOx-41-5mO"/>
                         <outlet property="containerScrollView" destination="nzy-sI-BTi" id="M0e-rH-cjX"/>
                         <outlet property="topLabel" destination="IuI-ad-S71" id="Ihc-E1-RXR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PVW-0d-sJI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="43" y="1661"/>
+            <point key="canvasLocation" x="47" y="1692"/>
         </scene>
         <!--My Contacts ListVC-->
         <scene sceneID="jg7-LP-fNr">
