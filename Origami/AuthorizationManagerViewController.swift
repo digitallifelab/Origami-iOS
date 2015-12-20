@@ -58,7 +58,6 @@ class AuthorizationManagerViewController: UIViewController, PasswordChangeDelega
             return
         case .Undefined:
             showAlertWithTitle("Error".localizedWithComment(""), message: "UnknownError".localizedWithComment(""), cancelButtonTitle: "Close".localizedWithComment(""))
-            return
         }
     }
     
