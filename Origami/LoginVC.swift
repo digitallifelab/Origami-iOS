@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol LoginViewControllerDelegate:class{
+    func loginViewControllerShouldInformUserToCheckEmail(viewController:LoginVC) -> Bool
+}
+
 class LoginVC: UIViewController , UITextFieldDelegate
 {
     @IBOutlet var nameField:UITextField!
@@ -16,7 +20,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
     @IBOutlet var registrationButton:UIButton!
     
     var alertInfoToShowAfterAppearance:[String:String]?
-    
+    weak var delegate:LoginViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,16 +56,27 @@ class LoginVC: UIViewController , UITextFieldDelegate
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        if let delegate = self.delegate, font = UIFont(name: "SegoeUI", size: 20.0)
+        {
+            if delegate.loginViewControllerShouldInformUserToCheckEmail(self)
+            {
+                let attributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.brownColor().colorWithAlphaComponent(0.7)]
+                passwordField.attributedPlaceholder = NSAttributedString(string: "tempPassword".localizedWithComment(""), attributes: attributes)
+                alertInfoToShowAfterAppearance = ["title":"attention".localizedWithComment(""),"message":"checkEmailForRegistrationPassword".localizedWithComment("")]
+            }
+        }
+    }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-       
-        
         
         if let alertInfo = alertInfoToShowAfterAppearance, title = alertInfo["title"], message = alertInfo["message"]
         {
-            loginButton.enabled = true
+            loginButton.enabled = false
             showAlertWithTitle(title, message: message, cancelButtonTitle: "Ok")
             DataSource.sharedInstance.stopRefreshingNewMessages()
+            alertInfoToShowAfterAppearance?.removeAll()
         }
         else
         {

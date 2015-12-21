@@ -115,10 +115,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
             NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
             
             //self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
-            if let authHandlerVC = self.storyboard?.instantiateViewControllerWithIdentifier("AuthManagerVC") as? AuthorizationManagerViewController, appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, aWindow = appDelegate.window
-            {
-                aWindow.rootViewController = authHandlerVC
-            }
+            switchRootViewControllerToAuthController()
             return
         }
         
@@ -201,12 +198,18 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 weakSelf.leftMenuVC?.view.removeFromSuperview()
                 weakSelf.leftMenuVC?.didMoveToParentViewController(nil)
                 weakSelf.leftMenuVC = nil
-                
-                weakSelf.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+                weakSelf.switchRootViewControllerToAuthController()
             }
         }
     }
     
+    private func switchRootViewControllerToAuthController()
+    {
+        if let authHandlerVC = self.storyboard?.instantiateViewControllerWithIdentifier("AuthManagerVC") as? AuthorizationManagerViewController, appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, aWindow = appDelegate.window
+        {
+            aWindow.rootViewController = authHandlerVC
+        }
+    }
     //MARK: Menu
     func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)
     {

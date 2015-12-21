@@ -96,3 +96,7 @@
 
 //Login attempt failures:
 "YouAreBlocked" = "Вы забокированы. Пожялуйста, Свяжитесь с администратором сервиса.";
+
+//MARK: - Registration
+"tempPassword" = "одноразовый пароль";
+"checkEmailForRegistrationPassword" = "Проверьте свою почту для получения одноразового пароля";

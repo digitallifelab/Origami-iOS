@@ -42,8 +42,20 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
-        let requestString:String = "\(serverURL)" + "\(registerUserUrlPart)" + "?\(firstNameKey)=" + firstName + "&\(lastNameKey)=" + lastName + "&\(loginNameKey)=" + userName
-        //let parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
+        let charSet = NSMutableCharacterSet.alphanumericCharacterSet()
+        let allowedChars = NSCharacterSet(charactersInString: "&:/?.-_@=")
+        charSet.formUnionWithCharacterSet(allowedChars)
+        
+        var requestString:String = "\(serverURL)" + "\(registerUserUrlPart)"
+            
+        let paramsString = "?\(firstNameKey)=" + firstName + "&\(lastNameKey)=" + lastName + "&UserName=" + userName
+        guard let paramsToAppend = paramsString.stringByAddingPercentEncodingWithAllowedCharacters(charSet) else
+        {
+            completion(success: false, error: OrigamiError.PreconditionFailure(message: "Could not create proper registration request. Try entering all data with latin alphabet") as NSError)
+            return
+        }
+        
+        requestString += paramsToAppend
         
         guard let regURL = NSURL(string:requestString) else
         {
@@ -279,8 +291,6 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     func loadLanguages(completion:((languages:[Language]?, error:NSError?) -> ())?)
     {
         let languagesUrlString = serverURL + getLanguagesUrlPart
-        
-
         
         guard let url = NSURL(string: languagesUrlString) else
         {

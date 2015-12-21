@@ -90,3 +90,6 @@
 "Cancel task" = "Cancel task";
 //Login attempt failures:
 "YouAreBlocked" = "You are blocked, please contact service administrator.";
+//MARK: - Registration
+"tempPassword" = "one-time password";
+"checkEmailForRegistrationPassword" = "Check your email for one-time password";

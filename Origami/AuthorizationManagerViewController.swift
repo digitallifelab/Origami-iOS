@@ -8,11 +8,11 @@
 
 import UIKit
 
-class AuthorizationManagerViewController: UIViewController, PasswordChangeDelegate, RegistrationViewControllerDelegate {
+class AuthorizationManagerViewController: UIViewController, PasswordChangeDelegate, RegistrationViewControllerDelegate, LoginViewControllerDelegate {
 
     
     var shouldShowLoginVC = true
-    
+    private var isOneTimePasswordWarningEnabled = false
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -66,6 +66,10 @@ class AuthorizationManagerViewController: UIViewController, PasswordChangeDelega
     {
         if let loginVC = self.storyboard?.instantiateViewControllerWithIdentifier("LoginVC") as? LoginVC
         {
+            if isOneTimePasswordWarningEnabled
+            {
+                loginVC.delegate = self
+            }
             self.presentViewController(loginVC, animated: true, completion: nil)
         }
     }
@@ -110,7 +114,7 @@ class AuthorizationManagerViewController: UIViewController, PasswordChangeDelega
     func userDidChangePassword(newPassword: String?, sender: ChangePasswordViewController) {
         
         shouldShowLoginVC = true
-        
+        isOneTimePasswordWarningEnabled = false
         guard let newPasswordString = newPassword else
         {
             NSUserDefaults.standardUserDefaults().removeObjectForKey(passwordKey)
@@ -124,15 +128,21 @@ class AuthorizationManagerViewController: UIViewController, PasswordChangeDelega
         sender.dismissViewControllerAnimated(true, completion:nil)
     }
     
+    //MARK: - LoginViewControllerDelegate
+    func loginViewControllerShouldInformUserToCheckEmail(viewController: LoginVC) -> Bool {
+        return self.isOneTimePasswordWarningEnabled
+    }
+    
     //MARK: - RegistrationViewControllerDelegate
     func userDidRegister(user:User?, sender:AnyObject?)
     {
         shouldShowLoginVC = true
         
-        DataSource.sharedInstance.user = user
+        DataSource.sharedInstance.user = nil
         if let userName = user?.userName
         {
             NSUserDefaults.standardUserDefaults().setObject(userName, forKey: loginNameKey)
+            isOneTimePasswordWarningEnabled = true
         }
         else
         {
