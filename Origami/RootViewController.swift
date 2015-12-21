@@ -52,7 +52,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 }
                 else
                 {
-                    print("\n Did initialize local data base...\n")
+                    print("\n Local data base ntialization OK...\n")
                 }
             }
         }

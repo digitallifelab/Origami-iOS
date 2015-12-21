@@ -70,6 +70,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var localDatadaseHandler: LocalDatabaseHandler?
     func createLocalDatabaseHandler(completion:((dbInitialization:Bool)->())?)
     {
+        if let _ = DataSource.sharedInstance.localDatadaseHandler
+        {
+            print(" - did initialize core data stack earlier. will not initialize it again.")
+            completion?(dbInitialization: true)
+            return
+        }
+        
         if let model = LocalDatabaseHandler.getManagedObjectModel()
         {
             do{
