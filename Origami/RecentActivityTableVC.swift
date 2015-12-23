@@ -240,15 +240,17 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup idea icon image
-                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.type!.integerValue)
+                if let aType = element.type
                 {
-                    activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
+                    if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: aType.integerValue)
+                    {
+                        activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
+                    }
+                    else
+                    {
+                        activityCell.ideaIcon?.image = nil
+                    }
                 }
-                else
-                {
-                    activityCell.ideaIcon?.image = nil
-                }
-                
                 //setup avatar, name and task Icon image depending on Task property of element
                 if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.type!.integerValue)
                 {
