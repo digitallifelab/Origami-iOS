@@ -205,10 +205,15 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     
     private func switchRootViewControllerToAuthController()
     {
+        #if SHEVCHENKO
+            //self.performSegueWithIdentifier("", sender: self)
+            showLoginScreenWithReloginPrompt(false)
+        #else
         if let authHandlerVC = self.storyboard?.instantiateViewControllerWithIdentifier("AuthManagerVC") as? AuthorizationManagerViewController, appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, aWindow = appDelegate.window
         {
             aWindow.rootViewController = authHandlerVC
         }
+        #endif
     }
     //MARK: Menu
     func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)

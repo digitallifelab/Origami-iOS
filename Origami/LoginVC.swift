@@ -24,7 +24,6 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         nameField.layer.cornerRadius = 5.0
         passwordField.layer.cornerRadius = 5.0
         
@@ -58,6 +57,9 @@ class LoginVC: UIViewController , UITextFieldDelegate
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        #if SHEVCHENKO
+            self.registrationButton.hidden = true
+        #endif
         if let delegate = self.delegate, font = UIFont(name: "SegoeUI", size: 20.0)
         {
             if delegate.loginViewControllerShouldInformUserToCheckEmail(self)
@@ -122,7 +124,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
         }
     }
     
-    
+    #if !SHEVCHENKO
     @IBAction func registrationButtonPress(sender:UIButton)
     {
         if let authManagerVC = self.presentingViewController as? AuthorizationManagerViewController
@@ -132,7 +134,7 @@ class LoginVC: UIViewController , UITextFieldDelegate
             authManagerVC.presentRegistrationViewController(self)
         }
     }
-    
+    #endif
     func userDidLogin(user:User)
     {
         guard let _ = user.userId else
