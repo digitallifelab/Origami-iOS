@@ -12,19 +12,19 @@
 @interface VisualizableObject : NSObject
 
 //element info
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *details;
+@property (nonatomic, strong, nullable) NSString *title;
+@property (nonatomic, strong, nullable) NSString *details;
 @property (nonatomic, assign) NSInteger elementId;
 @property (nonatomic, assign) NSInteger rootElementId;
 @property (nonatomic, assign) BOOL isFavourite;
 @property (nonatomic, assign) BOOL isSignal;
 
 //creator or changer info
-@property (nonatomic, strong) UIImage *avatarImage;
-@property (nonatomic, strong) NSString *displayName;
+@property (nonatomic, strong, nullable) UIImage *avatarImage;
+@property (nonatomic, strong, nullable) NSString *displayName;
 
-@property (nonatomic, strong) NSDate *changeDate;
-@property (nonatomic) NSInteger massagesCount;
+@property (nonatomic, strong, nullable) NSDate *changeDate;
+@property (nonatomic) NSInteger messagesCount;
 //
 
 

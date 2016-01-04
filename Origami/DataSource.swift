@@ -905,12 +905,22 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 newObject.isSignal = signalBool
             }
             
-            if let elementId = anElement.elementId?.integerValue, rootId = anElement.rootElementId?.integerValue
+            guard let elementId = anElement.elementId?.integerValue, rootId = anElement.rootElementId?.integerValue else
             {
-                newObject.elementId = elementId
-                newObject.rootElementId = rootId
+                continue
             }
             
+            newObject.elementId = elementId
+            newObject.rootElementId = rootId
+            
+            //fill in Date value
+            if let dateChanged = anElement.latestAffectingDate
+            {
+                newObject.changeDate = dateChanged
+            }
+           
+            
+            //fill in creator name and image value
             if let creatorId = anElement.creatorId?.integerValue, foundPersonTuple = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId)
             {
                 if let dbContact = foundPersonTuple.db
@@ -923,6 +933,12 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 }
                 
                 newObject.avatarImage = DataSource.sharedInstance.getAvatarForUserId(creatorId)
+            }
+            
+            //fill in messages count value
+            if let messagesCount = DataSource.sharedInstance.localDatadaseHandler?.getMessagesCountForElementId(elementId)
+            {
+                newObject.messagesCount = messagesCount
             }
             
             vizualizableObjects.append(newObject)

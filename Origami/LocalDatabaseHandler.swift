@@ -1682,6 +1682,16 @@ class LocalDatabaseHandler
         }
     }
     
+    func getMessagesCountForElementId(elementId:Int) -> Int
+    {
+        guard let element = self.readElementById(elementId) , messages = element.messages  where messages.count > 0 else
+        {
+            return 0
+        }
+        
+        return messages.count
+    }
+    
     func deleteAllChatMessages()
     {
         let allElementsRequest = NSFetchRequest(entityName: "DBMessageChat")

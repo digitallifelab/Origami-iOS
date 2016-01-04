@@ -25,7 +25,7 @@
     NSTimer *timer;
 }
 @property (nonatomic, assign) NSInteger currentViewControllersCount;
-@property (nonatomic, strong)  NSMutableArray <VisualizableObject *> *objectsToVisualize;
+@property (nonatomic, strong, nullable)  NSMutableArray <VisualizableObject *> *objectsToVisualize;
 @end
 
 @implementation VisualizationViewController {
