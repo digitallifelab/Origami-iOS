@@ -32,6 +32,7 @@
     UIScrollView *_scrollView;
     UIView *_contentView;
     OKVisualizationLayer *_elementView;
+    NSArray <VisualizableObject *> *objectsToVisualize;
 }
 
 - (void)viewDidLoad {
