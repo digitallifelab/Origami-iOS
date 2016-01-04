@@ -70,6 +70,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     var localDatadaseHandler: LocalDatabaseHandler?
     func createLocalDatabaseHandler(completion:((dbInitialization:Bool)->())?)
     {
+        if let _ = DataSource.sharedInstance.localDatadaseHandler
+        {
+            print(" - did initialize core data stack earlier. will not initialize it again.")
+            completion?(dbInitialization: true)
+            return
+        }
+        
         if let model = LocalDatabaseHandler.getManagedObjectModel()
         {
             do{
@@ -124,27 +131,16 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllChatMessages()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllContacts()
             DataSource.sharedInstance.user = nil
-            //DataSource.sharedInstance.cleanDataCache()
             DataSource.sharedInstance.contacts.removeAll(keepCapacity: false)
-            //DataSource.sharedInstance.elements.removeAll(keepCapacity: false)
             DataSource.sharedInstance.userAvatarsHolder.removeAll()
-            //print("AvatarsHolder Before cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
-            //DataSource.sharedInstance.avatarsHolder.removeAll(keepCapacity: false)
-            //print("AvatarsHolder After cleaning: \(DataSource.sharedInstance.avatarsHolder.count)")
-            //DataSource.sharedInstance.stopRefreshingNewMessages()
+            DataSource.sharedInstance.localDatadaseHandler?.deleteAllAvatarPreviews()
+            let fileHandler = FileHandler()
+            fileHandler.deleteAvatars()
             
             let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
             dispatch_after(timeout, getBackgroundQueue_DEFAULT(), { () -> Void in
                 DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
                 print("stopRefreshingLastMessages")
-                //sleep(2)
-                
-                //DataSource.sharedInstance.messagesLoader?.cancelDispatchSource()
-                //print("cancelDispatchSource")
-                //sleep(2)
-                
-                //DataSource.sharedInstance.messagesLoader = nil
-                //print("messagesLoader = nil")
             })
             
             
@@ -164,6 +160,18 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     
     //MARK: - User
+    
+    func registerUser(user:User, completion:(success:Bool, error:NSError?) ->())
+    {
+        guard let first = user.firstName, last = user.lastName  else
+        {
+            completion(success:false, error:OrigamiError.NotFoundError(message: "email, first name or last name is missing") as NSError)
+            return
+        }
+        
+        DataSource.sharedInstance.serverRequester.registerNewUser(first, lastName: last, userName: user.userName, completion: completion)
+    }
+    
     func tryToGetUser(completion:(user:User?, error:NSError?)->())
     {
         if DataSource.sharedInstance.user != nil
@@ -324,22 +332,14 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 {
                     print("Message Save Error: \n \(messageSaveError)")
                 }
-                
-//                DataSource.sharedInstance.localDatadaseHandler?.saveChatMessagesToLocalDataBase(messagesForNotFoundElements, completion: { (saved, error) -> () in
-//                    if let messageSaveError = error
-//                    {
-//                        print("Message Save Error: \n \(messageSaveError)")
-//                    }
-                
-                    DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing(){ _ in
-                        print("\n -> DataSource did finish PAIRING messages and elemnts..")
-                        if let observerHomeVC = DataSource.sharedInstance.getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
-                        {
-                            observerHomeVC.newMessagesWereAdded()
-                        }
+
+                DataSource.sharedInstance.localDatadaseHandler?.performMessagesAndElementsPairing() { _ in
+                    print("\n -> DataSource did finish PAIRING messages and elemnts..")
+                    if let observerHomeVC = DataSource.sharedInstance.getMessagesObserverForElementId(All_New_Messages_Observation_ElementId)
+                    {
+                        observerHomeVC.newMessagesWereAdded()
                     }
-                    
-//                })
+                }
             })
         }
         
@@ -414,37 +414,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     }
     //MARK: Messages Local Stuff
     
-    func isMessagesEmpty() -> Bool{
-        return DataSource.sharedInstance.messages.isEmpty
-    }
-    
-    func addMessages(messageObjects:[Message], forElementId elementId:NSNumber, completion:voidClosure?)
+    func isMessagesEmpty() -> Bool
     {
-        let messagesToAdd = ObjectsConverter.sortMessagesByMessageId(messageObjects)
-        // add to our array container
-        if let existingMessages = DataSource.sharedInstance.messages[elementId]
-        {
-            var mutableExisting = existingMessages
-            mutableExisting += messagesToAdd
-            //replace existing messages with new array
-            DataSource.sharedInstance.messages[elementId] = mutableExisting
-        }
-        else
-        {
-            DataSource.sharedInstance.messages[elementId] = messagesToAdd
-        }
-        
-        // also check if there are any observers waiting for new messages
-        if let observer =  getMessagesObserverForElementId(elementId)
-        {
-            observer.newMessagesAdded(messagesToAdd)
-        }
-        
-        //return from function
-        if let completionBlock = completion
-        {
-            completionBlock()
-        }
+        return DataSource.sharedInstance.messages.isEmpty
     }
     
     func getAllMessagesForElementId(elementId:NSNumber) -> [Message]?
@@ -544,10 +516,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     
     func removeObserverForNewMessagesForElement(elementId:NSNumber)
     {
-        if let _ = DataSource.sharedInstance.messagesObservers[elementId]
-        {
+//        if let _ = DataSource.sharedInstance.messagesObservers[elementId]
+//        {
             DataSource.sharedInstance.messagesObservers[elementId] = nil
-        }
+//        }
     }
     
     
@@ -780,11 +752,22 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         }
     }
     
-    func setElementFinishDate(elementId:Int, date:NSDate, completion:((success:Bool)->())?)
+    func setElementFinishDate(elementId:Int, date:NSDate?, completion:((success:Bool)->())?)
     {
-        guard let dateString = date.dateForRequestURL() else
+        guard let dateString = date?.dateForRequestURL() else
         {
-            completion?(success:false)
+            //for deleting TASK option enabled for element
+            DataSource.sharedInstance.serverRequester.setElementFinished(elementId, finishDate: "/Date(0)/" ) { (success) -> () in
+                if success
+                {
+                    if let existElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+                    {
+                        existElement.dateFinished = nil
+                    }
+                }
+                completion?(success:success)
+            }
+            
             return
         }
         
@@ -837,11 +820,13 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     if let existingElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(anElementId)
                     {
                         existingElement.isFavourite = NSNumber(bool:favourite)
+                        DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
                         DataSource.sharedInstance.shouldReloadAfterElementChanged = true
                     }
-                })
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    completionClosure?(edited: true)
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        completionClosure?(edited: true)
+                    })
+
                 })
             }
             else
@@ -875,7 +860,19 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         DataSource.sharedInstance.serverRequester.deleteElement(elementId, completion: closure)
     }
     
+    func currentUserCanEditElementByManagedObjectID(objectId:NSManagedObjectID) -> Bool
+    {
+        guard let userId = DataSource.sharedInstance.user?.userId, databaseHandler = DataSource.sharedInstance.localDatadaseHandler else
+        {
+            return false
+        }
+        
+        return databaseHandler.userById(userId, canEditElement:objectId)
+    }
     
+    
+    #if SHEVCHENKO
+    #else
     /**
      - Returns: 
         - array of *VisuzlizableObject* instances,
@@ -931,10 +928,9 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             vizualizableObjects.append(newObject)
         }
         
-        
-        
         return vizualizableObjects
     }
+    #endif
     
     //MARK: - Attaches
     
@@ -1049,7 +1045,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
                
                 let waitResult = dispatch_group_wait(savingGroup, timeout)
-                print(" - Saving op finished with esult: \(waitResult)")
+                print(" - Saving op finished with result: \(waitResult). Zero means Success. ")
    
                 //if new attaches recieved, pair them to existing element if found
                 var returnInfo = (loaded:attachesArray.count, saved:0)

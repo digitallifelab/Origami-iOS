@@ -52,7 +52,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 }
                 else
                 {
-                    print("\n Did initialize local data base...\n")
+                    print("\n Local data base ntialization OK...\n")
                 }
             }
         }
@@ -109,12 +109,13 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     override func viewDidAppear(animated: Bool)
     {
         super.viewDidAppear(animated)
-        
+     
         guard let user = DataSource.sharedInstance.user else
         {
             NSNotificationCenter.defaultCenter().removeObserver(self, name: kMenu_Buton_Tapped_Notification_Name, object: nil)
             
-            self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+            //self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+            switchRootViewControllerToAuthController()
             return
         }
         
@@ -160,6 +161,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 self.leftMenuVC?.didMoveToParentViewController(self)
             }
         }
+        
     }
 
     func showChangePasswordVC()
@@ -196,12 +198,23 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 weakSelf.leftMenuVC?.view.removeFromSuperview()
                 weakSelf.leftMenuVC?.didMoveToParentViewController(nil)
                 weakSelf.leftMenuVC = nil
-                
-                weakSelf.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
+                weakSelf.switchRootViewControllerToAuthController()
             }
         }
     }
     
+    private func switchRootViewControllerToAuthController()
+    {
+        #if SHEVCHENKO
+            //self.performSegueWithIdentifier("", sender: self)
+            showLoginScreenWithReloginPrompt(false)
+        #else
+        if let authHandlerVC = self.storyboard?.instantiateViewControllerWithIdentifier("AuthManagerVC") as? AuthorizationManagerViewController, appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, aWindow = appDelegate.window
+        {
+            aWindow.rootViewController = authHandlerVC
+        }
+        #endif
+    }
     //MARK: Menu
     func leftEdgePan(recognizer:UIScreenEdgePanGestureRecognizer)
     {
@@ -219,15 +232,6 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 showMenu(true, completion: nil)
             }
         }
-    }
-    
-    func getCurrentTopViewController() -> UIViewController?
-    {
-        if isShowingMenu
-        {
-            return self.leftMenuVC
-        }
-        return self.currentNavigationController
     }
  
     func showLoginScreenWithReloginPrompt(showAlert:Bool)
@@ -252,9 +256,11 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
         {
              self.performSegueWithIdentifier("ShowLoginScreen", sender: nil)
         }
-       
     }
-
+    
+    
+    
+    //MARK: -
     func processMenuDisplaying(notification:NSNotification?)
     {
         
@@ -292,7 +298,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     
     func showMenu(animated:Bool, completion:(()->())?)
     {
-        if let navController = self.currentNavigationController, menu = self.leftMenuVC
+        if let navController = self.currentNavigationController//, menu = self.leftMenuVC
         {
             let navFrame = navController.view.frame
             let movedToLeftFrame = CGRectOffset(navFrame, 200.0, 0.0)
@@ -308,7 +314,7 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
                 if let weakSelf = self
                 {
                     //weakSelf.view.bringSubviewToFront(menu.view)
-                    print("Menu Frame: \(menu.view.frame)")
+                    //print("Menu Frame: \(menu.view.frame)")
                     weakSelf.isShowingMenu = true
                     
                     if let topVC = navController.topViewController

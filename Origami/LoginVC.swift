@@ -8,18 +8,22 @@
 
 import UIKit
 
+protocol LoginViewControllerDelegate:class{
+    func loginViewControllerShouldInformUserToCheckEmail(viewController:LoginVC) -> Bool
+}
+
 class LoginVC: UIViewController , UITextFieldDelegate
 {
     @IBOutlet var nameField:UITextField!
     @IBOutlet var passwordField:UITextField!
     @IBOutlet var loginButton:UIButton!
+    @IBOutlet var registrationButton:UIButton!
+    
     var alertInfoToShowAfterAppearance:[String:String]?
-    
-    
+    weak var delegate:LoginViewControllerDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         nameField.layer.cornerRadius = 5.0
         passwordField.layer.cornerRadius = 5.0
         
@@ -34,6 +38,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
         passwordField.text = password
         
         loginButton.setTitle("LoginButtonTitle".localizedWithComment(""), forState: .Normal)
+        registrationButton.setTitle("RegistrationScreenTitle".localizedWithComment(""), forState: .Normal)
+        
         self.view.backgroundColor = kDayNavigationBarBackgroundColor
         
         let leftViewName = UIView(frame: CGRectMake(0, 0, 16, 10))
@@ -49,16 +55,30 @@ class LoginVC: UIViewController , UITextFieldDelegate
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        #if SHEVCHENKO
+            self.registrationButton.hidden = true
+        #endif
+        if let delegate = self.delegate, font = UIFont(name: "SegoeUI", size: 20.0)
+        {
+            if delegate.loginViewControllerShouldInformUserToCheckEmail(self)
+            {
+                let attributes = [NSFontAttributeName:font, NSForegroundColorAttributeName:UIColor.brownColor().colorWithAlphaComponent(0.7)]
+                passwordField.attributedPlaceholder = NSAttributedString(string: "tempPassword".localizedWithComment(""), attributes: attributes)
+                alertInfoToShowAfterAppearance = ["title":"attention".localizedWithComment(""),"message":"checkEmailForRegistrationPassword".localizedWithComment("")]
+            }
+        }
+    }
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-       
-        
         
         if let alertInfo = alertInfoToShowAfterAppearance, title = alertInfo["title"], message = alertInfo["message"]
         {
-            loginButton.enabled = true
+            loginButton.enabled = false
             showAlertWithTitle(title, message: message, cancelButtonTitle: "Ok")
             DataSource.sharedInstance.stopRefreshingNewMessages()
+            alertInfoToShowAfterAppearance?.removeAll()
         }
         else
         {
@@ -104,7 +124,17 @@ class LoginVC: UIViewController , UITextFieldDelegate
         }
     }
     
-    
+    #if !SHEVCHENKO
+    @IBAction func registrationButtonPress(sender:UIButton)
+    {
+        if let authManagerVC = self.presentingViewController as? AuthorizationManagerViewController
+        {
+            sender.enabled = false
+            
+            authManagerVC.presentRegistrationViewController(self)
+        }
+    }
+    #endif
     func userDidLogin(user:User)
     {
         guard let _ = user.userId else
@@ -139,9 +169,8 @@ class LoginVC: UIViewController , UITextFieldDelegate
             catch{
                 
                 let waiterGroup = dispatch_group_create()
-                
-                dispatch_group_enter(waiterGroup)
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 30.0))
+                dispatch_group_enter(waiterGroup)
                 
                 DataSource.sharedInstance.downloadMyContactsFromServer { (didSaveToLocalDatabase, error) -> () in
                     dispatch_group_leave(waiterGroup)

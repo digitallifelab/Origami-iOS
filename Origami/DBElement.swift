@@ -24,22 +24,41 @@ class DBElement: NSManagedObject {
         self.dateChanged    = element.changeDate?.dateFromServerDateString()
         self.dateCreated    = element.createDate.dateFromServerDateString()
         self.dateRemind     = element.remindDate
-        if let archDate = element.archiveDate?.dateFromServerDateString()
-        {
-            self.dateArchived = archDate
-            print("did Set dateArchived.")
-        }
-        else
-        {
-            self.dateArchived = nil
-            //print("did Delete dateArchived")
-        }
         self.dateFinished   = element.finishDate
         self.type           = NSNumber(integer:element.typeId)
+        //print("New FinishState: \(element.finishState) )")
         self.finishState    = NSNumber(integer: element.finishState)
         self.isFavourite    = NSNumber(bool:element.isFavourite)
         self.isSignal       = NSNumber(bool:element.isSignal)
         self.hasAttaches    = NSNumber(bool: element.hasAttaches)
+
+        let archDateOptional = element.archiveDate?.dateFromServerDateString()
+        
+        if let archDate = archDateOptional, currentArchDate = self.dateArchived
+        {
+            if  archDate.compare(currentArchDate) != .OrderedSame
+            {
+                //print("archived date before: \(self.dateArchived)")
+                self.dateArchived = archDate
+                //print("did Set NEW dateArchived. id = \(self.elementId?.integerValue ?? 0)")
+                //print("archived date after: \(self.dateArchived)")
+            }
+        }
+        else if archDateOptional != nil
+        {
+            self.dateArchived = archDateOptional
+            //print(" Did set NEW date archived, id: \(self.elementId!)")
+        }
+        else if self.dateArchived != nil
+        {
+            self.dateArchived = nil
+            //print(" Did Remove Archive Date, id: \(self.elementId!)")
+        }
+//        else if self.dateArchived == nil && archDateOptional == nil
+//        {
+//            print(" Did not change DateArchived, id: \(self.elementId!)")
+//        }
+        
     }
     
     func isTaskForCurrentUser() -> Bool{
@@ -97,6 +116,22 @@ class DBElement: NSManagedObject {
         return false
     }
     
+    var canBeEditedByCurrentUser:Bool
+    {
+        if let userId = DataSource.sharedInstance.user?.userId, elementCreatorId = self.creatorId?.integerValue
+        {
+            if userId == elementCreatorId
+            {
+                return true
+            }
+            else
+            {
+                return DataSource.sharedInstance.currentUserCanEditElementByManagedObjectID(self.objectID)
+            }
+        }
+        return false
+    }
+    
     func addMessages(messages:Set<DBMessageChat>)
     {
         if let existingMessages = self.messages as? Set<DBMessageChat>
@@ -138,5 +173,48 @@ class DBElement: NSManagedObject {
             return attachesArray
         }
         return nil
+    }
+    
+    var latestChatMessage:DBMessageChat? {
+        if let messages = self.messages as? Set<DBMessageChat> where messages.count > 0
+        {
+            let latestMessage = messages.sort({ (message1, message2) -> Bool in
+                
+                if let date1 = message1.dateCreated, date2 = message2.dateCreated
+                {
+                    return date1.compare(date2) == .OrderedDescending
+                }
+            
+                return false
+                
+            }).first
+            
+            return latestMessage
+        }
+        return nil
+    }
+    
+    var latestAffectingDate : NSDate? {
+        guard let lvDate = self.dateCreated else
+        {
+            return nil
+        }
+        
+        var dateToReturn = lvDate
+        
+        if let lastMessageDate = self.latestChatMessage?.dateCreated
+        {
+            dateToReturn = lastMessageDate
+        }
+        
+        if let changeDate = self.dateChanged
+        {
+            if changeDate.compare(dateToReturn) == .OrderedDescending
+            {
+                dateToReturn = changeDate
+            }
+        }
+        
+        return dateToReturn
     }
 }

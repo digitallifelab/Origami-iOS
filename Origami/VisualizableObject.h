@@ -27,4 +27,5 @@
 @property (nonatomic) NSInteger massagesCount;
 //
 
+
 @end

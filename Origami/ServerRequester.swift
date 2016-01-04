@@ -42,8 +42,20 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     //MARK: User
     func registerNewUser(firstName:String, lastName:String, userName:String, completion:(success:Bool, error:NSError?) ->() )
     {
-        let requestString:String = "\(serverURL)" + "\(registerUserUrlPart)" + "?\(firstNameKey)=" + firstName + "&\(lastNameKey)=" + lastName + "&\(loginNameKey)=" + userName
-        //let parametersToRegister = [firstNameKey:firstName, lastNameKey:lastName, loginNameKey:userName]
+        let charSet = NSMutableCharacterSet.alphanumericCharacterSet()
+        let allowedChars = NSCharacterSet(charactersInString: "&:/?.-_@=")
+        charSet.formUnionWithCharacterSet(allowedChars)
+        
+        var requestString:String = "\(serverURL)" + "\(registerUserUrlPart)"
+            
+        let paramsString = "?\(firstNameKey)=" + firstName + "&\(lastNameKey)=" + lastName + "&UserName=" + userName
+        guard let paramsToAppend = paramsString.stringByAddingPercentEncodingWithAllowedCharacters(charSet) else
+        {
+            completion(success: false, error: OrigamiError.PreconditionFailure(message: "Could not create proper registration request. Try entering all data with latin alphabet") as NSError)
+            return
+        }
+        
+        requestString += paramsToAppend
         
         guard let regURL = NSURL(string:requestString) else
         {
@@ -279,8 +291,6 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     func loadLanguages(completion:((languages:[Language]?, error:NSError?) -> ())?)
     {
         let languagesUrlString = serverURL + getLanguagesUrlPart
-        
-
         
         guard let url = NSURL(string: languagesUrlString) else
         {
@@ -839,47 +849,41 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             })
     }
     
-    private func handleResponseWithData(data:NSData, completion:((success:Bool) -> ()) )
+    private func handleResponseWithData(data:NSData, completion:(((success:Bool) -> ()))? = nil )
     {
         do{
             if let jsonResponse = try NSJSONSerialization.JSONObjectWithData(data, options: .MutableContainers) as? [String:AnyObject]
             {
                 if jsonResponse.isEmpty
                 {
-                    completion(success:true)
+                    completion?(success:true)
                 }
                 print("\n Set Finish Date response: \(jsonResponse)")
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
             }
-            else if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
+        }
+        catch let jsonError  {
+            
+            if let stringFromData = NSString(data: data, encoding: NSUTF8StringEncoding)
             {
-                let range =  stringFromData.rangeOfString("String was not recognized as a valid DateTime.")
+                let wrongDateFormatError = "String was not recognized as a valid DateTime."
+                let range =  stringFromData.rangeOfString(wrongDateFormatError)
+                print("  - Error: (Hardcoded parsed HTML) - \(wrongDateFormatError)")
                 print("\(range)")
                 if range.location != Int.max
                 {
-                    completion(success:false)
-                }
-                else
-                {
-                    completion(success: true)
+                    completion?(success:false)
+                    return
                 }
             }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            
-        }
-        catch let error as NSError  {
-            print(error.description)
-            completion(success:false)
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            
-            if let serverResponseString = NSString(data: data, encoding: NSUTF8StringEncoding) as? String
+            else
             {
-                print("-->\n Error from Server: \n \(serverResponseString)\n<-")
+                print(jsonError)
+                completion?(success: false)
             }
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         }
-        catch {
-            print("\n -> Did catch unknown error...")
-        }
-
     }
     
     func setElementFinishState(elementId:Int, finishState:Int, completion:((success:Bool)->())?)
@@ -2315,23 +2319,3 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
 }
 
 
-
-//JSON Parsing
-//func parseJSON<T where T:CustomDebugStringConvertible>(jsonObjectData:NSData, asObject: T, jsonReadingOptions:NSJSONReadingOptions, completion:(([String:AnyObject]?, NSError?) ->()))
-//{
-//    do{
-//        var targetType = asObject.dynamicType
-//       
-//        
-//        if let result = try NSJSONSerialization.JSONObjectWithData(jsonObjectData, options: jsonReadingOptions) as? targetType
-//        {
-//            completion(result, nil)
-//        }
-//    }
-//    catch let jsonParsingError as NSError {
-//        completion(nil, jsonParsingError)
-//    }
-//    catch{
-//        completion(nil, unKnownExceptionError)
-//    }
-//}

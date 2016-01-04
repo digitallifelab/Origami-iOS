@@ -47,7 +47,8 @@
 -(void) layoutSubviews
 {
     [super layoutSubviews];
-    [self.closeButton setTitle:NSLocalizedString(@"cancel", nil) forState:UIControlStateNormal];
+    [self.closeButton setTitle:NSLocalizedString(@"Close", nil) forState:UIControlStateNormal];
+    [self.cencelTaskButton setTitle:NSLocalizedString(@"Cancel task", nil) forState:UIControlStateNormal];
 }
 
 -(void)setTint:(UIColor *)tintColor
@@ -94,7 +95,7 @@
     }
 }
 
-- (IBAction)cancelAction:(UIButton *)sender {
+- (IBAction)closeAction:(UIButton *)sender {
     [self.delegate finishTaskResultViewDidCancel:self];
 }
 - (IBAction)badAction:(UIButton *)sender {
@@ -103,6 +104,10 @@
 
 - (IBAction)goodAction:(UIButton *)sender {
     [self.delegate finishTaskResultViewDidPressGoodButton:self];
+}
+
+- (IBAction)cancelTaskAction:(UIButton *)sender {
+    [self.delegate finishTaskResultViewDidPressCancellTaskButton:self];
 }
 
 @end

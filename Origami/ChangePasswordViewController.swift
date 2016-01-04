@@ -40,6 +40,8 @@ class ChangePasswordViewController: UIViewController, UITextFieldDelegate
         
         passwordField.layer.cornerRadius = 6.0
         confirmField.layer.cornerRadius = 6.0
+        
+        self.view.backgroundColor = kDayNavigationBarBackgroundColor
     }
 
     

@@ -8,124 +8,61 @@
 
 import UIKit
 import CoreData
-class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, AllContactsDelegate, NSFetchedResultsControllerDelegate {
+class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, NSFetchedResultsControllerDelegate {
 
     @IBOutlet weak var myContactsTable:UITableView?
     
     var myContacts:[DBContact]?
-    //var favContacts:[Contact] = [Contact]()
-    var allContacts:[Contact]?
+
     var contactsSearchButton:UIBarButtonItem?
     var contactImages = [String:UIImage]()
     var currentSelectedContactsIndex:Int = 0
     
+    var segmentedControl:UISegmentedControl?
+    var searchBar:UISearchBar?
+    
     var allContactsFetchController:NSFetchedResultsController?
     var favContactsFetchController:NSFetchedResultsController?
+    var contactsFetchRequest = NSFetchRequest(entityName: "DBContact")
     
     var localMainContext:NSManagedObjectContext?
     
     var currentFetchController:NSFetchedResultsController?
     
-    #if SHEVCHENKO
-    var allContactsLoadingOperationTask:NSURLSessionDataTask?
-    lazy var reloadTableOperation:NSBlockOperation = NSBlockOperation(){[weak self] _ in
-        if let weakSelf = self
-        {
-            do
-            {
-                try weakSelf.currentFetchController?.performFetch()
-                weakSelf.myContactsTable?.reloadData()
-            }
-            catch { }
-        }
-    }
-    #endif
-    
-    
-   var displayMode:DisplayMode = .Day
+    var displayMode:DisplayMode = .Day
     
     //MARK:----
-    override func viewDidLoad() {
+    override func viewDidLoad()
+    {
         super.viewDidLoad()
-
+        
+        configureSearchBar()
+        
         // Do any additional setup after loading the view.
-       
         setAppearanceForNightModeToggled(NSUserDefaults.standardUserDefaults().boolForKey(NightModeKey))
         configureNavigationItems()
         configureNavigationControllerToolbarItems()
         
-        if let dbHandler = DataSource.sharedInstance.localDatadaseHandler
+        self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        
+        if let dbHandler = DataSource.sharedInstance.localDatadaseHandler, mainQueueContext = self.localMainContext
         {
-            self.localMainContext = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
-            self.localMainContext!.parentContext = dbHandler.getPrivateContext()
-            self.localMainContext?.undoManager = NSUndoManager()
+            mainQueueContext.parentContext = dbHandler.getPrivateContext()
+            //mainQueueContext.undoManager = NSUndoManager()
             
-            let allContactsRequest = NSFetchRequest(entityName: "DBContact")
             let lastNameSort = NSSortDescriptor(key: "lastName", ascending: true)
-            allContactsRequest.sortDescriptors = [lastNameSort]
-            self.allContactsFetchController = NSFetchedResultsController(fetchRequest: allContactsRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
+            contactsFetchRequest.sortDescriptors = [lastNameSort]
+            self.allContactsFetchController = NSFetchedResultsController(fetchRequest: contactsFetchRequest, managedObjectContext: mainQueueContext, sectionNameKeyPath: nil, cacheName: nil)
             
             let favContactsRequest = NSFetchRequest(entityName: "DBContact")
             favContactsRequest.sortDescriptors = [lastNameSort]
             favContactsRequest.predicate = NSPredicate(format: "favorite = true")
             
-            self.favContactsFetchController = NSFetchedResultsController(fetchRequest: favContactsRequest, managedObjectContext: self.localMainContext!, sectionNameKeyPath: nil, cacheName: nil)
+            self.favContactsFetchController = NSFetchedResultsController(fetchRequest: favContactsRequest, managedObjectContext: mainQueueContext, sectionNameKeyPath: nil, cacheName: nil)
             
             self.currentFetchController = self.allContactsFetchController
             self.currentFetchController?.delegate = self
-            
         }
-        
-//        #if SHEVCHENKO
-//            if let contactsLoadingTask = self.allContactsLoadingOperationTask
-//            {
-//                if contactsLoadingTask.state != NSURLSessionTaskState.Running
-//                {
-//                    contactsLoadingTask.resume()
-//                }
-//            }
-//            else
-//            {
-//                do
-//                {
-//                    let task = try  DataSource.sharedInstance.getAllContacts {[weak self] (contacts, error) -> () in
-//                        
-//                        if let weakSelf = self
-//                        {
-//                            if let allContacts = contacts
-//                            {
-//                                DataSource.sharedInstance.localDatadaseHandler?.saveContactsToDataBase(allContacts, completion: {[weak self] (saved, error) -> () in
-//                                    if saved
-//                                    {
-//                                        if let weakSelf = self
-//                                        {
-//                                            NSOperationQueue.mainQueue().addOperation(weakSelf.reloadTableOperation)
-//                                        }
-//                                    }
-//                                })
-//                                dispatch_async(dispatch_get_main_queue()) { () -> Void in
-//                                    weakSelf.contactsSearchButton?.enabled = true
-//                                }
-//                            }
-//                        }
-//                    }
-//                    
-//                    self.allContactsLoadingOperationTask = task
-//                    let lowQueue = getBackgroundQueue_UTILITY()
-//                    dispatch_async(lowQueue){ _ in
-//                        self.allContactsLoadingOperationTask?.resume()
-//                    }
-//                    
-//                }
-//                catch let taskError
-//                {
-//                    self.showAlertWithTitle("Warning.", message: "Could not start loading all contacts from server:\n \(taskError)", cancelButtonTitle: "Close")
-//                }
-//            }
-//        #else
-//        contactsSearchButton?.enabled = true
-//        #endif
-        
         
         myContactsTable?.estimatedRowHeight = 60
         myContactsTable?.rowHeight = UITableViewAutomaticDimension
@@ -133,7 +70,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override func viewWillAppear(animated: Bool)
@@ -157,7 +93,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-
+        
         if let appDelegate = UIApplication.sharedApplication().delegate as? AppDelegate, rootVC = appDelegate.rootViewController as? RootViewController
         {
             self.view.removeGestureRecognizer(rootVC.screenEdgePanRecognizer)
@@ -168,11 +104,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     override func viewDidDisappear(animated: Bool) {
         
-        #if SHEVCHENKO
-        self.allContactsLoadingOperationTask?.suspend()
-        self.allContactsLoadingOperationTask?.cancel()
-        self.allContactsLoadingOperationTask = nil
-        #endif
+        if let searchingBar = searchBar
+        {
+            searchBarCancelButtonClicked(searchingBar)
+        }
+        
         super.viewDidDisappear(animated)
     }
     
@@ -187,8 +123,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.LightContent  //white text colour in status bar
         self.navigationController?.navigationBar.translucent = false
         self.navigationController?.toolbar.translucent = false
-        
-        //    UIApplication.sharedApplication().statusBarStyle = UIStatusBarStyle.Default  // black text colour in status bar
         
         if nightModeOn
         {
@@ -214,14 +148,11 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationItems()
     {
         #if SHEVCHENKO
-            //let lvMethodSignatureString:Selector = "showAllContactsVC"
         #else
             let lvMethodSignatureString:Selector = "showContactSearchVC"
             contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
             contactsSearchButton?.enabled = true
         #endif
-//        contactsSearchButton = UIBarButtonItem(barButtonSystemItem: .Search, target: self, action: lvMethodSignatureString)
-//        contactsSearchButton?.enabled = false
         
         self.navigationItem.rightBarButtonItem = contactsSearchButton
         
@@ -229,6 +160,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         segmentedControl.selectedSegmentIndex = 0
         currentSelectedContactsIndex = segmentedControl.selectedSegmentIndex
         segmentedControl.addTarget(self, action: "contactsFilterDidChange:", forControlEvents: UIControlEvents.ValueChanged)
+        self.segmentedControl = segmentedControl
         self.navigationItem.titleView = segmentedControl
 
         
@@ -251,7 +183,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     func configureNavigationControllerToolbarItems()
     {
         let homeButton = UIButton(type:.System)
-        //homeButton.tintColor = kDayNavigationBarBackgroundColor
+
         homeButton.setImage(UIImage(named: kHomeButtonImageName)?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         homeButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         homeButton.frame = CGRectMake(0, 0, 44.0, 44.0)
@@ -269,23 +201,29 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         self.setToolbarItems(currentToolbarItems, animated: false)
     }
     
+    func configureSearchBar()
+    {
+        let aSearchBar = UISearchBar(frame: CGRectMake(0.0, 0.0, self.view.bounds.size.width, 50.0))
+        myContactsTable?.tableHeaderView = aSearchBar
+        aSearchBar.sizeToFit()
+        aSearchBar.delegate = self
+        aSearchBar.tintColor = kDayNavigationBarBackgroundColor
+        aSearchBar.searchBarStyle = .Minimal
+        self.searchBar = aSearchBar
+    }
     
     //MARK: ------ menu displaying
     func menuButtonTapped(sender:AnyObject)
     {
+        if let searchingBar = searchBar
+        {
+            searchBarCancelButtonClicked(searchingBar)
+        }
+        
         NSNotificationCenter.defaultCenter().postNotificationName(kMenu_Buton_Tapped_Notification_Name, object: nil)
     }
     //MARK: ---
     #if SHEVCHENKO
-    func showAllContactsVC()
-    {
-        if let allContactsVC = self.storyboard?.instantiateViewControllerWithIdentifier("AllContactsVC") as? AllContactsVC
-        {
-            allContactsVC.allContacts = allContacts
-            allContactsVC.delegate = self
-            self.navigationController?.pushViewController(allContactsVC, animated: true)
-        }
-    }
     #else
     func showContactSearchVC()
     {
@@ -303,6 +241,12 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
 
     func contactsFilterDidChange(sender:UISegmentedControl)
     {
+        if let bar = self.searchBar where bar.showsCancelButton
+        {
+            searchBarCancelButtonClicked(bar)
+            return
+        }
+        
         currentSelectedContactsIndex = sender.selectedSegmentIndex
         switch currentSelectedContactsIndex{
         case 0:
@@ -312,7 +256,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         default:
             break
         }
-        
         
         self.currentFetchController?.delegate = self
         
@@ -327,10 +270,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
             print("Fetched results controller did fail to fetch:")
             print(fetchError)
         }
-        
     }
-    
-    
     
     //MARK: UITableViewDelegate
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -378,15 +318,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath)
     {
-        print("Fav IndexPath: \(indexPath)")
         if let tappedContact = self.contactForIndexPath(indexPath), contactId = tappedContact.contactId?.integerValue
         {
             let newValue = !tappedContact.favorite!.boolValue
             
+            let objectId = tappedContact.objectID
             DataSource.sharedInstance.updateContactIsFavourite(contactId) {[weak self] (success, error) -> () in
                 if success
                 {
-                    if let weakSelf = self, contactToChange = weakSelf.contactForIndexPath(indexPath)
+                    if let weakSelf = self, contactToChange = weakSelf.localMainContext?.objectWithID(objectId) as? DBContact //weakSelf.contactForIndexPath(indexPath)
                     {
                         contactToChange.favorite = NSNumber(bool: newValue)
                         do{
@@ -396,6 +336,22 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
                             print("Did not save Contacts Main queue context:")
                             print(saveError)
                         }
+                        
+                        guard let _ = weakSelf.currentFetchController?.delegate else
+                        {
+                            weakSelf.currentFetchController?.delegate = weakSelf
+                            do
+                            {
+                                try weakSelf.currentFetchController?.performFetch()
+                            }
+                            catch let fetchError
+                            {
+                                print("\n ->  Error while refetching during favourite attribute changed:")
+                                print(fetchError)
+                            }
+                            return
+                        }
+
                     }
                 }
             }
@@ -408,7 +364,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-      
+        
         if let currentFetchController = self.currentFetchController, objects = currentFetchController.fetchedObjects
         {
             return objects.count
@@ -417,6 +373,7 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
         let contactCell = tableView.dequeueReusableCellWithIdentifier("MyContactCell", forIndexPath: indexPath) as! MyContactListCell
         contactCell.selectionStyle = .None
         
@@ -463,15 +420,15 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     private func contactForIndexPath(indexPath:NSIndexPath) -> DBContact?
     {
         let row = indexPath.row
-        if let currentFetchController = self.currentFetchController, objects = currentFetchController.fetchedObjects as? [DBContact]
+        
+        guard let
+            currentFetchController = self.currentFetchController,
+            objects = currentFetchController.fetchedObjects as? [DBContact] where objects.count > row else
         {
-            if objects.count > row
-            {
-                return objects[row]
-            }
+            return nil
         }
         
-        return nil
+        return objects[row]
     }
     
     private func contactNameStringFromContact(contact:Contact) -> String
@@ -494,20 +451,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
         
         return nameString
-    }
-    
-    //MARK: - AllContactsDelegate
-    func reloadUserContactsSender(sender: UIViewController?)
-    {
-        do
-        {
-            try self.currentFetchController?.performFetch()
-            self.myContactsTable?.reloadData()
-        }
-        catch
-        {
-            
-        }
     }
     
     //MARK: - NSFetchedResultsControllerDelegate
@@ -632,9 +575,6 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
         }
         
         NSOperationQueue().addOperation(backOperation)
-        
-        
-        
     }
     
     func contactsSearcherDidCancelSearch(searcher:ContactSearchVC)
@@ -643,4 +583,86 @@ class MyContactsListVC: UIViewController , UITableViewDelegate, UITableViewDataS
     }
     #endif
 
+    //MARK:  - table view filtering
+    //MARK: - UISearchBarDelegate
+    
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+       searchBar.showsCancelButton = true
+    }
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.text = nil
+        searchBar.resignFirstResponder()
+        searchBar.showsCancelButton = false
+        if let segControl = self.segmentedControl
+        {
+            contactsFilterDidChange(segControl) // to set default fetchedResultsController
+        }
+    }
+    
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        //myContactsTable?.reloadData()
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String)
+    {
+        searchForText(searchText)
+        //myContactsTable?.reloadData()
+    }
+    
+    //MARK: Searching
+    private func searchForText(text:String)
+    {
+        if text.characters.count < 1
+        {
+            if let segControl = self.segmentedControl
+            {
+                contactsFilterDidChange(segControl) // to set default fetchedResultsController
+            }
+            return
+        }
+        
+        if let context = localMainContext
+        {
+            let textPredicate = NSPredicate(format:"(lastName BEGINSWITH[cd] %@) OR (firstName BEGINSWITH[cd] %@)", text, text)
+            
+            var searchPredicates = [textPredicate]
+            
+            if let segmentSwitcher = segmentedControl
+            {
+                if segmentSwitcher.selectedSegmentIndex > 0
+                {
+                    let favPredicate = NSPredicate(format: "favorite = TRUE")
+                    // ? trying to improve CoreData performance ?
+                    searchPredicates.insert(favPredicate, atIndex: 0)
+                }
+            }
+            
+            let fetchRequest = NSFetchRequest(entityName: "DBContact")
+            
+            fetchRequest.predicate = /*predicate*/ NSCompoundPredicate(andPredicateWithSubpredicates: searchPredicates)
+            
+            fetchRequest.sortDescriptors = contactsFetchRequest.sortDescriptors ?? [NSSortDescriptor(key: "lastName", ascending: true)]
+            
+            let fetchResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+            
+            self.currentFetchController?.delegate = nil
+            
+            fetchResultsController.delegate = self
+            self.currentFetchController = fetchResultsController
+            
+            do
+            {
+                try self.currentFetchController?.performFetch()
+                self.myContactsTable?.reloadData()
+            }
+            catch let fetchError
+            {
+                print("Some error while performing contacts filter fetch")
+                
+                print(fetchError)
+            }
+        }
+    }
 }

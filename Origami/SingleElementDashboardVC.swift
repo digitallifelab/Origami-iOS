@@ -30,7 +30,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 collectionDataSource?.displayMode = self.displayMode
                 
                 self.prepareCollectionViewDataAndLayout()
-             
             }
         }
     }
@@ -38,11 +37,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     var afterViewDidLoad = false
     
     @IBOutlet var collectionView:UICollectionView!
-    
+        
     deinit
     {
         NSNotificationCenter.defaultCenter().removeObserver(self)
-        print(" ->removed observer SingleDashVC from Deinit.")
+        //print(" ->removed observer SingleDashVC from Deinit.")
     }
     
     override func viewDidLoad()
@@ -70,8 +69,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     override func viewWillAppear(animated: Bool)
     {
-      
-       
         self.navigationController?.delegate = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
@@ -103,7 +100,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
             
                 dispatch_semaphore_wait(semaphore, timeout)
-                print("signelled semaphore for refresh attaches queue")
+                //print("signelled semaphore for refresh attaches queue")
             }
             
             let collectionLayoutMainQueueOp = NSBlockOperation() { [weak self]_ in
@@ -236,7 +233,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     - sets **SingleElementCollectionViewDataSource** instance delegate and datasouce of collection view
     - sets new layout if created from current element
     - calls collectionView.reloadData()
-    - throws: 
+    - Throws:
         - an error, containing a string in LocalizedDescription that says, layout coud not be created, 
         - or dataSource for colelctionview could not be created
     
@@ -292,7 +289,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             infoStruct = readyDataSource.getLayoutInfo(),
             aLayout = SimpleElementDashboardLayout(infoStruct: infoStruct)
         {
-            print("SingleElementLayoutInfoStruct -> needed number of sections: \(infoStruct.numberOfSections())")
+            //print("SingleElementLayoutInfoStruct -> needed number of sections: \(infoStruct.numberOfSections())")
             return aLayout
         }
         
@@ -366,6 +363,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     {
                         weakSelf.refreshCurrentElementFromLocalDatabase(elementId)
                         weakSelf.setParentElementNeedsUpdateIfPresent()
+                        weakSelf.collectionDataSource?.handledElementId = element.objectID
                         weakSelf.collectionView?.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
                 }
@@ -410,12 +408,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementSignalToggled()
     {
+        self.showActivityIndicator(true)
+        
         if let theElement = currentElement, elementId = theElement.elementId?.integerValue, oldSignal = theElement.isSignal?.boolValue
         {
-            if !theElement.isOwnedByCurrentUser()
-            {
-                return // Important
-            }
+//            if !theElement.isOwnedByCurrentUser()
+//            {
+//                return // Important
+//            }
             if theElement.isArchived()
             {
                 self.showAlertWithTitle("Unauthorized", message: "Unarchive element first", cancelButtonTitle: "close".localizedWithComment(""))
@@ -426,12 +426,15 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             let elementCopy = theElement.createCopyForServer()
 
             elementCopy.isSignal = isSignal
-            
+            let objId = theElement.objectID
             DataSource.sharedInstance.editElement(elementCopy) {[weak self] (edited) -> () in
                 if let aSelf = self
                 {
                     dispatch_async(dispatch_get_main_queue()) { _ in
+                        
                         aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                        aSelf.collectionDataSource?.handledElementId = objId
+                        
                         if edited
                         {
                             aSelf.setParentElementNeedsUpdateIfPresent()
@@ -441,11 +444,14 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                         {
                             aSelf.showAlertWithTitle("Warning.", message: "Could not update SIGNAL value of element.", cancelButtonTitle: "Ok")
                         }
+                        aSelf.showActivityIndicator(false)
                     }
                 }
             }
         }
     }
+    
+    
     
     func elementEditingToggled()
     {
@@ -535,7 +541,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func elementIdeaPressed()
     {
-        print("Idea tapped.")
+        //print("Idea tapped.")
+       
         if let current = self.currentElement, elementType = current.type?.integerValue
         {
             if !current.isArchived()
@@ -584,25 +591,25 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                             {
                             case .Default:
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-                            case .FinishedBad, .FinishedGood:
+                            case  .FinishedBad, .FinishedBadNoDate, .FinishedGood, .FinishedGoodNoDate:
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
-                            case .InProcess:
+                            case .InProcess, .InProcessNoDate:
                                 print(" Element is in process..\n")
                                 showFinishTaskPrompt()
                             }
                         } 
                     }
-                    else if element.isTaskForCurrentUser()
+                    else if element.isTaskForCurrentUser() || element.canBeEditedByCurrentUser
                     {
                         if let currentFinishState = ElementFinishState(rawValue: finishState)
                         {
                             switch currentFinishState
                             {
                             case .Default:
-                                print("element is not owned. current user cannot assign task.")
-                            case .FinishedBad , .FinishedGood:
-                                print("element is already finished. current user cannot update task.")
-                            case .InProcess:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)//print("element is not owned. current user cannot assign task.")
+                            case .FinishedBad, .FinishedBadNoDate, .FinishedGood, .FinishedGoodNoDate:
+                                showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)//print("element is already finished. current user cannot update task.")
+                            case .InProcess, .InProcessNoDate:
                                 showFinishTaskPrompt()
                             }
                         }
@@ -621,7 +628,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 if !element.isArchived()
                 {
                     //1 - detect if element is owned
-                    if element.isOwnedByCurrentUser()
+                    if element.isOwnedByCurrentUser() || element.canBeEditedByCurrentUser
                     {
                         //2 - if is owned prompt user to start creating TASK with responsible user and remind date
                         if let currentFinishState = ElementFinishState(rawValue: finishState)
@@ -630,9 +637,9 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                             {
                             case .Default:
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(false)
-                            case .FinishedBad , .FinishedGood :
+                            case .FinishedBad, .FinishedBadNoDate, .FinishedGood, .FinishedGoodNoDate:
                                 showPromptForBeginingAssigningTaskToSomebodyOrSelf(true)
-                            case .InProcess:
+                            case .InProcess, .InProcessNoDate:
                                 print(" Element is in process..")
                                 showFinishTaskPrompt()
                             }
@@ -792,6 +799,52 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         }
     }
     
+    //MARK: UIActivityIndicatorView
+    func showActivityIndicator(show:Bool)
+    {
+        if let activityView = self.view.viewWithTag(0x1234) as? UIActivityIndicatorView
+        {
+            if activityView.isAnimating()
+            {
+                if show
+                {
+                    return
+                }
+                else
+                {
+                    activityView.stopAnimating()
+                    activityView.removeFromSuperview()
+                }
+            }
+            else
+            {
+                if show
+                {
+                    activityView.startAnimating()
+                }
+                else
+                {
+                    //activityView.stopAnimating()
+                    activityView.removeFromSuperview()
+                }
+            }
+            return
+        }
+        
+        if show
+        {
+            let animatingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+            animatingIndicator.autoresizingMask = [.FlexibleBottomMargin, .FlexibleTopMargin, .FlexibleLeftMargin, .FlexibleRightMargin] //to keep in center of the view when screen rotates
+            animatingIndicator.hidesWhenStopped = true
+            animatingIndicator.backgroundColor = UIColor.grayColor().colorWithAlphaComponent(0.6)
+            animatingIndicator.frame = CGRectMake( CGRectGetMidX(self.view.bounds) - 75.0, CGRectGetMidY(self.view.bounds) - 75.0, 150.0, 150.0)
+            animatingIndicator.layer.cornerRadius = 10.0
+            animatingIndicator.tag = 0x1234
+            self.view.addSubview(animatingIndicator)
+            animatingIndicator.startAnimating()
+        }
+    }
+    
     //MARK: UIPopoverPresentationControllerDelegate
     @available(iOS 8.0, *)
     func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
@@ -889,10 +942,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleEditingElementOptions(element:Element, newOptions:NSNumber)
     {
-        guard let elementId = element.elementId else
+        guard let elementId = element.elementId, objId = currentElement?.objectID else
         {
             return
         }
+        
+        showActivityIndicator(true)
         
         DataSource.sharedInstance.editElement(element) {[weak self] (edited) -> () in
             if let aSelf = self
@@ -901,6 +956,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     if edited
                     {
                         aSelf.refreshCurrentElementFromLocalDatabase(elementId)
+                       
+                        aSelf.collectionDataSource?.handledElementId = objId
                         aSelf.setParentElementNeedsUpdateIfPresent()
                         aSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
                     }
@@ -908,6 +965,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                     {
                         aSelf.showAlertWithTitle("Warning.", message: "Could not update current element.", cancelButtonTitle: "Ok")
                     }
+                    aSelf.showActivityIndicator(false)
                 }
 
             }
@@ -916,7 +974,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     
     func handleEditingElement(editingElement:Element)
     {
-        
         guard let currentTitle = editingElement.title ,  editedTitle = self.currentElement?.title, currentElementId = self.currentElement?.elementId?.integerValue, editingElementId = editingElement.elementId else
         {
             return
@@ -1111,8 +1168,8 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             dispatch_async(dispatch_get_main_queue(), { [weak self]() -> Void in
                 if let weakSelf = self
                 {
-                    let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
-                    print("items in section old count: \(oldItemsCount)")
+                    //let oldItemsCount = weakSelf.collectionView.numberOfItemsInSection(0)
+                    //print("items in section old count: \(oldItemsCount)")
                     weakSelf.currentElement = existingOurElement
                     weakSelf.collectionDataSource?.handledElementId = weakSelf.currentElement?.objectID
                     
@@ -1486,6 +1543,12 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         prompt.delegate = self
         prompt.titleLabel?.text = "FinishTaskPromptText".localizedWithComment("")
         
+        prompt.cencelTaskButton?.hidden = true
+        if let element = self.currentElement where element.isOwnedByCurrentUser() || element.canBeEditedByCurrentUser
+        {
+            prompt.cencelTaskButton?.hidden = false
+        }
+        
         self.view.addSubview(prompt)
         prompt.showAnimated(true)
     }
@@ -1498,14 +1561,48 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
     func finishTaskResultViewDidPressBadButton(resultView: FinishTaskResultView!) {
         resultView.hideAnimated(true)
         
-        self.finishElementWithFinishState(.FinishedBad)
+        var newEnumValue = ElementFinishState.FinishedBad
+        
+        if let
+            elementFinishState = self.currentElement?.finishState?.integerValue,
+            currentFinishStateEnumValue = ElementFinishState(rawValue: elementFinishState)
+            where currentFinishStateEnumValue == .InProcessNoDate
+        {
+            newEnumValue = .FinishedBadNoDate
+        }
+        
+        self.finishElementWithFinishState(newEnumValue)
     }
     
     func finishTaskResultViewDidPressGoodButton(resultView: FinishTaskResultView!) {
         resultView.hideAnimated(true)
         
-        self.finishElementWithFinishState(.FinishedGood)
-
+        var newEnumValue = ElementFinishState.FinishedGood
+        
+        if let
+            elementFinishState = self.currentElement?.finishState?.integerValue,
+            currentFinishStateEnumValue = ElementFinishState(rawValue: elementFinishState)
+            where currentFinishStateEnumValue == .InProcessNoDate
+        {
+            newEnumValue = .FinishedGoodNoDate
+        }
+        
+        self.finishElementWithFinishState(newEnumValue)
+    }
+    
+    func finishTaskResultViewDidPressCancellTaskButton(resultView:FinishTaskResultView)
+    {
+        //set finishState to be default, finish date to be nil, taskOption
+        resultView.hideAnimated(true)
+        
+        do{
+            try self.cancelElementTask()
+        }
+        catch let error
+        {
+            print(error)
+        }
+        
     }
     
     func finishElementWithFinishState(state:ElementFinishState)
@@ -1516,22 +1613,50 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             DataSource.sharedInstance.setElementFinishState(elementIdInt, newFinishState: finishState, completion: {[weak self] (edited) -> () in
                 if edited
                 {
-                    DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: NSDate(), completion: {[weak self] (success) -> () in
-                        if let weakSelf = self
-                        {
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
-                                weakSelf.checkoutParentAndRefreshIfPresent()
-                            })
-                            if !success
+                    if state.hasDateSet
+                    {
+                        DataSource.sharedInstance.setElementFinishDate(elementIdInt, date: NSDate(), completion: {[weak self] (success) -> () in
+                            if let weakSelf = self
                             {
                                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    weakSelf.showAlertWithTitle("Warning", message:" Finish date was not set", cancelButtonTitle: "close".localizedWithComment(""))
+                                    
+                                    if let editedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementIdInt)
+                                    {
+                                        weakSelf.currentElement = editedElement
+                                        
+                                        weakSelf.prepareCollectionViewDataAndLayout()
+                                        //                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                    }
+                                    
+                                    weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                    weakSelf.checkoutParentAndRefreshIfPresent()
                                 })
+                                if !success
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        weakSelf.showAlertWithTitle("Warning", message:" Finish date was not set", cancelButtonTitle: "close".localizedWithComment(""))
+                                    })
+                                }
                             }
-                        }
-                    })
-                }
+                            })
+
+                    }
+                    else // do not change current element finish date, simply update UI
+                    {
+                        
+                            dispatch_async(dispatch_get_main_queue()) {[weak self] () -> Void in
+                                
+                                if let weakSelf = self, editedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementIdInt)
+                                {
+                                    weakSelf.currentElement = editedElement
+                                    
+                                    weakSelf.prepareCollectionViewDataAndLayout()
+                                    //                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                                }
+                            }//end of dispatch_queue
+                    }
+                
+                }//end of EDITED  "IF" statement
             })
         }
     }
@@ -1622,6 +1747,11 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         let copy = element.createCopyForServer()
         copy.responsible =  responsiblePersonId
         copy.finishDate = finishDate
+        
+        let newState = (finishDate != nil) ? ElementFinishState.InProcess.rawValue : ElementFinishState.InProcessNoDate.rawValue
+        
+        copy.finishState = newState
+        
         let optionsConverter = ElementOptionsConverter()
         
         if !optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
@@ -1629,9 +1759,6 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
             let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
             copy.typeId = newOptions
         }
-
-        let newState = ElementFinishState.InProcess.rawValue
-        copy.finishState = newState
         
         var operations = [NSBlockOperation]()
         
@@ -1670,6 +1797,31 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         
         operations.append(editingOp)
         
+    
+        let finishStateOp = NSBlockOperation {
+            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: newState, completion: { [weak self](success) -> () in
+                if success{
+                    print(" did change element finish state to 20")
+                    if let weakSelf = self
+                    {
+                        dispatch_async(dispatch_get_main_queue()) { _ in
+                            if let editedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+                            {
+                                weakSelf.currentElement = editedElement
+                                
+                                weakSelf.prepareCollectionViewDataAndLayout()
+                                //                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                            }
+                            weakSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
+                        }
+                    }
+                }
+            })
+        }
+        
+        operations.append(finishStateOp)
+        
+        
         if let lvFinishDateToSet = copy.finishDate//?.dateForRequestURL()
         {
             let setFinishDateOp = NSBlockOperation() { _ in
@@ -1694,31 +1846,134 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
                 
             }
             
-            setFinishDateOp.addDependency(editingOp)
+            setFinishDateOp.addDependency(finishStateOp)
             
             operations.append(setFinishDateOp)
         }
         
+        let bgQueue = NSOperationQueue()
+        bgQueue.maxConcurrentOperationCount = 1
+        
+        bgQueue.addOperations(operations, waitUntilFinished: false)
+       
+    }
+    
+    private func cancelElementTask() throws
+    {        
+        guard let element = self.currentElement else
+        {
+            let error = OrigamiError.PreconditionFailure(message: "Curent element not found.")
+            throw error
+        }
+        
+        guard let elementId = element.elementId?.integerValue else
+        {
+            let error = OrigamiError.PreconditionFailure(message: "Current Element Id not found.")
+            throw error
+        }
+        let responsiblePersonId = 0
+        let copy = element.createCopyForServer()
+        copy.responsible =  responsiblePersonId
+        copy.finishDate = nil
+        let optionsConverter = ElementOptionsConverter()
+        
+        if optionsConverter.isOptionEnabled(ElementOptions.Task, forCurrentOptions: copy.typeId)
+        {
+            let newOptions = optionsConverter.toggleOptionChange(copy.typeId, selectedOption: 2)
+            copy.typeId = newOptions
+        }
+        
+        let newState = ElementFinishState.Default.rawValue
+        copy.finishState = newState
+        
+        var operations = [NSBlockOperation]()
+        
+        let editingOp = NSBlockOperation() { _ in
+            
+            print(" -> sendElementTaskNewResponsiblePerson    Setting New Element Responsible AND Task Type ...")
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            let editingSemaphore = dispatch_semaphore_create(0)
+            
+            DataSource.sharedInstance.editElement(copy) {[weak self] (edited) -> () in
+                if edited
+                {
+                    if let weakSelf = self
+                    {
+                        dispatch_async(dispatch_get_main_queue()) { _ in
+                            if let editedElement = DataSource.sharedInstance.localDatadaseHandler?.readElementById(elementId)
+                            {
+                                weakSelf.currentElement = editedElement
+                                
+                                weakSelf.prepareCollectionViewDataAndLayout()
+                                //                                weakSelf.collectionView.reloadItemsAtIndexPaths([NSIndexPath(forItem: 0, inSection: 0)])
+                            }
+                            weakSelf.checkoutParentAndRefreshIfPresent() //for immediate refreshing parent`s subordinates sells if any
+                        }
+                    }
+                }
+                
+                dispatch_semaphore_signal(editingSemaphore)
+            }
+            
+            let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 5.0))
+            
+            dispatch_semaphore_wait(editingSemaphore, timeout)
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        }
+        
+        operations.append(editingOp)
+        
         let finishStateOp = NSBlockOperation {
-            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: 20, completion: { [weak self](success) -> () in
+            DataSource.sharedInstance.setElementFinishState(elementId, newFinishState: newState, completion: { [weak self](success) -> () in
                 if success{
                     print(" did change element finish state to 20")
                     if let weakSelf = self
                     {
-                       // weakSelf.prepareCollectionViewDataAndLayout()
+                        // weakSelf.prepareCollectionViewDataAndLayout()
                         weakSelf.checkoutParentAndRefreshIfPresent()
                     }
                 }
-            })
+                })
         }
+        operations.append( finishStateOp)
         
         let bgQueue = NSOperationQueue()
-        bgQueue.maxConcurrentOperationCount = 2
         
-        bgQueue.addOperations(operations, waitUntilFinished: true)
+        bgQueue.maxConcurrentOperationCount = 1
         
-        bgQueue.addOperation(finishStateOp)
+        bgQueue.addOperations(operations, waitUntilFinished: false)
+        
+        if let lvFinishDateToSet = copy.finishDate//?.dateForRequestURL()
+        {
+            let setFinishDateOp = NSBlockOperation() { _ in
+                
+                print(" -> sendElementTaskNewResponsiblePerson    Setting New Element Finish Date ...")
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+                DataSource.sharedInstance.setElementFinishDate(elementId, date: lvFinishDateToSet) { [weak self] (success) -> () in
+                    
+                    if let _ = self
+                    {
+                        if success
+                        {
+                            print(" -> sendElementTaskNewResponsiblePerson -> Element finish date WAS UPDATED.\n")
+                        }
+                        else
+                        {
+                            print(" -> sendElementTaskNewResponsiblePerson -> Element finish date WAS NOT updated.\n")
+                        }
+                    }
+                    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+                }
+            }
+            setFinishDateOp.addDependency(finishStateOp)
+            bgQueue.addOperation(setFinishDateOp)
+        }
+   
+        
        
+        
+        
+
     }
     
     //MARK: Element Task workflow FINISH -

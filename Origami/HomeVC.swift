@@ -33,7 +33,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     {
         super.viewDidLoad()
 
-        self.title = "Home"
+        self.title = "Home".localizedWithComment("")
         configureNavigationTitleView()// to remove "Home" from navigation bar.
         
         self.collectionDashboard.registerClass(DashHeaderView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "DashHeader")
@@ -42,9 +42,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         configureLeftBarButtonItem()
         configureNavigationControllerToolbarItems()
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)        
-        
-        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "recievedMessagesFinishedNotification:", name: FinishedLoadingMessages, object: nil)
     }
 
     override func didReceiveMemoryWarning()
@@ -107,7 +105,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         DataSource.sharedInstance.removeObserverForNewMessagesForElement(All_New_Messages_Observation_ElementId)
     }
 
-    
     func recievedMessagesFinishedNotification(notification:NSNotification)
     {
         if let currentElementsDataRefresher = DataSource.sharedInstance.dataRefresher
@@ -144,12 +141,12 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             let titleAttributed = NSAttributedString(string: "Graph", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 15)!])
             titleButton.setAttributedTitle(titleAttributed, forState: .Normal)
             titleButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
-            
             titleButton.addTarget(self, action: "showGraphViewController:", forControlEvents: .TouchUpInside)
             self.navigationItem.titleView = titleButton
         #endif
     }
-    
+    #if SHEVCHENKO
+    #else
     func showGraphViewController(sender:UIButton)
     {
         let graphBoard = UIStoryboard(name: "Visualization", bundle: nil)
@@ -159,16 +156,17 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         }
         self.navigationController?.pushViewController(visualVC, animated: true)
     }
+    #endif
     
     func configureLeftBarButtonItem()
     {
-        let leftButton = UIButton(type:.Custom)
-        leftButton.frame = CGRectMake(0.0, 0.0, 44.0, 40.0)
-        leftButton.imageEdgeInsets = UIEdgeInsetsMake(4, -8, 4, 24)
+        let leftButton = UIButton(type:.System)
+        leftButton.frame = CGRectMake(-8.0, 0.0, 50.0, 35.0)
+        leftButton.imageEdgeInsets = UIEdgeInsetsMake(0, -8, 0, 24)
         leftButton.setImage(UIImage(named: "icon-options")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
         leftButton.addTarget(self, action: "menuButtonTapped:", forControlEvents: .TouchUpInside)
         leftButton.tintColor = UIColor.whiteColor()
-        
+        //leftButton.layer.borderWidth = 1.0
         let leftBarButton = UIBarButtonItem(customView: leftButton)
         
         self.navigationItem.leftBarButtonItem = leftBarButton
@@ -177,10 +175,14 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     func configureNavigationTitleView()
     {
         #if SHEVCHENKO
-            let titleImageView = UIImageView(image:UIImage(named: "title-home"))
+            let titleView = UIView(frame: CGRectMake(0,0,100,38))
+            let titleImageView = UIImageView(frame: CGRectMake(0, 2, 100, 36))//(image:UIImage(named: "title-home"))
             titleImageView.contentMode = .ScaleAspectFit
-            titleImageView.frame = CGRectMake(0, 0, 200, 40)
-            self.navigationItem.titleView = titleImageView
+            titleImageView.autoresizingMask = [.FlexibleLeftMargin, .FlexibleRightMargin]
+            titleImageView.image = UIImage(named: "title-home")
+            //titleImageView.layer.borderWidth = 1.0
+            titleView.addSubview(titleImageView)
+            self.navigationItem.titleView = titleView
         #else
             let titleLabel = UILabel()
             self.navigationItem.titleView = titleLabel
@@ -455,14 +457,11 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             print(" Horizontal Velocity: \(velocityX)")
             print(" Horizontal Translation: \(translationX)")
         
-//            if translationX > 60.0
-//            {
-                let ratio = ceil(velocityX / translationX)
-                if  ratio > 3
-                {
-                    menuButtonTapped(nil)
-                }
-//            }
+            let ratio = ceil(velocityX / translationX)
+            if  ratio > 3
+            {
+                menuButtonTapped(nil)
+            }
         }
     }
   
@@ -502,8 +501,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
                     {
                         viewControllersToAppend.insert(currentVCs.first!, atIndex: 0)
                         weakSelf.navigationController?.setViewControllers(viewControllersToAppend, animated: true)
-                    }        
-
+                    }
                 }
             }
         })
@@ -511,7 +509,8 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     
     //MARK: ElementComposingDelegate
 
-    func newElementComposerWantsToCancel(composer: NewElementComposerViewController) {
+    func newElementComposerWantsToCancel(composer: NewElementComposerViewController)
+    {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
@@ -710,54 +709,6 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
         self.performSegueWithIdentifier("ShowSortedElements", sender: sender)
     }
     
-    //MARK: ------ menu displaying
-    func handleDisplayingMenuAnimated(animated:Bool, completion completionBlock:(()->())? = nil)
-    {
-
-        // hide MenuTableVC
-        if let menuPresentedVC = self.presentedViewController as? MenuVC
-        {
-            let menuAnimator = MenuTransitionAnimator()
-            menuAnimator.shouldAnimate = animated
-            customTransitionAnimator = menuAnimator
-            
-            menuPresentedVC.transitioningDelegate = self
-            menuPresentedVC.dismissViewControllerAnimated(true, completion: { () -> Void in
-                if let compBlock = completionBlock
-                {
-                    compBlock()
-                }
-                
-            }) //NOTE! this does not dismiss TabBarController, but dismisses menu VC from Tabbar`s presented view controller. the same could be achieved by calling "menuPresendedVC.dismissViewControllerAnimated ...."
-            return
-        }
-        if let contactsOrProfileNavHolderVC = self.presentedViewController as? UINavigationController
-        {
-            contactsOrProfileNavHolderVC.dismissViewControllerAnimated(true, completion: { () -> Void in
-                completionBlock?()
-            })
-            return
-        }
-        
-        // present MenuTableVC
-        if let menuVC = self.storyboard?.instantiateViewControllerWithIdentifier("MenuVC") as? MenuVC
-        {
-            let menuAnimator = MenuTransitionAnimator()
-            menuAnimator.shouldAnimate = animated
-            customTransitionAnimator = menuAnimator
-            
-            menuVC.modalPresentationStyle = .Custom
-            menuVC.transitioningDelegate = self
-            
-            self.presentViewController(menuVC, animated: true, completion: { () -> Void in
-                if let compBlock = completionBlock
-                {
-                    compBlock()
-                }
-            })
-        }
-    }
-    
     //MARK: - On Initial start
     func startReadingHomeScreenData(attemptCount:Int)
     {
@@ -796,8 +747,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             DataSource.sharedInstance.localDatadaseHandler?.readHomeDashboardElements(true) {[weak self] (info) -> () in
                     
                     DataSource.sharedInstance.dashBoardInfo = info
-                    
-                    
+                
                     if let weakSelf = self, dataSourceDashInfo = DataSource.sharedInstance.dashBoardInfo
                     {
                         if dataSourceDashInfo.signals == nil && dataSourceDashInfo.favourites == nil && dataSourceDashInfo.other == nil

@@ -127,9 +127,9 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 if let weakSelf = self
                 {
                     weakSelf.elements = recentElements
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        weakSelf.tableView?.reloadData()
-                    })
+//                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//                        weakSelf.tableView?.reloadData()
+//                    })
                 }
             }
         }
@@ -240,15 +240,17 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                 }
                 
                 //setup idea icon image
-                if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: element.type!.integerValue)
+                if let aType = element.type
                 {
-                    activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
+                    if self.optionsConverter.isOptionEnabled(.Idea, forCurrentOptions: aType.integerValue)
+                    {
+                        activityCell.ideaIcon?.image = UIImage(named: "tile-idea")?.imageWithRenderingMode(.AlwaysTemplate)
+                    }
+                    else
+                    {
+                        activityCell.ideaIcon?.image = nil
+                    }
                 }
-                else
-                {
-                    activityCell.ideaIcon?.image = nil
-                }
-                
                 //setup avatar, name and task Icon image depending on Task property of element
                 if self.optionsConverter.isOptionEnabled(.Task, forCurrentOptions: element.type!.integerValue)
                 {
@@ -258,11 +260,11 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                         {
                         case .Default:
                             activityCell.taskIcon?.image = nil
-                        case .InProcess:
+                        case .InProcess, .InProcessNoDate:
                             activityCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
-                        case .FinishedGood:
+                        case .FinishedGood, .FinishedGoodNoDate:
                             activityCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
-                        case .FinishedBad:
+                        case .FinishedBad, .FinishedBadNoDate:
                             activityCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
                         
                         }
@@ -275,14 +277,14 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                     }
                     
                     
-                    
-                    if let responsible = element.responsibleId?.integerValue, contacts = DataSource.sharedInstance.getContactsByIds(Set([responsible])), currentContact = contacts.first
+                    //setup NameLabel text under avatar
+                    if let responsible = element.responsibleId?.integerValue, currentContact = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(responsible).db
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }
-                    else if let user = DataSource.sharedInstance.user,  userIdInt = user.userId
+                    else if let responsibleIdInt = element.responsibleId?.integerValue, user = DataSource.sharedInstance.user,  userIdInt = user.userId
                     {
-                        if userIdInt == element.creatorId
+                        if userIdInt == responsibleIdInt
                         {
                             activityCell.nameLabel?.text = user.initialsString()
                         }
@@ -321,7 +323,7 @@ class RecentActivityTableVC: UIViewController, UITableViewDataSource, UITableVie
                         
                     }
                     
-                    if let creatorId = element.creatorId?.integerValue, contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), currentContact = contacts.first
+                    if let creatorId = element.creatorId?.integerValue, currentContact = DataSource.sharedInstance.localDatadaseHandler?.findPersonById(creatorId).db //contacts = DataSource.sharedInstance.getContactsByIds(Set([creatorId])), currentContact = contacts.first
                     {
                         activityCell.nameLabel?.text = currentContact.initialsString()
                     }

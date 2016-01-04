@@ -309,11 +309,11 @@ class LocalDatabaseHandler
         
         var foundRoots = [DBElement]()
         var pendingElement:DBElement? = currentElement
-        while let _ = pendingElement
+        while let pending = pendingElement
         {
-            if let parentFound = self.findParentElementForElement(pendingElement!)
+            if let parentFound = self.findParentElementForElement(pending)
             {
-                foundRoots.append(parentFound)
+                foundRoots.insert(parentFound, atIndex:0)
                 pendingElement = parentFound
                 continue
             }
@@ -393,34 +393,58 @@ class LocalDatabaseHandler
     }
     
     /**
-     Performs fetch request on private queue context. Used for returning real Elements for CollectionView DataSource and anywhere else if needed
+     Performs fetch request on private queue context. Used for returning `NSManagedObjectID`s of `DBElement`-s for CollectionView DataSource and anywhere else if needed
      - Returns: an array of `NSManagedObjectID` which contains at least one element
      - Throws: when no subordinate *DBElement*  found or any error happens
      */
-    func subordinateElementsForElementId(elementId:Int) throws -> [NSManagedObjectID]
+    func subordinateElementsForElementId(elementId:Int, archived:Bool = false) throws -> [NSManagedObjectID]
     {
         let lvContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
         lvContext.parentContext = self.privateContext
         
         let request = NSFetchRequest(entityName: "DBElement")
         request.sortDescriptors = [NSSortDescriptor(key: "dateChanged", ascending: true)]
-        request.predicate = NSPredicate(format: "rootElementId = \(elementId)")
-        request.resultType = .ManagedObjectIDResultType
+        request.predicate = (archived) ? NSPredicate(format: "rootElementId = \(elementId)") : NSPredicate(format:"rootElementId = \(elementId) AND dateArchived = nil" )
+        //request.resultType = .ManagedObjectIDResultType
         
         var toReturnElements:[NSManagedObjectID]?
         
         lvContext.performBlockAndWait() {
+//            do
+//            {
+//                if let subordinates = try lvContext.executeFetchRequest(request) as? [NSManagedObjectID] where subordinates.count > 0
+//                {
+//                    toReturnElements = subordinates
+//                }
+//            }
+//            catch let error
+//            {
+//                print("error for main queue subordinates query:")
+//                print(error)
+//            }
             do
             {
-                if let subordinates = try lvContext.executeFetchRequest(request) as? [NSManagedObjectID] where subordinates.count > 0
+                if let subordinateElements = try lvContext.executeFetchRequest(request) as? [DBElement] where subordinateElements.count > 0
                 {
-                    toReturnElements = subordinates
+                    let sortedByLastMessage = subordinateElements.sort() { (element1, element2) -> Bool in
+                        if let date1 = element1.latestAffectingDate, date2 = element2.latestAffectingDate
+                        {
+                            return date1.compare(date2) == .OrderedDescending
+                        }
+                        return false
+                    }
+                    
+                    toReturnElements = [NSManagedObjectID]()
+                    for anElement in sortedByLastMessage
+                    {
+                        toReturnElements?.append(anElement.objectID)
+                    }
                 }
             }
-            catch let error
+            catch let fetchError
             {
                 print("error for main queue subordinates query:")
-                print(error)
+                print(fetchError)
             }
         }
         
@@ -431,7 +455,7 @@ class LocalDatabaseHandler
         throw OrigamiError.NotFoundError(message: "No Subordinate Elements wer Found")
     }
     
-    func countSubordinatesForElementByManagedObjectId(managedID:NSManagedObjectID) -> Int
+    func countSubordinatesForElementByManagedObjectId(managedID:NSManagedObjectID, includeArchived:Bool = false) -> Int
     {
         let context = self.privateContext
         var returnCount = 0
@@ -440,12 +464,12 @@ class LocalDatabaseHandler
             {
                 let fetchRequest = NSFetchRequest(entityName: "DBElement")
                 fetchRequest.resultType = .CountResultType
-                fetchRequest.predicate = NSPredicate(format:"rootElementId = %@", elementId)
+                fetchRequest.predicate = (includeArchived) ? NSPredicate(format:"rootElementId = %@", elementId) : NSPredicate(format:"rootElementId = %@ AND dateArchived = nil", elementId)
                 
                 do{
                     if let lvCount = try context.executeFetchRequest(fetchRequest) as? [Int]
                     {
-                        print("subordinates count: \(lvCount)")
+                        //print("subordinates count: \(lvCount.first)")
                         returnCount = lvCount.first!
                     }
                 }
@@ -632,34 +656,38 @@ class LocalDatabaseHandler
     */
     func saveElementsToLocalDatabase(elements:[Element], completion:((didSave:Bool, error:NSError?)->())?)
     {
-        for anElement in elements
-        {
-           if let existingElement = self.readElementById(anElement.elementId!)
-           {
-                //print("2 - changingFoundElement in database")
-               
-                existingElement.fillInfoFromInMemoryElement(anElement)
-               // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
-            }
-            else
+        let context = self.privateContext
+        context.performBlockAndWait() {
+            for anElement in elements
             {
-                print("1 - inserting new element into database...")
-                if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: self.privateContext) as? DBElement
+                if let foundElement = self.readElementById(anElement.elementId!), existingElement = context.objectWithID(foundElement.objectID) as? DBElement
                 {
-                    newElement.fillInfoFromInMemoryElement(anElement)
-                    //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")
+                    //print("2 - changingFoundElement in database")
+                    
+                    existingElement.fillInfoFromInMemoryElement(anElement)
+                    // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
                 }
+                else
+                {
+                    print(" -> inserting new element into database...")
+                    if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: context) as? DBElement
+                    {
+                        newElement.fillInfoFromInMemoryElement(anElement)
+                        //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")
+                    }
+                }
+                
             }
-        
         }
+     
         
-        if self.privateContext.hasChanges
+        if context.hasChanges
         {
-            let context = self.privateContext
             context.performBlock({ () -> Void in
                 do
                 {
                     try context.save()
+                    print(" Did Save Context after elements info inserting or updating.")
                     completion?(didSave: true, error: nil)
                 }
                 catch let error as NSError
@@ -697,16 +725,17 @@ class LocalDatabaseHandler
                         if elementsResult.count == 1
                         {
                             elementToReturn = elementsResult.first!
+                            //print("arch date: \(elementToReturn?.dateArchived)")
                         }
-                        else if elementsResult.count == 0
-                        {
-                            //print("no element found for id: \(elementId)\n")
-                            
-                        }
+//                        else if elementsResult.count == 0
+//                        {
+//                            //print("no element found for id: \(elementId)\n")
+//                            
+//                        }
                         else if elementsResult.count > 1
                         {
-                            assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
-                            //TODO: delete duplicate entries
+                            //assert(false, "readElementById  ERROR  -> Found duplicate elements in Local Database...")
+                         
                             var elements = elementsResult
                             let toReturn = elements.removeLast()
                             elementToReturn = toReturn
@@ -714,14 +743,15 @@ class LocalDatabaseHandler
                             {
                                 context.deleteObject(anElement)
                             }
-                            
+                    
                             do
                             {
                                 try context.save()
+                                //print("--> Did delete duplicate DBElements.")
                             }
                             catch let saveError
                             {
-                                print("did not save context after deleting duplicate entries:")
+                                print(" --> ERROR: did not save context after deleting duplicate DBElement`s:")
                                 print(saveError)
                             }
                         }
@@ -1024,6 +1054,40 @@ class LocalDatabaseHandler
         }
     }
     
+    func userById(userId:Int, canEditElement:NSManagedObjectID) -> Bool
+    {
+        let context = NSManagedObjectContext(concurrencyType: .MainQueueConcurrencyType)
+        context.parentContext = self.privateContext
+        
+        guard let dbElement = context.objectWithID(canEditElement) as? DBElement, elementCreator = dbElement.creatorId?.integerValue else
+        {
+            return false
+        }
+        
+        if elementCreator == userId
+        {
+            return true
+        }
+        
+        if let parentsTree = self.readRootElementTreeForElementManagedObjectId(canEditElement)
+        {
+            for aParentElement in parentsTree
+            {
+                if let creatorInt =  aParentElement.creatorId?.integerValue
+                {
+                    if creatorInt == userId
+                    {
+                        return true
+                    }
+                }
+            }
+        }
+        
+        return false
+        
+    }
+    
+    
     //MARK: - Messages
     
     /**
@@ -1112,18 +1176,7 @@ class LocalDatabaseHandler
                 {
                     try context.save()
                     print("Dis Save Context after PAIRING")
-                    
-//                    do
-//                    {
-//                        try self.deleteMessagesWithoutElement()
-//                        completion?()
-//                    }
-//                    catch let messagesCleanUpError
-//                    {
-//                        print(" Did not delete messages without target element:")
-//                        print(messagesCleanUpError)
-//                         completion?()
-//                    }
+                    completion?()
                 }
                 catch{
                     print("Dis NOT Save Context after PAIRING")
@@ -1133,20 +1186,9 @@ class LocalDatabaseHandler
         }
         else
         {
-            print("Dis NOT Save Context after PAIRING - No Changes")
+            print("\n -> Did NOT Save Context after PAIRING - No Changes")
             completion?()
-//            do
-//            {
-//                try self.deleteMessagesWithoutElement()
-//            }
-//            catch let deletingError
-//            {
-//                print(" Did not delete messages without target element:")
-//                print(deletingError)
-//            }
         }
-        
-        
     }
     
     
@@ -1559,7 +1601,7 @@ class LocalDatabaseHandler
         let fetchRequest = NSFetchRequest(entityName: "DBMessageChat")
         let predicate = NSPredicate(format: "targetElement = nil")
         fetchRequest.predicate = predicate
-        fetchRequest.propertiesToFetch = ["messageId", "elementId"]
+        //fetchRequest.propertiesToFetch = ["messageId", "elementId"]
         
         let context = self.privateContext
         
@@ -1596,9 +1638,10 @@ class LocalDatabaseHandler
                     }
                 }
             }
-            catch
+            catch let fetchError
             {
-                
+                print("Error: -> Could not execute fetch request")
+                print(fetchError)
             }
         }
         
@@ -1738,7 +1781,7 @@ class LocalDatabaseHandler
         localContext.performBlockAndWait { () -> Void in
             if let existingPreview = self.findAvatarPreviewForUserId(forUserId), existingImageData = existingPreview.avatarPreviewData
             {
-                if existingImageData.hashValue != data.hashValue
+                if !existingImageData.isEqualToData(data)
                 {
                     existingPreview.avatarPreviewData = data
                     print("edited existing avatar preview IMAGE DATA")
@@ -1752,7 +1795,7 @@ class LocalDatabaseHandler
             else
             {
                 if let
-                    newAvatarPreview = NSEntityDescription.insertNewObjectForEntityForName("DBAvatarPreview", inManagedObjectContext: self.privateContext) as? DBAvatarPreview
+                    newAvatarPreview = NSEntityDescription.insertNewObjectForEntityForName("DBAvatarPreview", inManagedObjectContext: localContext) as? DBAvatarPreview
                 {
                     newAvatarPreview.fileName = fileName
                     newAvatarPreview.avatarUserId = forUserId
@@ -1798,7 +1841,25 @@ class LocalDatabaseHandler
                     }
                     else if previews.count > 1
                     {
-                        previewToReturn = previews.last!
+                        var previewsToCleanup = previews
+                        previewToReturn = previewsToCleanup.removeLast()
+                        
+                        //perform cleanup in database
+                        for aPreview in previewsToCleanup
+                        {
+                            context.deleteObject(aPreview)
+                        }
+                        
+                        do
+                        {
+                            try context.save()
+                            print("deleted dupliacte avatar previews from context.")
+                        }
+                        catch let saveError
+                        {
+                            print(" ERROR while saving context after deleting duplicate previews for avatar:")
+                            print(saveError)
+                        }
                     }
                 }
             }
@@ -1838,6 +1899,97 @@ class LocalDatabaseHandler
         else
         {
             print("DID NOT delete user avatar preview:  Not Found.\n")
+        }
+        
+        if self.privateContext.hasChanges
+        {
+            do
+            {
+                try self.privateContext.save()
+            }
+            catch let saveError
+            {
+                print("Error while saving privateContext after user avatars deletion:")
+                print(saveError)
+            }
+        }
+       
+    }
+    
+    /**
+     Delete all **DBAvatarPreview** objects from local database.
+      Submits async task on private queue context.
+      Tries to save context if it has any changes.
+     - Note: On iOS 9 and later NSBatchDeleteRequest workflow is used.
+     */
+    func deleteAllAvatarPreviews()
+    {
+        let fetchDeleteRequest = NSFetchRequest(entityName: "DBAvatarPreview")
+        let context = self.privateContext
+        
+        if #available(iOS 9.0, *)
+        {
+            let deletionRequest = NSBatchDeleteRequest(fetchRequest: fetchDeleteRequest)
+           
+            context.performBlock(){
+                do
+                {
+                    if let result = try context.executeRequest(deletionRequest) as? NSBatchDeleteResult
+                    {
+                        print("DBAvatarPreviews cleanup resultType: \(result.resultType)")
+                    }
+                    
+                    if context.hasChanges
+                    {
+                        do
+                        {
+                            try context.save()
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                }
+                catch let delError
+                {
+                    print("Could delete all DBAvatarPreviews:")
+                    print(delError)
+                }
+            }
+        }
+        else //pre iOS 9
+        {
+            context.performBlock() {
+                do
+                {
+                    if let avatarPreviews = try context.executeFetchRequest(fetchDeleteRequest) as? [DBAvatarPreview] where avatarPreviews.count > 0
+                    {
+                        for aPreview in avatarPreviews
+                        {
+                            context.deleteObject(aPreview)
+                        }
+                        print("DBAvatarPreviews cleanup finished.")
+                    }
+                    
+                    if context.hasChanges
+                    {
+                        do
+                        {
+                            try context.save()
+                        }
+                        catch
+                        {
+                            
+                        }
+                    }
+                }
+                catch let fetchError
+                {
+                    print("Could not fetch avatar previews. Error:")
+                    print(fetchError)
+                }
+            }
         }
     }
     
@@ -1928,7 +2080,7 @@ class LocalDatabaseHandler
                                 
                                 let context = self.privateContext
                                 
-                                context.performBlock(){_ in
+                                context.performBlock() {_ in
                                     for aDBuser in toDelete
                                     {
                                         context.deleteObject(aDBuser)
@@ -1981,7 +2133,6 @@ class LocalDatabaseHandler
     {
         guard !contacts.isEmpty else
         {
-//            completion?(false, error:NSError(domain: "com.Origami.EmptyValue.Error", code: -3030, userInfo: [NSLocalizedDescriptionKey:"Tried to insert empty contacts to local database."]))
             self.deleteAllContacts()
             completion?(true, error: nil)
             return
@@ -1991,7 +2142,7 @@ class LocalDatabaseHandler
         {
             if let existingContact = self.readContactById(aContact.contactId)
             {
-                print("Updating Contact: \(existingContact.contactId!)")
+                //print("Updating Contact: \(existingContact.contactId!)")
                 existingContact.fillInfoFromContact(aContact)
             }
             else
@@ -2028,8 +2179,6 @@ class LocalDatabaseHandler
             print("\n ->->->-> PrivateContext has no changes after contacts saving.")
             completion?(false, error:nil)
         }
-        
-        
     }
 
     func readContactById(contactId:Int) -> DBContact?
@@ -2119,7 +2268,9 @@ class LocalDatabaseHandler
                     {
                         completion?(nil)
                     }
+                    return
                 }
+                completion?(nil)
             }
             catch
             {
@@ -2422,7 +2573,7 @@ class LocalDatabaseHandler
         catch let previewImageError
         {
             print(" saveAttachToLocalDatabase -> Could not get attachPreviewImageData:")
-            print(previewImageError)
+            print((previewImageError as NSError).localizedDescription)
         }
         
         

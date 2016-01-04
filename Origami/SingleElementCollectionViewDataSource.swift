@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, MessageTapDelegate, AttachmentCellDelegate
+class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate,  MessageTapDelegate, AttachmentCellDelegate
 {
     var displayMode:DisplayMode = .Day
     var titleCellMode:ElementDashboardTitleCellMode = .Title
@@ -40,7 +40,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
     
     weak var handledCollectionView:UICollectionView?
     
-    var handledElementId:NSManagedObjectID?{
+    var handledElementId:NSManagedObjectID? {
         didSet{
             guard let anID = handledElementId else
             {
@@ -50,6 +50,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             
             if let element = self.mainQueueContext.objectWithID(anID) as? DBElement
             {
+                self.mainQueueContext.refreshObject(element, mergeChanges: true)
                 self.handledElement = element
             }
         }
@@ -64,27 +65,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 //print("\n appended Title")
                 options.append(.Title)
             }
-//            if let _ = getElementLastMessages()
-//            {
-//                //print("\n appended CHAT\n")
-//                options.append(.Chat)
-//            }
             
-            if let messages = handledElement?.messages as? Set<DBMessageChat>
+            if let messages = handledElement?.messages as? Set<DBMessageChat> where messages.count > 0
             {
-                if !messages.isEmpty
-                {
-                    options.append(.Chat)
-                }
+                options.append(.Chat)
             }
             if let details = getElementDetails()
             {
                 if !details.isEmpty
                 {
-                    //print("\n appended DETAILS")
                     options.append(.Details)
                 }
-                
             }
             
             defer
@@ -94,31 +85,15 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 calculateAllCellTypes()
             }
             
-//            guard let elementId = handledElement?.elementId?.integerValue else
-//            {
-//                return
-//            }
-            
             if let attachesSet = self.handledElement?.attaches where attachesSet.count > 0
             {
-//                if attachesBool == true
-//                {
-                    options.append(.Attaches)
-                    
-//                    if let foundAttaches = DataSource.sharedInstance.getAttachesForElementById(elementId)
-//                    {
-//                        self.currentAttaches = foundAttaches
-//                    }
-//                }
+                options.append(.Attaches)
             }
             
             if let elementObjectID = self.handledElementId, let result = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(elementObjectID) where result > 0
             {
                 options.append(.Subordinates)
             }
-            
-        
-            
         }
     }
     
@@ -149,7 +124,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
         
         do
         {
-            guard let elementIDs = try DataSource.sharedInstance.localDatadaseHandler?.subordinateElementsForElementId(elementId) else
+            guard let elementIDs = try DataSource.sharedInstance.localDatadaseHandler?.subordinateElementsForElementId(elementId, archived: (self.handledElement?.dateArchived != nil)) else
             {
                 return nil
             }
@@ -219,7 +194,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 let value = allValues[i] //again tuple
                 let lvElement = value.1
                 
-                if /*let elementId = lvElement.elementId?.integerValue,*/ let subordinatesCount = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(lvElement.objectID)
+                if /*let elementId = lvElement.elementId?.integerValue,*/ let subordinatesCount = DataSource.sharedInstance.localDatadaseHandler?.countSubordinatesForElementByManagedObjectId(lvElement.objectID, includeArchived: (self.handledElement?.dateArchived != nil))
                 {
                     if subordinatesCount > 0
                     {
@@ -388,12 +363,17 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                 titleElement.responsible = handledElement!.responsibleId!.integerValue
                 titleElement.creatorId = handledElement!.creatorId!.integerValue
                 
-                titleCell.handledElement = titleElement
+                if let canBeEdited = self.handledElement?.canBeEditedByCurrentUser
+                {
+                    titleElement.canBeEdited = canBeEdited
+                }
                 
-                let elementIsOwnedBool = elementIsOwned()
-                print("currentElement is Owned: \(elementIsOwnedBool)")
-                print("currentElement Responsible: \(handledElement?.responsibleId?.integerValue)")
-                titleCell.setupActionButtons(elementIsOwnedBool)
+                titleCell.handledElement = titleElement
+                titleCell.setupActionButtons(titleElement.canBeEdited)
+                //let elementIsOwnedBool = elementIsOwned()
+                //titleCell.setupActionButtons(elementIsOwnedBool)
+                
+              
               
                 if let currentelement = self.handledElement
                 {
@@ -659,11 +639,11 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     case .Default:
                         subordinateCell.taskIcon?.image = nil
                         break
-                    case .InProcess:
+                    case .InProcess, .InProcessNoDate:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-pending")?.imageWithRenderingMode(.AlwaysTemplate)
-                    case .FinishedBad:
+                    case .FinishedBad, .FinishedBadNoDate:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-bad")?.imageWithRenderingMode(.AlwaysTemplate)
-                    case .FinishedGood:
+                    case .FinishedGood, .FinishedGoodNoDate:
                         subordinateCell.taskIcon?.image = UIImage(named: "tile-task-good")?.imageWithRenderingMode(.AlwaysTemplate)
                     }
                 }
@@ -823,6 +803,10 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
                     {
                         try DataSource.sharedInstance.localDatadaseHandler?.saveImagePreview(previewImageData, forAttachById: attachId)
                         DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                        if let image = UIImage(data: previewImageData)
+                        {
+                            return image
+                        }
                     }
                     catch
                     {
@@ -938,35 +922,7 @@ class SingleElementCollectionViewDataSource: NSObject, UICollectionViewDataSourc
             }
             
         }
-        
-//        if let attachesSet = self.handledElement?.attaches
-//        {
-//            let attaches = Array(attachesSet)
-//            
-//            var attachesToSave = [DBAttach]()
-//            var attachesToClean = attaches
-//            repeat{
-//            
-//                let lastAttach = attachesToClean.removeLast()
-//                if let integer = lastAttach.attachId?.integerValue
-//                {
-//                    if integer == attachId
-//                    {
-//                        do{ try DataSource.sharedInstance.localDatadaseHandler?.deleteAttach(lastAttach, shouldSave: true) }
-//                        catch{}
-//                        
-//                        continue
-//                    }
-//                    attachesToSave.insert(lastAttach, atIndex: 0)
-//                }
-//            }while !attachesToClean.isEmpty
-//            
-//            self.currentAttaches = attachesToSave
-//            dispatch_async(dispatch_get_main_queue()){
-//                self.handledCollectionView?.reloadData()
-//            }
-//        }
     }
-    //external
+
    
 }

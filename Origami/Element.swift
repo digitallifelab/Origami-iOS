@@ -29,7 +29,8 @@ class Element:Hashable, CreateDateComparable
     var changeDate:String?
     
     var archiveDate:String?
-     
+    
+    internal var canBeEdited = false
     
     //MARK: - CreateDateComparable conformance
     var dateCreated:NSDate? {
@@ -92,13 +93,20 @@ class Element:Hashable, CreateDateComparable
         if let finish = info["FinishState"] as? Int
         {
             self.finishState = finish
-        }
-        if let finishDate = info["FinishDate"] as? String
-        {
-            if let date = finishDate.dateFromServerDateString() //still optional
+            
+            if let elementFinishStateEnumValue = ElementFinishState(rawValue: finish) where elementFinishStateEnumValue.hasDateSet
             {
-                self.finishDate = date
-                //print("elId: \(self.elementId!), finDate: \(finishDate)")
+                if let finishDate = info["FinishDate"] as? String
+                {
+                    if let date = finishDate.dateFromServerDateString() //still optional
+                    {
+                        self.finishDate = date
+                    }
+                }
+            }
+            else
+            {
+                print("will NOT set element`s finish DATE")
             }
         }
         

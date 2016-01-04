@@ -79,6 +79,11 @@ class UserProfileVC: UIViewController, UICollectionViewDelegate, UICollectionVie
                             if let previewImage = fullSizeAvatarImage.scaleToSizeKeepAspect(CGSizeMake(200.0, 200.0))
                             {
                                 DataSource.sharedInstance.userAvatarsHolder[userId] = previewImage
+                                if let imageData = UIImageJPEGRepresentation(previewImage, 1.0)
+                                {
+                                    DataSource.sharedInstance.localDatadaseHandler?.saveAvatarPreview(imageData, forUserId: userId, fileName: userName)
+                                    DataSource.sharedInstance.localDatadaseHandler?.savePrivateContext(nil)
+                                }
                             }
                         }
                         else if let errorImage = error

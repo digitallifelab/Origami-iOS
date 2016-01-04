@@ -21,6 +21,9 @@
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
 		F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
 		F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
+		F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */ = {isa = PBXBuildFile; fileRef = F811C1791C1AFC5E00C07273 /* PFGoldenSectionSpiral.m */; };
+		F811C1811C1AFC5E00C07273 /* ZYQSphereView.m in Sources */ = {isa = PBXBuildFile; fileRef = F811C17F1C1AFC5E00C07273 /* ZYQSphereView.m */; };
+		F811C1841C1B1E2A00C07273 /* PFButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F811C1831C1B1E2A00C07273 /* PFButton.m */; };
 		F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
 		F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
 		F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F817EE561B9EE2CD007E8EBD /* OptionsView.swift */; };
@@ -39,7 +42,6 @@
 		F82AF3581BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF3591BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */; };
-		F82AF35D1BEA3A2400E8514A /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */; };
 		F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
@@ -120,6 +122,7 @@
 		F8A1DFD31B7B74BE00A66692 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A1DFD21B7B74BE00A66692 /* Language.swift */; };
 		F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */; };
 		F8A2A4D01B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */; };
+		F8B207201C2401D100BC3465 /* RegistrationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */; };
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
@@ -282,11 +285,11 @@
 		F8F58DB21BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXFileReference section */
 		780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
 		780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
 		784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BFDragGestureRecognizer.m; path = Visualisation/BFDragGestureRecognizer.m; sourceTree = "<group>"; };
 		784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BFDragGestureRecognizer.h; path = Visualisation/BFDragGestureRecognizer.h; sourceTree = "<group>"; };
+		BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManagerViewController.swift; sourceTree = "<group>"; };
 		F800022E1BC3E57C00E6E2E7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F8016FF01B304614002A1620 /* FrameCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCounter.swift; sourceTree = "<group>"; };
 		F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactProfileAvatarCell.swift; sourceTree = "<group>"; };
@@ -297,6 +300,17 @@
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
 		F811B3F01BF9E7280012F825 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
+		F811C1771C1AFC5E00C07273 /* PFAxisDirection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFAxisDirection.h; sourceTree = "<group>"; };
+		F811C1781C1AFC5E00C07273 /* PFGoldenSectionSpiral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFGoldenSectionSpiral.h; sourceTree = "<group>"; };
+		F811C1791C1AFC5E00C07273 /* PFGoldenSectionSpiral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFGoldenSectionSpiral.m; sourceTree = "<group>"; };
+		F811C17A1C1AFC5E00C07273 /* PFMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFMatrix.h; sourceTree = "<group>"; };
+		F811C17B1C1AFC5E00C07273 /* PFMatrixTransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFMatrixTransform.h; sourceTree = "<group>"; };
+		F811C17C1C1AFC5E00C07273 /* PFPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFPoint.h; sourceTree = "<group>"; };
+		F811C17D1C1AFC5E00C07273 /* PFRadian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFRadian.h; sourceTree = "<group>"; };
+		F811C17E1C1AFC5E00C07273 /* ZYQSphereView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZYQSphereView.h; sourceTree = "<group>"; };
+		F811C17F1C1AFC5E00C07273 /* ZYQSphereView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZYQSphereView.m; sourceTree = "<group>"; };
+		F811C1821C1B1E2A00C07273 /* PFButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFButton.h; sourceTree = "<group>"; };
+		F811C1831C1B1E2A00C07273 /* PFButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFButton.m; sourceTree = "<group>"; };
 		F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashHeaderView.swift; sourceTree = "<group>"; };
 		F817EE561B9EE2CD007E8EBD /* OptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDashboardVC.swift; sourceTree = "<group>"; };
@@ -395,6 +409,7 @@
 		F8A1DFD01B7B74AB00A66692 /* Country.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		F8A1DFD21B7B74BE00A66692 /* Language.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
 		F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileSexCell.swift; sourceTree = "<group>"; };
+		F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegistrationVC.swift; sourceTree = "<group>"; };
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
@@ -531,6 +546,32 @@
 				F81110111B2AC2FF00115DF6 /* seguisb.ttf */,
 			);
 			path = CustomFonts;
+			sourceTree = "<group>";
+		};
+		F811C1751C1AFC2F00C07273 /* TestStuff */ = {
+			isa = PBXGroup;
+			children = (
+				F811C1761C1AFC5E00C07273 /* SphereView */,
+			);
+			path = TestStuff;
+			sourceTree = "<group>";
+		};
+		F811C1761C1AFC5E00C07273 /* SphereView */ = {
+			isa = PBXGroup;
+			children = (
+				F811C1771C1AFC5E00C07273 /* PFAxisDirection.h */,
+				F811C1781C1AFC5E00C07273 /* PFGoldenSectionSpiral.h */,
+				F811C1791C1AFC5E00C07273 /* PFGoldenSectionSpiral.m */,
+				F811C17A1C1AFC5E00C07273 /* PFMatrix.h */,
+				F811C17B1C1AFC5E00C07273 /* PFMatrixTransform.h */,
+				F811C17C1C1AFC5E00C07273 /* PFPoint.h */,
+				F811C17D1C1AFC5E00C07273 /* PFRadian.h */,
+				F811C1821C1B1E2A00C07273 /* PFButton.h */,
+				F811C1831C1B1E2A00C07273 /* PFButton.m */,
+				F811C17E1C1AFC5E00C07273 /* ZYQSphereView.h */,
+				F811C17F1C1AFC5E00C07273 /* ZYQSphereView.m */,
+			);
+			path = SphereView;
 			sourceTree = "<group>";
 		};
 		F81BAD601B5F861500DB50F8 /* SingleElementDashboard */ = {
@@ -819,7 +860,9 @@
 		F8B517E71B3C0C7700BDDEDB /* Login and Registration */ = {
 			isa = PBXGroup;
 			children = (
+				BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */,
 				F89F3B5D1B21C81600156CEC /* LoginVC.swift */,
+				F8B2071F1C2401D100BC3465 /* RegistrationVC.swift */,
 				F86C00311BF36CC700420EB9 /* ChangePasswordViewController.swift */,
 			);
 			name = "Login and Registration";
@@ -946,6 +989,7 @@
 				F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */,
 				F82AF3611BEA3E9700E8514A /* VisualizableObject.h */,
 				F82AF3621BEA3E9700E8514A /* VisualizableObject.m */,
+				F811C1751C1AFC2F00C07273 /* TestStuff */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F874D90C1B26FA8A00B867BF /* ViewControllers */,
 				F87E9BF31B79E41C00D8E07B /* Model */,
@@ -1155,7 +1199,6 @@
 				F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F8BDB68E1BD909E500BB80B4 /* DBElement.swift in Sources */,
 				F8C93AE51B861B94009D890E /* SingleElementTitleCell.swift in Sources */,
-				F82AF35D1BEA3A2400E8514A /* VisualizationViewController.m in Sources */,
 				F8C93AE61B861B94009D890E /* MediaFile.swift in Sources */,
 				F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */,
 				F8BDB6821BD909E500BB80B4 /* DBPerson.swift in Sources */,
@@ -1251,6 +1294,7 @@
 				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F86F742F1B5684A500E48E13 /* MyContactListCell.swift in Sources */,
 				F8BDB6891BD909E500BB80B4 /* DBContact.swift in Sources */,
+				F811C1841C1B1E2A00C07273 /* PFButton.m in Sources */,
 				F8386F4A1BD520F7006332D9 /* AFURLSessionManager.m in Sources */,
 				F8BDB66F1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F8A1DFD11B7B74AB00A66692 /* Country.swift in Sources */,
@@ -1286,6 +1330,7 @@
 				F85CF1041B833D940048B3DE /* MessagesLoader.swift in Sources */,
 				F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */,
 				F8BDB68D1BD909E500BB80B4 /* DBElement.swift in Sources */,
+				F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */,
 				F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
 				F8A1DFCD1B7B735B00A66692 /* AttachFile.swift in Sources */,
@@ -1293,6 +1338,7 @@
 				F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */,
 				F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F8D9BAC31B399880006B507D /* MediaFile.swift in Sources */,
+				F811C1811C1AFC5E00C07273 /* ZYQSphereView.m in Sources */,
 				F88563FE1B31C48B005D223E /* ChatTextInputView.swift in Sources */,
 				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,
 				F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */,
@@ -1322,6 +1368,7 @@
 				F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,
 				F84E84581BE21BFF001B1B87 /* DBAttach.swift in Sources */,
+				F8B207201C2401D100BC3465 /* RegistrationVC.swift in Sources */,
 				F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */,
 				F88668141B429FC30021C806 /* ContactCheckerCell.swift in Sources */,
 				F8BDB6941BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
@@ -1337,6 +1384,7 @@
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
 				F87AEE551BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
+				BC07EA8E1C26A7C60005F499 /* AuthorizationManagerViewController.swift in Sources */,
 				F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */,
 				F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,
@@ -1401,8 +1449,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Vsevolod Rubtsov (824PKQB475)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1414,7 +1462,7 @@
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.CloudCaft.Shevchenko-Network";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1426,8 +1474,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Shevchenko";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Vsevolod Rubtsov (XD42YSD8LL)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"SHEVCHENKO=1",
@@ -1439,7 +1487,7 @@
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D SHEVCHENKO";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.CloudCaft.Shevchenko-Network";
 				PRODUCT_NAME = "Shevchenko network";
-				PROVISIONING_PROFILE = "57f4c7d6-d578-4003-8d1f-1341b4a0d3e6";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Shevchenko_network-Bridging-Header.h";
 			};
 			name = Release;
@@ -1535,8 +1583,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1550,7 +1598,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.CloudCraft.Origami;
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "5f41f7ec-b1df-49be-bc89-b137270139a1";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1562,8 +1610,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-Origami";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-Origami";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_OPTIMIZATION_LEVEL = fast;
 				"GCC_PREPROCESSOR_DEFINITIONS[arch=*]" = "";
 				INFOPLIST_FILE = Origami/Origami.plist;
@@ -1571,7 +1619,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.CloudCraft.Origami;
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "5f41f7ec-b1df-49be-bc89-b137270139a1";
+				PROVISIONING_PROFILE = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 			};
 			name = Release;

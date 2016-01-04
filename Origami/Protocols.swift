@@ -16,12 +16,8 @@ protocol MessageObserver
 
 extension MessageObserver
 {
-    
-    func newMessagesWereAdded(){
-        
-    }
-    
-    func newMessagesAdded(messages:[Message]){
+    func newMessagesWereAdded()
+    {
         
     }
 }

@@ -40,12 +40,12 @@ class SingleElementTitleCell: UICollectionViewCell {
     }
     var optionsConverter = ElementOptionsConverter()
     
-    var handledElement:Element? {
-        didSet{
-            print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
-            print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
-        }
-    }
+    var handledElement:Element? //{
+//        didSet{
+//            //print(" -> TITLE CELL ELEMENT TYPE: \(handledElement?.typeId)")
+//            //print(" -> TITLE CELL ELEMENT FINISH STATE:  \(handledElement?.finishState)")
+//        }
+//    }
     var buttonTrueColor = UIColor.whiteColor()
     var buttonFalseColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
     
@@ -180,20 +180,14 @@ class SingleElementTitleCell: UICollectionViewCell {
             
             if currentElement.isSignal.boolValue == true
             {
-                signalButton.hidden = false
+                //signalButton.hidden = false
                 signalButton.tintColor = kWhiteColor
             }
             else
             {
-                if currentElement.isOwnedByCurrentUser()
-                {
-                    signalButton.hidden = false
-                    signalButton.tintColor = kElementAttributeIconsDisabledColor
-                }
-                else
-                {
-                    signalButton.hidden = true
-                }
+                signalButton.tintColor = kElementAttributeIconsDisabledColor
+                
+                signalButton.hidden = !currentElement.canBeEdited
             }
         }
     }
@@ -214,14 +208,8 @@ class SingleElementTitleCell: UICollectionViewCell {
                 }
                 else
                 {
-                    if currentElement.isOwnedByCurrentUser()
-                    {
-                        ideaButton.tintColor = kElementAttributeIconsDisabledColor
-                    }
-                    else
-                    {
-                        ideaButton.hidden = true
-                    }
+                    ideaButton.tintColor = kElementAttributeIconsDisabledColor
+                    ideaButton.hidden = !currentElement.canBeEdited
                 }
             }
         }
@@ -247,13 +235,13 @@ class SingleElementTitleCell: UICollectionViewCell {
                             {
                             case .Default:
                                 taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                            case .InProcess:
+                            case .InProcess, .InProcessNoDate:
                                 taskButton.tintColor = kWhiteColor
                                 taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                                
-                            case .FinishedGood:
+                            case .FinishedGood, .FinishedGoodNoDate:
                                 taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                            case .FinishedBad:
+                            case .FinishedBad, .FinishedBadNoDate:
                                 taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             }
                         }
@@ -267,12 +255,12 @@ class SingleElementTitleCell: UICollectionViewCell {
                             {
                             case .Default:
                                 taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                            case .InProcess:
+                            case .InProcess, .InProcessNoDate:
                                 taskButton.tintColor = UIColor.grayColor()
                                 taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                            case .FinishedGood:
+                            case .FinishedGood, .FinishedGoodNoDate:
                                 taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                            case .FinishedBad:
+                            case .FinishedBad, .FinishedBadNoDate:
                                 taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             }
                         }
@@ -304,15 +292,15 @@ class SingleElementTitleCell: UICollectionViewCell {
                         {
                         case .Default:
                             taskButton.hidden = true
-                        case .InProcess:
+                        case .InProcess, .InProcessNoDate:
                             taskButton.hidden = false
                             taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                        case .FinishedGood:
+                        case .FinishedGood, .FinishedGoodNoDate:
                             taskButton.userInteractionEnabled = false
                             taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                        case .FinishedBad:
+                        case .FinishedBad, .FinishedBadNoDate:
                             taskButton.userInteractionEnabled = false
                             taskButton.tintColor = kWhiteColor
                             taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
@@ -327,11 +315,14 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else //task for anyone else
             {
-                taskButton.userInteractionEnabled = false
+                let canBeEdited = currentElement.canBeEdited
+                taskButton.userInteractionEnabled = canBeEdited//false
+                
                 if (optionsConverter.isOptionEnabled(.Task, forCurrentOptions: currentElement.typeId))
                 {
                    // self.responsiblePErsonAvatarWidthConstraint.constant = visibleResponsibleAvatarWidth
                     taskButton.hidden = false
+                    
                     if let finishState = ElementFinishState(rawValue: currentElement.finishState)
                     {
                         switch finishState
@@ -339,22 +330,22 @@ class SingleElementTitleCell: UICollectionViewCell {
                         case .Default:
                             //taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                             break
-                        case .InProcess:
-                            taskButton.tintColor = kElementAttributeIconsDisabledColor
+                        case .InProcess, .InProcessNoDate:
+                            taskButton.tintColor = (canBeEdited) ? kWhiteColor :kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-available-to-set")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                        case .FinishedGood:
-                            taskButton.tintColor = kElementAttributeIconsDisabledColor
+                        case .FinishedGood, .FinishedGoodNoDate:
+                            taskButton.tintColor = (canBeEdited) ? kWhiteColor :kElementAttributeIconsDisabledColor //kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-finished-good")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
-                        case .FinishedBad:
-                            taskButton.tintColor = kElementAttributeIconsDisabledColor
+                        case .FinishedBad, .FinishedBadNoDate:
+                            taskButton.tintColor = (canBeEdited) ? kWhiteColor :kElementAttributeIconsDisabledColor //kElementAttributeIconsDisabledColor
                             taskButton.setImage(UIImage(named: "task-finished-bad")?.imageWithRenderingMode(.AlwaysTemplate), forState: .Normal)
                         }
                     }
                 }
                 else
                 {
-                    taskButton.hidden = true
-                    //self.responsiblePErsonAvatarWidthConstraint.constant = 0.0
+                    taskButton.hidden = !canBeEdited // true
+                    taskButton.tintColor = kElementAttributeIconsDisabledColor
                 }
             }
         }
@@ -370,7 +361,7 @@ class SingleElementTitleCell: UICollectionViewCell {
             }
             else
             {
-                if currentElement.isOwnedByCurrentUser()
+                if currentElement.canBeEdited//isOwnedByCurrentUser()
                 {
                     decisionButton.tintColor = kElementAttributeIconsDisabledColor
                     if currentElement.isArchived()

@@ -203,7 +203,12 @@ class ContactProfileVC: UIViewController , UITableViewDelegate, UITableViewDataS
             let avatarCell = tableView?.dequeueReusableCellWithIdentifier("ContactProfileAvatarCell", forIndexPath: indexPath) as! ContactProfileAvatarCell
             if let contact = self.contact
             {
-                avatarCell.favourite = contact.favorite!.boolValue
+                avatarCell.favourite = false
+                if let favBool = contact.favorite
+                {
+                    avatarCell.favourite = favBool.boolValue
+                }
+                
                 if let contactId = contact.contactId?.integerValue, avatar = DataSource.sharedInstance.getAvatarForUserId(contactId)
                 {
                     avatarCell.avatar?.image = avatar

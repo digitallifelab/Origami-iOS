@@ -36,6 +36,10 @@
 "age" = "Возраст";
 "changePassword" = "Изменить пароль";
 
+"Register" = "Зарегистрироваться";
+"RegistrationScreenTitle" = "Регистрация";
+"password" = "пароль";
+
 "sex" = "Пол";
 "male" = "Мужчина";
 "female" = "Женщина";
@@ -63,6 +67,7 @@
 "Idea" = "Идея";
 "Task" = "Задача";
 "Decision" = "Решение";
+"Cancel task" = "Отменить задачу";
 
 "Menu" = "Меню";
 "authorization" = "авторизация";
@@ -91,3 +96,7 @@
 
 //Login attempt failures:
 "YouAreBlocked" = "Вы забокированы. Пожялуйста, Свяжитесь с администратором сервиса.";
+
+//MARK: - Registration
+"tempPassword" = "одноразовый пароль";
+"checkEmailForRegistrationPassword" = "Проверьте свою почту для получения одноразового пароля";

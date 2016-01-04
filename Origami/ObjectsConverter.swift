@@ -232,7 +232,7 @@ class ObjectsConverter {
         for lvDictionary in dictionaries
         {
             let lvNewMessage = Message(info: lvDictionary)
-            //print(lvDictionary)
+            
             if lvNewMessage.textBody == "User invited you!"
             {
                 continue
@@ -244,10 +244,6 @@ class ObjectsConverter {
             TypeId = 65535 - user was blocked
             TypeId = 65534 - user was unBlocked
             */
-            //var shouldStoreMessage = true
-            
-            
-            
             switch lvNewMessage.type
             {
                 case .Undefined:
@@ -264,26 +260,35 @@ class ObjectsConverter {
                     //print("\n changed user info. \" \(lvNewMessage.textBody) \"")
                     serviceMessages.append(lvNewMessage)
                 case .UserPhotoUpdated:
-                    //print(" \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!)")
+                   
                     if let integerUserId = Int(lvNewMessage.textBody!)
                     {
-                        lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                        if let existServiceMessage = lastPhotoUpdateMessagesForUserIDs[integerUserId]
+                        {
+                            if existServiceMessage.messageId < lvNewMessage.messageId
+                            {
+                                lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                                //print("UPDATED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
+                            }
+                        }
+                        else
+                        {
+                            lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
+                             print("INSERTED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
+                        }
                     }
-                
                 case .UserBlocked:
                     //print("\n-> User Was Blocked: userID = \(lvNewMessage.textBody!) \n")
                     serviceMessages.append(lvNewMessage)
                 case .UserUnblocked:
                     //print("\n-> User Was UnBlosked: userID = \(lvNewMessage.textBody!) \n")
                     serviceMessages.append(lvNewMessage)
-
             }
-            
         }
         
         for ( _ , aMessage) in lastPhotoUpdateMessagesForUserIDs
         {
-            print(" \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
+            print("RESULT \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
             serviceMessages.append(aMessage)
         }
         
@@ -383,7 +388,7 @@ class ObjectsConverter {
         return newElements
     }
     
-    class func sortMessagesByDate(inout messages:[Message],  _ sortingFunction:((Message, Message)->Bool))
+    class func sortMessagesByDate(inout messages:[Message], sortingFunction:((Message, Message) -> Bool))
     {
         if messages.count > 1
         {
