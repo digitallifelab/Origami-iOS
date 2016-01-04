@@ -49,10 +49,10 @@
 {
     [super viewDidAppear:animated];
 
-    if (!self.objectsToVisualize)
+    if (!objectsToVisualize)
     {
         NSArray * array = [[DataSource sharedInstance] getVisualizableContent];
-        self.objectsToVisualize =  [NSMutableArray arrayWithArray:array];
+        objectsToVisualize =  [NSMutableArray arrayWithArray:array];
     }
     
     [self prepareMatrixViewAndShow];
@@ -215,7 +215,7 @@
 
 -(void) prepareMatrixViewAndShow
 {
-    if (self.objectsToVisualize)
+    if (objectsToVisualize)
     {
        
         //NSInteger objectsCount = self.objectsToVisualize.count;
@@ -261,34 +261,34 @@
 
 
 
--(void)changePF:(UIButton*)sender{
-    if ([sphereView isTimerStart]) {
-        [sphereView timerStop];
-    }
-    else{
-        [sphereView timerStart];
-    }
-}
+//-(void)changePF:(UIButton*)sender{
+//    if ([sphereView isTimerStart]) {
+//        [sphereView timerStop];
+//    }
+//    else{
+//        [sphereView timerStart];
+//    }
+//}
 
 
--(void) showNextSelf:(UIBarButtonItem *)sender
-{
-    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
-    nextViewController.objectsToVisualize = self.objectsToVisualize;
-    [self.navigationController pushViewController:nextViewController animated:YES];
-}
+//-(void) showNextSelf:(UIBarButtonItem *)sender
+//{
+//    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
+//    nextViewController.objectsToVisualize = self.objectsToVisualize;
+//    [self.navigationController pushViewController:nextViewController animated:YES];
+//}
 
 
--(void) showTappedElementByTag:(NSInteger) elementButtonTag
-{
-    printf("tapped: %ld", (long)elementButtonTag);
-    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
-    {
-        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
-        
-        [rootVC presentNewSingleElementVC:elementButtonTag];
-    }
-}
+//-(void) showTappedElementByTag:(NSInteger) elementButtonTag
+//{
+//    printf("tapped: %ld", (long)elementButtonTag);
+//    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
+//    {
+//        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
+//        
+//        [rootVC presentNewSingleElementVC:elementButtonTag];
+//    }
+//}
 
 /*
 #pragma mark - Navigation
