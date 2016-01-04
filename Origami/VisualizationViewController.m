@@ -49,10 +49,10 @@
 {
     [super viewDidAppear:animated];
 
-    if (!objectsToVisualize)
+    if (!self.objectsToVisualize)
     {
         NSArray * array = [[DataSource sharedInstance] getVisualizableContent];
-        objectsToVisualize =  [NSMutableArray arrayWithArray:array];
+        self.objectsToVisualize =  [NSMutableArray arrayWithArray:array];
     }
     
     [self prepareMatrixViewAndShow];
@@ -215,7 +215,7 @@
 
 -(void) prepareMatrixViewAndShow
 {
-    if (objectsToVisualize)
+    if (self.objectsToVisualize)
     {
        
         //NSInteger objectsCount = self.objectsToVisualize.count;
