@@ -49,10 +49,10 @@
 {
     [super viewDidAppear:animated];
 
-    if (!self.objectsToVisualize)
+    if (!objectsToVisualize)
     {
         NSArray * array = [[DataSource sharedInstance] getVisualizableContent];
-        self.objectsToVisualize =  [NSMutableArray arrayWithArray:array];
+        objectsToVisualize =  [NSMutableArray arrayWithArray:array];
     }
     
     [self prepareMatrixViewAndShow];
@@ -85,7 +85,7 @@
         _contentView = [[UIView alloc] initWithFrame:rect];
         [_scrollView addSubview:_contentView];
         
-        CGPoint center = CGPointMake(scrollViewWidth / 2, scrollViewHeight / 2);
+        //////// CGPoint center = CGPointMake(scrollViewWidth / 2, scrollViewHeight / 2);
         
         // TODO: focus to sector 3
         // TODO: ??? _startCenter - look to the example project
@@ -215,10 +215,10 @@
 
 -(void) prepareMatrixViewAndShow
 {
-    if (self.objectsToVisualize)
+    if (objectsToVisualize)
     {
        
-        NSInteger objectsCount = self.objectsToVisualize.count;
+        ////NSInteger objectsCount = objectsToVisualize.count;
         BOOL showsBackgroundColor = YES;
         BOOL showsCircleButtons = NO;
         if (self.currentViewControllersCount == 3)
@@ -230,65 +230,61 @@
         {
             showsBackgroundColor = NO;
         }
-    
-    //show stuff.
-
-    
-    
-}
-
--(void)subVClick:(PFButton*)sender{
-    NSLog(@"%@",sender.titleLabel.text);
-    NSInteger tagTapped = sender.elementIdTag;
-    BOOL isStart=[sphereView isTimerStart];
-    
-    [sphereView timerStop];
-    
-    __weak typeof(self) weakSelf = self;
-    
-    [UIView animateWithDuration:0.3 animations:^{
-        sender.transform=CGAffineTransformMakeScale(1.5, 1.5);
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.2 animations:^{
-            sender.transform=CGAffineTransformMakeScale(1, 1);
-            if (isStart) {
-                [sphereView timerStart];
-            }
-        }];
-        [weakSelf showTappedElementByTag:tagTapped];
-    }];
-}
-
-
-
--(void)changePF:(UIButton*)sender{
-    if ([sphereView isTimerStart]) {
-        [sphereView timerStop];
-    }
-    else{
-        [sphereView timerStart];
     }
 }
 
+//-(void)subVClick:(PFButton*)sender{
+//    NSLog(@"%@",sender.titleLabel.text);
+//    NSInteger tagTapped = sender.elementIdTag;
+//    BOOL isStart=[sphereView isTimerStart];
+//    
+//    [sphereView timerStop];
+//    
+//    __weak typeof(self) weakSelf = self;
+//    
+//    [UIView animateWithDuration:0.3 animations:^{
+//        sender.transform=CGAffineTransformMakeScale(1.5, 1.5);
+//    } completion:^(BOOL finished) {
+//        [UIView animateWithDuration:0.2 animations:^{
+//            sender.transform=CGAffineTransformMakeScale(1, 1);
+//            if (isStart) {
+//                [sphereView timerStart];
+//            }
+//        }];
+//        [weakSelf showTappedElementByTag:tagTapped];
+//    }];
+//}
 
--(void) showNextSelf:(UIBarButtonItem *)sender
-{
-    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
-    nextViewController.objectsToVisualize = self.objectsToVisualize;
-    [self.navigationController pushViewController:nextViewController animated:YES];
-}
 
 
--(void) showTappedElementByTag:(NSInteger) elementButtonTag
-{
-    printf("tapped: %ld", (long)elementButtonTag);
-    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
-    {
-        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
-        
-        [rootVC presentNewSingleElementVC:elementButtonTag];
-    }
-}
+//-(void)changePF:(UIButton*)sender{
+//    if ([sphereView isTimerStart]) {
+//        [sphereView timerStop];
+//    }
+//    else{
+//        [sphereView timerStart];
+//    }
+//}
+
+
+//-(void) showNextSelf:(UIBarButtonItem *)sender
+//{
+//    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
+//    nextViewController.objectsToVisualize = self.objectsToVisualize;
+//    [self.navigationController pushViewController:nextViewController animated:YES];
+//}
+
+
+//-(void) showTappedElementByTag:(NSInteger) elementButtonTag
+//{
+//    printf("tapped: %ld", (long)elementButtonTag);
+//    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
+//    {
+//        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
+//        
+//        [rootVC presentNewSingleElementVC:elementButtonTag];
+//    }
+//}
 
 /*
 #pragma mark - Navigation
