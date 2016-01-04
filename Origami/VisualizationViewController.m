@@ -85,7 +85,7 @@
         _contentView = [[UIView alloc] initWithFrame:rect];
         [_scrollView addSubview:_contentView];
         
-        //CGPoint center = CGPointMake(scrollViewWidth / 2, scrollViewHeight / 2);
+        //////// CGPoint center = CGPointMake(scrollViewWidth / 2, scrollViewHeight / 2);
         
         // TODO: focus to sector 3
         // TODO: ??? _startCenter - look to the example project
