@@ -39,6 +39,7 @@
 		F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
 		F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
+		F828328A1C3A934D006FAEA9 /* AuthorizationManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */; };
 		F82AF3581BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF3591BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */; };
@@ -285,6 +286,7 @@
 		F8F58DB21BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXFileReference section */
 		780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
 		780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
 		784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BFDragGestureRecognizer.m; path = Visualisation/BFDragGestureRecognizer.m; sourceTree = "<group>"; };
@@ -1384,11 +1386,11 @@
 				F86F742B1B56839D00E48E13 /* ContactProfileVC.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
 				F87AEE551BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
-				BC07EA8E1C26A7C60005F499 /* AuthorizationManagerViewController.swift in Sources */,
 				F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */,
 				F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,
 				F8A1DFC91B7B72D900A66692 /* Contact.swift in Sources */,
+				F828328A1C3A934D006FAEA9 /* AuthorizationManagerViewController.swift in Sources */,
 				F88668121B4295C40021C806 /* ParticipantsVC.swift in Sources */,
 				F8BDB6871BD909E500BB80B4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F84D791D1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */,
