@@ -562,7 +562,6 @@ extension UIViewController
                 indicator.stopAnimating()
             }
         }
-
     }
     
 }
