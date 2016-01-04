@@ -26,11 +26,15 @@
 @property (nonatomic, assign) NSInteger currentViewControllersCount;
 @end
 
-@implementation VisualizationViewController
+@implementation VisualizationViewController {
+    CGPoint _startCenter;
+    UIScrollView *_scrollView;
+    UIView *_contentView;
+    OKVisualizationLayer *_elementView;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     
 }
 
@@ -244,14 +248,40 @@
     }
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+#pragma mark - BFDragGestureRecognizer
+
+- (void)dragRecognized:(BFDragGestureRecognizer *)recognizer {
+    UIView *view = recognizer.view;
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        // When the gesture starts, remember the current position, and animate the it.
+        _startCenter = view.center;
+        [view.superview bringSubviewToFront:view];
+        [UIView animateWithDuration:0.2 animations:^{
+            view.transform = CGAffineTransformMakeScale(1.2, 1.2);
+            view.alpha = 0.7;
+        }];
+    } else if (recognizer.state == UIGestureRecognizerStateChanged) {
+        // During the gesture, we just add the gesture's translation to the saved original position.
+        // The translation will account for the changes in contentOffset caused by auto-scrolling.
+        CGPoint translation = [recognizer translationInView:_contentView];
+        CGPoint center = CGPointMake(_startCenter.x + translation.x, _startCenter.y + translation.y);
+        view.center = center;
+    } else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
+        [UIView animateWithDuration:0.2 animations:^{
+            view.transform = CGAffineTransformIdentity;
+            view.alpha = 1.0;
+        }];
+    } else if (recognizer.state == UIGestureRecognizerStateFailed) {
+        
+    }
 }
-*/
+
+- (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView1 {
+    // TODO: if zoom == maxSize then titleColour = white
+    // else titleColour = clear
+    return _contentView;
+}
+
 
 @end

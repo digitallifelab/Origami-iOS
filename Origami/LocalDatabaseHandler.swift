@@ -1878,17 +1878,16 @@ class LocalDatabaseHandler
     {
         if let foundUserAvatarPreview = self.findAvatarPreviewForUserId(userId)
         {
-            let childContext = NSManagedObjectContext(concurrencyType: .PrivateQueueConcurrencyType)
-            childContext.parentContext = self.privateContext
+            let context = self.privateContext
             
-            childContext.performBlockAndWait() {
-                let lvPreviewForMain = childContext.objectWithID(foundUserAvatarPreview.objectID)
-                childContext.deleteObject(lvPreviewForMain)
+            context.performBlockAndWait() {
+                let lvPreviewForMain = context.objectWithID(foundUserAvatarPreview.objectID)
+                context.deleteObject(lvPreviewForMain)
                 
-                if childContext.hasChanges
+                if context.hasChanges
                 {
                     do{
-                        try childContext.save()
+                        try context.save()
                     }
                     catch let errorSavingContext{
                         print(" DID not save context after avatar preview deleting:\n")
@@ -2613,7 +2612,6 @@ class LocalDatabaseHandler
         
         return newAttach
     }
-    
     
     
     func saveImagePreview(imageData:NSData, forAttachById attachId:Int) throws

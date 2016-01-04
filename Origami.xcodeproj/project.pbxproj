@@ -501,6 +501,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		784827E21C1087F1009D76FC /* VisualizationView */ = {
+			isa = PBXGroup;
+			children = (
+				784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */,
+				784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */,
+				780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */,
+				780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */,
+			);
+			name = VisualizationView;
+			sourceTree = "<group>";
+		};
 		F8016FF21B304619002A1620 /* tools */ = {
 			isa = PBXGroup;
 			children = (
@@ -965,6 +976,7 @@
 		F8D4569F1B1DEFA100172667 /* Origami */ = {
 			isa = PBXGroup;
 			children = (
+				784827E21C1087F1009D76FC /* VisualizationView */,
 				F8D456A21B1DEFA100172667 /* AppDelegate.swift */,
 				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
 				F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */,
@@ -1274,6 +1286,7 @@
 				F8D0A3481B5FCE7F0033FD43 /* MenuVC.swift in Sources */,
 				F8BDB68F1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
 				F8F58D781BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */,
+				780FB6B01C2BFBC10099E79E /* OKVisualizationLayer.m in Sources */,
 				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F86F742F1B5684A500E48E13 /* MyContactListCell.swift in Sources */,
 				F8BDB6891BD909E500BB80B4 /* DBContact.swift in Sources */,
@@ -1288,6 +1301,7 @@
 				F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */,
 				F8CE23AD1BE7A54B00C36661 /* ContactSearchVC.swift in Sources */,
 				F84BC0A01BC57DCC0065D5CC /* Person.swift in Sources */,
+				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
