@@ -25,6 +25,7 @@
 
 @property (nonatomic, strong) NSDate *changeDate;
 @property (nonatomic) NSInteger massagesCount;
+//
 
 
 @end

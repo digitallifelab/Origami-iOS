@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BC07EA8E1C26A7C60005F499 /* AuthorizationManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */; };
+		780FB6B01C2BFBC10099E79E /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */; };
+		784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */; };
 		F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8016FF01B304614002A1620 /* FrameCounter.swift */; };
 		F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
 		F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
@@ -284,7 +285,10 @@
 		F8F58DB21BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXFileReference section */
+		780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
+		780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
+		784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BFDragGestureRecognizer.m; path = Visualisation/BFDragGestureRecognizer.m; sourceTree = "<group>"; };
+		784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BFDragGestureRecognizer.h; path = Visualisation/BFDragGestureRecognizer.h; sourceTree = "<group>"; };
 		BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManagerViewController.swift; sourceTree = "<group>"; };
 		F800022E1BC3E57C00E6E2E7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F8016FF01B304614002A1620 /* FrameCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCounter.swift; sourceTree = "<group>"; };
