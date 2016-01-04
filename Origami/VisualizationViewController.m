@@ -22,6 +22,7 @@
     UIScrollView *_scrollView;
     UIView *_contentView;
     OKVisualizationLayer *_elementView;
+    NSArray <VisualizableObject *> *objectsToVisualize;
 }
 
 - (void)viewDidLoad {
@@ -38,7 +39,7 @@
 {
     [super viewDidAppear:animated];
     
-    NSArray <VisualizableObject *> *objectsToVisualize = [[DataSource sharedInstance] getVisualizableContent];
+    /*NSArray <VisualizableObject *> *  */objectsToVisualize = [[DataSource sharedInstance] getVisualizableContent];
     if (objectsToVisualize)
     {
 
