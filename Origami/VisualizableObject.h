@@ -23,4 +23,6 @@
 @property (nonatomic, strong) UIImage *avatarImage;
 @property (nonatomic, strong) NSString *displayName;
 
+//
+
 @end
