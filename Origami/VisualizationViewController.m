@@ -17,23 +17,22 @@
 #import "BFDragGestureRecognizer.h"
 #endif
 
-
-
 @interface VisualizationViewController ()
 {
     ZYQSphereView *sphereView;
     NSTimer *timer;
 }
-@property (nonatomic, assign) NSInteger currentViewControllersCount;
+
+@property (nonatomic, assign) NSInteger  currentViewControllersCount;
 @property (nonatomic, strong, nullable)  NSMutableArray <VisualizableObject *> *objectsToVisualize;
+@property (nonatomic, strong) UIScrollView          *scrollView;
+@property (nonatomic, assign) CGPoint               startCenter;
+@property (nonatomic, strong) UIView                *contentView;
+@property (nonatomic, strong) OKVisualizationLayer  *elementView;
+
 @end
 
-@implementation VisualizationViewController {
-    CGPoint _startCenter;
-    UIScrollView *_scrollView;
-    UIView *_contentView;
-    OKVisualizationLayer *_elementView;
-}
+@implementation VisualizationViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -55,23 +54,38 @@
         self.objectsToVisualize =  [NSMutableArray arrayWithArray:array];
     }
     
-    [self prepareMatrixViewAndShow];
+    [self prepareElementsViewAndShow];
 }
 
--(void) setupRightNavigationButton
+-(void) prepareElementsViewAndShow
 {
     
     if( self.currentViewControllersCount < 4)
     {
 
-        // _scrollView
-        // TODO: calculate Height and Width due in count objectsToVisualize. Default: 1000, 1000.
-        CGFloat scrollViewHeight = 1000;
-        CGFloat scrollViewWidth = 1000;
+        for (UIView *view in self.scrollView.subviews) {
+            [view removeFromSuperview];
+        }
+        
+        // TODO: 02.2 - сделал корректное распределение объектов в массивы: родитель -  подчиненные элементы
+        NSArray *sortedObjects = [self getSortedObjects];
+        
+        // TODO: 03.3 доработал расчет размера скроллвью: исправил ошибки
+        CGFloat indentX = 150.f;
+        CGFloat indentY = 60.f;
+        CGFloat maxDiam = 100.f;
+        
+        CGFloat countRows             = [sortedObjects count];
+        CGFloat maxCountElementsInRow = [self getMaxCountElementsInRow:sortedObjects];
+        
+        CGFloat scrollViewHeight = 100.f + maxCountElementsInRow * maxDiam * 0.75;
+        CGFloat scrollViewWidth  = 200.f + (countRows * maxDiam);
+        
         CGSize scrollViewSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
         CGRect rect = (CGRect){CGPointZero, scrollViewSize};
         
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
+        _scrollView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.f];//[UIColor lightGrayColor];
         _scrollView.contentSize = scrollViewSize;
         _scrollView.contentInset = UIEdgeInsetsMake(64, 0, 44, 0);
         _scrollView.minimumZoomScale = 1;
@@ -85,129 +99,37 @@
         _contentView = [[UIView alloc] initWithFrame:rect];
         [_scrollView addSubview:_contentView];
         
-        //////// CGPoint center = CGPointMake(scrollViewWidth / 2, scrollViewHeight / 2);
+        _scrollView.contentOffset = CGPointMake(0.f, scrollViewHeight - 400);
         
-        // TODO: focus to sector 3
-        // TODO: ??? _startCenter - look to the example project
+        CGPoint aPoint = CGPointMake(75.f, scrollViewHeight - 50.f);
         
-        //_scrollView.contentOffset = CGPointMake(center.x - _scrollView.bounds.size.width / 2, center.y - _scrollView.bounds.size.height / 2);
-        _scrollView.contentOffset = CGPointMake(0, 0);
-        
-        
-        
-        NSArray *sortedObjects = [self.objectsToVisualize sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        for (NSArray *rowArray in sortedObjects) {
             
-            NSInteger firstRootId  = [(VisualizableObject*)obj1 rootElementId];
-            NSInteger secondRootId = [(VisualizableObject*)obj2 rootElementId];
+            for (VisualizableObject *obj in rowArray) {
+                
+                _elementView = [[OKVisualizationLayer alloc] init];
+                UIView *view = [_elementView getElementView:obj at:CGPointMake(aPoint.x, aPoint.y)];
+                
+                [_contentView addSubview:view];
+                
+                // Add the drag gesture recognizer with default values.
+                BFDragGestureRecognizer *holdDragRecognizer = [[BFDragGestureRecognizer alloc] init];
+                [holdDragRecognizer addTarget:self action:@selector(dragRecognized:)];
+                [view addGestureRecognizer:holdDragRecognizer];
+                
+                aPoint.y = aPoint.y - indentY;
+                
+            }
             
-            NSInteger firstElementId  = [(VisualizableObject*)obj1 elementId];
-            NSInteger secondElementId = [(VisualizableObject*)obj2 elementId];
-            
-            if ( firstRootId < secondRootId & firstElementId < secondElementId ) {
-                return (NSComparisonResult)NSOrderedAscending;
-            } else if ( firstRootId > secondRootId & firstElementId > secondElementId ) {
-                return (NSComparisonResult)NSOrderedDescending;
+            // subArrays
+            if ([rowArray isEqual:[sortedObjects lastObject]]) {
+                aPoint.y = scrollViewHeight - 50.f;
+                //aPoint.x = aPoint.x + indentX;
             } else {
-                return (NSComparisonResult)NSOrderedSame;
+                aPoint.y = scrollViewHeight - 50.f;
+                aPoint.x = aPoint.x + indentX;
             }
             
-        }];
-
-        //for (VisualizableObject *obj in sortedObjects) {
-        //    NSLog(@"rootElementId = %d, elementID = %d", obj.rootElementId, obj.elementId);
-        //}
-        
-        CGFloat xC = 0;
-        CGFloat yC = 0;
-        
-        for (VisualizableObject *obj in sortedObjects) {
-            
-            _elementView = [[OKVisualizationLayer alloc] init];
-            UIView *view = [_elementView getElementView:obj at:CGPointMake(xC, yC)];
-            
-            /*
-            BOOL canPlace = NO;
-            while (!canPlace) {
-                
-                
-                // TODO: not randomPoint
-                CGPoint randomPoint = CGPointMake(100 + random() % (int)(scrollViewWidth - 200),
-                                                  100 + random() % (int)(scrollViewHeight - 200));
-                
-                
-                randomRect = (CGRect){randomPoint, CGSizeMake(50, 50)};
-                
-                canPlace = YES;
-                for (UIView *subview in _contentView.subviews) {
-                    if (CGRectIntersectsRect(randomRect, subview.frame)) {
-                        canPlace = NO;
-                        break;
-                    }
-                }
-            }*/
-            
-            
-            [_contentView addSubview:view];
-            
-            xC = xC + 20;
-            yC = yC + 20;
-            
-            
-            
-            // Add the drag gesture recognizer with default values.
-            BFDragGestureRecognizer *holdDragRecognizer = [[BFDragGestureRecognizer alloc] init];
-            [holdDragRecognizer addTarget:self action:@selector(dragRecognized:)];
-            [view addGestureRecognizer:holdDragRecognizer];
-
-            
-            /* ***********
-            // Use a fixed seed to always have the same color views.
-            srandom(314159265);
-            
-            // Find a random position for the color view, that doesn't intersect other views.
-            CGRect randomRect = CGRectZero;
-            BOOL canPlace = NO;
-            while (!canPlace) {
-
-                
-                // TODO: not randomPoint
-                CGPoint randomPoint = CGPointMake(100 + random() % (int)(scrollViewWidth - 200),
-                                                  100 + random() % (int)(scrollViewHeight - 200));
-                
-                
-                randomRect = (CGRect){randomPoint, CGSizeMake(50, 50)};
-                
-                canPlace = YES;
-                for (UIView *subview in _contentView.subviews) {
-                    if (CGRectIntersectsRect(randomRect, subview.frame)) {
-                        canPlace = NO;
-                        break;
-                    }
-                }
-            }
-            
-            UITextView *view = [[UITextView alloc] initWithFrame:randomRect];
-            
-            //view.text = [NSString stri obj.elementId;
-            view.editable = NO;
-            view.layer.cornerRadius = randomRect.size.width / 2;
-            
-            // Assign a random background color.
-            CGFloat hue = (CGFloat)(random() % 256 / 256.0);  //  0.0 to 1.0
-            CGFloat saturation = (CGFloat)((random() % 128 / 256.0) + 0.5);  //  0.5 to 1.0, away from white
-            CGFloat brightness = (CGFloat)((random() % 128 / 256.0) + 0.5);  //  0.5 to 1.0, away from black
-            UIColor *randomColor = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-            view.backgroundColor = randomColor;
-            [_contentView addSubview:view];
-            
-            // Add the drag gesture recognizer with default values.
-            BFDragGestureRecognizer *holdDragRecognizer = [[BFDragGestureRecognizer alloc] init];
-            [holdDragRecognizer addTarget:self action:@selector(dragRecognized:)];
-            [view addGestureRecognizer:holdDragRecognizer];
-             
-            */
-             
-         
         }
 
     }
@@ -290,9 +212,80 @@
 //    }
 //}
 
-/*
-#pragma mark - Navigation
-*/
+#pragma mark - Service methods
+
+- (NSArray*)getSortedObjects
+{
+    
+    NSArray *sortedObjects = [self.objectsToVisualize sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        
+        NSInteger firstRootId  = [(VisualizableObject*)obj1 rootElementId];
+        NSInteger secondRootId = [(VisualizableObject*)obj2 rootElementId];
+        
+        NSInteger firstElementId  = [(VisualizableObject*)obj1 elementId];
+        NSInteger secondElementId = [(VisualizableObject*)obj2 elementId];
+        
+        if ( firstRootId < secondRootId & firstElementId < secondElementId ) {
+            return (NSComparisonResult)NSOrderedAscending;
+        } else if ( firstRootId > secondRootId & firstElementId > secondElementId ) {
+            return (NSComparisonResult)NSOrderedDescending;
+        } else {
+            return (NSComparisonResult)NSOrderedSame;
+        }
+        
+    }];
+    
+    
+    CGFloat countRootElements = 0;
+    
+    for (VisualizableObject *obj in sortedObjects) {
+        //NSLog(@"index = %d, rootElementId = %d, elementID = %d", [sortedObjects indexOfObject:obj], obj.rootElementId, obj.elementId);
+        if (obj.rootElementId == 0) {
+            countRootElements++;
+        }
+    }
+    
+    CGFloat countElementsWithoutRootElements = sortedObjects.count - countRootElements;
+    
+
+    NSMutableArray *rootElementsArray = [[NSMutableArray alloc] init];
+    
+    for (int i = 0; i < countRootElements; i++) {
+        
+        NSMutableArray *subArray = [[NSMutableArray alloc] init];
+        
+        for (int j = countElementsWithoutRootElements; j > 0; j--) {
+            
+            // add a root element
+            if (j == countElementsWithoutRootElements) {
+                [subArray addObject:[sortedObjects objectAtIndex:i]];
+            }
+            
+            // add elements
+            [subArray addObject:[sortedObjects objectAtIndex:j]];
+            
+        }
+        
+        [rootElementsArray addObject:subArray];
+        
+    }
+    
+    return rootElementsArray;
+    
+}
+
+- (CGFloat)getMaxCountElementsInRow:(NSArray *)sortedObjects
+{
+    CGFloat result = 0;
+    for (NSArray *obj in sortedObjects) {
+        if (obj.count > result) {
+            result = obj.count;
+        }
+    }
+    
+    return result;
+}
+
 #pragma mark - BFDragGestureRecognizer
 
 - (void)dragRecognized:(BFDragGestureRecognizer *)recognizer {

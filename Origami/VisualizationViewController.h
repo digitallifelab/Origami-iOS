@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface VisualizationViewController : UIViewController <UIScrollViewDelegate, UIBarPositioningDelegate>
+@interface VisualizationViewController : UIViewController <UIScrollViewDelegate>
 
 @end
