@@ -126,7 +126,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
     func performLogout(completion:voidClosure?) //optional closure as parameter (completion block in objective-c)
     {
         let bgQueue:dispatch_queue_t = dispatch_queue_create("logout.queue", DISPATCH_QUEUE_SERIAL)
-        dispatch_async(bgQueue, { _ in
+        dispatch_async(bgQueue) { _ in
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllElements()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllChatMessages()
             DataSource.sharedInstance.localDatadaseHandler?.deleteAllContacts()
@@ -138,11 +138,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             fileHandler.deleteAvatars()
             
             let timeout:dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(NSEC_PER_SEC) * 1.0))
-            dispatch_after(timeout, getBackgroundQueue_DEFAULT(), { () -> Void in
+            dispatch_after(timeout, getBackgroundQueue_DEFAULT()) { () -> Void in
                 DataSource.sharedInstance.messagesLoader?.stopRefreshingLastMessages()
                 print("stopRefreshingLastMessages")
-            })
-            
+            }
             
             DataSource.sharedInstance.removeAllObserversForNewMessages()
          
@@ -152,11 +151,11 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
             if  completion != nil
             {
                 //return into main queue
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                dispatch_async(dispatch_get_main_queue()) { () -> Void in
                     completion?()
-                })
+                }
             }
-        })
+        }
     }
     
     //MARK: - User
