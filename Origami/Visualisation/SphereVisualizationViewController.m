@@ -219,7 +219,7 @@
 
 -(void) showNextSelf:(UIBarButtonItem *)sender
 {
-    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
+    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"SphereVisualizationVC"];
     nextViewController.objectsToVisualize = self.objectsToVisualize;
     [self.navigationController pushViewController:nextViewController animated:YES];
 }
