@@ -166,6 +166,14 @@
 		F84232CC1C527ED300336A60 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CB1C527ED300336A60 /* TapGreetingView.swift */; };
 		F84232CE1C527F1E00336A60 /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CD1C527F1E00336A60 /* HomeNavigationController.swift */; };
 		F84232D01C527F2500336A60 /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CF1C527F2500336A60 /* ImagePickingViewController.swift */; };
+		F84232D31C527F9600336A60 /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232D21C527F9600336A60 /* VisualizationViewController.m */; };
+		F84232E41C527FD100336A60 /* LGAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232D61C527FD100336A60 /* LGAlertView.m */; };
+		F84232E51C527FD100336A60 /* LGAlertViewButtonProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232D81C527FD100336A60 /* LGAlertViewButtonProperties.m */; };
+		F84232E61C527FD100336A60 /* LGAlertViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232DA1C527FD100336A60 /* LGAlertViewCell.m */; };
+		F84232E71C527FD100336A60 /* LGAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232DC1C527FD100336A60 /* LGAlertViewController.m */; };
+		F84232E81C527FD100336A60 /* LGAlertViewTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232DF1C527FD100336A60 /* LGAlertViewTextField.m */; };
+		F84232E91C527FD100336A60 /* LGAlertViewWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232E11C527FD100336A60 /* LGAlertViewWindow.m */; };
+		F84232EA1C527FD100336A60 /* UIWindow+LGAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232E31C527FD100336A60 /* UIWindow+LGAlertView.m */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
 		F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
@@ -388,6 +396,23 @@
 		F84232CB1C527ED300336A60 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
 		F84232CD1C527F1E00336A60 /* HomeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationController.swift; sourceTree = "<group>"; };
 		F84232CF1C527F2500336A60 /* ImagePickingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickingViewController.swift; sourceTree = "<group>"; };
+		F84232D11C527F9600336A60 /* VisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizationViewController.h; sourceTree = "<group>"; };
+		F84232D21C527F9600336A60 /* VisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualizationViewController.m; sourceTree = "<group>"; };
+		F84232D51C527FD100336A60 /* LGAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertView.h; sourceTree = "<group>"; };
+		F84232D61C527FD100336A60 /* LGAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertView.m; sourceTree = "<group>"; };
+		F84232D71C527FD100336A60 /* LGAlertViewButtonProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewButtonProperties.h; sourceTree = "<group>"; };
+		F84232D81C527FD100336A60 /* LGAlertViewButtonProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewButtonProperties.m; sourceTree = "<group>"; };
+		F84232D91C527FD100336A60 /* LGAlertViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewCell.h; sourceTree = "<group>"; };
+		F84232DA1C527FD100336A60 /* LGAlertViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewCell.m; sourceTree = "<group>"; };
+		F84232DB1C527FD100336A60 /* LGAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewController.h; sourceTree = "<group>"; };
+		F84232DC1C527FD100336A60 /* LGAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewController.m; sourceTree = "<group>"; };
+		F84232DD1C527FD100336A60 /* LGAlertViewShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewShared.h; sourceTree = "<group>"; };
+		F84232DE1C527FD100336A60 /* LGAlertViewTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewTextField.h; sourceTree = "<group>"; };
+		F84232DF1C527FD100336A60 /* LGAlertViewTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewTextField.m; sourceTree = "<group>"; };
+		F84232E01C527FD100336A60 /* LGAlertViewWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewWindow.h; sourceTree = "<group>"; };
+		F84232E11C527FD100336A60 /* LGAlertViewWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewWindow.m; sourceTree = "<group>"; };
+		F84232E21C527FD100336A60 /* UIWindow+LGAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWindow+LGAlertView.h"; sourceTree = "<group>"; };
+		F84232E31C527FD100336A60 /* UIWindow+LGAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+LGAlertView.m"; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -769,6 +794,8 @@
 		F84232B61C527BAE00336A60 /* Visualisation */ = {
 			isa = PBXGroup;
 			children = (
+				F84232D11C527F9600336A60 /* VisualizationViewController.h */,
+				F84232D21C527F9600336A60 /* VisualizationViewController.m */,
 				F84232C11C527C5800336A60 /* SphereVisualizationViewController.h */,
 				F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */,
 				F84232B71C527BAE00336A60 /* BFDragGestureRecognizer.h */,
@@ -787,6 +814,28 @@
 				F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */,
 			);
 			path = VisualizationView;
+			sourceTree = "<group>";
+		};
+		F84232D41C527FD100336A60 /* LGAlertView */ = {
+			isa = PBXGroup;
+			children = (
+				F84232D51C527FD100336A60 /* LGAlertView.h */,
+				F84232D61C527FD100336A60 /* LGAlertView.m */,
+				F84232D71C527FD100336A60 /* LGAlertViewButtonProperties.h */,
+				F84232D81C527FD100336A60 /* LGAlertViewButtonProperties.m */,
+				F84232D91C527FD100336A60 /* LGAlertViewCell.h */,
+				F84232DA1C527FD100336A60 /* LGAlertViewCell.m */,
+				F84232DB1C527FD100336A60 /* LGAlertViewController.h */,
+				F84232DC1C527FD100336A60 /* LGAlertViewController.m */,
+				F84232DD1C527FD100336A60 /* LGAlertViewShared.h */,
+				F84232DE1C527FD100336A60 /* LGAlertViewTextField.h */,
+				F84232DF1C527FD100336A60 /* LGAlertViewTextField.m */,
+				F84232E01C527FD100336A60 /* LGAlertViewWindow.h */,
+				F84232E11C527FD100336A60 /* LGAlertViewWindow.m */,
+				F84232E21C527FD100336A60 /* UIWindow+LGAlertView.h */,
+				F84232E31C527FD100336A60 /* UIWindow+LGAlertView.m */,
+			);
+			path = LGAlertView;
 			sourceTree = "<group>";
 		};
 		F8521FEC1B78963300B418A3 /* LocalizedStrings */ = {
@@ -835,6 +884,7 @@
 		F8C707841C5272D20089E36A /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				F84232D41C527FD100336A60 /* LGAlertView */,
 				F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */,
 				F8C707851C5272D20089E36A /* ElementOptionsConverter.h */,
 				F8C707861C5272D20089E36A /* ElementOptionsConverter.m */,
@@ -1205,6 +1255,8 @@
 				F8C707EC1C5278FA0089E36A /* AttachedFileCell.swift in Sources */,
 				F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF4F61C526806008FCCD4 /* MyContactListCell.swift in Sources */,
+				F84232E91C527FD100336A60 /* LGAlertViewWindow.m in Sources */,
+				F84232EA1C527FD100336A60 /* UIWindow+LGAlertView.m in Sources */,
 				F81EF4CC1C526532008FCCD4 /* DBMessageService.swift in Sources */,
 				F81EF50C1C5268C1008FCCD4 /* AuthorizationManagerViewController.swift in Sources */,
 				F81EF4C41C526532008FCCD4 /* DBElement.swift in Sources */,
@@ -1226,6 +1278,7 @@
 				F8C707CD1C52752E0089E36A /* SingleElementLastMessagesCell.swift in Sources */,
 				F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				F8C707A71C5273A00089E36A /* Enumerations.swift in Sources */,
+				F84232E71C527FD100336A60 /* LGAlertViewController.m in Sources */,
 				F8C707B61C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F8C707AB1C5273A00089E36A /* Protocols.swift in Sources */,
 				F81EF4D01C526532008FCCD4 /* DBPerson.swift in Sources */,
@@ -1236,10 +1289,12 @@
 				F8C707991C5272D20089E36A /* GlobalFunctions.swift in Sources */,
 				F81EF5441C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F81EF5051C526867008FCCD4 /* ContactProfileVC.swift in Sources */,
+				F84232E61C527FD100336A60 /* LGAlertViewCell.m in Sources */,
 				F84232BC1C527BAE00336A60 /* VisualizableObject.m in Sources */,
 				F81EF4E71C526763008FCCD4 /* ContactsPickerVC.swift in Sources */,
 				F8C707761C5271270089E36A /* ContactCheckerCell.swift in Sources */,
 				F81EF4BA1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
+				F84232E81C527FD100336A60 /* LGAlertViewTextField.m in Sources */,
 				F81EF4F81C526806008FCCD4 /* MyContactsListVC.swift in Sources */,
 				F81EF4EA1C52677D008FCCD4 /* ContactSearchVC.swift in Sources */,
 				F8C707CB1C52752E0089E36A /* SingleElementDetailsCell.swift in Sources */,
@@ -1263,6 +1318,8 @@
 				F84232D01C527F2500336A60 /* ImagePickingViewController.swift in Sources */,
 				F8C707C11C52752E0089E36A /* DashboardMessagesCell.swift in Sources */,
 				F81EF5551C526E86008FCCD4 /* AttachVideoPlayerVC.swift in Sources */,
+				F84232D31C527F9600336A60 /* VisualizationViewController.m in Sources */,
+				F84232E41C527FD100336A60 /* LGAlertView.m in Sources */,
 				F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */,
 				F81EF4801C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
 				F811C1811C1AFC5E00C07273 /* ZYQSphereView.m in Sources */,
@@ -1289,6 +1346,7 @@
 				F81EF54B1C526E27008FCCD4 /* TableItemPickerVC.swift in Sources */,
 				F8C707951C5272D20089E36A /* FrameCounter.swift in Sources */,
 				F84232C51C527DA200336A60 /* CustomViewControllerTransitions.swift in Sources */,
+				F84232E51C527FD100336A60 /* LGAlertViewButtonProperties.m in Sources */,
 				F81EF5481C526E0C008FCCD4 /* DatePickerVC.swift in Sources */,
 				F81EF5181C526B48008FCCD4 /* EditingMenuPopupVC.swift in Sources */,
 				F81EF4F11C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
