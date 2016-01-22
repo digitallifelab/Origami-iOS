@@ -29,7 +29,7 @@
 @property (nonatomic, strong, nullable)  NSMutableArray <VisualizableObject *> *objectsToVisualize;
 @end
 
-@implementation VisualizationViewController {
+@implementation SphereVisualizationViewController {
     CGPoint _startCenter;
     UIScrollView *_scrollView;
     UIView *_contentView;

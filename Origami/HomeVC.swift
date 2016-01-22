@@ -150,7 +150,7 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     func showGraphViewController(sender:UIButton)
     {
         let graphBoard = UIStoryboard(name: "Visualization", bundle: nil)
-        guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("VisualizationVC") as? VisualizationViewController else
+        guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("VisualizationVC") as? SphereVisualizationViewController else
         {
             return
         }
