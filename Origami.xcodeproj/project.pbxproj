@@ -1562,7 +1562,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.CloudCraft.Origami;
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "f881e008-3a8c-4c55-98ab-fe3e00b688fa";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1583,7 +1583,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.CloudCraft.Origami;
 				PRODUCT_NAME = "Origami task manager";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "f881e008-3a8c-4c55-98ab-fe3e00b688fa";
 				SWIFT_OBJC_BRIDGING_HEADER = "Origami/Origami-Bridging-Header.h";
 			};
 			name = Release;
