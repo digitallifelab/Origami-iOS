@@ -17,7 +17,6 @@
     BOOL isContainView;
 }
 
-
 @end
 
 
@@ -55,22 +54,27 @@
     
     element.layer.borderColor  = self.lineColor.CGColor;
     element.layer.borderWidth  = 2;
-    element.layer.cornerRadius = element.layer.bounds.size.width / 2;
+    element.layer.cornerRadius = element.layer.bounds.size.width/2;
     
     element.layer.shadowColor  = [UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.f].CGColor;
-    element.layer.shadowOpacity = 0.5;
     element.layer.shadowRadius = 2.f;
     element.layer.shadowOffset = CGSizeMake(2.f, 2.f);    
+    element.layer.shadowOpacity = 0.5;
     
-
-    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, width)];
+    UILabel *title = [[UILabel alloc] initWithFrame:CGRectMake(element.layer.bounds.size.width/2, 0, 150, width)];
     title.text = [NSString stringWithFormat:@"%@", obj.title];
+    title.font = [UIFont systemFontOfSize:14.f];
     title.textColor = [UIColor blackColor];
     title.backgroundColor = [UIColor clearColor];
-    title.font = [UIFont systemFontOfSize:14];
     title.textAlignment = NSTextAlignmentNatural;
-    
     [element addSubview:title];
+    
+    UILabel *serviceElement = [[UILabel alloc] initWithFrame:CGRectMake(element.layer.bounds.size.width/2, 0, 150, width)];
+    serviceElement.text = [NSString stringWithFormat:@"%d/%d; %@", obj.rootElementId, obj.elementId, obj.details];
+    NSLog(@"%@", serviceElement.text);
+    serviceElement.textColor = [UIColor clearColor];
+    serviceElement.backgroundColor = [UIColor clearColor];
+    [element addSubview:serviceElement];
     
     return element;
     

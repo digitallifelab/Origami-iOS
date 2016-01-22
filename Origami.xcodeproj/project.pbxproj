@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		780FB6B01C2BFBC10099E79E /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */; };
 		784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */; };
+		78BC24B91C510EAC00EC6907 /* LGAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24AB1C510EAC00EC6907 /* LGAlertView.m */; };
+		78BC24BA1C510EAC00EC6907 /* LGAlertViewButtonProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24AD1C510EAC00EC6907 /* LGAlertViewButtonProperties.m */; };
+		78BC24BB1C510EAC00EC6907 /* LGAlertViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24AF1C510EAC00EC6907 /* LGAlertViewCell.m */; };
+		78BC24BC1C510EAC00EC6907 /* LGAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24B11C510EAC00EC6907 /* LGAlertViewController.m */; };
+		78BC24BD1C510EAC00EC6907 /* LGAlertViewTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24B41C510EAC00EC6907 /* LGAlertViewTextField.m */; };
+		78BC24BE1C510EAC00EC6907 /* LGAlertViewWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24B61C510EAC00EC6907 /* LGAlertViewWindow.m */; };
+		78BC24BF1C510EAC00EC6907 /* UIWindow+LGAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 78BC24B81C510EAC00EC6907 /* UIWindow+LGAlertView.m */; };
 		F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8016FF01B304614002A1620 /* FrameCounter.swift */; };
 		F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
 		F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80597451B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift */; };
@@ -291,6 +298,21 @@
 		780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
 		784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BFDragGestureRecognizer.m; path = Visualisation/BFDragGestureRecognizer.m; sourceTree = "<group>"; };
 		784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BFDragGestureRecognizer.h; path = Visualisation/BFDragGestureRecognizer.h; sourceTree = "<group>"; };
+		78BC24AA1C510EAC00EC6907 /* LGAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertView.h; sourceTree = "<group>"; };
+		78BC24AB1C510EAC00EC6907 /* LGAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertView.m; sourceTree = "<group>"; };
+		78BC24AC1C510EAC00EC6907 /* LGAlertViewButtonProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewButtonProperties.h; sourceTree = "<group>"; };
+		78BC24AD1C510EAC00EC6907 /* LGAlertViewButtonProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewButtonProperties.m; sourceTree = "<group>"; };
+		78BC24AE1C510EAC00EC6907 /* LGAlertViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewCell.h; sourceTree = "<group>"; };
+		78BC24AF1C510EAC00EC6907 /* LGAlertViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewCell.m; sourceTree = "<group>"; };
+		78BC24B01C510EAC00EC6907 /* LGAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewController.h; sourceTree = "<group>"; };
+		78BC24B11C510EAC00EC6907 /* LGAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewController.m; sourceTree = "<group>"; };
+		78BC24B21C510EAC00EC6907 /* LGAlertViewShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewShared.h; sourceTree = "<group>"; };
+		78BC24B31C510EAC00EC6907 /* LGAlertViewTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewTextField.h; sourceTree = "<group>"; };
+		78BC24B41C510EAC00EC6907 /* LGAlertViewTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewTextField.m; sourceTree = "<group>"; };
+		78BC24B51C510EAC00EC6907 /* LGAlertViewWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertViewWindow.h; sourceTree = "<group>"; };
+		78BC24B61C510EAC00EC6907 /* LGAlertViewWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewWindow.m; sourceTree = "<group>"; };
+		78BC24B71C510EAC00EC6907 /* UIWindow+LGAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWindow+LGAlertView.h"; sourceTree = "<group>"; };
+		78BC24B81C510EAC00EC6907 /* UIWindow+LGAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+LGAlertView.m"; sourceTree = "<group>"; };
 		BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationManagerViewController.swift; sourceTree = "<group>"; };
 		F800022E1BC3E57C00E6E2E7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F8016FF01B304614002A1620 /* FrameCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrameCounter.swift; sourceTree = "<group>"; };
@@ -510,13 +532,37 @@
 		784827E21C1087F1009D76FC /* VisualizationView */ = {
 			isa = PBXGroup;
 			children = (
-				784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */,
+				78BC24A91C510EAC00EC6907 /* LGAlertView */,
 				784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */,
+				784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */,
 				780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */,
 				780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */,
 			);
 			name = VisualizationView;
 			sourceTree = "<group>";
+		};
+		78BC24A91C510EAC00EC6907 /* LGAlertView */ = {
+			isa = PBXGroup;
+			children = (
+				78BC24AA1C510EAC00EC6907 /* LGAlertView.h */,
+				78BC24AB1C510EAC00EC6907 /* LGAlertView.m */,
+				78BC24AC1C510EAC00EC6907 /* LGAlertViewButtonProperties.h */,
+				78BC24AD1C510EAC00EC6907 /* LGAlertViewButtonProperties.m */,
+				78BC24AE1C510EAC00EC6907 /* LGAlertViewCell.h */,
+				78BC24AF1C510EAC00EC6907 /* LGAlertViewCell.m */,
+				78BC24B01C510EAC00EC6907 /* LGAlertViewController.h */,
+				78BC24B11C510EAC00EC6907 /* LGAlertViewController.m */,
+				78BC24B21C510EAC00EC6907 /* LGAlertViewShared.h */,
+				78BC24B31C510EAC00EC6907 /* LGAlertViewTextField.h */,
+				78BC24B41C510EAC00EC6907 /* LGAlertViewTextField.m */,
+				78BC24B51C510EAC00EC6907 /* LGAlertViewWindow.h */,
+				78BC24B61C510EAC00EC6907 /* LGAlertViewWindow.m */,
+				78BC24B71C510EAC00EC6907 /* UIWindow+LGAlertView.h */,
+				78BC24B81C510EAC00EC6907 /* UIWindow+LGAlertView.m */,
+			);
+			name = LGAlertView;
+			path = Origami/LGAlertView;
+			sourceTree = SOURCE_ROOT;
 		};
 		F8016FF21B304619002A1620 /* tools */ = {
 			isa = PBXGroup;
@@ -1285,6 +1331,7 @@
 				F81BAD6A1B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift in Sources */,
 				F8DBE53C1BA30C3900A8891E /* SelectableContactCell.swift in Sources */,
 				F86F237B1B208AEE00234EFD /* Constants.swift in Sources */,
+				78BC24BF1C510EAC00EC6907 /* UIWindow+LGAlertView.m in Sources */,
 				F8BDB67D1BD909E500BB80B4 /* DBMessageService.swift in Sources */,
 				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
 				F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */,
@@ -1299,10 +1346,12 @@
 				F811C1841C1B1E2A00C07273 /* PFButton.m in Sources */,
 				F8386F4A1BD520F7006332D9 /* AFURLSessionManager.m in Sources */,
 				F8BDB66F1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift in Sources */,
+				78BC24BE1C510EAC00EC6907 /* LGAlertViewWindow.m in Sources */,
 				F8A1DFD11B7B74AB00A66692 /* Country.swift in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
 				F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
+				78BC24BB1C510EAC00EC6907 /* LGAlertViewCell.m in Sources */,
 				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */,
 				F8CE23AD1BE7A54B00C36661 /* ContactSearchVC.swift in Sources */,
@@ -1310,6 +1359,7 @@
 				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
+				78BC24BD1C510EAC00EC6907 /* LGAlertViewTextField.m in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F8F58DB11BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */,
 				F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */,
@@ -1366,6 +1416,7 @@
 				F86F74291B56838B00E48E13 /* MyContactsListVC.swift in Sources */,
 				F8BDB6911BD909E500BB80B4 /* DBMessageChat.swift in Sources */,
 				F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */,
+				78BC24B91C510EAC00EC6907 /* LGAlertView.m in Sources */,
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
 				F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,
@@ -1397,9 +1448,11 @@
 				F88564041B31CBE3005D223E /* ChatMessageSentCell.swift in Sources */,
 				F8BDB67B1BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8DE685D1B4581ED001EE9A0 /* ObjectsConverter.swift in Sources */,
+				78BC24BC1C510EAC00EC6907 /* LGAlertViewController.m in Sources */,
 				F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */,
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F80597491B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
+				78BC24BA1C510EAC00EC6907 /* LGAlertViewButtonProperties.m in Sources */,
 				F8BDB6711BD909E500BB80B4 /* DBUser.swift in Sources */,
 				F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */,
 				F8BDB6791BD909E500BB80B4 /* DBAttachImagePreview.swift in Sources */,

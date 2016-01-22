@@ -11,10 +11,11 @@
 #ifdef SHEVCHENKO
 #import "Shevchenko_network-Swift.h"
 #else
-#import "ZYQSphereView.h"
-#import "Origami_task_manager-Swift.h"
-#import "OKVisualizationLayer.h"
 #import "BFDragGestureRecognizer.h"
+#import "LGAlertView.h"
+#import "OKVisualizationLayer.h"
+#import "Origami_task_manager-Swift.h"
+#import "ZYQSphereView.h"
 #endif
 
 @interface VisualizationViewController ()
@@ -71,21 +72,21 @@
         NSArray *sortedObjects = [self getSortedObjects];
         
         // TODO: 03.3 доработал расчет размера скроллвью: исправил ошибки
-        CGFloat indentX = 150.f;
+        CGFloat indentX = 175.f;
         CGFloat indentY = 60.f;
-        CGFloat maxDiam = 100.f;
         
         CGFloat countRows             = [sortedObjects count];
         CGFloat maxCountElementsInRow = [self getMaxCountElementsInRow:sortedObjects];
         
-        CGFloat scrollViewHeight = 100.f + maxCountElementsInRow * maxDiam * 0.75;
-        CGFloat scrollViewWidth  = 200.f + (countRows * maxDiam);
+        CGFloat scrollViewHeight = 50.f + maxCountElementsInRow * indentY;
+        CGFloat scrollViewWidth  = 50.f + (countRows * indentX);
         
         CGSize scrollViewSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
         CGRect rect = (CGRect){CGPointZero, scrollViewSize};
         
         _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-        _scrollView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.f];//[UIColor lightGrayColor];
+        _scrollView.backgroundColor = [UIColor colorWithRed: 33.0/255.0 green: 150.0/255.0 blue: 243.0/255.0 alpha: 1.0];
+        //kDayCellBackgroundColor;//[UIColor colorWithRed:0.f green:0.5 blue:1.f alpha:1.f];//[UIColor colorWithWhite:0.9 alpha:1.f];
         _scrollView.contentSize = scrollViewSize;
         _scrollView.contentInset = UIEdgeInsetsMake(64, 0, 44, 0);
         _scrollView.minimumZoomScale = 1;
@@ -121,7 +122,7 @@
                 
             }
             
-            // subArrays
+            // FIX:
             if ([rowArray isEqual:[sortedObjects lastObject]]) {
                 aPoint.y = scrollViewHeight - 50.f;
                 //aPoint.x = aPoint.x + indentX;
@@ -134,83 +135,6 @@
 
     }
 }
-
--(void) prepareMatrixViewAndShow
-{
-    if (self.objectsToVisualize)
-    {
-       
-        //NSInteger objectsCount = self.objectsToVisualize.count;
-        BOOL showsBackgroundColor = YES;
-        BOOL showsCircleButtons = NO;
-        if (self.currentViewControllersCount == 3)
-        {
-            showsCircleButtons = YES;
-        }
-        
-        if (self.currentViewControllersCount == 4)
-        {
-            showsBackgroundColor = NO;
-        }
-    
-    //show stuff.
-
-    }
-    
-}
-
-//-(void)subVClick:(PFButton*)sender{
-//    NSLog(@"%@",sender.titleLabel.text);
-//    NSInteger tagTapped = sender.elementIdTag;
-//    BOOL isStart=[sphereView isTimerStart];
-//    
-//    [sphereView timerStop];
-//    
-//    __weak typeof(self) weakSelf = self;
-//    
-//    [UIView animateWithDuration:0.3 animations:^{
-//        sender.transform=CGAffineTransformMakeScale(1.5, 1.5);
-//    } completion:^(BOOL finished) {
-//        [UIView animateWithDuration:0.2 animations:^{
-//            sender.transform=CGAffineTransformMakeScale(1, 1);
-//            if (isStart) {
-//                [sphereView timerStart];
-//            }
-//        }];
-//        [weakSelf showTappedElementByTag:tagTapped];
-//    }];
-//}
-
-
-
-//-(void)changePF:(UIButton*)sender{
-//    if ([sphereView isTimerStart]) {
-//        [sphereView timerStop];
-//    }
-//    else{
-//        [sphereView timerStart];
-//    }
-//}
-
-
-//-(void) showNextSelf:(UIBarButtonItem *)sender
-//{
-//    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
-//    nextViewController.objectsToVisualize = self.objectsToVisualize;
-//    [self.navigationController pushViewController:nextViewController animated:YES];
-//}
-
-
-//-(void) showTappedElementByTag:(NSInteger) elementButtonTag
-//{
-//    printf("tapped: %ld", (long)elementButtonTag);
-//    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
-//    {
-//        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
-//        
-//        [rootVC presentNewSingleElementVC:elementButtonTag];
-//    }
-//}
 
 #pragma mark - Service methods
 
@@ -286,29 +210,55 @@
     return result;
 }
 
+
 #pragma mark - BFDragGestureRecognizer
 
 - (void)dragRecognized:(BFDragGestureRecognizer *)recognizer {
+    
     UIView *view = recognizer.view;
+    
     if (recognizer.state == UIGestureRecognizerStateBegan) {
-        // When the gesture starts, remember the current position, and animate the it.
-        _startCenter = view.center;
-        [view.superview bringSubviewToFront:view];
-        [UIView animateWithDuration:0.2 animations:^{
-            view.transform = CGAffineTransformMakeScale(1.2, 1.2);
-            view.alpha = 0.7;
-        }];
-    } else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        // During the gesture, we just add the gesture's translation to the saved original position.
-        // The translation will account for the changes in contentOffset caused by auto-scrolling.
-        CGPoint translation = [recognizer translationInView:_contentView];
-        CGPoint center = CGPointMake(_startCenter.x + translation.x, _startCenter.y + translation.y);
-        view.center = center;
-    } else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
-        [UIView animateWithDuration:0.2 animations:^{
-            view.transform = CGAffineTransformIdentity;
-            view.alpha = 1.0;
-        }];
+        
+        NSArray *subviews = [view subviews];
+        
+        if ([subviews count] == 0) return;
+        
+        UILabel *label = subviews[0];
+        UILabel *serviceLabel = subviews[1];
+        
+        UIColor *borderColor;
+        if ([view.backgroundColor isEqual:[UIColor colorWithRed:1.f green:0.f blue:0.5 alpha:1.f]]) {
+            borderColor = [UIColor colorWithRed:1.f green:0.f blue:0.5 alpha:1.f];
+        } else {
+            borderColor = [UIColor colorWithRed:0.f green:0.5 blue:1.f alpha:1.f];
+        }
+
+        LGAlertView *alertView = [[LGAlertView alloc] initWithTitle:[label text]
+                                                            message:[serviceLabel text]
+                                                              style:LGAlertViewStyleAlert
+                                                       buttonTitles:@[@"Перейти к элементу в основной интерфейс"]
+                                                  cancelButtonTitle:@"Отмена"
+                                             destructiveButtonTitle:@""
+                                                      actionHandler:nil
+                                                      cancelHandler:nil
+                                                 destructiveHandler:nil];
+        
+        alertView.coverColor = [UIColor colorWithWhite:1.f alpha:0.9];
+        alertView.layerShadowColor = [UIColor colorWithWhite:0.f alpha:0.3];
+        alertView.layerShadowRadius = 4.f;
+        alertView.layerCornerRadius = 0.f;
+        alertView.layerBorderWidth = 2.f;
+        alertView.layerBorderColor = borderColor;
+        alertView.backgroundColor = [UIColor colorWithWhite:1.f alpha:0.7];
+        alertView.width = MIN(self.view.bounds.size.width, self.view.bounds.size.height);
+        alertView.titleTextAlignment = NSTextAlignmentLeft;
+        alertView.messageTextAlignment = NSTextAlignmentLeft;
+        alertView.oneRowOneButton = YES;
+        alertView.buttonsTextAlignment = NSTextAlignmentRight;
+        alertView.cancelButtonTextAlignment = NSTextAlignmentRight;
+        alertView.destructiveButtonTextAlignment = NSTextAlignmentRight;
+        [alertView showAnimated:YES completionHandler:nil];
+        
     } else if (recognizer.state == UIGestureRecognizerStateFailed) {
         
     }
