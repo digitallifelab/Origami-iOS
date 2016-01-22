@@ -6,7 +6,7 @@
 //  Copyright © 2015 CloudCraft. All rights reserved.
 //
 
-#import "VisualizationViewController.h"
+#import "SphereVisualizationViewController.h"
 
 #ifdef SHEVCHENKO
 #import "Shevchenko_network-Swift.h"
@@ -20,7 +20,7 @@
 
 
 
-@interface VisualizationViewController ()
+@interface SphereVisualizationViewController ()
 {
     ZYQSphereView *sphereView;
     NSTimer *timer;

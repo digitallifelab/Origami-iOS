@@ -42,7 +42,7 @@
 		F828328A1C3A934D006FAEA9 /* AuthorizationManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07EA8D1C26A7C60005F499 /* AuthorizationManagerViewController.swift */; };
 		F82AF3581BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF3591BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
-		F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */; };
+		F82AF35C1BEA3A2400E8514A /* SphereVisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* SphereVisualizationViewController.m */; };
 		F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
@@ -326,8 +326,8 @@
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
 		F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinishTaskResultView.xib; sourceTree = "<group>"; };
 		F82AF3571BEA39FE00E8514A /* Visualization.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Visualization.storyboard; sourceTree = "<group>"; };
-		F82AF35A1BEA3A2400E8514A /* VisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizationViewController.h; sourceTree = "<group>"; };
-		F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualizationViewController.m; sourceTree = "<group>"; };
+		F82AF35A1BEA3A2400E8514A /* SphereVisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereVisualizationViewController.h; sourceTree = "<group>"; };
+		F82AF35B1BEA3A2400E8514A /* SphereVisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereVisualizationViewController.m; sourceTree = "<group>"; };
 		F82AF3611BEA3E9700E8514A /* VisualizableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizableObject.h; sourceTree = "<group>"; };
 		F82AF3621BEA3E9700E8514A /* VisualizableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualizableObject.m; sourceTree = "<group>"; };
 		F8386F381BD520F7006332D9 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
@@ -987,8 +987,8 @@
 				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
 				F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */,
 				F82AF3571BEA39FE00E8514A /* Visualization.storyboard */,
-				F82AF35A1BEA3A2400E8514A /* VisualizationViewController.h */,
-				F82AF35B1BEA3A2400E8514A /* VisualizationViewController.m */,
+				F82AF35A1BEA3A2400E8514A /* SphereVisualizationViewController.h */,
+				F82AF35B1BEA3A2400E8514A /* SphereVisualizationViewController.m */,
 				F82AF3611BEA3E9700E8514A /* VisualizableObject.h */,
 				F82AF3621BEA3E9700E8514A /* VisualizableObject.m */,
 				F811C1751C1AFC2F00C07273 /* TestStuff */,
@@ -1304,7 +1304,7 @@
 				F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
 				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
-				F82AF35C1BEA3A2400E8514A /* VisualizationViewController.m in Sources */,
+				F82AF35C1BEA3A2400E8514A /* SphereVisualizationViewController.m in Sources */,
 				F8CE23AD1BE7A54B00C36661 /* ContactSearchVC.swift in Sources */,
 				F84BC0A01BC57DCC0065D5CC /* Person.swift in Sources */,
 				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
