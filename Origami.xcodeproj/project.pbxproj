@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		780FB6B01C2BFBC10099E79E /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */; };
-		784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */; };
 		F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
@@ -158,23 +156,22 @@
 		F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F82AF3581BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
 		F82AF3591BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
-		F82AF35C1BEA3A2400E8514A /* SphereVisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF35B1BEA3A2400E8514A /* SphereVisualizationViewController.m */; };
-		F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
-		F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F82AF3621BEA3E9700E8514A /* VisualizableObject.m */; };
 		F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
 		F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3C1BD520F7006332D9 /* AFNetworkReachabilityManager.m */; };
 		F8386F471BD520F7006332D9 /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3E1BD520F7006332D9 /* AFSecurityPolicy.m */; };
 		F8386F481BD520F7006332D9 /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F401BD520F7006332D9 /* AFURLRequestSerialization.m */; };
 		F8386F491BD520F7006332D9 /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F421BD520F7006332D9 /* AFURLResponseSerialization.m */; };
 		F8386F4A1BD520F7006332D9 /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F441BD520F7006332D9 /* AFURLSessionManager.m */; };
+		F84232B41C527A6A00336A60 /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232B31C527A6A00336A60 /* ElementDashboardDatesCell.swift */; };
+		F84232B51C527B6500336A60 /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232B31C527A6A00336A60 /* ElementDashboardDatesCell.swift */; };
+		F84232BB1C527BAE00336A60 /* BFDragGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232B81C527BAE00336A60 /* BFDragGestureRecognizer.m */; };
+		F84232BC1C527BAE00336A60 /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232BA1C527BAE00336A60 /* VisualizableObject.m */; };
+		F84232C01C527BF900336A60 /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */; };
+		F84232C31C527C5800336A60 /* SphereVisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */; };
+		F84232C51C527DA200336A60 /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
-		F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
-		F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */; };
-		F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
 		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
-		F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
-		F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
 		F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
 		F8C707681C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
 		F8C707691C52706B0089E36A /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707651C52706B0089E36A /* ChatVC.swift */; };
@@ -241,35 +238,26 @@
 		F8C707CE1C52752E0089E36A /* SingleElementLastMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707BF1C52752E0089E36A /* SingleElementLastMessagesCell.swift */; };
 		F8C707CF1C52752E0089E36A /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707C01C52752E0089E36A /* SingleElementTitleCell.swift */; };
 		F8C707D01C52752E0089E36A /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707C01C52752E0089E36A /* SingleElementTitleCell.swift */; };
-		F8C707D21C5275E20089E36A /* ElementActionButtonsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707D11C5275E20089E36A /* ElementActionButtonsDataSource.swift */; };
-		F8C707D31C5275E20089E36A /* ElementActionButtonsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707D11C5275E20089E36A /* ElementActionButtonsDataSource.swift */; };
 		F8C707DB1C5276AC0089E36A /* AttachesCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707D81C5276AC0089E36A /* AttachesCollectionViewLayout.swift */; };
 		F8C707DC1C5276AC0089E36A /* AttachesCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707D81C5276AC0089E36A /* AttachesCollectionViewLayout.swift */; };
-		F8C707E21C5277020089E36A /* ElementActionButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707E11C5277020089E36A /* ElementActionButtonCell.swift */; };
-		F8C707E31C5277020089E36A /* ElementActionButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707E11C5277020089E36A /* ElementActionButtonCell.swift */; };
+		F8C707E51C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707E41C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift */; };
+		F8C707E61C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707E41C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift */; };
+		F8C707EC1C5278FA0089E36A /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EA1C5278FA0089E36A /* AttachedFileCell.swift */; };
+		F8C707ED1C5278FA0089E36A /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EA1C5278FA0089E36A /* AttachedFileCell.swift */; };
+		F8C707EE1C5278FA0089E36A /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */; };
+		F8C707EF1C5278FA0089E36A /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */; };
 		F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
-		F8C93AC21B861B94009D890E /* SingleElementAttachesCollectionHolderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */; };
-		F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */; };
-		F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
 		F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
-		F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */; };
 		F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
-		F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
-		F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
-		F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
 		F8C93B251B861B94009D890E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A61B1DEFA100172667 /* Main.storyboard */; };
 		F8C93B261B861B94009D890E /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
 		F8C93B271B861B94009D890E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D456AB1B1DEFA100172667 /* LaunchScreen.xib */; };
 		F8C93B281B861B94009D890E /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F8C93B291B861B94009D890E /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
-		F8C93B2A1B861B94009D890E /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
 		F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
 		F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
 		F8D456A81B1DEFA100172667 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A61B1DEFA100172667 /* Main.storyboard */; };
-		F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */; };
-		F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
-		F8D9BABF1B3985D2006B507D /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
 		F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3C1BD520F7006332D9 /* AFNetworkReachabilityManager.m */; };
 		F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3E1BD520F7006332D9 /* AFSecurityPolicy.m */; };
@@ -293,10 +281,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
-		780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
-		784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BFDragGestureRecognizer.m; path = Visualisation/BFDragGestureRecognizer.m; sourceTree = "<group>"; };
-		784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BFDragGestureRecognizer.h; path = Visualisation/BFDragGestureRecognizer.h; sourceTree = "<group>"; };
 		F800022E1BC3E57C00E6E2E7 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Main.strings; sourceTree = "<group>"; };
 		F80B1BB41B988DEE007C66A2 /* ShevchenkoNetwork.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ShevchenkoNetwork.plist; sourceTree = "<group>"; };
 		F811100F1B2AC2FF00115DF6 /* segoeui.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeui.ttf; sourceTree = "<group>"; };
@@ -387,10 +371,6 @@
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
 		F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinishTaskResultView.xib; sourceTree = "<group>"; };
 		F82AF3571BEA39FE00E8514A /* Visualization.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Visualization.storyboard; sourceTree = "<group>"; };
-		F82AF35A1BEA3A2400E8514A /* SphereVisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereVisualizationViewController.h; sourceTree = "<group>"; };
-		F82AF35B1BEA3A2400E8514A /* SphereVisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereVisualizationViewController.m; sourceTree = "<group>"; };
-		F82AF3611BEA3E9700E8514A /* VisualizableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizableObject.h; sourceTree = "<group>"; };
-		F82AF3621BEA3E9700E8514A /* VisualizableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualizableObject.m; sourceTree = "<group>"; };
 		F8386F381BD520F7006332D9 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
 		F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
 		F8386F3A1BD520F7006332D9 /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
@@ -404,6 +384,16 @@
 		F8386F421BD520F7006332D9 /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
 		F8386F431BD520F7006332D9 /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
 		F8386F441BD520F7006332D9 /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		F84232B31C527A6A00336A60 /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
+		F84232B71C527BAE00336A60 /* BFDragGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BFDragGestureRecognizer.h; sourceTree = "<group>"; };
+		F84232B81C527BAE00336A60 /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BFDragGestureRecognizer.m; sourceTree = "<group>"; };
+		F84232B91C527BAE00336A60 /* VisualizableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizableObject.h; sourceTree = "<group>"; };
+		F84232BA1C527BAE00336A60 /* VisualizableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualizableObject.m; sourceTree = "<group>"; };
+		F84232BE1C527BF900336A60 /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
+		F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
+		F84232C11C527C5800336A60 /* SphereVisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereVisualizationViewController.h; sourceTree = "<group>"; };
+		F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereVisualizationViewController.m; sourceTree = "<group>"; };
+		F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomViewControllerTransitions.swift; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -411,12 +401,7 @@
 		F8521FF41B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F86E47D41BBE73CD00DA5B6D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
-		F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
-		F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPreviewCell.swift; sourceTree = "<group>"; };
-		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
 		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
-		F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
-		F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachedFileCell.swift; sourceTree = "<group>"; };
 		F8C707641C52706B0089E36A /* ChatTextInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTextInputView.swift; sourceTree = "<group>"; };
 		F8C707651C52706B0089E36A /* ChatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatVC.swift; sourceTree = "<group>"; };
 		F8C707661C52706B0089E36A /* OptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
@@ -452,9 +437,10 @@
 		F8C707BE1C52752E0089E36A /* SingleElementDetailsCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementDetailsCell.swift; sourceTree = "<group>"; };
 		F8C707BF1C52752E0089E36A /* SingleElementLastMessagesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementLastMessagesCell.swift; sourceTree = "<group>"; };
 		F8C707C01C52752E0089E36A /* SingleElementTitleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementTitleCell.swift; sourceTree = "<group>"; };
-		F8C707D11C5275E20089E36A /* ElementActionButtonsDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonsDataSource.swift; sourceTree = "<group>"; };
 		F8C707D81C5276AC0089E36A /* AttachesCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachesCollectionViewLayout.swift; sourceTree = "<group>"; };
-		F8C707E11C5277020089E36A /* ElementActionButtonCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementActionButtonCell.swift; sourceTree = "<group>"; };
+		F8C707E41C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleElementAttachesCollectionHolderCell.swift; sourceTree = "<group>"; };
+		F8C707EA1C5278FA0089E36A /* AttachedFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachedFileCell.swift; sourceTree = "<group>"; };
+		F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPreviewCell.swift; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewHandler.swift; sourceTree = "<group>"; };
@@ -464,9 +450,6 @@
 		F8D456A71B1DEFA100172667 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		F8D456A91B1DEFA100172667 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F8D456AC1B1DEFA100172667 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomViewControllerTransitions.swift; sourceTree = "<group>"; };
-		F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachesTableHeaderView.swift; sourceTree = "<group>"; };
-		F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AttachesTableHeaderView.xib; sourceTree = "<group>"; };
 		F8EEC7521B98A334003525B0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F8EEC7541B98A341003525B0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8EEC7561B98A34B003525B0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -514,17 +497,6 @@
 				F8EEC7521B98A334003525B0 /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		784827E21C1087F1009D76FC /* VisualizationView */ = {
-			isa = PBXGroup;
-			children = (
-				784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */,
-				784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */,
-				780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */,
-				780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */,
-			);
-			name = VisualizationView;
 			sourceTree = "<group>";
 		};
 		F811100E1B2AC2FF00115DF6 /* CustomFonts */ = {
@@ -801,32 +773,35 @@
 			path = Origami/AFNetworking;
 			sourceTree = "<group>";
 		};
+		F84232B61C527BAE00336A60 /* Visualisation */ = {
+			isa = PBXGroup;
+			children = (
+				F84232C11C527C5800336A60 /* SphereVisualizationViewController.h */,
+				F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */,
+				F84232B71C527BAE00336A60 /* BFDragGestureRecognizer.h */,
+				F84232B81C527BAE00336A60 /* BFDragGestureRecognizer.m */,
+				F84232B91C527BAE00336A60 /* VisualizableObject.h */,
+				F84232BA1C527BAE00336A60 /* VisualizableObject.m */,
+				F84232BD1C527BF900336A60 /* VisualizationView */,
+			);
+			path = Visualisation;
+			sourceTree = "<group>";
+		};
+		F84232BD1C527BF900336A60 /* VisualizationView */ = {
+			isa = PBXGroup;
+			children = (
+				F84232BE1C527BF900336A60 /* OKVisualizationLayer.h */,
+				F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */,
+			);
+			path = VisualizationView;
+			sourceTree = "<group>";
+		};
 		F8521FEC1B78963300B418A3 /* LocalizedStrings */ = {
 			isa = PBXGroup;
 			children = (
 				F8521FF11B78966400B418A3 /* Localizable.strings */,
 			);
 			name = LocalizedStrings;
-			sourceTree = "<group>";
-		};
-		F855BB9D1B74A7AF00EC114C /* ToMove */ = {
-			isa = PBXGroup;
-			children = (
-				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
-				F8C707D11C5275E20089E36A /* ElementActionButtonsDataSource.swift */,
-				F87FE6BB1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift */,
-				F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */,
-				F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */,
-				F82631841BB2C44500077B1D /* FinishTaskResultView.h */,
-				F82631851BB2C44500077B1D /* FinishTaskResultView.m */,
-				F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */,
-				F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */,
-				F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */,
-				F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */,
-				F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */,
-				F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */,
-			);
-			name = ToMove;
 			sourceTree = "<group>";
 		};
 		F8C707631C52706B0089E36A /* Chat */ = {
@@ -864,6 +839,7 @@
 		F8C707841C5272D20089E36A /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */,
 				F8C707851C5272D20089E36A /* ElementOptionsConverter.h */,
 				F8C707861C5272D20089E36A /* ElementOptionsConverter.m */,
 				F8C707871C5272D20089E36A /* FileHandler.h */,
@@ -893,14 +869,17 @@
 		F8C707B81C5274C90089E36A /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				F8C707E11C5277020089E36A /* ElementActionButtonCell.swift */,
 				F8C707B91C52752E0089E36A /* DashboardMessagesCell.swift */,
+				F8C707EA1C5278FA0089E36A /* AttachedFileCell.swift */,
+				F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */,
+				F8C707E41C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift */,
 				F8C707BA1C52752E0089E36A /* DashCell.swift */,
 				F8C707BB1C52752E0089E36A /* DashHeaderView.swift */,
 				F8C707BD1C52752E0089E36A /* SingleElementDateDetailsCell.swift */,
 				F8C707BE1C52752E0089E36A /* SingleElementDetailsCell.swift */,
 				F8C707BF1C52752E0089E36A /* SingleElementLastMessagesCell.swift */,
 				F8C707C01C52752E0089E36A /* SingleElementTitleCell.swift */,
+				F84232B31C527A6A00336A60 /* ElementDashboardDatesCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -934,24 +913,23 @@
 		F8D4569F1B1DEFA100172667 /* Origami */ = {
 			isa = PBXGroup;
 			children = (
-				784827E21C1087F1009D76FC /* VisualizationView */,
+				F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */,
+				F8D456A61B1DEFA100172667 /* Main.storyboard */,
+				F82AF3571BEA39FE00E8514A /* Visualization.storyboard */,
+				F84232B61C527BAE00336A60 /* Visualisation */,
 				F8D456A21B1DEFA100172667 /* AppDelegate.swift */,
 				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
-				F8D9BABA1B394262006B507D /* CustomViewControllerTransitions.swift */,
-				F82AF3571BEA39FE00E8514A /* Visualization.storyboard */,
-				F82AF35A1BEA3A2400E8514A /* SphereVisualizationViewController.h */,
-				F82AF35B1BEA3A2400E8514A /* SphereVisualizationViewController.m */,
-				F82AF3611BEA3E9700E8514A /* VisualizableObject.h */,
-				F82AF3621BEA3E9700E8514A /* VisualizableObject.m */,
+				F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */,
+				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
+				F82631841BB2C44500077B1D /* FinishTaskResultView.h */,
+				F82631851BB2C44500077B1D /* FinishTaskResultView.m */,
 				F8C707D71C52763C0089E36A /* CollectionViewLayouts */,
 				F8C707B81C5274C90089E36A /* Cells */,
 				F8C7079F1C5273A00089E36A /* Stuff */,
 				F8C707841C5272D20089E36A /* Tools */,
 				F811C1751C1AFC2F00C07273 /* TestStuff */,
-				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F81EF4D81C52665D008FCCD4 /* ViewControllers */,
 				F81EF4721C5263D4008FCCD4 /* Model */,
-				F855BB9D1B74A7AF00EC114C /* ToMove */,
 				F8D456A91B1DEFA100172667 /* Images.xcassets */,
 				F8D456AB1B1DEFA100172667 /* LaunchScreen.xib */,
 				F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */,
@@ -1073,7 +1051,6 @@
 				F8C93B271B861B94009D890E /* LaunchScreen.xib in Resources */,
 				F8C93B281B861B94009D890E /* segoeui.ttf in Resources */,
 				F8C93B291B861B94009D890E /* segoeuil.ttf in Resources */,
-				F8C93B2A1B861B94009D890E /* AttachesTableHeaderView.xib in Resources */,
 				F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1090,7 +1067,6 @@
 				F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */,
 				F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */,
 				F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */,
-				F8D9BABF1B3985D2006B507D /* AttachesTableHeaderView.xib in Resources */,
 				F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1109,7 +1085,6 @@
 				F81EF5381C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
 				F81EF4CF1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */,
-				F8C93AC21B861B94009D890E /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F8F58D791BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */,
 				F8EC3C981BD63F6F000201FE /* AFURLSessionManager.m in Sources */,
 				F81EF4CD1C526532008FCCD4 /* DBMessageService.swift in Sources */,
@@ -1118,7 +1093,6 @@
 				F8C707C21C52752E0089E36A /* DashboardMessagesCell.swift in Sources */,
 				F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */,
 				F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */,
-				F8C707E31C5277020089E36A /* ElementActionButtonCell.swift in Sources */,
 				F81EF5311C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C7076C1C52706B0089E36A /* OptionsView.swift in Sources */,
@@ -1127,7 +1101,6 @@
 				F81EF5111C5268C1008FCCD4 /* LoginVC.swift in Sources */,
 				F81EF5231C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF48D1C5264A1008FCCD4 /* User.swift in Sources */,
-				F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */,
 				F81EF4D11C526532008FCCD4 /* DBPerson.swift in Sources */,
 				F81EF49D1C5264A1008FCCD4 /* AttachFile.swift in Sources */,
 				F81EF4B31C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
@@ -1138,6 +1111,7 @@
 				F81EF4F71C526806008FCCD4 /* MyContactListCell.swift in Sources */,
 				F81EF51F1C526BA2008FCCD4 /* MenuVC.swift in Sources */,
 				F81EF4C31C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
+				F8C707EF1C5278FA0089E36A /* ChatPreviewCell.swift in Sources */,
 				F8C7076A1C52706B0089E36A /* ChatVC.swift in Sources */,
 				F81EF4F91C526806008FCCD4 /* MyContactsListVC.swift in Sources */,
 				F81EF4E81C526763008FCCD4 /* ContactsPickerVC.swift in Sources */,
@@ -1160,7 +1134,7 @@
 				F81EF4DB1C52665D008FCCD4 /* RootViewController.swift in Sources */,
 				F8C7079C1C5272D20089E36A /* ImageFilter.swift in Sources */,
 				F81EF51B1C526B48008FCCD4 /* PopupMenuCell.swift in Sources */,
-				F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */,
+				F8C707ED1C5278FA0089E36A /* AttachedFileCell.swift in Sources */,
 				F81EF47B1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */,
 				F8C707771C5271270089E36A /* ContactCheckerCell.swift in Sources */,
@@ -1169,22 +1143,22 @@
 				F81EF4DE1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
 				F81EF5451C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F8C707681C52706B0089E36A /* ChatTextInputView.swift in Sources */,
-				F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */,
 				F8C707921C5272D20089E36A /* FileHandler.m in Sources */,
 				F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */,
 				F8C707901C5272D20089E36A /* ElementOptionsConverter.m in Sources */,
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F81EF4BF1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F81EF4C11C526532008FCCD4 /* DBContact.swift in Sources */,
+				F84232B51C527B6500336A60 /* ElementDashboardDatesCell.swift in Sources */,
 				F8C707AA1C5273A00089E36A /* Extensions.swift in Sources */,
 				F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */,
 				F81EF4931C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				F8C707791C5271270089E36A /* ParticipantsVC.swift in Sources */,
 				F8C707A61C5273A00089E36A /* Constants.swift in Sources */,
+				F8C707E61C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F8C707C61C52752E0089E36A /* DashHeaderView.swift in Sources */,
 				F81EF52D1C526CA4008FCCD4 /* UserProfileFlowLayout.swift in Sources */,
 				F8C7077F1C5271B10089E36A /* SimpleElementDashboardLayout.swift in Sources */,
-				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
 				F81EF4C51C526532008FCCD4 /* DBElement.swift in Sources */,
 				F81EF47F1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
 				F81EF4BB1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
@@ -1194,19 +1168,16 @@
 				F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */,
 				F81EF4991C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8C707701C52707E0089E36A /* ChatMessageRecievedCell.swift in Sources */,
-				F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */,
 				F81EF4B91C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F8C7079E1C5272D20089E36A /* ObjectsConverter.swift in Sources */,
 				F81EF4F21C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
 				F81EF4791C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
-				F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */,
 				F81EF4C91C526532008FCCD4 /* DBMessageChat.swift in Sources */,
 				F8C707C41C52752E0089E36A /* DashCell.swift in Sources */,
 				F81EF5191C526B48008FCCD4 /* EditingMenuPopupVC.swift in Sources */,
 				F81EF5041C526867008FCCD4 /* ContactProfileTextInfoCell.swift in Sources */,
 				F8C707B51C52741D0089E36A /* HomeSignalsHiddenFlowLayout.swift in Sources */,
-				F8C707D31C5275E20089E36A /* ElementActionButtonsDataSource.swift in Sources */,
 				F81EF5431C526D9A008FCCD4 /* NewElementComposerViewController.swift in Sources */,
 				F81EF5331C526CA4008FCCD4 /* UserProfileVC.swift in Sources */,
 				F8C707831C5271B10089E36A /* SingleElementDashboardVC.swift in Sources */,
@@ -1214,7 +1185,6 @@
 				F81EF54C1C526E27008FCCD4 /* TableItemPickerVC.swift in Sources */,
 				F81EF4D31C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F81EF47D1C5263D4008FCCD4 /* MessagesLoader.swift in Sources */,
-				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F81EF52B1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F81EF4BD1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */,
 				F81EF49B1C5264A1008FCCD4 /* Contact.swift in Sources */,
@@ -1232,10 +1202,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8C7078F1C5272D20089E36A /* ElementOptionsConverter.m in Sources */,
+				F84232B41C527A6A00336A60 /* ElementDashboardDatesCell.swift in Sources */,
 				F81EF4BC1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */,
 				F81EF4901C5264A1008FCCD4 /* Message.swift in Sources */,
 				F8386F481BD520F7006332D9 /* AFURLRequestSerialization.m in Sources */,
 				F8C7076B1C52706B0089E36A /* OptionsView.swift in Sources */,
+				F84232C31C527C5800336A60 /* SphereVisualizationViewController.m in Sources */,
 				F81EF5121C5268C1008FCCD4 /* RegistrationVC.swift in Sources */,
 				F81EF4B61C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F81EF47C1C5263D4008FCCD4 /* MessagesLoader.swift in Sources */,
@@ -1244,8 +1216,8 @@
 				F81EF52C1C526CA4008FCCD4 /* UserProfileFlowLayout.swift in Sources */,
 				F8C707DB1C5276AC0089E36A /* AttachesCollectionViewLayout.swift in Sources */,
 				F8C707C51C52752E0089E36A /* DashHeaderView.swift in Sources */,
-				F8C707D21C5275E20089E36A /* ElementActionButtonsDataSource.swift in Sources */,
 				F8C707971C5272D20089E36A /* Generics.swift in Sources */,
+				F8C707EC1C5278FA0089E36A /* AttachedFileCell.swift in Sources */,
 				F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF4F61C526806008FCCD4 /* MyContactListCell.swift in Sources */,
 				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
@@ -1253,12 +1225,9 @@
 				F81EF50C1C5268C1008FCCD4 /* AuthorizationManagerViewController.swift in Sources */,
 				F81EF4C41C526532008FCCD4 /* DBElement.swift in Sources */,
 				F8F58D781BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */,
-				780FB6B01C2BFBC10099E79E /* OKVisualizationLayer.m in Sources */,
 				F81EF4C61C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
 				F8C707C91C52752E0089E36A /* SingleElementDateDetailsCell.swift in Sources */,
-				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F8C707931C5272D20089E36A /* FilterAttributeButton.swift in Sources */,
-				F8C707E21C5277020089E36A /* ElementActionButtonCell.swift in Sources */,
 				F811C1841C1B1E2A00C07273 /* PFButton.m in Sources */,
 				F81EF51E1C526BA2008FCCD4 /* MenuVC.swift in Sources */,
 				F81EF4CA1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
@@ -1267,28 +1236,27 @@
 				F81EF47A1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F81EF5011C526867008FCCD4 /* ContactProfileAvatarCell.swift in Sources */,
 				F81EF47E1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
-				F82AF35C1BEA3A2400E8514A /* SphereVisualizationViewController.m in Sources */,
 				F8C707B41C52741D0089E36A /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F81EF4EF1C5267E0008FCCD4 /* AllContactsVC.swift in Sources */,
 				F81EF4981C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8C707CD1C52752E0089E36A /* SingleElementLastMessagesCell.swift in Sources */,
 				F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */,
-				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F8C707A71C5273A00089E36A /* Enumerations.swift in Sources */,
 				F8C707B61C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F8C707AB1C5273A00089E36A /* Protocols.swift in Sources */,
 				F81EF4D01C526532008FCCD4 /* DBPerson.swift in Sources */,
+				F8C707EE1C5278FA0089E36A /* ChatPreviewCell.swift in Sources */,
 				F81EF5301C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
 				F81EF5391C526CE5008FCCD4 /* RecentActivityTableVC.swift in Sources */,
 				F81EF4B21C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
 				F8C707991C5272D20089E36A /* GlobalFunctions.swift in Sources */,
 				F81EF5441C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F81EF5051C526867008FCCD4 /* ContactProfileVC.swift in Sources */,
+				F84232BC1C527BAE00336A60 /* VisualizableObject.m in Sources */,
 				F81EF4E71C526763008FCCD4 /* ContactsPickerVC.swift in Sources */,
 				F8C707761C5271270089E36A /* ContactCheckerCell.swift in Sources */,
 				F81EF4BA1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
 				F81EF4F81C526806008FCCD4 /* MyContactsListVC.swift in Sources */,
-				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
 				F81EF4EA1C52677D008FCCD4 /* ContactSearchVC.swift in Sources */,
 				F8C707CB1C52752E0089E36A /* SingleElementDetailsCell.swift in Sources */,
 				F81EF4BE1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */,
@@ -1318,12 +1286,11 @@
 				F81EF51A1C526B48008FCCD4 /* PopupMenuCell.swift in Sources */,
 				F8C7077E1C5271B10089E36A /* SimpleElementDashboardLayout.swift in Sources */,
 				F81EF4961C5264A1008FCCD4 /* Element.swift in Sources */,
-				F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */,
 				F8C707B21C52741D0089E36A /* HomeCollectionHandler.swift in Sources */,
 				F8386F471BD520F7006332D9 /* AFSecurityPolicy.m in Sources */,
+				F84232C01C527BF900336A60 /* OKVisualizationLayer.m in Sources */,
 				F8C707711C52707E0089E36A /* ChatMessageSentCell.swift in Sources */,
 				F81EF52A1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */,
-				F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F81EF4C21C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
 				F81EF4C81C526532008FCCD4 /* DBMessageChat.swift in Sources */,
 				F81EF48C1C5264A1008FCCD4 /* User.swift in Sources */,
@@ -1331,7 +1298,6 @@
 				F81EF4B81C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F8C707801C5271B10089E36A /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8C707AD1C5273A00089E36A /* Structs.swift in Sources */,
-				F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */,
 				F81EF4DA1C52665D008FCCD4 /* RootViewController.swift in Sources */,
 				F8C707C31C52752E0089E36A /* DashCell.swift in Sources */,
 				F8C707CF1C52752E0089E36A /* SingleElementTitleCell.swift in Sources */,
@@ -1339,7 +1305,7 @@
 				F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */,
 				F81EF54B1C526E27008FCCD4 /* TableItemPickerVC.swift in Sources */,
 				F8C707951C5272D20089E36A /* FrameCounter.swift in Sources */,
-				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
+				F84232C51C527DA200336A60 /* CustomViewControllerTransitions.swift in Sources */,
 				F81EF5481C526E0C008FCCD4 /* DatePickerVC.swift in Sources */,
 				F81EF5181C526B48008FCCD4 /* EditingMenuPopupVC.swift in Sources */,
 				F81EF4F11C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
@@ -1347,7 +1313,7 @@
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
 				F81EF5531C526E86008FCCD4 /* AttachSoundPlayerVC.swift in Sources */,
 				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
-				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
+				F8C707E51C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F8C7076F1C52707E0089E36A /* ChatMessageRecievedCell.swift in Sources */,
 				F81EF50E1C5268C1008FCCD4 /* ChangePasswordViewController.swift in Sources */,
 				F81EF49A1C5264A1008FCCD4 /* Contact.swift in Sources */,
@@ -1358,8 +1324,8 @@
 				F81EF5101C5268C1008FCCD4 /* LoginVC.swift in Sources */,
 				F81EF5321C526CA4008FCCD4 /* UserProfileVC.swift in Sources */,
 				F8C707781C5271270089E36A /* ParticipantsVC.swift in Sources */,
-				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F81EF4D41C526532008FCCD4 /* DBUser.swift in Sources */,
+				F84232BB1C527BAE00336A60 /* BFDragGestureRecognizer.m in Sources */,
 				F81EF4D21C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F8386F491BD520F7006332D9 /* AFURLResponseSerialization.m in Sources */,
 			);
