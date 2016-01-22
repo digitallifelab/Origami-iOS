@@ -13,10 +13,11 @@
 
 @property (nonatomic, strong) UIColor *elementColor;
 @property (nonatomic, strong) UIColor *lineColor;
-
+@property (nonatomic, assign) NSInteger elementId;
+@property (nonatomic, assign) NSInteger rootElementId;
 
 
 // origami
-- (UIView *)getElementView:(VisualizableObject *)obj at:(CGPoint)point;
+- (OKVisualizationLayer *)getElementView:(VisualizableObject *)obj at:(CGPoint)point;
 
 @end

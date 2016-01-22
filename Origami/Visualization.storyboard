@@ -8,7 +8,7 @@
         <!--Sphere Visualization View Controller-->
         <scene sceneID="Ld6-ea-zIv">
             <objects>
-                <viewController storyboardIdentifier="VisualizationVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="M0g-Ec-Igu" customClass="SphereVisualizationViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SphereVisualizationVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="M0g-Ec-Igu" customClass="SphereVisualizationViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="rXj-T3-zkw"/>
                         <viewControllerLayoutGuide type="bottom" id="KiY-Mr-3ro"/>
@@ -28,6 +28,24 @@
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qPd-Nf-15L" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="521" y="535"/>
+        </scene>
+        <!--Visualization View Controller-->
+        <scene sceneID="rai-f6-QE8">
+            <objects>
+                <viewController storyboardIdentifier="VisualizationVC" useStoryboardIdentifierAsRestorationIdentifier="YES" id="uTO-2Y-Nc6" customClass="VisualizationViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DKJ-ib-8kQ"/>
+                        <viewControllerLayoutGuide type="bottom" id="5ai-Ru-12f"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="IxB-TJ-XTL">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pyN-yF-dEx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="521" y="535"/>
         </scene>

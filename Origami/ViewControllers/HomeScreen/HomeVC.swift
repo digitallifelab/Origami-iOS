@@ -136,21 +136,43 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
     {
         #if SHEVCHENKO
         #else
-            let titleButton = UIButton(type: .System)
-            titleButton.frame = CGRectMake(0,0,60.0,40.0)
-            let titleAttributed = NSAttributedString(string: "Graph", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 15)!])
-            titleButton.setAttributedTitle(titleAttributed, forState: .Normal)
-            titleButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
-            titleButton.addTarget(self, action: "showGraphViewController:", forControlEvents: .TouchUpInside)
-            self.navigationItem.titleView = titleButton
+            let sphereButton = UIButton(type: .System)
+            sphereButton.frame = CGRectMake(0,0,46.0,40.0)
+            let titleAttributed = NSAttributedString(string: "Sphere", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
+            sphereButton.setAttributedTitle(titleAttributed, forState: .Normal)
+            sphereButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
+            sphereButton.addTarget(self, action: "showSphereViewController:", forControlEvents: .TouchUpInside)
+            
+            let circlesButton = UIButton(type: .System)
+            circlesButton.frame = CGRectMake(50.0, 0.0 , 46.0, 40.0)
+            let circlesTitleAttributed = NSAttributedString(string: "Circles", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
+            circlesButton.setAttributedTitle(circlesTitleAttributed, forState: .Normal)
+            circlesButton.titleEdgeInsets = sphereButton.titleEdgeInsets
+            circlesButton.addTarget(self, action: "showCirclesViewController:", forControlEvents: .TouchUpInside)
+            
+            let buttonsHolderView = UIView(frame: CGRectMake(0, 0, 100.0, 40.0) )
+            buttonsHolderView.addSubview(sphereButton)
+            buttonsHolderView.addSubview(circlesButton)
+            
+            self.navigationItem.titleView = buttonsHolderView
         #endif
     }
     #if SHEVCHENKO
     #else
-    func showGraphViewController(sender:UIButton)
+    func showSphereViewController(sender:UIButton)
     {
         let graphBoard = UIStoryboard(name: "Visualization", bundle: nil)
-        guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("VisualizationVC") as? SphereVisualizationViewController else
+        guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("SphereVisualizationVC") as? SphereVisualizationViewController else
+        {
+            return
+        }
+        self.navigationController?.pushViewController(visualVC, animated: true)
+    }
+    
+    func showCirclesViewController(sender:UIButton)
+    {
+        let graphBoard = UIStoryboard(name: "Visualization", bundle: nil)
+        guard let visualVC = graphBoard.instantiateViewControllerWithIdentifier("VisualizationVC") as? VisualizationViewController else
         {
             return
         }

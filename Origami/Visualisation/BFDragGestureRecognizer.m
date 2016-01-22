@@ -35,7 +35,7 @@
     if (self) {
         _allowHorizontalScrolling = YES;
         _allowVerticalScrolling = YES;
-        _minimumPressDuration = 0.5;
+        _minimumPressDuration = 0.1;
         _minimumMovement = 0;
         _maximumMovement = 10;
         _autoScrollInsets = UIEdgeInsetsMake(44, 44, 44, 44);

@@ -18,7 +18,7 @@
 #import "ZYQSphereView.h"
 #endif
 
-@interface VisualizationViewController ()
+@interface VisualizationViewController () <LGAlertViewDelegate>
 {
     ZYQSphereView *sphereView;
     NSTimer *timer;
@@ -103,16 +103,14 @@
         _scrollView.contentOffset = CGPointMake(0.f, scrollViewHeight - 400);
         
         CGPoint aPoint = CGPointMake(75.f, scrollViewHeight - 50.f);
-        
+        _elementView = [[OKVisualizationLayer alloc] init];
         for (NSArray *rowArray in sortedObjects) {
             
             for (VisualizableObject *obj in rowArray) {
                 
-                _elementView = [[OKVisualizationLayer alloc] init];
-                UIView *view = [_elementView getElementView:obj at:CGPointMake(aPoint.x, aPoint.y)];
-                
-                [_contentView addSubview:view];
-                
+                OKVisualizationLayer *view = [_elementView getElementView:obj at:CGPointMake(aPoint.x, aPoint.y)];
+                view.elementId = obj.elementId;
+                view.rootElementId = obj.elementId;
                 // Add the drag gesture recognizer with default values.
                 BFDragGestureRecognizer *holdDragRecognizer = [[BFDragGestureRecognizer alloc] init];
                 [holdDragRecognizer addTarget:self action:@selector(dragRecognized:)];
@@ -120,6 +118,7 @@
                 
                 aPoint.y = aPoint.y - indentY;
                 
+                [_contentView addSubview:view];
             }
             
             // FIX:
@@ -215,7 +214,7 @@
 
 - (void)dragRecognized:(BFDragGestureRecognizer *)recognizer {
     
-    UIView *view = recognizer.view;
+    OKVisualizationLayer *view = (OKVisualizationLayer*)recognizer.view;
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         
@@ -224,7 +223,7 @@
         if ([subviews count] == 0) return;
         
         UILabel *label = subviews[0];
-        UILabel *serviceLabel = subviews[1];
+        //UILabel *serviceLabel = subviews[1];
         
         UIColor *borderColor;
         if ([view.backgroundColor isEqual:[UIColor colorWithRed:1.f green:0.f blue:0.5 alpha:1.f]]) {
@@ -233,8 +232,10 @@
             borderColor = [UIColor colorWithRed:0.f green:0.5 blue:1.f alpha:1.f];
         }
 
-        LGAlertView *alertView = [[LGAlertView alloc] initWithTitle:[label text]
-                                                            message:[serviceLabel text]
+        NSString *serviceElementText = [NSString stringWithFormat:@"%d/%d", view.rootElementId, view.elementId];
+        
+        LGAlertView *alertView = [[LGAlertView alloc] initWithTitle:label.text
+                                                            message:serviceElementText
                                                               style:LGAlertViewStyleAlert
                                                        buttonTitles:@[@"Перейти к элементу в основной интерфейс"]
                                                   cancelButtonTitle:@"Отмена"
@@ -243,6 +244,7 @@
                                                       cancelHandler:nil
                                                  destructiveHandler:nil];
         
+        alertView.pressedElementId = view.elementId;
         alertView.coverColor = [UIColor colorWithWhite:1.f alpha:0.9];
         alertView.layerShadowColor = [UIColor colorWithWhite:0.f alpha:0.3];
         alertView.layerShadowRadius = 4.f;
@@ -257,6 +259,7 @@
         alertView.buttonsTextAlignment = NSTextAlignmentRight;
         alertView.cancelButtonTextAlignment = NSTextAlignmentRight;
         alertView.destructiveButtonTextAlignment = NSTextAlignmentRight;
+        alertView.delegate = self;
         [alertView showAnimated:YES completionHandler:nil];
         
     } else if (recognizer.state == UIGestureRecognizerStateFailed) {
@@ -270,5 +273,18 @@
     return _contentView;
 }
 
+
+#pragma mark - LGAlertViewDelegate
+- (void)alertView:(LGAlertView *)alertView buttonPressedWithTitle:(NSString *)title index:(NSUInteger)index
+{
+    
+    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
+    {
+        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
+        
+        [rootVC presentNewSingleElementVC:alertView.pressedElementId];
+    }
+
+}
 
 @end

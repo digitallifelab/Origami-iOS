@@ -158,7 +158,6 @@
 		F84232B51C527B6500336A60 /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232B31C527A6A00336A60 /* ElementDashboardDatesCell.swift */; };
 		F84232BB1C527BAE00336A60 /* BFDragGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232B81C527BAE00336A60 /* BFDragGestureRecognizer.m */; };
 		F84232BC1C527BAE00336A60 /* VisualizableObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232BA1C527BAE00336A60 /* VisualizableObject.m */; };
-		F84232C01C527BF900336A60 /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */; };
 		F84232C31C527C5800336A60 /* SphereVisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */; };
 		F84232C51C527DA200336A60 /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */; };
 		F84232C71C527E0700336A60 /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C61C527E0700336A60 /* ElementChatPreviewTableHandler.swift */; };
@@ -174,6 +173,7 @@
 		F84232E81C527FD100336A60 /* LGAlertViewTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232DF1C527FD100336A60 /* LGAlertViewTextField.m */; };
 		F84232E91C527FD100336A60 /* LGAlertViewWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232E11C527FD100336A60 /* LGAlertViewWindow.m */; };
 		F84232EA1C527FD100336A60 /* UIWindow+LGAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232E31C527FD100336A60 /* UIWindow+LGAlertView.m */; };
+		F84232F01C52852A00336A60 /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232EF1C52852A00336A60 /* OKVisualizationLayer.m */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
 		F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
@@ -385,8 +385,6 @@
 		F84232B81C527BAE00336A60 /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BFDragGestureRecognizer.m; sourceTree = "<group>"; };
 		F84232B91C527BAE00336A60 /* VisualizableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VisualizableObject.h; sourceTree = "<group>"; };
 		F84232BA1C527BAE00336A60 /* VisualizableObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VisualizableObject.m; sourceTree = "<group>"; };
-		F84232BE1C527BF900336A60 /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
-		F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
 		F84232C11C527C5800336A60 /* SphereVisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereVisualizationViewController.h; sourceTree = "<group>"; };
 		F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereVisualizationViewController.m; sourceTree = "<group>"; };
 		F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomViewControllerTransitions.swift; sourceTree = "<group>"; };
@@ -413,6 +411,8 @@
 		F84232E11C527FD100336A60 /* LGAlertViewWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LGAlertViewWindow.m; sourceTree = "<group>"; };
 		F84232E21C527FD100336A60 /* UIWindow+LGAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWindow+LGAlertView.h"; sourceTree = "<group>"; };
 		F84232E31C527FD100336A60 /* UIWindow+LGAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWindow+LGAlertView.m"; sourceTree = "<group>"; };
+		F84232EE1C52852A00336A60 /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
+		F84232EF1C52852A00336A60 /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -810,8 +810,8 @@
 		F84232BD1C527BF900336A60 /* VisualizationView */ = {
 			isa = PBXGroup;
 			children = (
-				F84232BE1C527BF900336A60 /* OKVisualizationLayer.h */,
-				F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */,
+				F84232EE1C52852A00336A60 /* OKVisualizationLayer.h */,
+				F84232EF1C52852A00336A60 /* OKVisualizationLayer.m */,
 			);
 			path = VisualizationView;
 			sourceTree = "<group>";
@@ -963,12 +963,12 @@
 				F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F82AF3571BEA39FE00E8514A /* Visualization.storyboard */,
+				F811C1751C1AFC2F00C07273 /* TestStuff */,
 				F84232B61C527BAE00336A60 /* Visualisation */,
 				F8C707D71C52763C0089E36A /* CollectionViewLayouts */,
 				F8C707B81C5274C90089E36A /* Cells */,
 				F8C7079F1C5273A00089E36A /* Stuff */,
 				F8C707841C5272D20089E36A /* Tools */,
-				F811C1751C1AFC2F00C07273 /* TestStuff */,
 				F81EF4D81C52665D008FCCD4 /* ViewControllers */,
 				F81EF4721C5263D4008FCCD4 /* Model */,
 				F8D456A91B1DEFA100172667 /* Images.xcassets */,
@@ -1276,6 +1276,7 @@
 				F81EF4EF1C5267E0008FCCD4 /* AllContactsVC.swift in Sources */,
 				F81EF4981C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8C707CD1C52752E0089E36A /* SingleElementLastMessagesCell.swift in Sources */,
+				F84232F01C52852A00336A60 /* OKVisualizationLayer.m in Sources */,
 				F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				F8C707A71C5273A00089E36A /* Enumerations.swift in Sources */,
 				F84232E71C527FD100336A60 /* LGAlertViewController.m in Sources */,
@@ -1329,7 +1330,6 @@
 				F81EF4961C5264A1008FCCD4 /* Element.swift in Sources */,
 				F8C707B21C52741D0089E36A /* HomeCollectionHandler.swift in Sources */,
 				F8386F471BD520F7006332D9 /* AFSecurityPolicy.m in Sources */,
-				F84232C01C527BF900336A60 /* OKVisualizationLayer.m in Sources */,
 				F8C707711C52707E0089E36A /* ChatMessageSentCell.swift in Sources */,
 				F81EF52A1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F81EF4C21C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,

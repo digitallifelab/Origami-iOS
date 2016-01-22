@@ -68,6 +68,8 @@ typedef NS_ENUM(NSUInteger, LGAlertViewWindowLevel)
     LGAlertViewWindowLevelBelowStatusBar = 1
 };
 
+@property (nonatomic, assign) NSInteger pressedElementId;
+
 @property (assign, nonatomic, getter=isShowing) BOOL showing;
 /** Default is LGAlertViewWindowLevelAboveStatusBar */
 @property (assign, nonatomic) LGAlertViewWindowLevel windowLevel;
