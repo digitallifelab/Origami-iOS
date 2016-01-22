@@ -132,6 +132,16 @@
 		F81EF51F1C526BA2008FCCD4 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF51D1C526BA2008FCCD4 /* MenuVC.swift */; };
 		F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5211C526C28008FCCD4 /* HomeVC.swift */; };
 		F81EF5231C526C28008FCCD4 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5211C526C28008FCCD4 /* HomeVC.swift */; };
+		F81EF52A1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5251C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift */; };
+		F81EF52B1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5251C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift */; };
+		F81EF52C1C526CA4008FCCD4 /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5261C526CA4008FCCD4 /* UserProfileFlowLayout.swift */; };
+		F81EF52D1C526CA4008FCCD4 /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5261C526CA4008FCCD4 /* UserProfileFlowLayout.swift */; };
+		F81EF52E1C526CA4008FCCD4 /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5271C526CA4008FCCD4 /* UserProfileSexCell.swift */; };
+		F81EF52F1C526CA4008FCCD4 /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5271C526CA4008FCCD4 /* UserProfileSexCell.swift */; };
+		F81EF5301C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5281C526CA4008FCCD4 /* UserProfileTextContainerCell.swift */; };
+		F81EF5311C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5281C526CA4008FCCD4 /* UserProfileTextContainerCell.swift */; };
+		F81EF5321C526CA4008FCCD4 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */; };
+		F81EF5331C526CA4008FCCD4 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -159,10 +169,6 @@
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
-		F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */; };
-		F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */; };
-		F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */; };
-		F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */; };
 		F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
 		F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
 		F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */; };
@@ -185,8 +191,6 @@
 		F891BBE61B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */; };
 		F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */; };
 		F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B651B21E86A00156CEC /* DashCell.swift */; };
-		F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */; };
-		F8A2A4D01B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */; };
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
@@ -204,7 +208,6 @@
 		F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F864AB191B7252F600686EB1 /* ImageFilter.swift */; };
 		F8C93ACF1B861B94009D890E /* ChatMessageRecievedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88564011B31CBD1005D223E /* ChatMessageRecievedCell.swift */; };
 		F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */; };
-		F8C93AD11B861B94009D890E /* UserProfileFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */; };
 		F8C93AD31B861B94009D890E /* HomeSignalsHiddenFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */; };
 		F8C93AD51B861B94009D890E /* HomeSignalsVisibleFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */; };
 		F8C93AD71B861B94009D890E /* SingleElementDashboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */; };
@@ -213,7 +216,6 @@
 		F8C93AE31B861B94009D890E /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
 		F8C93AE51B861B94009D890E /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */; };
 		F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88563FD1B31C48B005D223E /* ChatTextInputView.swift */; };
-		F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */; };
 		F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */; };
 		F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
 		F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
@@ -225,14 +227,12 @@
 		F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
 		F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
 		F8C93B001B861B94009D890E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D17A1B2583CE00E702D3 /* Extensions.swift */; };
-		F8C93B021B861B94009D890E /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */; };
 		F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668131B429FC30021C806 /* ContactCheckerCell.swift */; };
 		F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
 		F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
 		F8C93B101B861B94009D890E /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7EF1B68FCC60004F0CB /* Structs.swift */; };
 		F8C93B111B861B94009D890E /* Enumerations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2B1B283DE900584B8D /* Enumerations.swift */; };
-		F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */; };
 		F8C93B131B861B94009D890E /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88563FA1B31C102005D223E /* ChatVC.swift */; };
 		F8C93B171B861B94009D890E /* ParticipantsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668111B4295C40021C806 /* ParticipantsVC.swift */; };
 		F8C93B181B861B94009D890E /* ChatMessageSentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88564031B31CBE3005D223E /* ChatMessageSentCell.swift */; };
@@ -371,6 +371,11 @@
 		F81EF5171C526B48008FCCD4 /* PopupMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupMenuCell.swift; sourceTree = "<group>"; };
 		F81EF51D1C526BA2008FCCD4 /* MenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
 		F81EF5211C526C28008FCCD4 /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
+		F81EF5251C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileAvatarCollectionCell.swift; sourceTree = "<group>"; };
+		F81EF5261C526CA4008FCCD4 /* UserProfileFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileFlowLayout.swift; sourceTree = "<group>"; };
+		F81EF5271C526CA4008FCCD4 /* UserProfileSexCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileSexCell.swift; sourceTree = "<group>"; };
+		F81EF5281C526CA4008FCCD4 /* UserProfileTextContainerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileTextContainerCell.swift; sourceTree = "<group>"; };
+		F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -409,10 +414,6 @@
 		F86F237D1B208C7D00234EFD /* FileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandler.h; sourceTree = "<group>"; };
 		F86F237E1B208C7D00234EFD /* FileHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileHandler.m; sourceTree = "<group>"; };
 		F86F23801B20A29600234EFD /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
-		F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
-		F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileAvatarCollectionCell.swift; sourceTree = "<group>"; };
-		F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileTextContainerCell.swift; sourceTree = "<group>"; };
-		F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileFlowLayout.swift; sourceTree = "<group>"; };
 		F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementComposerViewController.swift; sourceTree = "<group>"; };
 		F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
 		F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPreviewCell.swift; sourceTree = "<group>"; };
@@ -433,7 +434,6 @@
 		F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSignalsHiddenFlowLayout.swift; sourceTree = "<group>"; };
 		F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCollectionHandler.swift; sourceTree = "<group>"; };
 		F89F3B651B21E86A00156CEC /* DashCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashCell.swift; sourceTree = "<group>"; };
-		F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileSexCell.swift; sourceTree = "<group>"; };
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
@@ -665,6 +665,7 @@
 				F81EF4D91C52665D008FCCD4 /* RootViewController.swift */,
 				F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */,
 				F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */,
+				F81EF5241C526CA4008FCCD4 /* UserProfile */,
 				F81EF5201C526C17008FCCD4 /* HomeScreen */,
 				F81EF51C1C526BA2008FCCD4 /* Menu */,
 				F81EF5151C526B48008FCCD4 /* RightTopPopupMenu */,
@@ -751,6 +752,18 @@
 			path = HomeScreen;
 			sourceTree = "<group>";
 		};
+		F81EF5241C526CA4008FCCD4 /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				F81EF5251C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift */,
+				F81EF5261C526CA4008FCCD4 /* UserProfileFlowLayout.swift */,
+				F81EF5271C526CA4008FCCD4 /* UserProfileSexCell.swift */,
+				F81EF5281C526CA4008FCCD4 /* UserProfileTextContainerCell.swift */,
+				F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */,
+			);
+			path = UserProfile;
+			sourceTree = "<group>";
+		};
 		F8386F371BD520F7006332D9 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -813,9 +826,10 @@
 			name = LocalizedStrings;
 			sourceTree = "<group>";
 		};
-		F855BB9D1B74A7AF00EC114C /* VCs */ = {
+		F855BB9D1B74A7AF00EC114C /* VCsToMove */ = {
 			isa = PBXGroup;
 			children = (
+				F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */,
 				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
 				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
 				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
@@ -826,26 +840,12 @@
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
 				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
 				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
-				F86F74261B56835E00E48E13 /* UserProfile */,
 				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
 				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
 				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
 				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
 			);
-			name = VCs;
-			sourceTree = "<group>";
-		};
-		F86F74261B56835E00E48E13 /* UserProfile */ = {
-			isa = PBXGroup;
-			children = (
-				F86F742C1B5683AE00E48E13 /* UserProfileVC.swift */,
-				F86F74301B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift */,
-				F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */,
-				F8A2A4CE1B95F63B00C88A6E /* UserProfileSexCell.swift */,
-				F86F74381B56933400E48E13 /* UserProfileFlowLayout.swift */,
-				F879706E1B947EE7007AAACB /* TableItemPickerVC.swift */,
-			);
-			name = UserProfile;
+			name = VCsToMove;
 			sourceTree = "<group>";
 		};
 		F872A4401B46927E000A6AA3 /* EditingAndCreation */ = {
@@ -1002,7 +1002,7 @@
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F81EF4D81C52665D008FCCD4 /* ViewControllers */,
 				F81EF4721C5263D4008FCCD4 /* Model */,
-				F855BB9D1B74A7AF00EC114C /* VCs */,
+				F855BB9D1B74A7AF00EC114C /* VCsToMove */,
 				F8016FF21B304619002A1620 /* tools */,
 				F8D456A91B1DEFA100172667 /* Images.xcassets */,
 				F8D456AB1B1DEFA100172667 /* LaunchScreen.xib */,
@@ -1179,6 +1179,7 @@
 				F8C93ACD1B861B94009D890E /* AttachImageViewerVC.swift in Sources */,
 				F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */,
 				F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */,
+				F81EF5311C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */,
 				F81EF4B71C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
@@ -1187,7 +1188,6 @@
 				F81EF5231C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF48D1C5264A1008FCCD4 /* User.swift in Sources */,
 				F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */,
-				F8C93AD11B861B94009D890E /* UserProfileFlowLayout.swift in Sources */,
 				F81EF4D11C526532008FCCD4 /* DBPerson.swift in Sources */,
 				F8C93AD31B861B94009D890E /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F8C93AD51B861B94009D890E /* HomeSignalsVisibleFlowLayout.swift in Sources */,
@@ -1204,10 +1204,9 @@
 				F81EF4C31C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
 				F8C93AE51B861B94009D890E /* SingleElementTitleCell.swift in Sources */,
 				F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */,
-				F8A2A4D01B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F81EF4F91C526806008FCCD4 /* MyContactsListVC.swift in Sources */,
-				F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */,
 				F81EF4E81C526763008FCCD4 /* ContactsPickerVC.swift in Sources */,
+				F81EF52F1C526CA4008FCCD4 /* UserProfileSexCell.swift in Sources */,
 				F81EF4F01C5267E0008FCCD4 /* AllContactsVC.swift in Sources */,
 				F81EF5021C526867008FCCD4 /* ContactProfileAvatarCell.swift in Sources */,
 				F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
@@ -1237,6 +1236,7 @@
 				F81EF4C11C526532008FCCD4 /* DBContact.swift in Sources */,
 				F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */,
 				F81EF4931C5264A1008FCCD4 /* MediaFile.swift in Sources */,
+				F81EF52D1C526CA4008FCCD4 /* UserProfileFlowLayout.swift in Sources */,
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
 				F81EF4C51C526532008FCCD4 /* DBElement.swift in Sources */,
 				F81EF47F1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
@@ -1244,7 +1244,6 @@
 				F81EF4BB1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
 				F81EF4811C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
 				F8C93B001B861B94009D890E /* Extensions.swift in Sources */,
-				F8C93B021B861B94009D890E /* UserProfileTextContainerCell.swift in Sources */,
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
 				F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */,
 				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
@@ -1263,12 +1262,12 @@
 				F81EF5041C526867008FCCD4 /* ContactProfileTextInfoCell.swift in Sources */,
 				F8C93B101B861B94009D890E /* Structs.swift in Sources */,
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
+				F81EF5331C526CA4008FCCD4 /* UserProfileVC.swift in Sources */,
 				F81EF4CB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
 				F81EF4D31C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F87AEE561BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
 				F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
-				F8C93B121B861B94009D890E /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
 				F8C93B131B861B94009D890E /* ChatVC.swift in Sources */,
 				F8C93B171B861B94009D890E /* ParticipantsVC.swift in Sources */,
@@ -1277,6 +1276,7 @@
 				F8C93B191B861B94009D890E /* ObjectsConverter.swift in Sources */,
 				F8C93B1A1B861B94009D890E /* SingleElementDateDetailsCell.swift in Sources */,
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
+				F81EF52B1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F81EF4BD1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */,
 				F81EF49B1C5264A1008FCCD4 /* Contact.swift in Sources */,
 				F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */,
@@ -1297,6 +1297,7 @@
 				F81EF47C1C5263D4008FCCD4 /* MessagesLoader.swift in Sources */,
 				F86F237B1B208AEE00234EFD /* Constants.swift in Sources */,
 				F81EF4781C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
+				F81EF52C1C526CA4008FCCD4 /* UserProfileFlowLayout.swift in Sources */,
 				F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF4F61C526806008FCCD4 /* MyContactListCell.swift in Sources */,
 				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
@@ -1313,7 +1314,6 @@
 				F81EF4CA1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8386F4A1BD520F7006332D9 /* AFURLSessionManager.m in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
-				F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F81EF47A1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F81EF5011C526867008FCCD4 /* ContactProfileAvatarCell.swift in Sources */,
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
@@ -1325,6 +1325,7 @@
 				F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F81EF4D01C526532008FCCD4 /* DBPerson.swift in Sources */,
+				F81EF5301C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F81EF4B21C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
@@ -1338,7 +1339,6 @@
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
 				F81EF4EA1C52677D008FCCD4 /* ContactSearchVC.swift in Sources */,
 				F81EF4BE1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */,
-				F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */,
 				F8DBE5361BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
 				F891BBE61B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F8DE59D41B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
@@ -1364,12 +1364,12 @@
 				F81EF4E01C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */,
 				F81EF49C1C5264A1008FCCD4 /* AttachFile.swift in Sources */,
 				F81EF51A1C526B48008FCCD4 /* PopupMenuCell.swift in Sources */,
-				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,
 				F81EF4961C5264A1008FCCD4 /* Element.swift in Sources */,
 				F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */,
 				F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */,
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
 				F8386F471BD520F7006332D9 /* AFSecurityPolicy.m in Sources */,
+				F81EF52A1C526CA4008FCCD4 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F81EF4C21C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
@@ -1386,7 +1386,6 @@
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,
 				F81EF5181C526B48008FCCD4 /* EditingMenuPopupVC.swift in Sources */,
-				F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */,
 				F88668141B429FC30021C806 /* ContactCheckerCell.swift in Sources */,
 				F81EF4F11C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
 				F81EF5031C526867008FCCD4 /* ContactProfileTextInfoCell.swift in Sources */,
@@ -1401,13 +1400,14 @@
 				F87AEE551BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
 				F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */,
 				F81EF50E1C5268C1008FCCD4 /* ChangePasswordViewController.swift in Sources */,
-				F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,
 				F81EF49A1C5264A1008FCCD4 /* Contact.swift in Sources */,
 				F81EF4B41C526532008FCCD4 /* DBAttach.swift in Sources */,
 				F88668121B4295C40021C806 /* ParticipantsVC.swift in Sources */,
+				F81EF52E1C526CA4008FCCD4 /* UserProfileSexCell.swift in Sources */,
 				F81EF5101C5268C1008FCCD4 /* LoginVC.swift in Sources */,
 				F88564041B31CBE3005D223E /* ChatMessageSentCell.swift in Sources */,
+				F81EF5321C526CA4008FCCD4 /* UserProfileVC.swift in Sources */,
 				F8DE685D1B4581ED001EE9A0 /* ObjectsConverter.swift in Sources */,
 				F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */,
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
