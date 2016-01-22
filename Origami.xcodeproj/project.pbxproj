@@ -148,6 +148,10 @@
 		F81EF53A1C526CE5008FCCD4 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5361C526CE5008FCCD4 /* RecentActivityTableVC.swift */; };
 		F81EF53D1C526D37008FCCD4 /* ElementsSortedByUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF53C1C526D37008FCCD4 /* ElementsSortedByUserVC.swift */; };
 		F81EF53E1C526D37008FCCD4 /* ElementsSortedByUserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF53C1C526D37008FCCD4 /* ElementsSortedByUserVC.swift */; };
+		F81EF5421C526D9A008FCCD4 /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5401C526D9A008FCCD4 /* NewElementComposerViewController.swift */; };
+		F81EF5431C526D9A008FCCD4 /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5401C526D9A008FCCD4 /* NewElementComposerViewController.swift */; };
+		F81EF5441C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5411C526D9A008FCCD4 /* NewElementTextViewCell.swift */; };
+		F81EF5451C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5411C526D9A008FCCD4 /* NewElementTextViewCell.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -175,7 +179,6 @@
 		F86F237B1B208AEE00234EFD /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F237A1B208AEE00234EFD /* Constants.swift */; };
 		F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = F86F237E1B208C7D00234EFD /* FileHandler.m */; };
 		F86F23811B20A29600234EFD /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F23801B20A29600234EFD /* Protocols.swift */; };
-		F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
 		F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
 		F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */; };
 		F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */; };
@@ -218,7 +221,6 @@
 		F8C93AD51B861B94009D890E /* HomeSignalsVisibleFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */; };
 		F8C93AD71B861B94009D890E /* SingleElementDashboardVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD671B5F874D00DB50F8 /* SingleElementDashboardVC.swift */; };
 		F8C93AD81B861B94009D890E /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */; };
-		F8C93ADF1B861B94009D890E /* NewElementTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */; };
 		F8C93AE31B861B94009D890E /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */; };
 		F8C93AE51B861B94009D890E /* SingleElementTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD6E1B5F98BE00DB50F8 /* SingleElementTitleCell.swift */; };
 		F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88563FD1B31C48B005D223E /* ChatTextInputView.swift */; };
@@ -234,7 +236,6 @@
 		F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */; };
 		F8C93B001B861B94009D890E /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F880D17A1B2583CE00E702D3 /* Extensions.swift */; };
 		F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668131B429FC30021C806 /* ContactCheckerCell.swift */; };
-		F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
 		F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
 		F8C93B101B861B94009D890E /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7EF1B68FCC60004F0CB /* Structs.swift */; };
@@ -263,7 +264,6 @@
 		F8DE59D41B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */; };
 		F8DE685D1B4581ED001EE9A0 /* ObjectsConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */; };
 		F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7EF1B68FCC60004F0CB /* Structs.swift */; };
-		F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */; };
 		F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
 		F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3C1BD520F7006332D9 /* AFNetworkReachabilityManager.m */; };
 		F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F3E1BD520F7006332D9 /* AFSecurityPolicy.m */; };
@@ -379,6 +379,8 @@
 		F81EF5351C526CE5008FCCD4 /* RecentActivityTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableCell.swift; sourceTree = "<group>"; };
 		F81EF5361C526CE5008FCCD4 /* RecentActivityTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableVC.swift; sourceTree = "<group>"; };
 		F81EF53C1C526D37008FCCD4 /* ElementsSortedByUserVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementsSortedByUserVC.swift; sourceTree = "<group>"; };
+		F81EF5401C526D9A008FCCD4 /* NewElementComposerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementComposerViewController.swift; sourceTree = "<group>"; };
+		F81EF5411C526D9A008FCCD4 /* NewElementTextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementTextViewCell.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -417,7 +419,6 @@
 		F86F237D1B208C7D00234EFD /* FileHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileHandler.h; sourceTree = "<group>"; };
 		F86F237E1B208C7D00234EFD /* FileHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileHandler.m; sourceTree = "<group>"; };
 		F86F23801B20A29600234EFD /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
-		F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementComposerViewController.swift; sourceTree = "<group>"; };
 		F874D9121B2704F700B867BF /* ElementDashboardDatesCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementDashboardDatesCell.swift; sourceTree = "<group>"; };
 		F874D9181B2706DE00B867BF /* ChatPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPreviewCell.swift; sourceTree = "<group>"; };
 		F874D91C1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementSubordinatesCollectionHandler.swift; sourceTree = "<group>"; };
@@ -457,7 +458,6 @@
 		F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSignalsVisibleFlowLayout.swift; sourceTree = "<group>"; };
 		F8DE685C1B4581ED001EE9A0 /* ObjectsConverter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectsConverter.swift; sourceTree = "<group>"; };
 		F8DEE7EF1B68FCC60004F0CB /* Structs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
-		F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewElementTextViewCell.swift; sourceTree = "<group>"; };
 		F8EEC7521B98A334003525B0 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		F8EEC7541B98A341003525B0 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F8EEC7561B98A34B003525B0 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
@@ -665,6 +665,7 @@
 				F81EF4D91C52665D008FCCD4 /* RootViewController.swift */,
 				F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */,
 				F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */,
+				F81EF53F1C526D9A008FCCD4 /* CreationAndEditing */,
 				F81EF53B1C526D37008FCCD4 /* ElementsSortedByUser */,
 				F81EF5341C526CE5008FCCD4 /* ElementsActivity */,
 				F81EF5241C526CA4008FCCD4 /* UserProfile */,
@@ -783,6 +784,15 @@
 			path = ElementsSortedByUser;
 			sourceTree = "<group>";
 		};
+		F81EF53F1C526D9A008FCCD4 /* CreationAndEditing */ = {
+			isa = PBXGroup;
+			children = (
+				F81EF5401C526D9A008FCCD4 /* NewElementComposerViewController.swift */,
+				F81EF5411C526D9A008FCCD4 /* NewElementTextViewCell.swift */,
+			);
+			path = CreationAndEditing;
+			sourceTree = "<group>";
+		};
 		F8386F371BD520F7006332D9 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -858,18 +868,8 @@
 				F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */,
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
 				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
-				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
-				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
-				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
 			);
 			name = VCsToMove;
-			sourceTree = "<group>";
-		};
-		F872A4401B46927E000A6AA3 /* EditingAndCreation */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = EditingAndCreation;
 			sourceTree = "<group>";
 		};
 		F87AEE531BE10F3300A0BFB2 /* DatesSetup */ = {
@@ -1197,7 +1197,6 @@
 				F8C93AD81B861B94009D890E /* DashboardMessagesCell.swift in Sources */,
 				F81EF4B31C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
 				F81EF50F1C5268C1008FCCD4 /* ChangePasswordViewController.swift in Sources */,
-				F8C93ADF1B861B94009D890E /* NewElementTextViewCell.swift in Sources */,
 				F8C93AE31B861B94009D890E /* DashHeaderView.swift in Sources */,
 				F81EF4F71C526806008FCCD4 /* MyContactListCell.swift in Sources */,
 				F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */,
@@ -1228,6 +1227,7 @@
 				F8C93AF01B861B94009D890E /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */,
 				F81EF4DE1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
+				F81EF5451C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F8C93AF41B861B94009D890E /* FrameCounter.swift in Sources */,
 				F8C93AF81B861B94009D890E /* FileHandler.m in Sources */,
 				F8C93AF91B861B94009D890E /* CustomViewControllerTransitions.swift in Sources */,
@@ -1247,7 +1247,6 @@
 				F81EF53E1C526D37008FCCD4 /* ElementsSortedByUserVC.swift in Sources */,
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
 				F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */,
-				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
 				F81EF4991C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8BDB6951BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
 				F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */,
@@ -1262,6 +1261,7 @@
 				F81EF5041C526867008FCCD4 /* ContactProfileTextInfoCell.swift in Sources */,
 				F8C93B101B861B94009D890E /* Structs.swift in Sources */,
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
+				F81EF5431C526D9A008FCCD4 /* NewElementComposerViewController.swift in Sources */,
 				F81EF5331C526CA4008FCCD4 /* UserProfileVC.swift in Sources */,
 				F81EF4CB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
@@ -1331,6 +1331,7 @@
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F81EF4B21C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
 				F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */,
+				F81EF5441C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F81EF5051C526867008FCCD4 /* ContactProfileVC.swift in Sources */,
 				F81EF4E71C526763008FCCD4 /* ContactsPickerVC.swift in Sources */,
 				F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */,
@@ -1349,11 +1350,11 @@
 				F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */,
 				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F81EF4DD1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
-				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
 				F81EF48E1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F81EF4941C5264A1008FCCD4 /* Language.swift in Sources */,
 				F81EF4C01C526532008FCCD4 /* DBContact.swift in Sources */,
 				F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */,
+				F81EF5421C526D9A008FCCD4 /* NewElementComposerViewController.swift in Sources */,
 				F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
 				F81EF5371C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
@@ -1392,7 +1393,6 @@
 				F81EF5031C526867008FCCD4 /* ContactProfileTextInfoCell.swift in Sources */,
 				F8BDB6941BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
-				F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */,
 				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
