@@ -15,6 +15,7 @@
 #import "Origami_task_manager-Swift.h"
 #import "OKVisualizationLayer.h"
 #import "BFDragGestureRecognizer.h"
+#import "PFButton.h"
 #endif
 
 
@@ -37,7 +38,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+    [self setupRightNavigationButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -60,156 +61,14 @@
 
 -(void) setupRightNavigationButton
 {
+    self.currentViewControllersCount = self.navigationController.viewControllers.count;
     
     if( self.currentViewControllersCount < 4)
     {
-
-        // _scrollView
-        // TODO: calculate Height and Width due in count objectsToVisualize. Default: 1000, 1000.
-        CGFloat scrollViewHeight = 1000;
-        CGFloat scrollViewWidth = 1000;
-        CGSize scrollViewSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
-        CGRect rect = (CGRect){CGPointZero, scrollViewSize};
+        SEL nextViewControllerSelector = @selector(showNextSelf:);
         
-        _scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
-        _scrollView.contentSize = scrollViewSize;
-        _scrollView.contentInset = UIEdgeInsetsMake(64, 0, 44, 0);
-        _scrollView.minimumZoomScale = 1;
-        _scrollView.maximumZoomScale = 3;
-        _scrollView.delegate = self;
-        UIEdgeInsets indicatorInsets = _scrollView.scrollIndicatorInsets;
-        indicatorInsets.bottom = _scrollView.contentInset.bottom;
-        _scrollView.scrollIndicatorInsets = indicatorInsets;
-        [self.view insertSubview:_scrollView atIndex:0];
-        
-        _contentView = [[UIView alloc] initWithFrame:rect];
-        [_scrollView addSubview:_contentView];
-        
-        //////// CGPoint center = CGPointMake(scrollViewWidth / 2, scrollViewHeight / 2);
-        
-        // TODO: focus to sector 3
-        // TODO: ??? _startCenter - look to the example project
-        
-        //_scrollView.contentOffset = CGPointMake(center.x - _scrollView.bounds.size.width / 2, center.y - _scrollView.bounds.size.height / 2);
-        _scrollView.contentOffset = CGPointMake(0, 0);
-        
-        
-        
-        NSArray *sortedObjects = [self.objectsToVisualize sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-            
-            NSInteger firstRootId  = [(VisualizableObject*)obj1 rootElementId];
-            NSInteger secondRootId = [(VisualizableObject*)obj2 rootElementId];
-            
-            NSInteger firstElementId  = [(VisualizableObject*)obj1 elementId];
-            NSInteger secondElementId = [(VisualizableObject*)obj2 elementId];
-            
-            if ( firstRootId < secondRootId & firstElementId < secondElementId ) {
-                return (NSComparisonResult)NSOrderedAscending;
-            } else if ( firstRootId > secondRootId & firstElementId > secondElementId ) {
-                return (NSComparisonResult)NSOrderedDescending;
-            } else {
-                return (NSComparisonResult)NSOrderedSame;
-            }
-            
-        }];
-
-        //for (VisualizableObject *obj in sortedObjects) {
-        //    NSLog(@"rootElementId = %d, elementID = %d", obj.rootElementId, obj.elementId);
-        //}
-        
-        CGFloat xC = 0;
-        CGFloat yC = 0;
-        
-        for (VisualizableObject *obj in sortedObjects) {
-            
-            _elementView = [[OKVisualizationLayer alloc] init];
-            UIView *view = [_elementView getElementView:obj at:CGPointMake(xC, yC)];
-            
-            /*
-            BOOL canPlace = NO;
-            while (!canPlace) {
-                
-                
-                // TODO: not randomPoint
-                CGPoint randomPoint = CGPointMake(100 + random() % (int)(scrollViewWidth - 200),
-                                                  100 + random() % (int)(scrollViewHeight - 200));
-                
-                
-                randomRect = (CGRect){randomPoint, CGSizeMake(50, 50)};
-                
-                canPlace = YES;
-                for (UIView *subview in _contentView.subviews) {
-                    if (CGRectIntersectsRect(randomRect, subview.frame)) {
-                        canPlace = NO;
-                        break;
-                    }
-                }
-            }*/
-            
-            
-            [_contentView addSubview:view];
-            
-            xC = xC + 20;
-            yC = yC + 20;
-            
-            
-            
-            // Add the drag gesture recognizer with default values.
-            BFDragGestureRecognizer *holdDragRecognizer = [[BFDragGestureRecognizer alloc] init];
-            [holdDragRecognizer addTarget:self action:@selector(dragRecognized:)];
-            [view addGestureRecognizer:holdDragRecognizer];
-
-            
-            /* ***********
-            // Use a fixed seed to always have the same color views.
-            srandom(314159265);
-            
-            // Find a random position for the color view, that doesn't intersect other views.
-            CGRect randomRect = CGRectZero;
-            BOOL canPlace = NO;
-            while (!canPlace) {
-
-                
-                // TODO: not randomPoint
-                CGPoint randomPoint = CGPointMake(100 + random() % (int)(scrollViewWidth - 200),
-                                                  100 + random() % (int)(scrollViewHeight - 200));
-                
-                
-                randomRect = (CGRect){randomPoint, CGSizeMake(50, 50)};
-                
-                canPlace = YES;
-                for (UIView *subview in _contentView.subviews) {
-                    if (CGRectIntersectsRect(randomRect, subview.frame)) {
-                        canPlace = NO;
-                        break;
-                    }
-                }
-            }
-            
-            UITextView *view = [[UITextView alloc] initWithFrame:randomRect];
-            
-            //view.text = [NSString stri obj.elementId;
-            view.editable = NO;
-            view.layer.cornerRadius = randomRect.size.width / 2;
-            
-            // Assign a random background color.
-            CGFloat hue = (CGFloat)(random() % 256 / 256.0);  //  0.0 to 1.0
-            CGFloat saturation = (CGFloat)((random() % 128 / 256.0) + 0.5);  //  0.5 to 1.0, away from white
-            CGFloat brightness = (CGFloat)((random() % 128 / 256.0) + 0.5);  //  0.5 to 1.0, away from black
-            UIColor *randomColor = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-            view.backgroundColor = randomColor;
-            [_contentView addSubview:view];
-            
-            // Add the drag gesture recognizer with default values.
-            BFDragGestureRecognizer *holdDragRecognizer = [[BFDragGestureRecognizer alloc] init];
-            [holdDragRecognizer addTarget:self action:@selector(dragRecognized:)];
-            [view addGestureRecognizer:holdDragRecognizer];
-             
-            */
-             
-         
-        }
-
+        UIBarButtonItem *rightButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:nextViewControllerSelector];
+        self.navigationItem.rightBarButtonItem = rightButtonItem;
     }
 }
 
@@ -217,8 +76,8 @@
 {
     if (self.objectsToVisualize)
     {
-       
-        //NSInteger objectsCount = self.objectsToVisualize.count;
+        
+        NSInteger objectsCount = self.objectsToVisualize.count;
         BOOL showsBackgroundColor = YES;
         BOOL showsCircleButtons = NO;
         if (self.currentViewControllersCount == 3)
@@ -230,65 +89,152 @@
         {
             showsBackgroundColor = NO;
         }
-    
-    //show stuff.
-
+        
+        self.view.backgroundColor = [UIColor blackColor];
+        UIColor *buttonBackroundColor =[UIColor colorWithRed:33.0/255.0 green:150.0/255.0 blue:243.0/255.0 alpha:1.0];
+        UIColor *signalRedColor = [UIColor colorWithRed:233.0/255.0 green:30.0/255.0 blue:83.0/255.0 alpha:1.0];
+        UIColor *whiteTextColor = [UIColor whiteColor];
+        
+        CGFloat minimumDimension = MIN(CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds)) * 0.9;
+        UIFont *segoeFont = [UIFont fontWithName:@"Segoe UI" size:13.0];
+        sphereView = [[ZYQSphereView alloc] initWithFrame:CGRectMake(10, 60, minimumDimension, minimumDimension)];
+        sphereView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
+        NSMutableArray *views = [[NSMutableArray alloc] init];
+        for (int i = 0; i < objectsCount; i++)
+        {
+            VisualizableObject *currentObject = self.objectsToVisualize[i];
+            
+            PFButton *subV = [PFButton buttonWithType:UIButtonTypeSystem];
+            subV.frame = (showsCircleButtons) ? CGRectMake(0, 0, 30, 30) : CGRectMake(0, 0, 80, 60) ;
+            subV.titleLabel.numberOfLines = 0;
+            subV.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+            subV.titleLabel.preferredMaxLayoutWidth = 60.0;
+            subV.titleLabel.adjustsFontSizeToFitWidth = YES;
+            //subV.titleLabel.backgroundColor = [UIColor yellowColor];
+            
+            if (showsCircleButtons)
+            {
+                subV.layer.cornerRadius = 15.0;
+                subV.layer.masksToBounds = YES;
+            }
+            else
+            {
+                subV.layer.masksToBounds=YES;
+                subV.layer.cornerRadius=3;
+            }
+            
+            NSString *currentTitle = currentObject.title;
+            if (currentTitle.length > 20)
+            {
+                currentTitle = [currentTitle substringToIndex:20];
+            }
+            
+            NSAttributedString *textToSet;
+            
+            if (showsBackgroundColor)
+            {
+                subV.backgroundColor = (currentObject.isSignal) ? signalRedColor : buttonBackroundColor;
+                if (!showsCircleButtons)
+                {
+                    textToSet = [[NSAttributedString alloc] initWithString:currentTitle.uppercaseString attributes:@{NSForegroundColorAttributeName: whiteTextColor, NSFontAttributeName:segoeFont}];
+                    [subV setAttributedTitle:textToSet forState:UIControlStateNormal];
+                }
+            }
+            else
+            {
+                subV.backgroundColor = [UIColor clearColor];
+                if (!showsCircleButtons)
+                {
+                    UIColor *currentTextColor = (currentObject.isSignal) ? signalRedColor : whiteTextColor;
+                    textToSet = [[NSAttributedString alloc] initWithString:currentTitle.uppercaseString attributes:@{NSForegroundColorAttributeName: currentTextColor, NSFontAttributeName:segoeFont}];
+                    [subV setAttributedTitle:textToSet forState:UIControlStateNormal];
+                }
+            }
+            
+            //[subV sizeToFit];
+            [subV addTarget:self action:@selector(subVClick:) forControlEvents:UIControlEventTouchUpInside];
+            
+            subV.elementIdTag = currentObject.elementId;
+            //printf("tag: %ld",(long)subV.tag);
+            [views addObject:subV];
+            //[subV release];
+        }
+        
+        [sphereView setItems:views];
+        
+        sphereView.isPanTimerStart=YES;
+        //[views release];
+        
+        [self.view addSubview:sphereView];
+        [sphereView timerStart];
+        
+        UIButton *btn=[UIButton buttonWithType:UIButtonTypeCustom];
+        btn.frame=CGRectMake((self.view.frame.size.width-120)/2, self.view.frame.size.height-60, 120, 30);
+        [self.view addSubview:btn];
+        btn.backgroundColor=[UIColor whiteColor];
+        btn.layer.borderWidth=1;
+        btn.layer.borderColor=[[UIColor orangeColor] CGColor];
+        [btn setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+        [btn setTitle:@"start/stop" forState:UIControlStateNormal];
+        btn.selected=NO;
+        [btn addTarget:self action:@selector(changePF:) forControlEvents:UIControlEventTouchUpInside];
     }
-    
 }
 
-//-(void)subVClick:(PFButton*)sender{
-//    NSLog(@"%@",sender.titleLabel.text);
-//    NSInteger tagTapped = sender.elementIdTag;
-//    BOOL isStart=[sphereView isTimerStart];
-//    
-//    [sphereView timerStop];
-//    
-//    __weak typeof(self) weakSelf = self;
-//    
-//    [UIView animateWithDuration:0.3 animations:^{
-//        sender.transform=CGAffineTransformMakeScale(1.5, 1.5);
-//    } completion:^(BOOL finished) {
-//        [UIView animateWithDuration:0.2 animations:^{
-//            sender.transform=CGAffineTransformMakeScale(1, 1);
-//            if (isStart) {
-//                [sphereView timerStart];
-//            }
-//        }];
-//        [weakSelf showTappedElementByTag:tagTapped];
-//    }];
-//}
+-(void)subVClick:(PFButton*)sender{
+    
+    NSLog(@"%@",sender.titleLabel.text);
+    
+    NSInteger tagTapped = sender.elementIdTag;
+    BOOL isStart=[sphereView isTimerStart];
+    
+    [sphereView timerStop];
+    
+    __weak typeof(self) weakSelf = self;
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        sender.transform=CGAffineTransformMakeScale(1.5, 1.5);
+    } completion:^(BOOL finished) {
+        [UIView animateWithDuration:0.2 animations:^{
+            sender.transform=CGAffineTransformMakeScale(1, 1);
+            if (isStart) {
+                [sphereView timerStart];
+            }
+        }];
+        [weakSelf showTappedElementByTag:tagTapped];
+    }];
+}
 
 
 
-//-(void)changePF:(UIButton*)sender{
-//    if ([sphereView isTimerStart]) {
-//        [sphereView timerStop];
-//    }
-//    else{
-//        [sphereView timerStart];
-//    }
-//}
+-(void)changePF:(UIButton*)sender{
+    if ([sphereView isTimerStart]) {
+        [sphereView timerStop];
+    }
+    else{
+        [sphereView timerStart];
+    }
+}
 
 
-//-(void) showNextSelf:(UIBarButtonItem *)sender
-//{
-//    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
-//    nextViewController.objectsToVisualize = self.objectsToVisualize;
-//    [self.navigationController pushViewController:nextViewController animated:YES];
-//}
+-(void) showNextSelf:(UIBarButtonItem *)sender
+{
+    typeof(self) nextViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"VisualizationVC"];
+    nextViewController.objectsToVisualize = self.objectsToVisualize;
+    [self.navigationController pushViewController:nextViewController animated:YES];
+}
 
 
-//-(void) showTappedElementByTag:(NSInteger) elementButtonTag
-//{
-//    printf("tapped: %ld", (long)elementButtonTag);
-//    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
-//    {
-//        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
-//        
-//        [rootVC presentNewSingleElementVC:elementButtonTag];
-//    }
-//}
+-(void) showTappedElementByTag:(NSInteger) elementButtonTag
+{
+    printf("tapped: %ld", (long)elementButtonTag);
+    if ([self.navigationController.viewControllers.firstObject isKindOfClass:[HomeVC class]])
+    {
+        HomeVC *rootVC = self.navigationController.viewControllers.firstObject;
+        
+        [rootVC presentNewSingleElementVC:elementButtonTag];
+    }
+}
 
 /*
 #pragma mark - Navigation
