@@ -41,6 +41,24 @@
 		F81EF47F1C5263D4008FCCD4 /* ServerRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4761C5263D4008FCCD4 /* ServerRequester.swift */; };
 		F81EF4801C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4771C5263D4008FCCD4 /* ServiceMessagesHandler.swift */; };
 		F81EF4811C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4771C5263D4008FCCD4 /* ServiceMessagesHandler.swift */; };
+		F81EF48C1C5264A1008FCCD4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4831C5264A1008FCCD4 /* User.swift */; };
+		F81EF48D1C5264A1008FCCD4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4831C5264A1008FCCD4 /* User.swift */; };
+		F81EF48E1C5264A1008FCCD4 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4841C5264A1008FCCD4 /* Person.swift */; };
+		F81EF48F1C5264A1008FCCD4 /* Person.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4841C5264A1008FCCD4 /* Person.swift */; };
+		F81EF4901C5264A1008FCCD4 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4851C5264A1008FCCD4 /* Message.swift */; };
+		F81EF4911C5264A1008FCCD4 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4851C5264A1008FCCD4 /* Message.swift */; };
+		F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4861C5264A1008FCCD4 /* MediaFile.swift */; };
+		F81EF4931C5264A1008FCCD4 /* MediaFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4861C5264A1008FCCD4 /* MediaFile.swift */; };
+		F81EF4941C5264A1008FCCD4 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4871C5264A1008FCCD4 /* Language.swift */; };
+		F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4871C5264A1008FCCD4 /* Language.swift */; };
+		F81EF4961C5264A1008FCCD4 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4881C5264A1008FCCD4 /* Element.swift */; };
+		F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4881C5264A1008FCCD4 /* Element.swift */; };
+		F81EF4981C5264A1008FCCD4 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4891C5264A1008FCCD4 /* Country.swift */; };
+		F81EF4991C5264A1008FCCD4 /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4891C5264A1008FCCD4 /* Country.swift */; };
+		F81EF49A1C5264A1008FCCD4 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48A1C5264A1008FCCD4 /* Contact.swift */; };
+		F81EF49B1C5264A1008FCCD4 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48A1C5264A1008FCCD4 /* Contact.swift */; };
+		F81EF49C1C5264A1008FCCD4 /* AttachFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */; };
+		F81EF49D1C5264A1008FCCD4 /* AttachFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -307,6 +325,15 @@
 		F81EF4751C5263D4008FCCD4 /* MessagesLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesLoader.swift; sourceTree = "<group>"; };
 		F81EF4761C5263D4008FCCD4 /* ServerRequester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerRequester.swift; sourceTree = "<group>"; };
 		F81EF4771C5263D4008FCCD4 /* ServiceMessagesHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServiceMessagesHandler.swift; sourceTree = "<group>"; };
+		F81EF4831C5264A1008FCCD4 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F81EF4841C5264A1008FCCD4 /* Person.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Person.swift; sourceTree = "<group>"; };
+		F81EF4851C5264A1008FCCD4 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		F81EF4861C5264A1008FCCD4 /* MediaFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFile.swift; sourceTree = "<group>"; };
+		F81EF4871C5264A1008FCCD4 /* Language.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Language.swift; sourceTree = "<group>"; };
+		F81EF4881C5264A1008FCCD4 /* Element.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Element.swift; sourceTree = "<group>"; };
+		F81EF4891C5264A1008FCCD4 /* Country.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
+		F81EF48A1C5264A1008FCCD4 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachFile.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -591,6 +618,15 @@
 		F81EF4821C526463008FCCD4 /* ObjectsInMemory */ = {
 			isa = PBXGroup;
 			children = (
+				F81EF4831C5264A1008FCCD4 /* User.swift */,
+				F81EF4841C5264A1008FCCD4 /* Person.swift */,
+				F81EF4851C5264A1008FCCD4 /* Message.swift */,
+				F81EF4861C5264A1008FCCD4 /* MediaFile.swift */,
+				F81EF4871C5264A1008FCCD4 /* Language.swift */,
+				F81EF4881C5264A1008FCCD4 /* Element.swift */,
+				F81EF4891C5264A1008FCCD4 /* Country.swift */,
+				F81EF48A1C5264A1008FCCD4 /* Contact.swift */,
+				F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */,
 			);
 			path = ObjectsInMemory;
 			sourceTree = "<group>";
@@ -1128,6 +1164,7 @@
 			files = (
 				F8856EEC1BDA65E5007AE42D /* DBAvatarPreview.swift in Sources */,
 				F8EC3C961BD63F68000201FE /* AFURLRequestSerialization.m in Sources */,
+				F81EF4911C5264A1008FCCD4 /* Message.swift in Sources */,
 				F8C93ABC1B861B94009D890E /* SimpleElementDashboardLayout.swift in Sources */,
 				F8C93ABD1B861B94009D890E /* Constants.swift in Sources */,
 				F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */,
@@ -1146,14 +1183,17 @@
 				F8C93ACA1B861B94009D890E /* SingleElementLastMessagesCell.swift in Sources */,
 				F8C93ACB1B861B94009D890E /* AttachVideoPlayerVC.swift in Sources */,
 				F8C93ACD1B861B94009D890E /* AttachImageViewerVC.swift in Sources */,
+				F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */,
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */,
 				F8C93ACF1B861B94009D890E /* ChatMessageRecievedCell.swift in Sources */,
+				F81EF48D1C5264A1008FCCD4 /* User.swift in Sources */,
 				F8F58DB21BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */,
 				F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */,
 				F8C93AD11B861B94009D890E /* UserProfileFlowLayout.swift in Sources */,
 				F8C93AD31B861B94009D890E /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F8C93AD51B861B94009D890E /* HomeSignalsVisibleFlowLayout.swift in Sources */,
+				F81EF49D1C5264A1008FCCD4 /* AttachFile.swift in Sources */,
 				F8BDB6781BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8C93AD71B861B94009D890E /* SingleElementDashboardVC.swift in Sources */,
 				F8C93AD81B861B94009D890E /* DashboardMessagesCell.swift in Sources */,
@@ -1171,6 +1211,7 @@
 				F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */,
 				F84D791E1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */,
 				F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
+				F81EF48F1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */,
 				F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */,
 				F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */,
@@ -1191,6 +1232,7 @@
 				F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */,
 				F8C93AFE1B861B94009D890E /* LoginVC.swift in Sources */,
 				F8BDB6801BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift in Sources */,
+				F81EF4931C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
 				F81EF47F1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
 				F8BDB6921BD909E500BB80B4 /* DBMessageChat.swift in Sources */,
@@ -1199,9 +1241,11 @@
 				F8C93B001B861B94009D890E /* Extensions.swift in Sources */,
 				F8C93B021B861B94009D890E /* UserProfileTextContainerCell.swift in Sources */,
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
+				F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */,
 				F84E84591BE21BFF001B1B87 /* DBAttach.swift in Sources */,
 				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
 				F8C93B051B861B94009D890E /* RootViewController.swift in Sources */,
+				F81EF4991C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8BDB6951BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
 				F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */,
@@ -1233,6 +1277,7 @@
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F8BDB67A1BD909E500BB80B4 /* DBAttachImagePreview.swift in Sources */,
 				F84E84571BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift in Sources */,
+				F81EF49B1C5264A1008FCCD4 /* Contact.swift in Sources */,
 				F8C93B1D1B861B94009D890E /* AllContactsVC.swift in Sources */,
 				F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */,
 				F8EC3C971BD63F6B000201FE /* AFURLResponseSerialization.m in Sources */,
@@ -1244,6 +1289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F8856EEB1BDA65E5007AE42D /* DBAvatarPreview.swift in Sources */,
+				F81EF4901C5264A1008FCCD4 /* Message.swift in Sources */,
 				F8386F481BD520F7006332D9 /* AFURLRequestSerialization.m in Sources */,
 				F81BAD6A1B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift in Sources */,
 				F8DBE53C1BA30C3900A8891E /* SelectableContactCell.swift in Sources */,
@@ -1270,7 +1316,9 @@
 				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F81EF47E1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
 				F82AF35C1BEA3A2400E8514A /* SphereVisualizationViewController.m in Sources */,
+				F81EF4981C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8CE23AD1BE7A54B00C36661 /* ContactSearchVC.swift in Sources */,
+				F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
@@ -1291,8 +1339,10 @@
 				F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */,
 				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
+				F81EF48E1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */,
 				F8BDB68D1BD909E500BB80B4 /* DBElement.swift in Sources */,
+				F81EF4941C5264A1008FCCD4 /* Language.swift in Sources */,
 				F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */,
 				F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
@@ -1302,7 +1352,9 @@
 				F81EF4801C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
 				F811C1811C1AFC5E00C07273 /* ZYQSphereView.m in Sources */,
 				F88563FE1B31C48B005D223E /* ChatTextInputView.swift in Sources */,
+				F81EF49C1C5264A1008FCCD4 /* AttachFile.swift in Sources */,
 				F86F742D1B5683AE00E48E13 /* UserProfileVC.swift in Sources */,
+				F81EF4961C5264A1008FCCD4 /* Element.swift in Sources */,
 				F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */,
 				F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */,
 				F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */,
@@ -1311,6 +1363,7 @@
 				F8386F471BD520F7006332D9 /* AFSecurityPolicy.m in Sources */,
 				F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
+				F81EF48C1C5264A1008FCCD4 /* User.swift in Sources */,
 				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,
 				F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */,
 				F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */,
@@ -1346,6 +1399,7 @@
 				F86F74311B5688DB00E48E13 /* UserProfileAvatarCollectionCell.swift in Sources */,
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,
 				F828328A1C3A934D006FAEA9 /* AuthorizationManagerViewController.swift in Sources */,
+				F81EF49A1C5264A1008FCCD4 /* Contact.swift in Sources */,
 				F88668121B4295C40021C806 /* ParticipantsVC.swift in Sources */,
 				F8BDB6871BD909E500BB80B4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F84D791D1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */,
