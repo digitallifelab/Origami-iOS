@@ -99,8 +99,6 @@
 		F81EF4DE1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */; };
 		F81EF4E01C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */; };
 		F81EF4E11C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */; };
-		F81EF4E31C5266EE008FCCD4 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E21C5266EE008FCCD4 /* HomeVC.swift */; };
-		F81EF4E41C5266EE008FCCD4 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E21C5266EE008FCCD4 /* HomeVC.swift */; };
 		F81EF4E71C526763008FCCD4 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E61C526763008FCCD4 /* ContactsPickerVC.swift */; };
 		F81EF4E81C526763008FCCD4 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E61C526763008FCCD4 /* ContactsPickerVC.swift */; };
 		F81EF4EA1C52677D008FCCD4 /* ContactSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E91C52677D008FCCD4 /* ContactSearchVC.swift */; };
@@ -132,6 +130,8 @@
 		F81EF51B1C526B48008FCCD4 /* PopupMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5171C526B48008FCCD4 /* PopupMenuCell.swift */; };
 		F81EF51E1C526BA2008FCCD4 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF51D1C526BA2008FCCD4 /* MenuVC.swift */; };
 		F81EF51F1C526BA2008FCCD4 /* MenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF51D1C526BA2008FCCD4 /* MenuVC.swift */; };
+		F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5211C526C28008FCCD4 /* HomeVC.swift */; };
+		F81EF5231C526C28008FCCD4 /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5211C526C28008FCCD4 /* HomeVC.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -353,7 +353,6 @@
 		F81EF4D91C52665D008FCCD4 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationController.swift; sourceTree = "<group>"; };
 		F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickingViewController.swift; sourceTree = "<group>"; };
-		F81EF4E21C5266EE008FCCD4 /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		F81EF4E61C526763008FCCD4 /* ContactsPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPickerVC.swift; sourceTree = "<group>"; };
 		F81EF4E91C52677D008FCCD4 /* ContactSearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactSearchVC.swift; sourceTree = "<group>"; };
 		F81EF4ED1C5267E0008FCCD4 /* AllContactsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVC.swift; sourceTree = "<group>"; };
@@ -371,6 +370,7 @@
 		F81EF5161C526B48008FCCD4 /* EditingMenuPopupVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditingMenuPopupVC.swift; sourceTree = "<group>"; };
 		F81EF5171C526B48008FCCD4 /* PopupMenuCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupMenuCell.swift; sourceTree = "<group>"; };
 		F81EF51D1C526BA2008FCCD4 /* MenuVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuVC.swift; sourceTree = "<group>"; };
+		F81EF5211C526C28008FCCD4 /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -665,7 +665,7 @@
 				F81EF4D91C52665D008FCCD4 /* RootViewController.swift */,
 				F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */,
 				F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */,
-				F81EF4E21C5266EE008FCCD4 /* HomeVC.swift */,
+				F81EF5201C526C17008FCCD4 /* HomeScreen */,
 				F81EF51C1C526BA2008FCCD4 /* Menu */,
 				F81EF5151C526B48008FCCD4 /* RightTopPopupMenu */,
 				F81EF5071C5268C1008FCCD4 /* LoginAndRegistration */,
@@ -743,6 +743,14 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
+		F81EF5201C526C17008FCCD4 /* HomeScreen */ = {
+			isa = PBXGroup;
+			children = (
+				F81EF5211C526C28008FCCD4 /* HomeVC.swift */,
+			);
+			path = HomeScreen;
+			sourceTree = "<group>";
+		};
 		F8386F371BD520F7006332D9 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -808,7 +816,6 @@
 		F855BB9D1B74A7AF00EC114C /* VCs */ = {
 			isa = PBXGroup;
 			children = (
-				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
 				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
 				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
 				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
@@ -883,13 +890,6 @@
 				F88668131B429FC30021C806 /* ContactCheckerCell.swift */,
 			);
 			name = ElementChatParticipants;
-			sourceTree = "<group>";
-		};
-		F8B517E81B3C0C8900BDDEDB /* HomeScreen */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = HomeScreen;
 			sourceTree = "<group>";
 		};
 		F8B9B4F51B3D57E8006033DB /* Attach Files viewers  */ = {
@@ -1182,9 +1182,9 @@
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */,
 				F81EF4B71C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
-				F81EF4E41C5266EE008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF5111C5268C1008FCCD4 /* LoginVC.swift in Sources */,
 				F8C93ACF1B861B94009D890E /* ChatMessageRecievedCell.swift in Sources */,
+				F81EF5231C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF48D1C5264A1008FCCD4 /* User.swift in Sources */,
 				F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */,
 				F8C93AD11B861B94009D890E /* UserProfileFlowLayout.swift in Sources */,
@@ -1297,7 +1297,7 @@
 				F81EF47C1C5263D4008FCCD4 /* MessagesLoader.swift in Sources */,
 				F86F237B1B208AEE00234EFD /* Constants.swift in Sources */,
 				F81EF4781C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
-				F81EF4E31C5266EE008FCCD4 /* HomeVC.swift in Sources */,
+				F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF4F61C526806008FCCD4 /* MyContactListCell.swift in Sources */,
 				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
 				F81EF4CC1C526532008FCCD4 /* DBMessageService.swift in Sources */,
