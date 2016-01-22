@@ -104,10 +104,10 @@ class Element:Hashable, CreateDateComparable
                     }
                 }
             }
-            else
-            {
-                print("will NOT set element`s finish DATE")
-            }
+//            else
+//            {
+//                print("will NOT set element`s finish DATE")
+//            }
         }
         
         if let remind = info["RemindDate"] as? String

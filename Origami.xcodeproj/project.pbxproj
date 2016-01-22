@@ -59,6 +59,44 @@
 		F81EF49B1C5264A1008FCCD4 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48A1C5264A1008FCCD4 /* Contact.swift */; };
 		F81EF49C1C5264A1008FCCD4 /* AttachFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */; };
 		F81EF49D1C5264A1008FCCD4 /* AttachFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */; };
+		F81EF4B21C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF49F1C526532008FCCD4 /* DBAttach+CoreDataProperties.swift */; };
+		F81EF4B31C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF49F1C526532008FCCD4 /* DBAttach+CoreDataProperties.swift */; };
+		F81EF4B41C526532008FCCD4 /* DBAttach.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A01C526532008FCCD4 /* DBAttach.swift */; };
+		F81EF4B51C526532008FCCD4 /* DBAttach.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A01C526532008FCCD4 /* DBAttach.swift */; };
+		F81EF4B61C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A11C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift */; };
+		F81EF4B71C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A11C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift */; };
+		F81EF4B81C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A21C526532008FCCD4 /* DBAttachImagePreview.swift */; };
+		F81EF4B91C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A21C526532008FCCD4 /* DBAttachImagePreview.swift */; };
+		F81EF4BA1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A31C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift */; };
+		F81EF4BB1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A31C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift */; };
+		F81EF4BC1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A41C526532008FCCD4 /* DBAvatarPreview.swift */; };
+		F81EF4BD1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A41C526532008FCCD4 /* DBAvatarPreview.swift */; };
+		F81EF4BE1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A51C526532008FCCD4 /* DBContact+CoreDataProperties.swift */; };
+		F81EF4BF1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A51C526532008FCCD4 /* DBContact+CoreDataProperties.swift */; };
+		F81EF4C01C526532008FCCD4 /* DBContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A61C526532008FCCD4 /* DBContact.swift */; };
+		F81EF4C11C526532008FCCD4 /* DBContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A61C526532008FCCD4 /* DBContact.swift */; };
+		F81EF4C21C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A71C526532008FCCD4 /* DBElement+CoreDataProperties.swift */; };
+		F81EF4C31C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A71C526532008FCCD4 /* DBElement+CoreDataProperties.swift */; };
+		F81EF4C41C526532008FCCD4 /* DBElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A81C526532008FCCD4 /* DBElement.swift */; };
+		F81EF4C51C526532008FCCD4 /* DBElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A81C526532008FCCD4 /* DBElement.swift */; };
+		F81EF4C61C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A91C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift */; };
+		F81EF4C71C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4A91C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift */; };
+		F81EF4C81C526532008FCCD4 /* DBMessageChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AA1C526532008FCCD4 /* DBMessageChat.swift */; };
+		F81EF4C91C526532008FCCD4 /* DBMessageChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AA1C526532008FCCD4 /* DBMessageChat.swift */; };
+		F81EF4CA1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift */; };
+		F81EF4CB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift */; };
+		F81EF4CC1C526532008FCCD4 /* DBMessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AC1C526532008FCCD4 /* DBMessageService.swift */; };
+		F81EF4CD1C526532008FCCD4 /* DBMessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AC1C526532008FCCD4 /* DBMessageService.swift */; };
+		F81EF4CE1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AD1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift */; };
+		F81EF4CF1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AD1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift */; };
+		F81EF4D01C526532008FCCD4 /* DBPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AE1C526532008FCCD4 /* DBPerson.swift */; };
+		F81EF4D11C526532008FCCD4 /* DBPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AE1C526532008FCCD4 /* DBPerson.swift */; };
+		F81EF4D21C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AF1C526532008FCCD4 /* DBUser+CoreDataProperties.swift */; };
+		F81EF4D31C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4AF1C526532008FCCD4 /* DBUser+CoreDataProperties.swift */; };
+		F81EF4D41C526532008FCCD4 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B01C526532008FCCD4 /* DBUser.swift */; };
+		F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B01C526532008FCCD4 /* DBUser.swift */; };
+		F81EF4D61C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */; };
+		F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -83,10 +121,6 @@
 		F84D791D1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */; };
 		F84D791E1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */; };
 		F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */; };
-		F84E84561BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84E84541BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift */; };
-		F84E84571BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84E84541BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift */; };
-		F84E84581BE21BFF001B1B87 /* DBAttach.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84E84551BE21BFF001B1B87 /* DBAttach.swift */; };
-		F84E84591BE21BFF001B1B87 /* DBAttach.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84E84551BE21BFF001B1B87 /* DBAttach.swift */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
 		F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A715D1B66572C00180ADE /* SingleElementDateDetailsCell.swift */; };
 		F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85CF0FF1B830D6B0048B3DE /* AllContactsVC.swift */; };
@@ -122,10 +156,6 @@
 		F88563FE1B31C48B005D223E /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88563FD1B31C48B005D223E /* ChatTextInputView.swift */; };
 		F88564021B31CBD1005D223E /* ChatMessageRecievedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88564011B31CBD1005D223E /* ChatMessageRecievedCell.swift */; };
 		F88564041B31CBE3005D223E /* ChatMessageSentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88564031B31CBE3005D223E /* ChatMessageSentCell.swift */; };
-		F8856EE91BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8856EE71BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift */; };
-		F8856EEA1BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8856EE71BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift */; };
-		F8856EEB1BDA65E5007AE42D /* DBAvatarPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8856EE81BDA65E5007AE42D /* DBAvatarPreview.swift */; };
-		F8856EEC1BDA65E5007AE42D /* DBAvatarPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8856EE81BDA65E5007AE42D /* DBAvatarPreview.swift */; };
 		F88668121B4295C40021C806 /* ParticipantsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668111B4295C40021C806 /* ParticipantsVC.swift */; };
 		F88668141B429FC30021C806 /* ContactCheckerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668131B429FC30021C806 /* ContactCheckerCell.swift */; };
 		F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
@@ -142,34 +172,6 @@
 		F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */; };
 		F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */; };
-		F8BDB66F1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB65D1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift */; };
-		F8BDB6701BD909E500BB80B4 /* DBUser+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB65D1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift */; };
-		F8BDB6711BD909E500BB80B4 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB65E1BD909E500BB80B4 /* DBUser.swift */; };
-		F8BDB6721BD909E500BB80B4 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB65E1BD909E500BB80B4 /* DBUser.swift */; };
-		F8BDB6771BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6611BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift */; };
-		F8BDB6781BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6611BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift */; };
-		F8BDB6791BD909E500BB80B4 /* DBAttachImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6621BD909E500BB80B4 /* DBAttachImagePreview.swift */; };
-		F8BDB67A1BD909E500BB80B4 /* DBAttachImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6621BD909E500BB80B4 /* DBAttachImagePreview.swift */; };
-		F8BDB67B1BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6631BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift */; };
-		F8BDB67C1BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6631BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift */; };
-		F8BDB67D1BD909E500BB80B4 /* DBMessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6641BD909E500BB80B4 /* DBMessageService.swift */; };
-		F8BDB67E1BD909E500BB80B4 /* DBMessageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6641BD909E500BB80B4 /* DBMessageService.swift */; };
-		F8BDB67F1BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6651BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift */; };
-		F8BDB6801BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6651BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift */; };
-		F8BDB6811BD909E500BB80B4 /* DBPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6661BD909E500BB80B4 /* DBPerson.swift */; };
-		F8BDB6821BD909E500BB80B4 /* DBPerson.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6661BD909E500BB80B4 /* DBPerson.swift */; };
-		F8BDB6871BD909E500BB80B4 /* DBContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6691BD909E500BB80B4 /* DBContact+CoreDataProperties.swift */; };
-		F8BDB6881BD909E500BB80B4 /* DBContact+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6691BD909E500BB80B4 /* DBContact+CoreDataProperties.swift */; };
-		F8BDB6891BD909E500BB80B4 /* DBContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66A1BD909E500BB80B4 /* DBContact.swift */; };
-		F8BDB68A1BD909E500BB80B4 /* DBContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66A1BD909E500BB80B4 /* DBContact.swift */; };
-		F8BDB68B1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66B1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift */; };
-		F8BDB68C1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66B1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift */; };
-		F8BDB68D1BD909E500BB80B4 /* DBElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66C1BD909E500BB80B4 /* DBElement.swift */; };
-		F8BDB68E1BD909E500BB80B4 /* DBElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66C1BD909E500BB80B4 /* DBElement.swift */; };
-		F8BDB68F1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66D1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift */; };
-		F8BDB6901BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66D1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift */; };
-		F8BDB6911BD909E500BB80B4 /* DBMessageChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66E1BD909E500BB80B4 /* DBMessageChat.swift */; };
-		F8BDB6921BD909E500BB80B4 /* DBMessageChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB66E1BD909E500BB80B4 /* DBMessageChat.swift */; };
 		F8BDB6941BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6931BD90EE700BB80B4 /* GlobalFunctions.swift */; };
 		F8BDB6951BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8BDB6931BD90EE700BB80B4 /* GlobalFunctions.swift */; };
 		F8C93ABC1B861B94009D890E /* SimpleElementDashboardLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81BAD691B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift */; };
@@ -282,8 +284,6 @@
 		F8EFEF051BCBD63C004953CE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A91B1DEFA100172667 /* Images.xcassets */; };
 		F8F58D781BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F8F58D761BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld */; };
 		F8F58D791BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F8F58D761BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld */; };
-		F8F58DB11BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */; };
-		F8F58DB21BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -334,6 +334,25 @@
 		F81EF4891C5264A1008FCCD4 /* Country.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
 		F81EF48A1C5264A1008FCCD4 /* Contact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		F81EF48B1C5264A1008FCCD4 /* AttachFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachFile.swift; sourceTree = "<group>"; };
+		F81EF49F1C526532008FCCD4 /* DBAttach+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAttach+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4A01C526532008FCCD4 /* DBAttach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAttach.swift; sourceTree = "<group>"; };
+		F81EF4A11C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAttachImagePreview+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4A21C526532008FCCD4 /* DBAttachImagePreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAttachImagePreview.swift; sourceTree = "<group>"; };
+		F81EF4A31C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAvatarPreview+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4A41C526532008FCCD4 /* DBAvatarPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAvatarPreview.swift; sourceTree = "<group>"; };
+		F81EF4A51C526532008FCCD4 /* DBContact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBContact+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4A61C526532008FCCD4 /* DBContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBContact.swift; sourceTree = "<group>"; };
+		F81EF4A71C526532008FCCD4 /* DBElement+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBElement+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4A81C526532008FCCD4 /* DBElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBElement.swift; sourceTree = "<group>"; };
+		F81EF4A91C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBMessageChat+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4AA1C526532008FCCD4 /* DBMessageChat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessageChat.swift; sourceTree = "<group>"; };
+		F81EF4AB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBMessageService+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4AC1C526532008FCCD4 /* DBMessageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessageService.swift; sourceTree = "<group>"; };
+		F81EF4AD1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBPerson+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4AE1C526532008FCCD4 /* DBPerson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBPerson.swift; sourceTree = "<group>"; };
+		F81EF4AF1C526532008FCCD4 /* DBUser+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		F81EF4B01C526532008FCCD4 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
+		F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDatabaseHandler.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -361,8 +380,6 @@
 		F84D791C1BB18D9000EC0C97 /* ContactsPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPickerVC.swift; sourceTree = "<group>"; };
 		F84DB3701B7CBBB1004E55F7 /* ElementOptionsConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ElementOptionsConverter.h; sourceTree = "<group>"; };
 		F84DB3711B7CBBB1004E55F7 /* ElementOptionsConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ElementOptionsConverter.m; sourceTree = "<group>"; };
-		F84E84541BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAttach+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F84E84551BE21BFF001B1B87 /* DBAttach.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAttach.swift; sourceTree = "<group>"; };
 		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F8521FF31B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -401,8 +418,6 @@
 		F88563FD1B31C48B005D223E /* ChatTextInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTextInputView.swift; sourceTree = "<group>"; };
 		F88564011B31CBD1005D223E /* ChatMessageRecievedCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageRecievedCell.swift; sourceTree = "<group>"; };
 		F88564031B31CBE3005D223E /* ChatMessageSentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatMessageSentCell.swift; sourceTree = "<group>"; };
-		F8856EE71BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAvatarPreview+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8856EE81BDA65E5007AE42D /* DBAvatarPreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAvatarPreview.swift; sourceTree = "<group>"; };
 		F88668111B4295C40021C806 /* ParticipantsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipantsVC.swift; sourceTree = "<group>"; };
 		F88668131B429FC30021C806 /* ContactCheckerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCheckerCell.swift; sourceTree = "<group>"; };
 		F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachedFileCell.swift; sourceTree = "<group>"; };
@@ -418,20 +433,6 @@
 		F8B9B4EF1B3D57B0006033DB /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F8B9B4F31B3D57D8006033DB /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
-		F8BDB65D1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB65E1BD909E500BB80B4 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
-		F8BDB6611BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBAttachImagePreview+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB6621BD909E500BB80B4 /* DBAttachImagePreview.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBAttachImagePreview.swift; sourceTree = "<group>"; };
-		F8BDB6631BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBMessageService+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB6641BD909E500BB80B4 /* DBMessageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessageService.swift; sourceTree = "<group>"; };
-		F8BDB6651BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBPerson+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB6661BD909E500BB80B4 /* DBPerson.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBPerson.swift; sourceTree = "<group>"; };
-		F8BDB6691BD909E500BB80B4 /* DBContact+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBContact+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB66A1BD909E500BB80B4 /* DBContact.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBContact.swift; sourceTree = "<group>"; };
-		F8BDB66B1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBElement+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB66C1BD909E500BB80B4 /* DBElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBElement.swift; sourceTree = "<group>"; };
-		F8BDB66D1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBMessageChat+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		F8BDB66E1BD909E500BB80B4 /* DBMessageChat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBMessageChat.swift; sourceTree = "<group>"; };
 		F8BDB6931BD90EE700BB80B4 /* GlobalFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalFunctions.swift; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -463,7 +464,6 @@
 		F8EEC7581B98A352003525B0 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		F8EEC75A1B98A35B003525B0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F8F58D771BD796B0008F54F5 /* OrigamiDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = OrigamiDataModel.xcdatamodel; sourceTree = "<group>"; };
-		F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDatabaseHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -610,7 +610,9 @@
 				F81EF4751C5263D4008FCCD4 /* MessagesLoader.swift */,
 				F81EF4761C5263D4008FCCD4 /* ServerRequester.swift */,
 				F81EF4771C5263D4008FCCD4 /* ServiceMessagesHandler.swift */,
+				F81EF49E1C526532008FCCD4 /* CoreData */,
 				F81EF4821C526463008FCCD4 /* ObjectsInMemory */,
+				F8F58D761BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -631,11 +633,30 @@
 			path = ObjectsInMemory;
 			sourceTree = "<group>";
 		};
-		F826A8D21BA9A5FB00C52B2C /* InMemoryObjects */ = {
+		F81EF49E1C526532008FCCD4 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				F81EF49F1C526532008FCCD4 /* DBAttach+CoreDataProperties.swift */,
+				F81EF4A01C526532008FCCD4 /* DBAttach.swift */,
+				F81EF4A11C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift */,
+				F81EF4A21C526532008FCCD4 /* DBAttachImagePreview.swift */,
+				F81EF4A31C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift */,
+				F81EF4A41C526532008FCCD4 /* DBAvatarPreview.swift */,
+				F81EF4A51C526532008FCCD4 /* DBContact+CoreDataProperties.swift */,
+				F81EF4A61C526532008FCCD4 /* DBContact.swift */,
+				F81EF4A71C526532008FCCD4 /* DBElement+CoreDataProperties.swift */,
+				F81EF4A81C526532008FCCD4 /* DBElement.swift */,
+				F81EF4A91C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift */,
+				F81EF4AA1C526532008FCCD4 /* DBMessageChat.swift */,
+				F81EF4AB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift */,
+				F81EF4AC1C526532008FCCD4 /* DBMessageService.swift */,
+				F81EF4AD1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift */,
+				F81EF4AE1C526532008FCCD4 /* DBPerson.swift */,
+				F81EF4AF1C526532008FCCD4 /* DBUser+CoreDataProperties.swift */,
+				F81EF4B01C526532008FCCD4 /* DBUser.swift */,
+				F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */,
 			);
-			name = InMemoryObjects;
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		F8386F371BD520F7006332D9 /* AFNetworking */ = {
@@ -703,26 +724,6 @@
 		F855BB9D1B74A7AF00EC114C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				F84E84541BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift */,
-				F84E84551BE21BFF001B1B87 /* DBAttach.swift */,
-				F8BDB6611BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift */,
-				F8BDB6621BD909E500BB80B4 /* DBAttachImagePreview.swift */,
-				F8BDB6631BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift */,
-				F8BDB6641BD909E500BB80B4 /* DBMessageService.swift */,
-				F8856EE71BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift */,
-				F8856EE81BDA65E5007AE42D /* DBAvatarPreview.swift */,
-				F8BDB65D1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift */,
-				F8BDB65E1BD909E500BB80B4 /* DBUser.swift */,
-				F8BDB6651BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift */,
-				F8BDB6661BD909E500BB80B4 /* DBPerson.swift */,
-				F8BDB6691BD909E500BB80B4 /* DBContact+CoreDataProperties.swift */,
-				F8BDB66A1BD909E500BB80B4 /* DBContact.swift */,
-				F8BDB66B1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift */,
-				F8BDB66C1BD909E500BB80B4 /* DBElement.swift */,
-				F8BDB66D1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift */,
-				F8BDB66E1BD909E500BB80B4 /* DBMessageChat.swift */,
-				F8F58D761BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld */,
-				F8F58DB01BD7A2F7008F54F5 /* LocalDatabaseHandler.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -1000,7 +1001,6 @@
 				F811C1751C1AFC2F00C07273 /* TestStuff */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F81EF4721C5263D4008FCCD4 /* Model */,
-				F826A8D21BA9A5FB00C52B2C /* InMemoryObjects */,
 				F855BB9D1B74A7AF00EC114C /* CoreData */,
 				F874D90C1B26FA8A00B867BF /* ViewControllers */,
 				F8016FF21B304619002A1620 /* tools */,
@@ -1162,62 +1162,61 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8856EEC1BDA65E5007AE42D /* DBAvatarPreview.swift in Sources */,
 				F8EC3C961BD63F68000201FE /* AFURLRequestSerialization.m in Sources */,
 				F81EF4911C5264A1008FCCD4 /* Message.swift in Sources */,
 				F8C93ABC1B861B94009D890E /* SimpleElementDashboardLayout.swift in Sources */,
 				F8C93ABD1B861B94009D890E /* Constants.swift in Sources */,
+				F81EF4CF1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */,
-				F8BDB67E1BD909E500BB80B4 /* DBMessageService.swift in Sources */,
 				F8C93ABF1B861B94009D890E /* SingleElementDetailsCell.swift in Sources */,
 				F8C93AC11B861B94009D890E /* MenuVC.swift in Sources */,
 				F8C93AC21B861B94009D890E /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
-				F8BDB6901BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
 				F8F58D791BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */,
 				F8C93AC31B861B94009D890E /* MyContactListCell.swift in Sources */,
-				F8BDB68A1BD909E500BB80B4 /* DBContact.swift in Sources */,
 				F8EC3C981BD63F6F000201FE /* AFURLSessionManager.m in Sources */,
-				F8BDB6701BD909E500BB80B4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F8C93AC51B861B94009D890E /* HomeCollectionHandler.swift in Sources */,
 				F8C93AC71B861B94009D890E /* HomeVC.swift in Sources */,
+				F81EF4CD1C526532008FCCD4 /* DBMessageService.swift in Sources */,
 				F8C93ACA1B861B94009D890E /* SingleElementLastMessagesCell.swift in Sources */,
 				F8C93ACB1B861B94009D890E /* AttachVideoPlayerVC.swift in Sources */,
 				F8C93ACD1B861B94009D890E /* AttachImageViewerVC.swift in Sources */,
+				F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */,
 				F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */,
 				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C93ACE1B861B94009D890E /* ImageFilter.swift in Sources */,
+				F81EF4B71C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8C93ACF1B861B94009D890E /* ChatMessageRecievedCell.swift in Sources */,
 				F81EF48D1C5264A1008FCCD4 /* User.swift in Sources */,
-				F8F58DB21BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */,
 				F8C93AD01B861B94009D890E /* ChatPreviewCell.swift in Sources */,
 				F8C93AD11B861B94009D890E /* UserProfileFlowLayout.swift in Sources */,
+				F81EF4D11C526532008FCCD4 /* DBPerson.swift in Sources */,
 				F8C93AD31B861B94009D890E /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F8C93AD51B861B94009D890E /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F81EF49D1C5264A1008FCCD4 /* AttachFile.swift in Sources */,
-				F8BDB6781BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8C93AD71B861B94009D890E /* SingleElementDashboardVC.swift in Sources */,
 				F8C93AD81B861B94009D890E /* DashboardMessagesCell.swift in Sources */,
-				F8856EEA1BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
+				F81EF4B31C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
 				F8C93ADF1B861B94009D890E /* NewElementTextViewCell.swift in Sources */,
 				F8DBE53D1BA30C3900A8891E /* SelectableContactCell.swift in Sources */,
 				F8C93AE21B861B94009D890E /* EditingMenuPopupVC.swift in Sources */,
 				F8C93AE31B861B94009D890E /* DashHeaderView.swift in Sources */,
 				F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */,
-				F8BDB68E1BD909E500BB80B4 /* DBElement.swift in Sources */,
+				F81EF4C31C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
 				F8C93AE51B861B94009D890E /* SingleElementTitleCell.swift in Sources */,
 				F8C93AE81B861B94009D890E /* ChatTextInputView.swift in Sources */,
-				F8BDB6821BD909E500BB80B4 /* DBPerson.swift in Sources */,
 				F8A2A4D01B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F8C93AE91B861B94009D890E /* UserProfileVC.swift in Sources */,
+				F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
 				F84D791E1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */,
 				F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F81EF48F1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */,
+				F81EF4B51C526532008FCCD4 /* DBAttach.swift in Sources */,
+				F81EF4C71C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
 				F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */,
 				F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */,
 				F81EF47B1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */,
-				F8BDB68C1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift in Sources */,
 				F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */,
 				F8C93AF01B861B94009D890E /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */,
@@ -1228,21 +1227,22 @@
 				F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */,
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F8C93AFB1B861B94009D890E /* HomeNavigationController.swift in Sources */,
+				F81EF4BF1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F8C93AFD1B861B94009D890E /* MyContactsListVC.swift in Sources */,
+				F81EF4C11C526532008FCCD4 /* DBContact.swift in Sources */,
 				F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */,
 				F8C93AFE1B861B94009D890E /* LoginVC.swift in Sources */,
-				F8BDB6801BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F81EF4931C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				F8C93AFF1B861B94009D890E /* ElementDashboardDatesCell.swift in Sources */,
+				F81EF4C51C526532008FCCD4 /* DBElement.swift in Sources */,
 				F81EF47F1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
-				F8BDB6921BD909E500BB80B4 /* DBMessageChat.swift in Sources */,
 				F8DBE5371BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
+				F81EF4BB1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
 				F81EF4811C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
 				F8C93B001B861B94009D890E /* Extensions.swift in Sources */,
 				F8C93B021B861B94009D890E /* UserProfileTextContainerCell.swift in Sources */,
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
 				F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */,
-				F84E84591BE21BFF001B1B87 /* DBAttach.swift in Sources */,
 				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
 				F8C93B051B861B94009D890E /* RootViewController.swift in Sources */,
 				F81EF4991C5264A1008FCCD4 /* Country.swift in Sources */,
@@ -1250,14 +1250,18 @@
 				F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */,
 				F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
+				F81EF4B91C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F8C93B071B861B94009D890E /* PopupMenuCell.swift in Sources */,
 				F81EF4791C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
 				F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */,
 				F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */,
 				F8C93B0F1B861B94009D890E /* ContactProfileVC.swift in Sources */,
+				F81EF4C91C526532008FCCD4 /* DBMessageChat.swift in Sources */,
 				F8C93B101B861B94009D890E /* Structs.swift in Sources */,
 				F87970701B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
+				F81EF4CB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8C93B111B861B94009D890E /* Enumerations.swift in Sources */,
+				F81EF4D31C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F87AEE561BE10F7900A0BFB2 /* DatePickerVC.swift in Sources */,
 				F86C00331BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */,
 				F84D05E41BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
@@ -1265,18 +1269,14 @@
 				F817EE581B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
 				F8C93B131B861B94009D890E /* ChatVC.swift in Sources */,
 				F80597471B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
-				F8BDB6881BD909E500BB80B4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F8C93B171B861B94009D890E /* ParticipantsVC.swift in Sources */,
 				F81EF47D1C5263D4008FCCD4 /* MessagesLoader.swift in Sources */,
-				F8BDB67C1BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8C93B181B861B94009D890E /* ChatMessageSentCell.swift in Sources */,
 				F8C93B191B861B94009D890E /* ObjectsConverter.swift in Sources */,
 				F8C93B1A1B861B94009D890E /* SingleElementDateDetailsCell.swift in Sources */,
 				F805974A1B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
-				F8BDB6721BD909E500BB80B4 /* DBUser.swift in Sources */,
 				F8C93B1B1B861B94009D890E /* ElementSubordinatesCollectionHandler.swift in Sources */,
-				F8BDB67A1BD909E500BB80B4 /* DBAttachImagePreview.swift in Sources */,
-				F84E84571BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift in Sources */,
+				F81EF4BD1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */,
 				F81EF49B1C5264A1008FCCD4 /* Contact.swift in Sources */,
 				F8C93B1D1B861B94009D890E /* AllContactsVC.swift in Sources */,
 				F8C93B1F1B861B94009D890E /* DashCell.swift in Sources */,
@@ -1288,27 +1288,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F8856EEB1BDA65E5007AE42D /* DBAvatarPreview.swift in Sources */,
+				F81EF4BC1C526532008FCCD4 /* DBAvatarPreview.swift in Sources */,
 				F81EF4901C5264A1008FCCD4 /* Message.swift in Sources */,
 				F8386F481BD520F7006332D9 /* AFURLRequestSerialization.m in Sources */,
 				F81BAD6A1B5F876B00DB50F8 /* SimpleElementDashboardLayout.swift in Sources */,
+				F81EF4B61C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8DBE53C1BA30C3900A8891E /* SelectableContactCell.swift in Sources */,
 				F81EF47C1C5263D4008FCCD4 /* MessagesLoader.swift in Sources */,
 				F86F237B1B208AEE00234EFD /* Constants.swift in Sources */,
-				F8BDB67D1BD909E500BB80B4 /* DBMessageService.swift in Sources */,
 				F81EF4781C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
 				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
+				F81EF4CC1C526532008FCCD4 /* DBMessageService.swift in Sources */,
 				F81BAD731B5F993900DB50F8 /* SingleElementDetailsCell.swift in Sources */,
 				F8D0A3481B5FCE7F0033FD43 /* MenuVC.swift in Sources */,
-				F8BDB68F1BD909E500BB80B4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
+				F81EF4C41C526532008FCCD4 /* DBElement.swift in Sources */,
 				F8F58D781BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */,
 				780FB6B01C2BFBC10099E79E /* OKVisualizationLayer.m in Sources */,
+				F81EF4C61C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
 				F87FE6BC1B60E2E1004CA576 /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
 				F86F742F1B5684A500E48E13 /* MyContactListCell.swift in Sources */,
-				F8BDB6891BD909E500BB80B4 /* DBContact.swift in Sources */,
 				F811C1841C1B1E2A00C07273 /* PFButton.m in Sources */,
+				F81EF4CA1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8386F4A1BD520F7006332D9 /* AFURLSessionManager.m in Sources */,
-				F8BDB66F1BD909E500BB80B4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */,
 				F8A2A4CF1B95F63B00C88A6E /* UserProfileSexCell.swift in Sources */,
 				F81EF47A1C5263D4008FCCD4 /* DataSource.swift in Sources */,
@@ -1321,32 +1322,34 @@
 				F81EF4921C5264A1008FCCD4 /* MediaFile.swift in Sources */,
 				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */,
+				F81EF4D01C526532008FCCD4 /* DBPerson.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
-				F8F58DB11BD7A2F7008F54F5 /* LocalDatabaseHandler.swift in Sources */,
+				F81EF4B21C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
 				F8B9B4F01B3D57B0006033DB /* AttachImageViewerVC.swift in Sources */,
 				F864AB1A1B7252F600686EB1 /* ImageFilter.swift in Sources */,
 				F88564021B31CBD1005D223E /* ChatMessageRecievedCell.swift in Sources */,
+				F81EF4BA1C526532008FCCD4 /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
 				F874D9191B2706DE00B867BF /* ChatPreviewCell.swift in Sources */,
+				F81EF4BE1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F86C00321BF36CC700420EB9 /* ChangePasswordViewController.swift in Sources */,
 				F86F74391B56933400E48E13 /* UserProfileFlowLayout.swift in Sources */,
-				F8BDB6771BD909E500BB80B4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
 				F8DBE5361BA2C3BA00A8891E /* ElementsSortedByUserVC.swift in Sources */,
-				F8856EE91BDA65E5007AE42D /* DBAvatarPreview+CoreDataProperties.swift in Sources */,
 				F891BBE61B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift in Sources */,
 				F8DE59D41B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
+				F81EF4CE1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F81BAD681B5F874D00DB50F8 /* SingleElementDashboardVC.swift in Sources */,
+				F81EF4D61C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
 				F87E9BF21B79E36A00D8E07B /* DashboardMessagesCell.swift in Sources */,
 				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8DEE7F21B6906AB0004F0CB /* NewElementTextViewCell.swift in Sources */,
 				F81EF48E1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F882328D1B6B706400990A4E /* EditingMenuPopupVC.swift in Sources */,
-				F8BDB68D1BD909E500BB80B4 /* DBElement.swift in Sources */,
 				F81EF4941C5264A1008FCCD4 /* Language.swift in Sources */,
+				F81EF4C01C526532008FCCD4 /* DBContact.swift in Sources */,
 				F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */,
 				F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
-				F8BDB6811BD909E500BB80B4 /* DBPerson.swift in Sources */,
 				F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */,
 				F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F81EF4801C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
@@ -1358,28 +1361,27 @@
 				F84DB3721B7CBBB1004E55F7 /* ElementOptionsConverter.m in Sources */,
 				F85CF1021B830DA70048B3DE /* AllContactsVCCell.swift in Sources */,
 				F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */,
-				F8BDB68B1BD909E500BB80B4 /* DBElement+CoreDataProperties.swift in Sources */,
 				F86F23811B20A29600234EFD /* Protocols.swift in Sources */,
 				F8386F471BD520F7006332D9 /* AFSecurityPolicy.m in Sources */,
 				F82AF3631BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F81BAD6C1B5F989300DB50F8 /* SingleElementCollectionViewDataSource.swift in Sources */,
+				F81EF4C21C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
+				F81EF4C81C526532008FCCD4 /* DBMessageChat.swift in Sources */,
 				F81EF48C1C5264A1008FCCD4 /* User.swift in Sources */,
 				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,
 				F8D9BAC11B399363006B507D /* ImagePickingViewController.swift in Sources */,
 				F8016FF11B304614002A1620 /* FrameCounter.swift in Sources */,
+				F81EF4B81C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */,
 				F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */,
 				F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */,
 				F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */,
 				F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */,
-				F8BDB67F1BD909E500BB80B4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F86F74291B56838B00E48E13 /* MyContactsListVC.swift in Sources */,
-				F8BDB6911BD909E500BB80B4 /* DBMessageChat.swift in Sources */,
 				F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */,
 				F874D9131B2704F700B867BF /* ElementDashboardDatesCell.swift in Sources */,
 				F80597461B8DAE8E00D2A611 /* ContactProfileAvatarCell.swift in Sources */,
 				F880D17B1B2583CE00E702D3 /* Extensions.swift in Sources */,
-				F84E84581BE21BFF001B1B87 /* DBAttach.swift in Sources */,
 				F8B207201C2401D100BC3465 /* RegistrationVC.swift in Sources */,
 				F86F74371B568A5C00E48E13 /* UserProfileTextContainerCell.swift in Sources */,
 				F88668141B429FC30021C806 /* ContactCheckerCell.swift in Sources */,
@@ -1400,21 +1402,19 @@
 				F88563FB1B31C102005D223E /* ChatVC.swift in Sources */,
 				F828328A1C3A934D006FAEA9 /* AuthorizationManagerViewController.swift in Sources */,
 				F81EF49A1C5264A1008FCCD4 /* Contact.swift in Sources */,
+				F81EF4B41C526532008FCCD4 /* DBAttach.swift in Sources */,
 				F88668121B4295C40021C806 /* ParticipantsVC.swift in Sources */,
-				F8BDB6871BD909E500BB80B4 /* DBContact+CoreDataProperties.swift in Sources */,
 				F84D791D1BB18D9100EC0C97 /* ContactsPickerVC.swift in Sources */,
 				F88564041B31CBE3005D223E /* ChatMessageSentCell.swift in Sources */,
-				F8BDB67B1BD909E500BB80B4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F8DE685D1B4581ED001EE9A0 /* ObjectsConverter.swift in Sources */,
 				F85A715E1B66572C00180ADE /* SingleElementDateDetailsCell.swift in Sources */,
 				F874D91D1B270C9D00B867BF /* ElementSubordinatesCollectionHandler.swift in Sources */,
 				F80597491B8DB13200D2A611 /* ContactProfileTextInfoCell.swift in Sources */,
-				F8BDB6711BD909E500BB80B4 /* DBUser.swift in Sources */,
 				F85CF1001B830D6B0048B3DE /* AllContactsVC.swift in Sources */,
-				F8BDB6791BD909E500BB80B4 /* DBAttachImagePreview.swift in Sources */,
-				F84E84561BE21BFF001B1B87 /* DBAttach+CoreDataProperties.swift in Sources */,
 				F817EE571B9EE2CD007E8EBD /* OptionsView.swift in Sources */,
+				F81EF4D41C526532008FCCD4 /* DBUser.swift in Sources */,
 				F89F3B661B21E86A00156CEC /* DashCell.swift in Sources */,
+				F81EF4D21C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */,
 				F8386F491BD520F7006332D9 /* AFURLResponseSerialization.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1674,7 +1674,8 @@
 				F8F58D771BD796B0008F54F5 /* OrigamiDataModel.xcdatamodel */,
 			);
 			currentVersion = F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */;
-			path = OrigamiDataModel.xcdatamodeld;
+			name = OrigamiDataModel.xcdatamodeld;
+			path = ../OrigamiDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
