@@ -97,6 +97,8 @@
 		F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B01C526532008FCCD4 /* DBUser.swift */; };
 		F81EF4D61C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */; };
 		F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */; };
+		F81EF4DA1C52665D008FCCD4 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4D91C52665D008FCCD4 /* RootViewController.swift */; };
+		F81EF4DB1C52665D008FCCD4 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4D91C52665D008FCCD4 /* RootViewController.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -161,7 +163,6 @@
 		F8885A911B54FAE4000053C9 /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */; };
 		F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */; };
 		F891BBE61B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */; };
-		F89F3B5C1B21C7C600156CEC /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5B1B21C7C600156CEC /* RootViewController.swift */; };
 		F89F3B5E1B21C81600156CEC /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5D1B21C81600156CEC /* LoginVC.swift */; };
 		F89F3B601B21C8BF00156CEC /* HomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */; };
 		F89F3B621B21E7A500156CEC /* HomeCollectionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */; };
@@ -219,7 +220,6 @@
 		F8C93B021B861B94009D890E /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F74361B568A5C00E48E13 /* UserProfileTextContainerCell.swift */; };
 		F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88668131B429FC30021C806 /* ContactCheckerCell.swift */; };
 		F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */; };
-		F8C93B051B861B94009D890E /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F89F3B5B1B21C7C600156CEC /* RootViewController.swift */; };
 		F8C93B071B861B94009D890E /* PopupMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F882328E1B6B71AD00990A4E /* PopupMenuCell.swift */; };
 		F8C93B0A1B861B94009D890E /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B9B4F11B3D57C4006033DB /* AttachSoundPlayerVC.swift */; };
 		F8C93B0E1B861B94009D890E /* AttachesTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D9BABC1B398554006B507D /* AttachesTableHeaderView.swift */; };
@@ -353,6 +353,7 @@
 		F81EF4AF1C526532008FCCD4 /* DBUser+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DBUser+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		F81EF4B01C526532008FCCD4 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
 		F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDatabaseHandler.swift; sourceTree = "<group>"; };
+		F81EF4D91C52665D008FCCD4 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -423,7 +424,6 @@
 		F8885A901B54FAE4000053C9 /* AttachedFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachedFileCell.swift; sourceTree = "<group>"; };
 		F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationController.swift; sourceTree = "<group>"; };
 		F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeSignalsHiddenFlowLayout.swift; sourceTree = "<group>"; };
-		F89F3B5B1B21C7C600156CEC /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		F89F3B5D1B21C81600156CEC /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeCollectionHandler.swift; sourceTree = "<group>"; };
@@ -659,6 +659,14 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		F81EF4D81C52665D008FCCD4 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				F81EF4D91C52665D008FCCD4 /* RootViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		F8386F371BD520F7006332D9 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -724,6 +732,28 @@
 		F855BB9D1B74A7AF00EC114C /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
+				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
+				F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */,
+				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
+				F87637791B56604100AFE376 /* Menu */,
+				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
+				F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */,
+				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
+				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
+				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
+				F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */,
+				F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */,
+				F89F3B651B21E86A00156CEC /* DashCell.swift */,
+				F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */,
+				F8D2FF311B2870AA00584B8D /* Subordinates */,
+				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
+				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
+				F86F74261B56835E00E48E13 /* UserProfile */,
+				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
+				F86F74251B56834E00E48E13 /* Contacts */,
+				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
+				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
+				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
 			);
 			name = CoreData;
 			sourceTree = "<group>";
@@ -785,30 +815,8 @@
 		F872A4401B46927E000A6AA3 /* EditingAndCreation */ = {
 			isa = PBXGroup;
 			children = (
-				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
-				F8DEE7F11B6906AB0004F0CB /* NewElementTextViewCell.swift */,
 			);
 			name = EditingAndCreation;
-			sourceTree = "<group>";
-		};
-		F874D90C1B26FA8A00B867BF /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				F89F3B5B1B21C7C600156CEC /* RootViewController.swift */,
-				F890A9ED1B57C73E009A897B /* HomeNavigationController.swift */,
-				F8D9BAC01B399363006B507D /* ImagePickingViewController.swift */,
-				F8B517E71B3C0C7700BDDEDB /* Login and Registration */,
-				F87637791B56604100AFE376 /* Menu */,
-				F8B517E81B3C0C8900BDDEDB /* HomeScreen */,
-				F8D2FF311B2870AA00584B8D /* Subordinates */,
-				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
-				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
-				F86F74261B56835E00E48E13 /* UserProfile */,
-				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
-				F86F74251B56834E00E48E13 /* Contacts */,
-				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
-			);
-			name = ViewControllers;
 			sourceTree = "<group>";
 		};
 		F87637791B56604100AFE376 /* Menu */ = {
@@ -880,14 +888,6 @@
 		F8B517E81B3C0C8900BDDEDB /* HomeScreen */ = {
 			isa = PBXGroup;
 			children = (
-				F89F3B5F1B21C8BF00156CEC /* HomeVC.swift */,
-				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
-				F89F3B611B21E7A500156CEC /* HomeCollectionHandler.swift */,
-				F8DE59D31B2EEAF800BE3F9A /* HomeSignalsVisibleFlowLayout.swift */,
-				F891BBE51B4ECCCF00A1AB16 /* HomeSignalsHiddenFlowLayout.swift */,
-				F81589EE1B4FF903004C4FA7 /* DashHeaderView.swift */,
-				F89F3B651B21E86A00156CEC /* DashCell.swift */,
-				F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */,
 			);
 			name = HomeScreen;
 			sourceTree = "<group>";
@@ -1000,9 +1000,9 @@
 				F82AF3621BEA3E9700E8514A /* VisualizableObject.m */,
 				F811C1751C1AFC2F00C07273 /* TestStuff */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
+				F81EF4D81C52665D008FCCD4 /* ViewControllers */,
 				F81EF4721C5263D4008FCCD4 /* Model */,
 				F855BB9D1B74A7AF00EC114C /* CoreData */,
-				F874D90C1B26FA8A00B867BF /* ViewControllers */,
 				F8016FF21B304619002A1620 /* tools */,
 				F8D456A91B1DEFA100172667 /* Images.xcassets */,
 				F8D456AB1B1DEFA100172667 /* LaunchScreen.xib */,
@@ -1214,6 +1214,7 @@
 				F81EF4B51C526532008FCCD4 /* DBAttach.swift in Sources */,
 				F81EF4C71C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
 				F8C93AEC1B861B94009D890E /* AllContactsVCCell.swift in Sources */,
+				F81EF4DB1C52665D008FCCD4 /* RootViewController.swift in Sources */,
 				F8C93AED1B861B94009D890E /* AttachedFileCell.swift in Sources */,
 				F81EF47B1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F8C93AEE1B861B94009D890E /* Protocols.swift in Sources */,
@@ -1244,7 +1245,6 @@
 				F8C93B031B861B94009D890E /* ContactCheckerCell.swift in Sources */,
 				F81EF4971C5264A1008FCCD4 /* Element.swift in Sources */,
 				F8C93B041B861B94009D890E /* NewElementComposerViewController.swift in Sources */,
-				F8C93B051B861B94009D890E /* RootViewController.swift in Sources */,
 				F81EF4991C5264A1008FCCD4 /* Country.swift in Sources */,
 				F8BDB6951BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
 				F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */,
@@ -1374,6 +1374,7 @@
 				F81EF4B81C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F86F237F1B208C7D00234EFD /* FileHandler.m in Sources */,
 				F8D9BABB1B394262006B507D /* CustomViewControllerTransitions.swift in Sources */,
+				F81EF4DA1C52665D008FCCD4 /* RootViewController.swift in Sources */,
 				F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */,
 				F890A9EE1B57C73E009A897B /* HomeNavigationController.swift in Sources */,
 				F8386F451BD520F7006332D9 /* AFHTTPSessionManager.m in Sources */,
@@ -1388,7 +1389,6 @@
 				F8BDB6941BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
 				F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */,
-				F89F3B5C1B21C7C600156CEC /* RootViewController.swift in Sources */,
 				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
 				F882328F1B6B71AD00990A4E /* PopupMenuCell.swift in Sources */,
 				F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
