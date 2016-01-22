@@ -81,10 +81,6 @@
 		F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */; };
 		F81EF4DA1C52665D008FCCD4 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4D91C52665D008FCCD4 /* RootViewController.swift */; };
 		F81EF4DB1C52665D008FCCD4 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4D91C52665D008FCCD4 /* RootViewController.swift */; };
-		F81EF4DD1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */; };
-		F81EF4DE1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */; };
-		F81EF4E01C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */; };
-		F81EF4E11C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */; };
 		F81EF4E71C526763008FCCD4 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E61C526763008FCCD4 /* ContactsPickerVC.swift */; };
 		F81EF4E81C526763008FCCD4 /* ContactsPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E61C526763008FCCD4 /* ContactsPickerVC.swift */; };
 		F81EF4EA1C52677D008FCCD4 /* ContactSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF4E91C52677D008FCCD4 /* ContactSearchVC.swift */; };
@@ -168,6 +164,8 @@
 		F84232C71C527E0700336A60 /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C61C527E0700336A60 /* ElementChatPreviewTableHandler.swift */; };
 		F84232CA1C527E8E00336A60 /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232C91C527E8E00336A60 /* FinishTaskResultView.m */; };
 		F84232CC1C527ED300336A60 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CB1C527ED300336A60 /* TapGreetingView.swift */; };
+		F84232CE1C527F1E00336A60 /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CD1C527F1E00336A60 /* HomeNavigationController.swift */; };
+		F84232D01C527F2500336A60 /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CF1C527F2500336A60 /* ImagePickingViewController.swift */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
 		F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
@@ -326,8 +324,6 @@
 		F81EF4B01C526532008FCCD4 /* DBUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DBUser.swift; sourceTree = "<group>"; };
 		F81EF4B11C526532008FCCD4 /* LocalDatabaseHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalDatabaseHandler.swift; sourceTree = "<group>"; };
 		F81EF4D91C52665D008FCCD4 /* RootViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
-		F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationController.swift; sourceTree = "<group>"; };
-		F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickingViewController.swift; sourceTree = "<group>"; };
 		F81EF4E61C526763008FCCD4 /* ContactsPickerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsPickerVC.swift; sourceTree = "<group>"; };
 		F81EF4E91C52677D008FCCD4 /* ContactSearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactSearchVC.swift; sourceTree = "<group>"; };
 		F81EF4ED1C5267E0008FCCD4 /* AllContactsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllContactsVC.swift; sourceTree = "<group>"; };
@@ -390,6 +386,8 @@
 		F84232C81C527E8E00336A60 /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F84232C91C527E8E00336A60 /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
 		F84232CB1C527ED300336A60 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
+		F84232CD1C527F1E00336A60 /* HomeNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeNavigationController.swift; sourceTree = "<group>"; };
+		F84232CF1C527F2500336A60 /* ImagePickingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePickingViewController.swift; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -590,8 +588,6 @@
 			isa = PBXGroup;
 			children = (
 				F81EF4D91C52665D008FCCD4 /* RootViewController.swift */,
-				F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */,
-				F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */,
 				F81EF5201C526C17008FCCD4 /* HomeScreen */,
 				F8C7077A1C5271B10089E36A /* Dashboard */,
 				F8C707631C52706B0089E36A /* Chat */,
@@ -682,6 +678,7 @@
 			isa = PBXGroup;
 			children = (
 				F81EF5211C526C28008FCCD4 /* HomeVC.swift */,
+				F84232CD1C527F1E00336A60 /* HomeNavigationController.swift */,
 				F8C707AF1C52741D0089E36A /* HomeCollectionHandler.swift */,
 				F8C707B01C52741D0089E36A /* HomeSignalsHiddenFlowLayout.swift */,
 				F8C707B11C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift */,
@@ -733,6 +730,7 @@
 			children = (
 				F81EF5471C526E0C008FCCD4 /* DatePickerVC.swift */,
 				F81EF54A1C526E27008FCCD4 /* TableItemPickerVC.swift */,
+				F84232CF1C527F2500336A60 /* ImagePickingViewController.swift */,
 			);
 			path = Pickers;
 			sourceTree = "<group>";
@@ -1112,7 +1110,6 @@
 				F8C707AE1C5273A00089E36A /* Structs.swift in Sources */,
 				F81EF5021C526867008FCCD4 /* ContactProfileAvatarCell.swift in Sources */,
 				F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
-				F81EF4E11C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */,
 				F8C707B71C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift in Sources */,
 				F81EF48F1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F81EF4B51C526532008FCCD4 /* DBAttach.swift in Sources */,
@@ -1130,7 +1127,6 @@
 				F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */,
 				F8C707771C5271270089E36A /* ContactCheckerCell.swift in Sources */,
 				F81EF5561C526E86008FCCD4 /* AttachVideoPlayerVC.swift in Sources */,
-				F81EF4DE1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
 				F81EF5451C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F8C707681C52706B0089E36A /* ChatTextInputView.swift in Sources */,
 				F8C707921C5272D20089E36A /* FileHandler.m in Sources */,
@@ -1252,10 +1248,10 @@
 				F81EF4CE1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F81EF4D61C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
 				F81EF4FB1C52684A008FCCD4 /* SelectableContactCell.swift in Sources */,
-				F81EF4DD1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
 				F8C707691C52706B0089E36A /* ChatVC.swift in Sources */,
 				F84232C71C527E0700336A60 /* ElementChatPreviewTableHandler.swift in Sources */,
 				F81EF48E1C5264A1008FCCD4 /* Person.swift in Sources */,
+				F84232CE1C527F1E00336A60 /* HomeNavigationController.swift in Sources */,
 				F81EF4941C5264A1008FCCD4 /* Language.swift in Sources */,
 				F81EF4C01C526532008FCCD4 /* DBContact.swift in Sources */,
 				F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */,
@@ -1264,12 +1260,12 @@
 				F81EF5371C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
 				F8C707A51C5273A00089E36A /* Constants.swift in Sources */,
 				F8C707821C5271B10089E36A /* SingleElementDashboardVC.swift in Sources */,
+				F84232D01C527F2500336A60 /* ImagePickingViewController.swift in Sources */,
 				F8C707C11C52752E0089E36A /* DashboardMessagesCell.swift in Sources */,
 				F81EF5551C526E86008FCCD4 /* AttachVideoPlayerVC.swift in Sources */,
 				F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */,
 				F81EF4801C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
 				F811C1811C1AFC5E00C07273 /* ZYQSphereView.m in Sources */,
-				F81EF4E01C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */,
 				F81EF49C1C5264A1008FCCD4 /* AttachFile.swift in Sources */,
 				F81EF51A1C526B48008FCCD4 /* PopupMenuCell.swift in Sources */,
 				F8C7077E1C5271B10089E36A /* SimpleElementDashboardLayout.swift in Sources */,
