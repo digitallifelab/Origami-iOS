@@ -1777,9 +1777,9 @@ class LocalDatabaseHandler
     }
     
     /**
-    - if existing DBUserAvatarPreview was found by calling *`findAvatarPreviewForUserId()`*
+    - if existing DBAvatarPreview was found by calling *`findAvatarPreviewForUserId()`*
     an update occurs
-    - if not found - new DBUserAvatarPreview entity is created in privateContext
+    - if not found - new DBAvatarPreview entity is created in privateContext
     - Parameter data: image preview data object
     - Parameter forUserId: contactId or userId(if current user`s avatar preview is saved)
     - Parameter fileName: local stored name with extension for a file that actually stores full size image data on disc
