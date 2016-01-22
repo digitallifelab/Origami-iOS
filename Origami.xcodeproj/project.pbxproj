@@ -10,8 +10,6 @@
 		F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
-		F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
-		F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F811B3F01BF9E7280012F825 /* TapGreetingView.swift */; };
 		F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */ = {isa = PBXBuildFile; fileRef = F811C1791C1AFC5E00C07273 /* PFGoldenSectionSpiral.m */; };
 		F811C1811C1AFC5E00C07273 /* ZYQSphereView.m in Sources */ = {isa = PBXBuildFile; fileRef = F811C17F1C1AFC5E00C07273 /* ZYQSphereView.m */; };
 		F811C1841C1B1E2A00C07273 /* PFButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F811C1831C1B1E2A00C07273 /* PFButton.m */; };
@@ -150,8 +148,6 @@
 		F81EF5541C526E86008FCCD4 /* AttachSoundPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF54F1C526E86008FCCD4 /* AttachSoundPlayerVC.swift */; };
 		F81EF5551C526E86008FCCD4 /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5501C526E86008FCCD4 /* AttachVideoPlayerVC.swift */; };
 		F81EF5561C526E86008FCCD4 /* AttachVideoPlayerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5501C526E86008FCCD4 /* AttachVideoPlayerVC.swift */; };
-		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
-		F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
 		F82631891BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F826318A1BB2C45B00077B1D /* FinishTaskResultView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */; };
 		F82AF3581BEA39FE00E8514A /* Visualization.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F82AF3571BEA39FE00E8514A /* Visualization.storyboard */; };
@@ -169,9 +165,11 @@
 		F84232C01C527BF900336A60 /* OKVisualizationLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232BF1C527BF900336A60 /* OKVisualizationLayer.m */; };
 		F84232C31C527C5800336A60 /* SphereVisualizationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */; };
 		F84232C51C527DA200336A60 /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */; };
+		F84232C71C527E0700336A60 /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C61C527E0700336A60 /* ElementChatPreviewTableHandler.swift */; };
+		F84232CA1C527E8E00336A60 /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232C91C527E8E00336A60 /* FinishTaskResultView.m */; };
+		F84232CC1C527ED300336A60 /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CB1C527ED300336A60 /* TapGreetingView.swift */; };
 		F84D61E41B9DAF26001DB163 /* Launch Screen-Origami.xib in Resources */ = {isa = PBXBuildFile; fileRef = F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */; };
 		F8521FEF1B78966400B418A3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
-		F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
 		F8C707671C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
 		F8C707681C52706B0089E36A /* ChatTextInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707641C52706B0089E36A /* ChatTextInputView.swift */; };
 		F8C707691C52706B0089E36A /* ChatVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707651C52706B0089E36A /* ChatVC.swift */; };
@@ -246,8 +244,6 @@
 		F8C707ED1C5278FA0089E36A /* AttachedFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EA1C5278FA0089E36A /* AttachedFileCell.swift */; };
 		F8C707EE1C5278FA0089E36A /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */; };
 		F8C707EF1C5278FA0089E36A /* ChatPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */; };
-		F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */; };
-		F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
 		F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
 		F8C93B251B861B94009D890E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A61B1DEFA100172667 /* Main.storyboard */; };
 		F8C93B261B861B94009D890E /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
@@ -255,7 +251,6 @@
 		F8C93B281B861B94009D890E /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F8C93B291B861B94009D890E /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
-		F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
 		F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
 		F8D456A81B1DEFA100172667 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F8D456A61B1DEFA100172667 /* Main.storyboard */; };
 		F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F8386F391BD520F7006332D9 /* AFHTTPSessionManager.m */; };
@@ -286,7 +281,6 @@
 		F811100F1B2AC2FF00115DF6 /* segoeui.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeui.ttf; sourceTree = "<group>"; };
 		F81110101B2AC2FF00115DF6 /* segoeuil.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = segoeuil.ttf; sourceTree = "<group>"; };
 		F81110111B2AC2FF00115DF6 /* seguisb.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = seguisb.ttf; sourceTree = "<group>"; };
-		F811B3F01BF9E7280012F825 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
 		F811C1771C1AFC5E00C07273 /* PFAxisDirection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFAxisDirection.h; sourceTree = "<group>"; };
 		F811C1781C1AFC5E00C07273 /* PFGoldenSectionSpiral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PFGoldenSectionSpiral.h; sourceTree = "<group>"; };
 		F811C1791C1AFC5E00C07273 /* PFGoldenSectionSpiral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PFGoldenSectionSpiral.m; sourceTree = "<group>"; };
@@ -367,8 +361,6 @@
 		F81EF54E1C526E86008FCCD4 /* AttachImageViewerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachImageViewerVC.swift; sourceTree = "<group>"; };
 		F81EF54F1C526E86008FCCD4 /* AttachSoundPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachSoundPlayerVC.swift; sourceTree = "<group>"; };
 		F81EF5501C526E86008FCCD4 /* AttachVideoPlayerVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttachVideoPlayerVC.swift; sourceTree = "<group>"; };
-		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
-		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
 		F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FinishTaskResultView.xib; sourceTree = "<group>"; };
 		F82AF3571BEA39FE00E8514A /* Visualization.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Visualization.storyboard; sourceTree = "<group>"; };
 		F8386F381BD520F7006332D9 /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
@@ -394,6 +386,10 @@
 		F84232C11C527C5800336A60 /* SphereVisualizationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SphereVisualizationViewController.h; sourceTree = "<group>"; };
 		F84232C21C527C5800336A60 /* SphereVisualizationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SphereVisualizationViewController.m; sourceTree = "<group>"; };
 		F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomViewControllerTransitions.swift; sourceTree = "<group>"; };
+		F84232C61C527E0700336A60 /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
+		F84232C81C527E8E00336A60 /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
+		F84232C91C527E8E00336A60 /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
+		F84232CB1C527ED300336A60 /* TapGreetingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TapGreetingView.swift; sourceTree = "<group>"; };
 		F84D61E31B9DAF26001DB163 /* Launch Screen-Origami.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "Launch Screen-Origami.xib"; sourceTree = "<group>"; };
 		F84E845A1BE2AB20001B1B87 /* OrigamiDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "OrigamiDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		F8521FF01B78966400B418A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -401,7 +397,6 @@
 		F8521FF41B78971100B418A3 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F86E47D41BBE73CD00DA5B6D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		F86F237C1B208C7C00234EFD /* Origami-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Origami-Bridging-Header.h"; sourceTree = "<group>"; };
-		F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElementChatPreviewTableHandler.swift; sourceTree = "<group>"; };
 		F8C707641C52706B0089E36A /* ChatTextInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTextInputView.swift; sourceTree = "<group>"; };
 		F8C707651C52706B0089E36A /* ChatVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatVC.swift; sourceTree = "<group>"; };
 		F8C707661C52706B0089E36A /* OptionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
@@ -443,7 +438,6 @@
 		F8C707EB1C5278FA0089E36A /* ChatPreviewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatPreviewCell.swift; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
-		F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewHandler.swift; sourceTree = "<group>"; };
 		F8D4569D1B1DEFA100172667 /* Origami task manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Origami task manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8D456A11B1DEFA100172667 /* Origami.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Origami.plist; sourceTree = "<group>"; };
 		F8D456A21B1DEFA100172667 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -691,6 +685,7 @@
 				F8C707AF1C52741D0089E36A /* HomeCollectionHandler.swift */,
 				F8C707B01C52741D0089E36A /* HomeSignalsHiddenFlowLayout.swift */,
 				F8C707B11C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift */,
+				F84232CB1C527ED300336A60 /* TapGreetingView.swift */,
 			);
 			path = HomeScreen;
 			sourceTree = "<group>";
@@ -830,6 +825,9 @@
 			isa = PBXGroup;
 			children = (
 				F8C7077B1C5271B10089E36A /* SimpleElementDashboardLayout.swift */,
+				F84232C81C527E8E00336A60 /* FinishTaskResultView.h */,
+				F84232C91C527E8E00336A60 /* FinishTaskResultView.m */,
+				F84232C61C527E0700336A60 /* ElementChatPreviewTableHandler.swift */,
 				F8C7077C1C5271B10089E36A /* SingleElementCollectionViewDataSource.swift */,
 				F8C7077D1C5271B10089E36A /* SingleElementDashboardVC.swift */,
 			);
@@ -913,16 +911,11 @@
 		F8D4569F1B1DEFA100172667 /* Origami */ = {
 			isa = PBXGroup;
 			children = (
+				F8D456A21B1DEFA100172667 /* AppDelegate.swift */,
 				F82631881BB2C45B00077B1D /* FinishTaskResultView.xib */,
 				F8D456A61B1DEFA100172667 /* Main.storyboard */,
 				F82AF3571BEA39FE00E8514A /* Visualization.storyboard */,
 				F84232B61C527BAE00336A60 /* Visualisation */,
-				F8D456A21B1DEFA100172667 /* AppDelegate.swift */,
-				F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */,
-				F874D9201B270CE200B867BF /* ElementChatPreviewTableHandler.swift */,
-				F811B3F01BF9E7280012F825 /* TapGreetingView.swift */,
-				F82631841BB2C44500077B1D /* FinishTaskResultView.h */,
-				F82631851BB2C44500077B1D /* FinishTaskResultView.m */,
 				F8C707D71C52763C0089E36A /* CollectionViewLayouts */,
 				F8C707B81C5274C90089E36A /* Cells */,
 				F8C7079F1C5273A00089E36A /* Stuff */,
@@ -1084,7 +1077,6 @@
 				F81EF4911C5264A1008FCCD4 /* Message.swift in Sources */,
 				F81EF5381C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
 				F81EF4CF1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
-				F8C93ABE1B861B94009D890E /* ElementChatPreviewTableHandler.swift in Sources */,
 				F8F58D791BD796B0008F54F5 /* OrigamiDataModel.xcdatamodeld in Sources */,
 				F8EC3C981BD63F6F000201FE /* AFURLSessionManager.m in Sources */,
 				F81EF4CD1C526532008FCCD4 /* DBMessageService.swift in Sources */,
@@ -1094,7 +1086,6 @@
 				F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */,
 				F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */,
 				F81EF5311C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
-				F82631871BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F8C7076C1C52706B0089E36A /* OptionsView.swift in Sources */,
 				F8C707A81C5273A00089E36A /* Enumerations.swift in Sources */,
 				F81EF4B71C526532008FCCD4 /* DBAttachImagePreview+CoreDataProperties.swift in Sources */,
@@ -1138,13 +1129,11 @@
 				F81EF47B1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */,
 				F8C707771C5271270089E36A /* ContactCheckerCell.swift in Sources */,
-				F8C93AF21B861B94009D890E /* CollectionViewHandler.swift in Sources */,
 				F81EF5561C526E86008FCCD4 /* AttachVideoPlayerVC.swift in Sources */,
 				F81EF4DE1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
 				F81EF5451C526D9A008FCCD4 /* NewElementTextViewCell.swift in Sources */,
 				F8C707681C52706B0089E36A /* ChatTextInputView.swift in Sources */,
 				F8C707921C5272D20089E36A /* FileHandler.m in Sources */,
-				F811B3F21BF9E72C0012F825 /* TapGreetingView.swift in Sources */,
 				F8C707901C5272D20089E36A /* ElementOptionsConverter.m in Sources */,
 				F8C93AFA1B861B94009D890E /* AppDelegate.swift in Sources */,
 				F81EF4BF1C526532008FCCD4 /* DBContact+CoreDataProperties.swift in Sources */,
@@ -1220,7 +1209,6 @@
 				F8C707EC1C5278FA0089E36A /* AttachedFileCell.swift in Sources */,
 				F81EF5221C526C28008FCCD4 /* HomeVC.swift in Sources */,
 				F81EF4F61C526806008FCCD4 /* MyContactListCell.swift in Sources */,
-				F874D9211B270CE200B867BF /* ElementChatPreviewTableHandler.swift in Sources */,
 				F81EF4CC1C526532008FCCD4 /* DBMessageService.swift in Sources */,
 				F81EF50C1C5268C1008FCCD4 /* AuthorizationManagerViewController.swift in Sources */,
 				F81EF4C41C526532008FCCD4 /* DBElement.swift in Sources */,
@@ -1264,9 +1252,9 @@
 				F81EF4CE1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
 				F81EF4D61C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
 				F81EF4FB1C52684A008FCCD4 /* SelectableContactCell.swift in Sources */,
-				F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */,
 				F81EF4DD1C5266B7008FCCD4 /* HomeNavigationController.swift in Sources */,
 				F8C707691C52706B0089E36A /* ChatVC.swift in Sources */,
+				F84232C71C527E0700336A60 /* ElementChatPreviewTableHandler.swift in Sources */,
 				F81EF48E1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F81EF4941C5264A1008FCCD4 /* Language.swift in Sources */,
 				F81EF4C01C526532008FCCD4 /* DBContact.swift in Sources */,
@@ -1294,7 +1282,6 @@
 				F81EF4C21C526532008FCCD4 /* DBElement+CoreDataProperties.swift in Sources */,
 				F81EF4C81C526532008FCCD4 /* DBMessageChat.swift in Sources */,
 				F81EF48C1C5264A1008FCCD4 /* User.swift in Sources */,
-				F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */,
 				F81EF4B81C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F8C707801C5271B10089E36A /* SingleElementCollectionViewDataSource.swift in Sources */,
 				F8C707AD1C5273A00089E36A /* Structs.swift in Sources */,
@@ -1310,10 +1297,11 @@
 				F81EF5181C526B48008FCCD4 /* EditingMenuPopupVC.swift in Sources */,
 				F81EF4F11C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
 				F81EF5031C526867008FCCD4 /* ContactProfileTextInfoCell.swift in Sources */,
+				F84232CA1C527E8E00336A60 /* FinishTaskResultView.m in Sources */,
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
 				F81EF5531C526E86008FCCD4 /* AttachSoundPlayerVC.swift in Sources */,
-				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
 				F8C707E51C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
+				F84232CC1C527ED300336A60 /* TapGreetingView.swift in Sources */,
 				F8C7076F1C52707E0089E36A /* ChatMessageRecievedCell.swift in Sources */,
 				F81EF50E1C5268C1008FCCD4 /* ChangePasswordViewController.swift in Sources */,
 				F81EF49A1C5264A1008FCCD4 /* Contact.swift in Sources */,

@@ -37,16 +37,7 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
             return nil
         }
         self.messageObjects = messages!
-        //self.trytoGetContactsForLastMessages()
-        //print(" \n added Observer Dashboard messages table handler ..........")
-        //NSNotificationCenter.defaultCenter().addObserver(self, selector: "refreshTable:", name: "FinishedProcessingContactAvatars", object: nil)
     }
-    
-//    deinit
-//    {
-//        NSNotificationCenter.defaultCenter().removeObserver(self)
-//        print("\n removed Observer Dashboard messages table handler- > \n")
-//    }
     
     //DataSource
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -78,33 +69,4 @@ class ElementChatPreviewTableHandler: NSObject, UITableViewDelegate, UITableView
     {
         return messageObjects[indexPath.row] ?? nil
     }
-    
-//    private func contactForMessage(message:Message) -> Contact?
-//    {
-//        if let contacts = self.contactsForLastMessages, creatorId = message.creatorId
-//        {
-//            for aContact in contacts
-//            {
-//                if aContact.contactId == creatorId
-//                {
-//                    return aContact
-//                }
-//            }
-//        }
-//        return nil
-//    }
-    
-//    func refreshTable(note:NSNotification)
-//    {
-//        //self.trytoGetContactsForLastMessages()
-////        if let table = self.tableView, userInfo = note.userInfo, ownerId = userInfo["avatarOwnerId"] as? NSNumber, indexPaths = indexPathsForUserId(ownerId.integerValue)
-////        {
-////            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-////                
-////                table.reloadRowsAtIndexPaths(indexPaths, withRowAnimation: .Fade)
-////            })
-////        }
-//    }
-    
-    
 }
