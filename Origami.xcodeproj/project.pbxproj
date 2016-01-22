@@ -142,6 +142,10 @@
 		F81EF5311C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5281C526CA4008FCCD4 /* UserProfileTextContainerCell.swift */; };
 		F81EF5321C526CA4008FCCD4 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */; };
 		F81EF5331C526CA4008FCCD4 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */; };
+		F81EF5371C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5351C526CE5008FCCD4 /* RecentActivityTableCell.swift */; };
+		F81EF5381C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5351C526CE5008FCCD4 /* RecentActivityTableCell.swift */; };
+		F81EF5391C526CE5008FCCD4 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5361C526CE5008FCCD4 /* RecentActivityTableVC.swift */; };
+		F81EF53A1C526CE5008FCCD4 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81EF5361C526CE5008FCCD4 /* RecentActivityTableVC.swift */; };
 		F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F821FD8C1BCE9CAE007F0471 /* Generics.swift in Sources */ = {isa = PBXBuildFile; fileRef = F821FD8A1BCE9CAE007F0471 /* Generics.swift */; };
 		F82631861BB2C44500077B1D /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F82631851BB2C44500077B1D /* FinishTaskResultView.m */; };
@@ -247,10 +251,6 @@
 		F8C93B291B861B94009D890E /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F8C93B2A1B861B94009D890E /* AttachesTableHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */; };
 		F8C93B2B1B861B94009D890E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = F8521FF11B78966400B418A3 /* Localizable.strings */; };
-		F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
-		F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */; };
-		F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */; };
-		F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */; };
 		F8D2FF2C1B283DE900584B8D /* Enumerations.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2B1B283DE900584B8D /* Enumerations.swift */; };
 		F8D2FF301B2862BF00584B8D /* CollectionViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */; };
 		F8D456A31B1DEFA100172667 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D456A21B1DEFA100172667 /* AppDelegate.swift */; };
@@ -376,6 +376,8 @@
 		F81EF5271C526CA4008FCCD4 /* UserProfileSexCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileSexCell.swift; sourceTree = "<group>"; };
 		F81EF5281C526CA4008FCCD4 /* UserProfileTextContainerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileTextContainerCell.swift; sourceTree = "<group>"; };
 		F81EF5291C526CA4008FCCD4 /* UserProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
+		F81EF5351C526CE5008FCCD4 /* RecentActivityTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableCell.swift; sourceTree = "<group>"; };
+		F81EF5361C526CE5008FCCD4 /* RecentActivityTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableVC.swift; sourceTree = "<group>"; };
 		F821FD8A1BCE9CAE007F0471 /* Generics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Generics.swift; sourceTree = "<group>"; };
 		F82631841BB2C44500077B1D /* FinishTaskResultView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FinishTaskResultView.h; sourceTree = "<group>"; };
 		F82631851BB2C44500077B1D /* FinishTaskResultView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FinishTaskResultView.m; sourceTree = "<group>"; };
@@ -440,8 +442,6 @@
 		F8BDB6931BD90EE700BB80B4 /* GlobalFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalFunctions.swift; sourceTree = "<group>"; };
 		F8C93B321B861B94009D890E /* Shevchenko network.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shevchenko network.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8C93B381B862490009D890E /* Shevchenko_network-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Shevchenko_network-Bridging-Header.h"; sourceTree = "<group>"; };
-		F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableVC.swift; sourceTree = "<group>"; };
-		F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentActivityTableCell.swift; sourceTree = "<group>"; };
 		F8D2FF2B1B283DE900584B8D /* Enumerations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enumerations.swift; sourceTree = "<group>"; };
 		F8D2FF2F1B2862BF00584B8D /* CollectionViewHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewHandler.swift; sourceTree = "<group>"; };
 		F8D4569D1B1DEFA100172667 /* Origami task manager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Origami task manager.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -665,6 +665,7 @@
 				F81EF4D91C52665D008FCCD4 /* RootViewController.swift */,
 				F81EF4DC1C5266B7008FCCD4 /* HomeNavigationController.swift */,
 				F81EF4DF1C5266CC008FCCD4 /* ImagePickingViewController.swift */,
+				F81EF5341C526CE5008FCCD4 /* ElementsActivity */,
 				F81EF5241C526CA4008FCCD4 /* UserProfile */,
 				F81EF5201C526C17008FCCD4 /* HomeScreen */,
 				F81EF51C1C526BA2008FCCD4 /* Menu */,
@@ -764,6 +765,15 @@
 			path = UserProfile;
 			sourceTree = "<group>";
 		};
+		F81EF5341C526CE5008FCCD4 /* ElementsActivity */ = {
+			isa = PBXGroup;
+			children = (
+				F81EF5351C526CE5008FCCD4 /* RecentActivityTableCell.swift */,
+				F81EF5361C526CE5008FCCD4 /* RecentActivityTableVC.swift */,
+			);
+			path = ElementsActivity;
+			sourceTree = "<group>";
+		};
 		F8386F371BD520F7006332D9 /* AFNetworking */ = {
 			isa = PBXGroup;
 			children = (
@@ -839,7 +849,6 @@
 				F87E9BF11B79E36A00D8E07B /* DashboardMessagesCell.swift */,
 				F8D2FF311B2870AA00584B8D /* Subordinates */,
 				F8DBE5341BA2C35900A8891E /* ElementsSortedByUser */,
-				F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */,
 				F87AEE531BE10F3300A0BFB2 /* DatesSetup */,
 				F872A4401B46927E000A6AA3 /* EditingAndCreation */,
 				F872A4411B4692C3000A6AA3 /* NewElementComposerViewController.swift */,
@@ -909,15 +918,6 @@
 				F8D9BABE1B3985D2006B507D /* AttachesTableHeaderView.xib */,
 			);
 			name = AttachesTableHeaderView;
-			sourceTree = "<group>";
-		};
-		F8CE94B01BA1A2F8003E8B19 /* ElementsActivity */ = {
-			isa = PBXGroup;
-			children = (
-				F8CE94B11BA1A324003E8B19 /* RecentActivityTableVC.swift */,
-				F8CE94B41BA1A4FE003E8B19 /* RecentActivityTableCell.swift */,
-			);
-			name = ElementsActivity;
 			sourceTree = "<group>";
 		};
 		F8D2FF311B2870AA00584B8D /* Subordinates */ = {
@@ -1164,6 +1164,7 @@
 			files = (
 				F8EC3C961BD63F68000201FE /* AFURLRequestSerialization.m in Sources */,
 				F81EF4911C5264A1008FCCD4 /* Message.swift in Sources */,
+				F81EF5381C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
 				F8C93ABC1B861B94009D890E /* SimpleElementDashboardLayout.swift in Sources */,
 				F8C93ABD1B861B94009D890E /* Constants.swift in Sources */,
 				F81EF4CF1C526532008FCCD4 /* DBPerson+CoreDataProperties.swift in Sources */,
@@ -1211,11 +1212,11 @@
 				F81EF5021C526867008FCCD4 /* ContactProfileAvatarCell.swift in Sources */,
 				F81EF4D71C526532008FCCD4 /* LocalDatabaseHandler.swift in Sources */,
 				F81EF4E11C5266CC008FCCD4 /* ImagePickingViewController.swift in Sources */,
-				F8CE94B61BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F81EF48F1C5264A1008FCCD4 /* Person.swift in Sources */,
 				F8C93AEB1B861B94009D890E /* ElementOptionsConverter.m in Sources */,
 				F81EF4B51C526532008FCCD4 /* DBAttach.swift in Sources */,
 				F81EF4C71C526532008FCCD4 /* DBMessageChat+CoreDataProperties.swift in Sources */,
+				F81EF53A1C526CE5008FCCD4 /* RecentActivityTableVC.swift in Sources */,
 				F81EF5061C526867008FCCD4 /* ContactProfileVC.swift in Sources */,
 				F81EF4FC1C52684A008FCCD4 /* SelectableContactCell.swift in Sources */,
 				F81EF4DB1C52665D008FCCD4 /* RootViewController.swift in Sources */,
@@ -1251,7 +1252,6 @@
 				F8BDB6951BD90EE700BB80B4 /* GlobalFunctions.swift in Sources */,
 				F82AF3641BEA3E9700E8514A /* VisualizableObject.m in Sources */,
 				F8EC3C941BD63F62000201FE /* AFNetworkReachabilityManager.m in Sources */,
-				F8CE94B31BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F81EF4B91C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F81EF4F21C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
 				F81EF4791C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
@@ -1317,7 +1317,6 @@
 				F81EF47A1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F81EF5011C526867008FCCD4 /* ContactProfileAvatarCell.swift in Sources */,
 				F879706F1B947EE7007AAACB /* TableItemPickerVC.swift in Sources */,
-				F8CE94B51BA1A4FE003E8B19 /* RecentActivityTableCell.swift in Sources */,
 				F81EF47E1C5263D4008FCCD4 /* ServerRequester.swift in Sources */,
 				F82AF35C1BEA3A2400E8514A /* SphereVisualizationViewController.m in Sources */,
 				F81EF4EF1C5267E0008FCCD4 /* AllContactsVC.swift in Sources */,
@@ -1326,6 +1325,7 @@
 				784827E11C1087E6009D76FC /* BFDragGestureRecognizer.m in Sources */,
 				F81EF4D01C526532008FCCD4 /* DBPerson.swift in Sources */,
 				F81EF5301C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
+				F81EF5391C526CE5008FCCD4 /* RecentActivityTableVC.swift in Sources */,
 				F81BAD711B5F992500DB50F8 /* SingleElementLastMessagesCell.swift in Sources */,
 				F8B9B4F41B3D57D8006033DB /* AttachVideoPlayerVC.swift in Sources */,
 				F81EF4B21C526532008FCCD4 /* DBAttach+CoreDataProperties.swift in Sources */,
@@ -1356,6 +1356,7 @@
 				F811C1801C1AFC5E00C07273 /* PFGoldenSectionSpiral.m in Sources */,
 				F821FD8B1BCE9CAE007F0471 /* Generics.swift in Sources */,
 				F81589EF1B4FF903004C4FA7 /* DashHeaderView.swift in Sources */,
+				F81EF5371C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
 				F81BAD6F1B5F98BE00DB50F8 /* SingleElementTitleCell.swift in Sources */,
 				F84D05E31BB547FB0054B61F /* FilterAttributeButton.swift in Sources */,
 				F81EF4801C5263D4008FCCD4 /* ServiceMessagesHandler.swift in Sources */,
@@ -1393,7 +1394,6 @@
 				F8386F461BD520F7006332D9 /* AFNetworkReachabilityManager.m in Sources */,
 				F872A4421B4692C3000A6AA3 /* NewElementComposerViewController.swift in Sources */,
 				F811B3F11BF9E7280012F825 /* TapGreetingView.swift in Sources */,
-				F8CE94B21BA1A324003E8B19 /* RecentActivityTableVC.swift in Sources */,
 				F8B9B4F21B3D57C4006033DB /* AttachSoundPlayerVC.swift in Sources */,
 				F8D9BABD1B398554006B507D /* AttachesTableHeaderView.swift in Sources */,
 				F8DEE7F01B68FCC60004F0CB /* Structs.swift in Sources */,
