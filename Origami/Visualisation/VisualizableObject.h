@@ -25,7 +25,5 @@
 
 @property (nonatomic, strong, nullable) NSDate *changeDate;
 @property (nonatomic) NSInteger messagesCount;
-//
-
 
 @end

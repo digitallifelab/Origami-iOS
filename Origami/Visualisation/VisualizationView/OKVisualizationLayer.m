@@ -70,10 +70,9 @@
     [element addSubview:title];
     
     UILabel *serviceElement = [[UILabel alloc] initWithFrame:CGRectMake(element.layer.bounds.size.width/2, 0, 150, width)];
-    self.rootElementId = obj.rootElementId;
-    self.elementId = obj.elementId;
+    self.rootElementId  = obj.rootElementId;
+    self.elementId      = obj.elementId;
     serviceElement.text = [NSString stringWithFormat:@"%d/%d; %@", obj.rootElementId, obj.elementId, obj.details];
-    NSLog(@"%@", serviceElement.text);
     serviceElement.textColor = [UIColor clearColor];
     serviceElement.backgroundColor = [UIColor clearColor];
     [element addSubview:serviceElement];
