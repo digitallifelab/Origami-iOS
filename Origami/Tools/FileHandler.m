@@ -20,7 +20,7 @@
 - (NSURL * _Nullable)applicationDocumentsDirectory
 {
     NSURL *path = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSLog(@"path to docs: \n %@", path);
+    //NSLog(@"path to docs: \n %@", path);
     return path;
 }
 
