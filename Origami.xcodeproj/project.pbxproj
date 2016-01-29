@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC3225BF1C55459E00AF46BC /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707B91C52752E0089E36A /* DashboardMessagesCell.swift */; };
+		BC3225C01C5545E500AF46BC /* ElementChatPreviewTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C61C527E0700336A60 /* ElementChatPreviewTableHandler.swift */; };
+		BC3225C11C5545FF00AF46BC /* TapGreetingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CB1C527ED300336A60 /* TapGreetingView.swift */; };
+		BC3225C21C55460900AF46BC /* CustomViewControllerTransitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232C41C527DA200336A60 /* CustomViewControllerTransitions.swift */; };
+		BC3225C31C55461900AF46BC /* HomeNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CD1C527F1E00336A60 /* HomeNavigationController.swift */; };
+		BC3225C41C55462900AF46BC /* ImagePickingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F84232CF1C527F2500336A60 /* ImagePickingViewController.swift */; };
+		BC3225C51C55473200AF46BC /* FinishTaskResultView.m in Sources */ = {isa = PBXBuildFile; fileRef = F84232C91C527E8E00336A60 /* FinishTaskResultView.m */; };
 		F81110121B2AC2FF00115DF6 /* segoeui.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F811100F1B2AC2FF00115DF6 /* segoeui.ttf */; };
 		F81110131B2AC2FF00115DF6 /* segoeuil.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110101B2AC2FF00115DF6 /* segoeuil.ttf */; };
 		F81110141B2AC2FF00115DF6 /* seguisb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F81110111B2AC2FF00115DF6 /* seguisb.ttf */; };
@@ -229,7 +236,6 @@
 		F8C707B61C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707B11C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift */; };
 		F8C707B71C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707B11C52741D0089E36A /* HomeSignalsVisibleFlowLayout.swift */; };
 		F8C707C11C52752E0089E36A /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707B91C52752E0089E36A /* DashboardMessagesCell.swift */; };
-		F8C707C21C52752E0089E36A /* DashboardMessagesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707B91C52752E0089E36A /* DashboardMessagesCell.swift */; };
 		F8C707C31C52752E0089E36A /* DashCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707BA1C52752E0089E36A /* DashCell.swift */; };
 		F8C707C41C52752E0089E36A /* DashCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707BA1C52752E0089E36A /* DashCell.swift */; };
 		F8C707C51C52752E0089E36A /* DashHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C707BB1C52752E0089E36A /* DashHeaderView.swift */; };
@@ -1121,6 +1127,7 @@
 			files = (
 				F81EF5521C526E86008FCCD4 /* AttachImageViewerVC.swift in Sources */,
 				F8EC3C961BD63F68000201FE /* AFURLRequestSerialization.m in Sources */,
+				BC3225BF1C55459E00AF46BC /* DashboardMessagesCell.swift in Sources */,
 				F8C707B31C52741D0089E36A /* HomeCollectionHandler.swift in Sources */,
 				F81EF4911C5264A1008FCCD4 /* Message.swift in Sources */,
 				F81EF5381C526CE5008FCCD4 /* RecentActivityTableCell.swift in Sources */,
@@ -1130,7 +1137,6 @@
 				F81EF4CD1C526532008FCCD4 /* DBMessageService.swift in Sources */,
 				F8C707AC1C5273A00089E36A /* Protocols.swift in Sources */,
 				F81EF5491C526E0C008FCCD4 /* DatePickerVC.swift in Sources */,
-				F8C707C21C52752E0089E36A /* DashboardMessagesCell.swift in Sources */,
 				F81EF4D51C526532008FCCD4 /* DBUser.swift in Sources */,
 				F81EF4951C5264A1008FCCD4 /* Language.swift in Sources */,
 				F81EF5311C526CA4008FCCD4 /* UserProfileTextContainerCell.swift in Sources */,
@@ -1154,6 +1160,7 @@
 				F8C7076A1C52706B0089E36A /* ChatVC.swift in Sources */,
 				F81EF4F91C526806008FCCD4 /* MyContactsListVC.swift in Sources */,
 				F81EF4E81C526763008FCCD4 /* ContactsPickerVC.swift in Sources */,
+				BC3225C21C55460900AF46BC /* CustomViewControllerTransitions.swift in Sources */,
 				F81EF52F1C526CA4008FCCD4 /* UserProfileSexCell.swift in Sources */,
 				F81EF4F01C5267E0008FCCD4 /* AllContactsVC.swift in Sources */,
 				F8C707CE1C52752E0089E36A /* SingleElementLastMessagesCell.swift in Sources */,
@@ -1173,6 +1180,7 @@
 				F8C7079C1C5272D20089E36A /* ImageFilter.swift in Sources */,
 				F81EF51B1C526B48008FCCD4 /* PopupMenuCell.swift in Sources */,
 				F8C707ED1C5278FA0089E36A /* AttachedFileCell.swift in Sources */,
+				BC3225C51C55473200AF46BC /* FinishTaskResultView.m in Sources */,
 				F81EF47B1C5263D4008FCCD4 /* DataSource.swift in Sources */,
 				F8EC3C951BD63F65000201FE /* AFSecurityPolicy.m in Sources */,
 				F8C707771C5271270089E36A /* ContactCheckerCell.swift in Sources */,
@@ -1188,6 +1196,7 @@
 				F8C707AA1C5273A00089E36A /* Extensions.swift in Sources */,
 				F8EC3C931BD63F5D000201FE /* AFHTTPSessionManager.m in Sources */,
 				F81EF4931C5264A1008FCCD4 /* MediaFile.swift in Sources */,
+				BC3225C11C5545FF00AF46BC /* TapGreetingView.swift in Sources */,
 				F8C707791C5271270089E36A /* ParticipantsVC.swift in Sources */,
 				F8C707A61C5273A00089E36A /* Constants.swift in Sources */,
 				F8C707E61C5278C10089E36A /* SingleElementAttachesCollectionHolderCell.swift in Sources */,
@@ -1207,6 +1216,7 @@
 				F81EF4B91C526532008FCCD4 /* DBAttachImagePreview.swift in Sources */,
 				F8C7079E1C5272D20089E36A /* ObjectsConverter.swift in Sources */,
 				F81EF4F21C5267E0008FCCD4 /* AllContactsVCCell.swift in Sources */,
+				BC3225C01C5545E500AF46BC /* ElementChatPreviewTableHandler.swift in Sources */,
 				F81EF4791C5263D4008FCCD4 /* DataRefresher.swift in Sources */,
 				F81EF4C91C526532008FCCD4 /* DBMessageChat.swift in Sources */,
 				F8C707C41C52752E0089E36A /* DashCell.swift in Sources */,
@@ -1216,6 +1226,7 @@
 				F81EF5431C526D9A008FCCD4 /* NewElementComposerViewController.swift in Sources */,
 				F81EF5331C526CA4008FCCD4 /* UserProfileVC.swift in Sources */,
 				F8C707831C5271B10089E36A /* SingleElementDashboardVC.swift in Sources */,
+				BC3225C31C55461900AF46BC /* HomeNavigationController.swift in Sources */,
 				F81EF4CB1C526532008FCCD4 /* DBMessageService+CoreDataProperties.swift in Sources */,
 				F81EF54C1C526E27008FCCD4 /* TableItemPickerVC.swift in Sources */,
 				F81EF4D31C526532008FCCD4 /* DBUser+CoreDataProperties.swift in Sources */,
@@ -1227,6 +1238,7 @@
 				F8EC3C971BD63F6B000201FE /* AFURLResponseSerialization.m in Sources */,
 				F8C707721C52707E0089E36A /* ChatMessageSentCell.swift in Sources */,
 				F8C707DC1C5276AC0089E36A /* AttachesCollectionViewLayout.swift in Sources */,
+				BC3225C41C55462900AF46BC /* ImagePickingViewController.swift in Sources */,
 				F8C7079A1C5272D20089E36A /* GlobalFunctions.swift in Sources */,
 				F8C707CC1C52752E0089E36A /* SingleElementDetailsCell.swift in Sources */,
 			);
