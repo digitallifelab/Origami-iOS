@@ -296,6 +296,7 @@
 /* Begin PBXFileReference section */
 		780FB6AE1C2BFBC10099E79E /* OKVisualizationLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKVisualizationLayer.h; sourceTree = "<group>"; };
 		780FB6AF1C2BFBC10099E79E /* OKVisualizationLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OKVisualizationLayer.m; sourceTree = "<group>"; };
+		781086C61C525CC5006A9D8E /* OKConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OKConstants.h; sourceTree = "<group>"; };
 		784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BFDragGestureRecognizer.m; path = Visualisation/BFDragGestureRecognizer.m; sourceTree = "<group>"; };
 		784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BFDragGestureRecognizer.h; path = Visualisation/BFDragGestureRecognizer.h; sourceTree = "<group>"; };
 		78BC24AA1C510EAC00EC6907 /* LGAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LGAlertView.h; sourceTree = "<group>"; };
@@ -532,6 +533,7 @@
 		784827E21C1087F1009D76FC /* VisualizationView */ = {
 			isa = PBXGroup;
 			children = (
+				781086C61C525CC5006A9D8E /* OKConstants.h */,
 				78BC24A91C510EAC00EC6907 /* LGAlertView */,
 				784827E01C1087E6009D76FC /* BFDragGestureRecognizer.h */,
 				784827DF1C1087E6009D76FC /* BFDragGestureRecognizer.m */,
