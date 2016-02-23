@@ -658,48 +658,38 @@ class LocalDatabaseHandler
     {
         let context = self.privateContext
         context.performBlockAndWait() {
-            for anElement in elements
-            {
-                if let foundElement = self.readElementById(anElement.elementId!), existingElement = context.objectWithID(foundElement.objectID) as? DBElement
-                {
+            for anElement in elements {
+                if let foundElement = self.readElementById(anElement.elementId!), existingElement = context.objectWithID(foundElement.objectID) as? DBElement{
                     //print("2 - changingFoundElement in database")
                     
                     existingElement.fillInfoFromInMemoryElement(anElement)
                     // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
                 }
-                else
-                {
+                else{
                     print(" -> inserting new element into database...")
-                    if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: context) as? DBElement
-                    {
+                    if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: context) as? DBElement{
                         newElement.fillInfoFromInMemoryElement(anElement)
                         //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")
                     }
                 }
                 
             }
-        }
-     
-        
-        if context.hasChanges
-        {
-            context.performBlock({ () -> Void in
-                do
-                {
+            
+            if context.hasChanges{
+                do{
                     try context.save()
                     print(" Did Save Context after elements info inserting or updating.")
                     completion?(didSave: true, error: nil)
                 }
-                catch let error as NSError
-                {
+                catch let error as NSError {
                     completion?(didSave: false, error: error)
                 }
-            })
+            }
+            else {
+                completion?(didSave: false, error: nil)
+            }
         }
-        else
-        {
-            completion?(didSave: false, error: nil)
-        }
+        
     }
 
     /**

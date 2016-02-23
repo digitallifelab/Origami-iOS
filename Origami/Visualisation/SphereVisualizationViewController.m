@@ -59,6 +59,12 @@
     [self prepareMatrixViewAndShow];
 }
 
+-(void) viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    
+    [sphereView removeFromSuperview];
+}
+
 -(void) setupRightNavigationButton
 {
     self.currentViewControllersCount = self.navigationController.viewControllers.count;
@@ -85,7 +91,7 @@
             showsCircleButtons = YES;
         }
         
-        if (self.currentViewControllersCount == 4)
+        if (self.currentViewControllersCount == 2)
         {
             showsBackgroundColor = NO;
         }
