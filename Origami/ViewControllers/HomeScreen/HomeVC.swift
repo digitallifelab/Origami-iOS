@@ -143,18 +143,18 @@ class HomeVC: UIViewController, ElementSelectionDelegate, MessageObserver, Eleme
             sphereButton.titleEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3)
             sphereButton.addTarget(self, action: "showSphereViewController:", forControlEvents: .TouchUpInside)
             
-            let circlesButton = UIButton(type: .System)
-            circlesButton.frame = CGRectMake(50.0, 0.0 , 46.0, 40.0)
-            let circlesTitleAttributed = NSAttributedString(string: "Circles", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
-            circlesButton.setAttributedTitle(circlesTitleAttributed, forState: .Normal)
-            circlesButton.titleEdgeInsets = sphereButton.titleEdgeInsets
-            circlesButton.addTarget(self, action: "showCirclesViewController:", forControlEvents: .TouchUpInside)
+//            let circlesButton = UIButton(type: .System)
+//            circlesButton.frame = CGRectMake(50.0, 0.0 , 46.0, 40.0)
+//            let circlesTitleAttributed = NSAttributedString(string: "Circles", attributes: [NSForegroundColorAttributeName:kWhiteColor, NSFontAttributeName:UIFont(name: "SegoeUI", size: 13)!])
+//            circlesButton.setAttributedTitle(circlesTitleAttributed, forState: .Normal)
+//            circlesButton.titleEdgeInsets = sphereButton.titleEdgeInsets
+//            circlesButton.addTarget(self, action: "showCirclesViewController:", forControlEvents: .TouchUpInside)
             
-            let buttonsHolderView = UIView(frame: CGRectMake(0, 0, 100.0, 40.0) )
-            buttonsHolderView.addSubview(sphereButton)
-            buttonsHolderView.addSubview(circlesButton)
+//            let buttonsHolderView = UIView(frame: CGRectMake(0, 0, 100.0, 40.0) )
+//            buttonsHolderView.addSubview(sphereButton)
+//            buttonsHolderView.addSubview(circlesButton)
             
-            self.navigationItem.titleView = buttonsHolderView
+            self.navigationItem.titleView = sphereButton
         #endif
     }
     #if SHEVCHENKO
