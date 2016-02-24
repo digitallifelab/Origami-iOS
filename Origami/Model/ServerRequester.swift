@@ -463,7 +463,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
                             elements.append(lvElement)
                         }
                         
-                        print("\n -> Server requester loaded \(elements.count) elements ... ")
+                        //print("\n -> Server requester loaded \(elements.count) elements ... ")
                         ObjectsConverter.sortElementsByElementId(&elements)
 //                        //debug
 //                        print("sortedElements: \(elements.count)")
@@ -1019,7 +1019,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     
     func sendMessage(message:String, toElement elementId:Int, completion:networkResult?)
     {
-        print(" -> sendMessage Called.")
+        //print(" -> sendMessage Called.")
         //POST
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         guard let tokenString = DataSource.sharedInstance.user?.token else {
@@ -1036,7 +1036,7 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
             success: { (task, responseObject) in
             
                 dispatch_async(getBackgroundQueue_DEFAULT()) { () -> Void in
-                    print(responseObject)
+                    //print(responseObject)
                     completion?(responseObject, nil)
                 }
             
@@ -2271,25 +2271,25 @@ class ServerRequester: NSObject, NSURLSessionTaskDelegate, NSURLSessionDataDeleg
     }
     
     //MARK: DELEGATE
-    func URLSession(session: NSURLSession, task: NSURLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        if let description = task.taskDescription{
-            if description == "uploadImageFor: current user" {
-                if totalBytesSent > 0 {
-                    let progress = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
-                
-                    print("progress: \(progress * 100) /%")
-                }
-            }
-        }
-        else
-        {
-            if totalBytesSent > 0 {
-                let progress = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
-                
-                print("progress: \(progress * 100) /%")
-            }
-        }
-    }
+//    func URLSession(session: NSURLSession, task: NSURLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+//        if let description = task.taskDescription{
+//            if description == "uploadImageFor: current user" {
+//                if totalBytesSent > 0 {
+//                    let progress = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
+//                
+//                    print("progress: \(progress * 100) /%")
+//                }
+//            }
+//        }
+//        else
+//        {
+//            if totalBytesSent > 0 {
+//                let progress = Float(totalBytesSent) / Float(totalBytesExpectedToSend)
+//                
+//                print("progress: \(progress * 100) /%")
+//            }
+//        }
+//    }
     
     
     func URLSession(session: NSURLSession, didBecomeInvalidWithError error: NSError?)

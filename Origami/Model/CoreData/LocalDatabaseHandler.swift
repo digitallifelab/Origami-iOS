@@ -666,7 +666,7 @@ class LocalDatabaseHandler
                     // print("title: \(existingElement.title!),\n elementID: \(existingElement.elementId!.integerValue), \n rootID: \(existingElement.rootElementId!.integerValue)")
                 }
                 else{
-                    print(" -> inserting new element into database...")
+                    //print(" -> inserting new element into database...")
                     if let newElement = NSEntityDescription.insertNewObjectForEntityForName("DBElement", inManagedObjectContext: context) as? DBElement{
                         newElement.fillInfoFromInMemoryElement(anElement)
                         //print("title: \(newElement.title!),\n elementId: \(newElement.elementId!.integerValue), \n rootID: \(newElement.rootElementId!.integerValue)")

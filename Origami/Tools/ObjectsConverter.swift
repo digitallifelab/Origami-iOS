@@ -274,7 +274,7 @@ class ObjectsConverter {
                         else
                         {
                             lastPhotoUpdateMessagesForUserIDs[integerUserId] = lvNewMessage
-                             print("INSERTED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
+                            //print("INSERTED \n changed user photo. \" \(lvNewMessage.textBody!) \".  date:\(lvNewMessage.dateCreated!), messageId: \(lvNewMessage.messageId)")
                         }
                     }
                 case .UserBlocked:
@@ -288,7 +288,7 @@ class ObjectsConverter {
         
         for ( _ , aMessage) in lastPhotoUpdateMessagesForUserIDs
         {
-            print("RESULT \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
+            //print("RESULT \n changed user photo. \" \(aMessage.textBody!) \".  date:\(aMessage.dateCreated!)")
             serviceMessages.append(aMessage)
         }
         

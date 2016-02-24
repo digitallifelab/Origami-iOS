@@ -62,7 +62,7 @@ class MessagesLoader
             dispatch_source_set_event_handler(source) {[weak self] in
                 if let weakSelf = self
                 {
-                    print(" -> Fired a timer for messages.")
+                    //print(" -> Fired a timer for messages.")
                     if let source = weakSelf.dispatchSource
                     {
                         dispatch_suspend(source)

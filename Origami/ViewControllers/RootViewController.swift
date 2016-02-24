@@ -220,11 +220,11 @@ class RootViewController: UIViewController, UIGestureRecognizerDelegate, Passwor
     {
         if recognizer.state == UIGestureRecognizerState.Began
         {
-            print("left pan.")
+            //print("left pan.")
             let translationX = round(recognizer.translationInView(recognizer.view!).x)
             let velocityX = round(recognizer.velocityInView(recognizer.view!).x)
-            print(" Horizontal Velocity: \(velocityX)")
-            print(" Horizontal Translation: \(translationX)")
+            //print(" Horizontal Velocity: \(velocityX)")
+            //print(" Horizontal Translation: \(translationX)")
             
             let ratio = ceil(velocityX / translationX)
             if  ratio > 3

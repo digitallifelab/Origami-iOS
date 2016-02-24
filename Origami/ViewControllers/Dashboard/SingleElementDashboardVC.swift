@@ -72,7 +72,7 @@ class SingleElementDashboardVC: UIViewController, ElementComposingDelegate ,/*UI
         self.navigationController?.delegate = nil
         
         NSNotificationCenter.defaultCenter().removeObserver(self, name: kNewElementsAddedNotification, object: nil)
-        print(" --- Removed From observing new elements added...")
+        //print(" --- Removed From observing new elements added...")
         super.viewWillAppear(animated)
         if afterViewDidLoad
         {

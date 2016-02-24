@@ -1018,10 +1018,10 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
                     {
                         try DataSource.sharedInstance.localDatadaseHandler?.deleteAllAttachesForElementById(elementIdInt)
                     }
-                    catch let deletionError
+                    catch //let deletionError
                     {
-                        print(" ataches cleaning error:")
-                        print(deletionError)
+                        //print(" ataches cleaning error:")
+                        //print(deletionError)
                     }
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     completion?(info: (loaded: 0, saved: 0))
@@ -1999,7 +1999,7 @@ typealias successErrorClosure = (success:Bool, error:NSError?) -> ()
         {
             if let syncDate = syncInfo["\(contactId)"]
             {
-                print("\n-> Last Avatar Sync Date for ContactId: \(contactId)  is \(syncDate)")
+                //print("\n-> Last Avatar Sync Date for ContactId: \(contactId)  is \(syncDate)")
                 return syncDate
             }
         }
